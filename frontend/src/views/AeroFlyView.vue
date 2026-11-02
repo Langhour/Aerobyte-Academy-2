@@ -3,20 +3,12 @@
     <!-- Hero Section -->
     <section class="courses-hero px-4 pb-12 pt-8 sm:px-6 sm:pb-16 sm:pt-14 lg:px-8 text-center">
       <div class="mx-auto max-w-4xl">
-        <div class="inline-flex items-center gap-2 rounded-full border border-navy-100 dark:border-slate-700 bg-navy-50 dark:bg-slate-800 px-3.5 py-1 text-xs font-bold text-navy-900 dark:text-indigo-300 mb-4">
-          <span>AeroByte Ecosystem</span>
-          <span class="text-slate-300 dark:text-slate-600">/</span>
-          <span>Aviation & Drone Flight</span>
-        </div>
-
-        <div class="flex justify-center mb-6">
-          <div class="p-6 rounded-2xl bg-white dark:bg-slate-800 shadow-md border border-slate-100 dark:border-slate-700 inline-block">
-            <img
-              src="/assets/brand/aero-fly.png"
-              alt="Aero Fly"
-              class="h-24 sm:h-32 object-contain mx-auto dark:invert"
-            />
-          </div>
+        <div class="flex justify-center mb-6 sm:mb-8">
+          <img
+            src="/assets/brand/aero-fly.png"
+            alt="Aero Fly"
+            class="h-28 sm:h-36 md:h-44 w-auto object-contain mx-auto transition-transform duration-300 hover:scale-105 dark:invert"
+          />
         </div>
 
         <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-navy-900 dark:text-white">
