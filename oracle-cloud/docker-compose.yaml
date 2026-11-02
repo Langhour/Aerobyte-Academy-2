@@ -1,0 +1,80 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: hosting/backend.Dockerfile
+    container_name: aerobyte-academy
+    restart: unless-stopped
+    ports:
+      - "8010:8010"
+    environment:
+      # Admin credentials (required)
+      - ADMIN_EMAIL=${ADMIN_EMAIL:?Set ADMIN_EMAIL in .env}
+      - ADMIN_PASSWORD_HASH=${ADMIN_PASSWORD_HASH:?Set ADMIN_PASSWORD_HASH in .env}
+      - ADMIN_SESSION_SECRET=${ADMIN_SESSION_SECRET:?Set ADMIN_SESSION_SECRET in .env}
+      - ADMIN_COOKIE_SECURE=${ADMIN_COOKIE_SECURE:-true}
+
+      # Public domain
+      - FRONTEND_URL=${FRONTEND_URL:?Set FRONTEND_URL in .env}
+      - FRONTEND_ORIGINS=${FRONTEND_ORIGINS:-${FRONTEND_URL}}
+
+      # Database & storage
+      - AEROBYTE_CONTENT_DB=/app/data/aerobyte-content.sqlite3
+      - DATABASE_URL=${DATABASE_URL:-}
+
+      # Optional: Google sign-in
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID:-}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET:-}
+
+      # Email: Resend (primary)
+      - RESEND_API_KEY=${RESEND_API_KEY:-}
+      - EMAIL_FROM=${EMAIL_FROM:-AeroByte Academy <onboarding@resend.dev>}
+
+      # Email: EmailJS (optional fallback)
+      - EMAILJS_SERVICE_ID=${EMAILJS_SERVICE_ID:-}
+      - EMAILJS_TEMPLATE_ID=${EMAILJS_TEMPLATE_ID:-}
+      - EMAILJS_VERIFICATION_TEMPLATE_ID=${EMAILJS_VERIFICATION_TEMPLATE_ID:-}
+      - EMAILJS_PUBLIC_KEY=${EMAILJS_PUBLIC_KEY:-}
+      - EMAILJS_PRIVATE_KEY=${EMAILJS_PRIVATE_KEY:-}
+
+      # Email: SMTP (optional fallback)
+      - SMTP_HOST=${SMTP_HOST:-smtp.gmail.com}
+      - SMTP_PORT=${SMTP_PORT:-587}
+      - SMTP_USER=${SMTP_USER:-}
+      - SMTP_PASSWORD=${SMTP_PASSWORD:-}
+
+      # Production safeguards
+      - DEV_EMAIL_FALLBACK=${DEV_EMAIL_FALLBACK:-false}
+    volumes:
+      - aerobyte_data:/app/data
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8010/api/health', timeout=3)"
+      interval: 30s
+      timeout: 5s
+      start_period: 30s
+      retries: 3
+
+  caddy:
+    image: caddy:2-alpine
+    container_name: aerobyte-caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      app:
+        condition: service_healthy
+
+volumes:
+  aerobyte_data:
+  caddy_data:
+  caddy_config:
