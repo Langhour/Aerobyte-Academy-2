@@ -4,7 +4,7 @@
     :class="isScrolled ? 'shadow-xs shadow-slate-900/5 dark:shadow-slate-950/40 bg-white/98 dark:bg-slate-900/98' : ''"
   >
     <nav
-      class="mx-auto flex max-w-7xl items-center justify-between gap-2 px-3 py-2.5 sm:px-6 sm:py-3 lg:grid lg:grid-cols-3 lg:gap-4 lg:px-8"
+      class="mx-auto flex max-w-7xl items-center justify-between gap-2 px-3 py-2.5 sm:px-6 sm:py-3 lg:flex lg:gap-4 xl:gap-8 lg:px-8"
       :aria-label="t('Main navigation')"
     >
       <!-- Left side: Mobile Menu Hamburger Button & Brand Logo -->
@@ -30,25 +30,64 @@
         </RouterLink>
       </div>
 
-      <!-- Desktop Center Navigation Links -->
-      <div class="hidden items-center justify-center gap-7 lg:flex">
-        <RouterLink
-          to="/questions"
-          class="text-xs font-medium text-slate-500 dark:text-slate-400 transition hover:text-navy-900 dark:hover:text-white"
-        >
-          {{ t('Questions') }}
-        </RouterLink>
-
+      <!-- Desktop Center Navigation Links (Courses, Print, Fly, Store, Question, About) -->
+      <div class="hidden items-center justify-center gap-1 xl:gap-2.5 lg:flex">
         <RouterLink
           to="/courses"
-          class="text-[15px] font-extrabold tracking-tight text-navy-900 dark:text-white transition-all duration-150 hover:text-navy-700 dark:hover:text-indigo-300 py-1 px-3 rounded-lg hover:bg-slate-100/70 dark:hover:bg-slate-800/50"
+          class="text-xs xl:text-[13px] font-bold tracking-tight transition-all duration-150 py-1.5 px-2.5 xl:px-3 rounded-lg"
+          :class="route.path.startsWith('/courses') || route.path.startsWith('/course')
+            ? 'text-navy-900 dark:text-white font-extrabold bg-slate-100 dark:bg-slate-800 shadow-xs'
+            : 'text-slate-600 dark:text-slate-300 hover:text-navy-900 dark:hover:text-white hover:bg-slate-100/70 dark:hover:bg-slate-800/60'"
         >
           {{ t('Courses') }}
         </RouterLink>
 
         <RouterLink
+          to="/print"
+          class="text-xs xl:text-[13px] font-bold tracking-tight transition-all duration-150 py-1.5 px-2.5 xl:px-3 rounded-lg flex items-center gap-1.5"
+          :class="route.path === '/print'
+            ? 'text-orange-600 dark:text-orange-400 font-extrabold bg-orange-50 dark:bg-orange-950/40 shadow-xs'
+            : 'text-slate-600 dark:text-slate-300 hover:text-orange-600 dark:hover:text-orange-400 hover:bg-slate-100/70 dark:hover:bg-slate-800/60'"
+        >
+          <span>{{ t('Print') }}</span>
+        </RouterLink>
+
+        <RouterLink
+          to="/fly"
+          class="text-xs xl:text-[13px] font-bold tracking-tight transition-all duration-150 py-1.5 px-2.5 xl:px-3 rounded-lg flex items-center gap-1.5"
+          :class="route.path === '/fly'
+            ? 'text-sky-600 dark:text-sky-400 font-extrabold bg-sky-50 dark:bg-sky-950/40 shadow-xs'
+            : 'text-slate-600 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400 hover:bg-slate-100/70 dark:hover:bg-slate-800/60'"
+        >
+          <span>{{ t('Fly') }}</span>
+        </RouterLink>
+
+        <RouterLink
+          to="/store"
+          class="text-xs xl:text-[13px] font-bold tracking-tight transition-all duration-150 py-1.5 px-2.5 xl:px-3 rounded-lg flex items-center gap-1.5"
+          :class="route.path === '/store'
+            ? 'text-amber-600 dark:text-amber-400 font-extrabold bg-amber-50 dark:bg-amber-950/40 shadow-xs'
+            : 'text-slate-600 dark:text-slate-300 hover:text-amber-600 dark:hover:text-amber-400 hover:bg-slate-100/70 dark:hover:bg-slate-800/60'"
+        >
+          <span>{{ t('Store') }}</span>
+        </RouterLink>
+
+        <RouterLink
+          to="/questions"
+          class="text-xs xl:text-[13px] font-bold tracking-tight transition-all duration-150 py-1.5 px-2.5 xl:px-3 rounded-lg"
+          :class="route.path === '/questions'
+            ? 'text-navy-900 dark:text-white font-extrabold bg-slate-100 dark:bg-slate-800 shadow-xs'
+            : 'text-slate-600 dark:text-slate-300 hover:text-navy-900 dark:hover:text-white hover:bg-slate-100/70 dark:hover:bg-slate-800/60'"
+        >
+          {{ t('Question') }}
+        </RouterLink>
+
+        <RouterLink
           to="/about"
-          class="text-xs font-medium text-slate-500 dark:text-slate-400 transition hover:text-navy-900 dark:hover:text-white"
+          class="text-xs xl:text-[13px] font-bold tracking-tight transition-all duration-150 py-1.5 px-2.5 xl:px-3 rounded-lg"
+          :class="route.path === '/about'
+            ? 'text-navy-900 dark:text-white font-extrabold bg-slate-100 dark:bg-slate-800 shadow-xs'
+            : 'text-slate-600 dark:text-slate-300 hover:text-navy-900 dark:hover:text-white hover:bg-slate-100/70 dark:hover:bg-slate-800/60'"
         >
           {{ t('About') }}
         </RouterLink>
@@ -302,7 +341,7 @@
             <RouterLink
               to="/courses"
               class="flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-bold transition hover:bg-slate-100 dark:hover:bg-slate-800"
-              :class="route.path === '/courses'
+              :class="route.path.startsWith('/courses') || route.path.startsWith('/course')
                 ? 'bg-navy-50 dark:bg-slate-800 text-navy-900 dark:text-indigo-300 font-extrabold'
                 : 'text-slate-700 dark:text-slate-200 hover:text-navy-900 dark:hover:text-white'"
               @click="mobileDrawerOpen = false"
@@ -311,7 +350,46 @@
               <span>{{ t('Courses') }}</span>
             </RouterLink>
 
-            <!-- 2. Questions -->
+            <!-- 2. Print -->
+            <RouterLink
+              to="/print"
+              class="flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-bold transition hover:bg-slate-100 dark:hover:bg-slate-800"
+              :class="route.path === '/print'
+                ? 'bg-orange-50 dark:bg-orange-950/40 text-orange-600 dark:text-orange-300 font-extrabold'
+                : 'text-slate-700 dark:text-slate-200 hover:text-orange-600 dark:hover:text-orange-400'"
+              @click="mobileDrawerOpen = false"
+            >
+              <Printer class="h-5 w-5 text-orange-600 dark:text-orange-400 shrink-0" />
+              <span>{{ t('Print') }}</span>
+            </RouterLink>
+
+            <!-- 3. Fly -->
+            <RouterLink
+              to="/fly"
+              class="flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-bold transition hover:bg-slate-100 dark:hover:bg-slate-800"
+              :class="route.path === '/fly'
+                ? 'bg-sky-50 dark:bg-sky-950/40 text-sky-600 dark:text-sky-300 font-extrabold'
+                : 'text-slate-700 dark:text-slate-200 hover:text-sky-600 dark:hover:text-sky-400'"
+              @click="mobileDrawerOpen = false"
+            >
+              <Plane class="h-5 w-5 text-sky-600 dark:text-sky-400 shrink-0" />
+              <span>{{ t('Fly') }}</span>
+            </RouterLink>
+
+            <!-- 4. Store -->
+            <RouterLink
+              to="/store"
+              class="flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-bold transition hover:bg-slate-100 dark:hover:bg-slate-800"
+              :class="route.path === '/store'
+                ? 'bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-300 font-extrabold'
+                : 'text-slate-700 dark:text-slate-200 hover:text-amber-600 dark:hover:text-amber-400'"
+              @click="mobileDrawerOpen = false"
+            >
+              <ShoppingBag class="h-5 w-5 text-amber-600 dark:text-amber-400 shrink-0" />
+              <span>{{ t('Store') }}</span>
+            </RouterLink>
+
+            <!-- 5. Question -->
             <RouterLink
               to="/questions"
               class="flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-semibold transition hover:bg-slate-100 dark:hover:bg-slate-800"
@@ -321,10 +399,10 @@
               @click="mobileDrawerOpen = false"
             >
               <HelpCircle class="h-5 w-5 text-slate-500 dark:text-slate-400 shrink-0" />
-              <span>{{ t('Questions') }}</span>
+              <span>{{ t('Question') }}</span>
             </RouterLink>
 
-            <!-- 3. About -->
+            <!-- 6. About -->
             <RouterLink
               to="/about"
               class="flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-semibold transition hover:bg-slate-100 dark:hover:bg-slate-800"
@@ -337,7 +415,7 @@
               <span>{{ t('About') }}</span>
             </RouterLink>
 
-            <!-- 4. Contact Us -->
+            <!-- 7. Contact Us -->
             <RouterLink
               to="/contact"
               class="flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-semibold transition hover:bg-slate-100 dark:hover:bg-slate-800"
@@ -446,7 +524,7 @@
 <script setup>
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
-import { BookOpen, Check, Globe2, HelpCircle, Info, LogIn, Menu, Moon, PhoneCall, Sun, UserPlus, UserRound, X } from 'lucide-vue-next'
+import { BookOpen, Check, Globe2, HelpCircle, Info, LogIn, Menu, Moon, PhoneCall, Plane, Printer, ShoppingBag, Sun, UserPlus, UserRound, X } from 'lucide-vue-next'
 import { useLanguage } from '../../i18n'
 import { useTheme } from '../../composables/useTheme'
 import { accountService } from '../../services/api'

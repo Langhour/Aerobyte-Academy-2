@@ -1148,6 +1148,14 @@ export const khmerTranslations = {
   'Education': 'ការអប់រំ',
   'Course': 'វគ្គសិក្សា',
   'Courses': 'វគ្គសិក្សា',
+  'Print': 'Print',
+  'Fly': 'Fly',
+  'Store': 'Store',
+  'Question': 'សំណួរ',
+  'Questions': 'សំណួរ',
+  'Aero Print': 'Aero Print',
+  'Aero Fly': 'Aero Fly',
+  'Aero Store': 'Aero Store',
   'Batch': 'វគ្គសិក្សា',
   'Badges': 'ផ្លាកសញ្ញា',
   'Discount': 'បញ្ចុះតម្លៃ',
@@ -1328,3 +1336,5 @@ export function useLanguage() {
 if (typeof document !== 'undefined') {
   document.documentElement.lang = locale.value
 }
+
+export const useI18n = useLanguage

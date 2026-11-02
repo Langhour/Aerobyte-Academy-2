@@ -15,6 +15,9 @@ const ContactView = () => import('../views/ContactView.vue')
 const ProfileInformationView = () => import('../views/ProfileInformationView.vue')
 const TermsOfUseView = () => import('../views/TermsOfUseView.vue')
 const PrivacyPolicyView = () => import('../views/PrivacyPolicyView.vue')
+const AeroPrintView = () => import('../views/AeroPrintView.vue')
+const AeroFlyView = () => import('../views/AeroFlyView.vue')
+const AeroStoreView = () => import('../views/AeroStoreView.vue')
 
 const router = createRouter({
   history: createWebHistory(),
@@ -22,6 +25,9 @@ const router = createRouter({
     { path: '/', redirect: '/questions' },
     { path: '/questions', name: 'questions', component: QuestionsView },
     { path: '/courses', name: 'courses', component: ExploreCoursesView },
+    { path: '/print', name: 'print', component: AeroPrintView },
+    { path: '/fly', name: 'fly', component: AeroFlyView },
+    { path: '/store', name: 'store', component: AeroStoreView },
     { path: '/account', name: 'account', component: AccountAccessView },
     { path: '/admin', name: 'admin', component: AdminContentView },
     { path: '/courses/:id', name: 'CourseDetail', component: CourseDetailView, props: true, alias: ['/course/:id'] },

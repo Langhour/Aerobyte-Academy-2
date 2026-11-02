@@ -11,3 +11,5 @@ backend/.env
 *.env.*
 !*.env.example
 *.py[cod]
+
+*.zip
