@@ -1,0 +1,610 @@
+﻿No.,Page / Section,English (Original),Current Khmer Translation,New Khmer Translation (EDIT HERE),Notes / Context,Code Location
+1,Navbar & Footer,Main navigation,ការរុករកចម្បង,,,components/layout/Navbar.vue
+2,Navbar & Footer,Course categories,ប្រភេទវគ្គសិក្សា,,,components/layout/Footer.vue
+3,Navbar & Footer,Footer navigation,ការរុករកផ្នែកខាងក្រោម,,,components/layout/Footer.vue
+4,Explore Courses,Pagination,ការបែងចែកទំព័រ,,,components/courses/Pagination.vue
+5,Explore Courses,Previous page,ទំព័រមុន,,,components/courses/Pagination.vue
+6,Explore Courses,Next page,ទំព័របន្ទាប់,,,components/courses/Pagination.vue
+7,General & Common,Home,ទំព័រដើម,,,i18n.js (Shared)
+8,Questions & FAQ,Questions,សំណួរ,,,"components/layout/Footer.vue, components/layout/Navbar.vue, views/QuestionsView.vue"
+9,Admin Portal,Courses,វគ្គសិក្សា,,,"components/layout/Footer.vue, components/layout/Navbar.vue, views/AdminContentView.vue, views/ExploreCoursesView.vue"
+10,General & Common,AeroByte Academy support,ជំនួយពី AeroByte Academy,,,i18n.js (Shared)
+11,Questions & FAQ,"Answers about courses, enrollment, and learning at AeroByte Academy.",ចម្លើយអំពីវគ្គសិក្សា ការចុះឈ្មោះ និងការសិក្សានៅ AeroByte Academy។,,,views/QuestionsView.vue
+12,Questions & FAQ,Frequently asked questions,សំណួរដែលសួរញឹកញាប់,,,views/QuestionsView.vue
+13,Questions & FAQ,Quick answers to help you get started.,ចម្លើយខ្លីៗដើម្បីជួយអ្នកចាប់ផ្តើម។,,,views/QuestionsView.vue
+14,Explore Courses,Who can join AeroByte Academy courses?,តើនរណាអាចចូលរៀនវគ្គសិក្សារបស់ AeroByte Academy បាន?,,,i18n.js (Shared)
+15,Explore Courses,"Our courses welcome curious learners, students, and professionals. Each course lists its recommended level, and you can contact us if you are unsure where to begin.",វគ្គសិក្សារបស់យើងស្វាគមន៍អ្នកចូលចិត្តស្វែងយល់ សិស្សនិស្សិត និងអ្នកជំនាញ។ វគ្គនីមួយៗបង្ហាញកម្រិតដែលបានណែនាំ ហើយអ្នកអាចទាក់ទងយើង ប្រសិនបើមិនប្រាកដថាគួរចាប់ផ្តើមពីណា។,,,i18n.js (Shared)
+16,Explore Courses,Do I need previous coding or robotics experience?,តើខ្ញុំត្រូវមានបទពិសោធន៍សរសេរកូដ ឬមនុស្សយន្តជាមុនទេ?,,,i18n.js (Shared)
+17,Explore Courses,Not for beginner courses. Each course shows its level and any recommended experience so you can choose a good starting point.,មិនចាំបាច់សម្រាប់វគ្គកម្រិតដំបូងទេ។ វគ្គនីមួយៗបង្ហាញកម្រិត និងបទពិសោធន៍ដែលបានណែនាំ ដើម្បីឱ្យអ្នកអាចជ្រើសរើសចំណុចចាប់ផ្តើមសមស្រប។,,,i18n.js (Shared)
+18,Questions & FAQ,How do I enroll in a course?,តើខ្ញុំចុះឈ្មោះចូលរៀនវគ្គសិក្សាដោយរបៀបណា?,,,views/QuestionsView.vue
+19,Explore Courses,"Choose a course from the Courses page, open its details, and select Enroll. Complete the registration form to create your enrollment.",ជ្រើសរើសវគ្គសិក្សានៅទំព័រវគ្គសិក្សា បើកព័ត៌មានលម្អិត ហើយចុចចុះឈ្មោះ។ បំពេញទម្រង់ចុះឈ្មោះដើម្បីបញ្ចប់ការចុះឈ្មោះរបស់អ្នក។,,,i18n.js (Shared)
+20,Explore Courses,How long are the courses and when do they meet?,តើវគ្គសិក្សាមានរយៈពេលប៉ុន្មាន និងរៀននៅពេលណា?,,,i18n.js (Shared)
+21,Explore Courses,Course duration and available schedules vary. Check the course details and enrollment form for the current duration and schedule options.,រយៈពេល និងកាលវិភាគមានភាពខុសគ្នាតាមវគ្គ។ សូមពិនិត្យព័ត៌មានលម្អិត និងទម្រង់ចុះឈ្មោះសម្រាប់រយៈពេល និងកាលវិភាគបច្ចុប្បន្ន។,,,i18n.js (Shared)
+22,General & Common,Will I get hands-on project experience?,តើខ្ញុំនឹងទទួលបានបទពិសោធន៍អនុវត្តគម្រោងដែរឬទេ?,,,i18n.js (Shared)
+23,Explore Courses,AeroByte Academy focuses on practical technology education. Course activities and projects depend on the specific course; see its course details for the included modules.,AeroByte Academy ផ្តោតលើការអប់រំបច្ចេកវិទ្យាជាក់ស្តែង។ សកម្មភាព និងគម្រោងអាស្រ័យលើវគ្គនីមួយៗ សូមមើលព័ត៌មានវគ្គសិក្សាសម្រាប់មេរៀនដែលមាន។,,,i18n.js (Shared)
+24,Explore Courses,How can I get help choosing a course?,តើខ្ញុំអាចទទួលជំនួយក្នុងការជ្រើសរើសវគ្គសិក្សាដោយរបៀបណា?,,,i18n.js (Shared)
+25,Explore Courses,"Contact the AeroByte Academy team through the About page. Tell us about your interests and experience, and we can help you find a suitable course.",សូមទាក់ទងក្រុម AeroByte Academy តាមទំព័រអំពីយើង។ ប្រាប់យើងអំពីចំណាប់អារម្មណ៍ និងបទពិសោធន៍របស់អ្នក ដើម្បីឱ្យយើងជួយស្វែងរកវគ្គសមស្រប។,,,i18n.js (Shared)
+26,Questions & FAQ,Still have a question?,នៅមានសំណួរទៀតមែនទេ?,,,views/QuestionsView.vue
+27,Questions & FAQ,Contact our team and we will be happy to help.,ទាក់ទងក្រុមការងាររបស់យើង ហើយយើងរីករាយក្នុងការជួយអ្នក។,,,views/QuestionsView.vue
+28,General & Common,We are here to help,យើងនៅទីនេះដើម្បីជួយអ្នក,,,i18n.js (Shared)
+29,About Us & Contact,"Follow AeroByte Academy for course updates, project highlights, and support.",តាមដាន AeroByte Academy ដើម្បីទទួលព័ត៌មានវគ្គសិក្សា គម្រោងថ្មីៗ និងជំនួយ។,,,views/ContactView.vue
+30,About Us & Contact,Connect with us,ភ្ជាប់ទំនាក់ទំនងជាមួយយើង,,,views/ContactView.vue
+31,About Us & Contact,Choose your preferred platform to reach and follow us.,ជ្រើសរើសបណ្ដាញសង្គមដែលអ្នកចូលចិត្ត ដើម្បីទាក់ទង និងតាមដានយើង។,,,views/ContactView.vue
+32,About Us & Contact,Follow us on,តាមដានយើងនៅ,,,views/ContactView.vue
+33,About Us & Contact,Visit our page,ចូលមើលទំព័ររបស់យើង,,,views/ContactView.vue
+34,About Us & Contact,Looking for course information?,កំពុងស្វែងរកព័ត៌មានវគ្គសិក្សាមែនទេ?,,,views/ContactView.vue
+35,About Us & Contact,Browse our programs and find the right place to start.,ស្វែងយល់អំពីកម្មវិធីសិក្សា និងជ្រើសរើសចំណុចចាប់ផ្តើមដែលសមស្រប។,,,views/ContactView.vue
+36,Explore Courses,"Contact the AeroByte Academy team through the Contact Us page. Tell us about your interests and experience, and we can help you find a suitable course.",ទាក់ទងក្រុម AeroByte Academy តាមទំព័រទាក់ទងយើង។ ប្រាប់យើងអំពីចំណាប់អារម្មណ៍ និងបទពិសោធន៍របស់អ្នក ដើម្បីឱ្យយើងជួយស្វែងរកវគ្គសមស្រប។,,,i18n.js (Shared)
+37,Navbar & Footer,About,អំពីយើង,,,"components/layout/Footer.vue, components/layout/Navbar.vue"
+38,Course Detail,Contact Us,ទាក់ទងយើង,,,"components/layout/Footer.vue, components/layout/Navbar.vue, views/ContactView.vue, views/CourseDetailView.vue, views/QuestionsView.vue"
+39,Profile & Account,Profile information,ព័ត៌មានប្រវត្តិរូប,,,"components/layout/Navbar.vue, views/ProfileInformationView.vue"
+40,Navbar & Footer,Account menu,ម៉ឺនុយគណនី,,,components/layout/Navbar.vue
+41,Navbar & Footer,Welcome to AeroByte,សូមស្វាគមន៍មកកាន់ AeroByte,,,components/layout/Navbar.vue
+42,Navbar & Footer,Sign in or create an account,ចូលគណនី ឬបង្កើតគណនី,,,components/layout/Navbar.vue
+43,Sign In & Register,Register,ចុះឈ្មោះ,,,"components/layout/Navbar.vue, views/AccountAccessView.vue"
+44,Sign In & Register,Sign in,ចូលគណនី,,,"components/layout/Navbar.vue, views/AccountAccessView.vue"
+45,Admin Portal,Checking admin access,កំពុងពិនិត្យសិទ្ធិអ្នកគ្រប់គ្រង,,,views/AdminContentView.vue
+46,Admin Portal,Verifying your administrator session...,កំពុងផ្ទៀងផ្ទាត់វគ្គចូលរបស់អ្នកគ្រប់គ្រង...,,,views/AdminContentView.vue
+47,Admin Portal,Go to sign in,ទៅកាន់ទំព័រចូលគណនី,,,views/AdminContentView.vue
+48,Admin Portal,Admin Portal (/admin),វិបផតថលអ្នកគ្រប់គ្រង (/admin),,,views/AdminContentView.vue
+49,Admin Portal,Admin sections,ផ្នែកអ្នកគ្រប់គ្រង,,,views/AdminContentView.vue
+50,Admin Portal,Total revenue,ប្រាក់ចំណូលសរុប,,,views/AdminContentView.vue
+51,Admin Portal,Active enrollments,ការចុះឈ្មោះសកម្ម,,,views/AdminContentView.vue
+52,Admin Portal,Pending QR scans,ការស្កេន QR កំពុងរង់ចាំ,,,views/AdminContentView.vue
+53,Admin Portal,Published courses,វគ្គសិក្សាដែលបានផ្សព្វផ្សាយ,,,views/AdminContentView.vue
+54,Admin Portal,Recent enrollments,ការចុះឈ្មោះថ្មីៗ,,,views/AdminContentView.vue
+55,Admin Portal,Top selling courses,វគ្គសិក្សាលក់ដាច់បំផុត,,,views/AdminContentView.vue
+56,Admin Portal,Activity Feed,សកម្មភាពថ្មីៗ,,,views/AdminContentView.vue
+57,Admin Portal,No enrollments yet.,មិនទាន់មានការចុះឈ្មោះទេ។,,,views/AdminContentView.vue
+58,Admin Portal,No enrollment data yet.,មិនទាន់មានទិន្នន័យចុះឈ្មោះទេ។,,,views/AdminContentView.vue
+59,Admin Portal,No recent activity.,មិនទាន់មានសកម្មភាពថ្មីៗទេ។,,,views/AdminContentView.vue
+60,Admin Portal,enrollments,ការចុះឈ្មោះ,,,views/AdminContentView.vue
+61,Explore Courses,Course & Schedules,វគ្គសិក្សា និងកាលវិភាគ,,,i18n.js (Shared)
+62,Admin Portal,Student enrollments,ការចុះឈ្មោះសិស្ស,,,views/AdminContentView.vue
+63,Admin Portal,records,កំណត់ត្រា,,,views/AdminContentView.vue
+64,Admin Portal,Search students,ស្វែងរកសិស្ស,,,views/AdminContentView.vue
+65,Admin Portal,"Search courses by title, category, slug, or status",ស្វែងរកវគ្គសិក្សាតាមចំណងជើង ប្រភេទ slug ឬស្ថានភាព,,,views/AdminContentView.vue
+66,Admin Portal,No matching courses.,រកមិនឃើញវគ្គសិក្សាដែលត្រូវគ្នាទេ។,,,views/AdminContentView.vue
+67,Admin Portal,Student,សិស្ស,,,views/AdminContentView.vue
+68,Admin Portal,Education,ការអប់រំ,,,views/AdminContentView.vue
+69,Admin Portal,Course & schedule,វគ្គសិក្សា និងកាលវិភាគ,,,views/AdminContentView.vue
+70,Admin Portal,confirmed,បានបញ្ជាក់,,,"views/AdminContentView.vue, views/PaymentSuccessfulView.vue, views/ScanToPayView.vue"
+71,Admin Portal,cancelled,បានលុបចោល,,,views/AdminContentView.vue
+72,Scan To Pay & Payment,payment pending,កំពុងរង់ចាំការទូទាត់,,,i18n.js (Shared)
+73,Admin Portal,Actions,សកម្មភាព,,,views/AdminContentView.vue
+74,Admin Portal,No matching enrollments.,មិនមានការចុះឈ្មោះដែលត្រូវនឹងការស្វែងរកទេ។,,,views/AdminContentView.vue
+75,Admin Portal,Student details,ព័ត៌មានសិស្ស,,,views/AdminContentView.vue
+76,Admin Portal,Confirm enrollment & payment,បញ្ជាក់ការចុះឈ្មោះ និងការទូទាត់,,,views/AdminContentView.vue
+77,Admin Portal,Confirmed & Paid,បានបញ្ជាក់ និងបានបង់ប្រាក់,,,views/AdminContentView.vue
+78,Admin Portal,Enrollment confirmed and payment verified successfully!,ការចុះឈ្មោះត្រូវបានបញ្ជាក់ និងការទូទាត់ត្រូវបានផ្ទៀងផ្ទាត់ដោយជោគជ័យ!,,,views/AdminContentView.vue
+79,Admin Portal,Payment verified and student enrollment confirmed!,ការទូទាត់ត្រូវបានផ្ទៀងផ្ទាត់ និងការចុះឈ្មោះសិស្សត្រូវបានបញ្ជាក់!,,,views/AdminContentView.vue
+80,Admin Portal,Enrollment status updated.,ស្ថានភាពចុះឈ្មោះត្រូវបានធ្វើបច្ចុប្បន្នភាព។,,,views/AdminContentView.vue
+81,Admin Portal,Payment status updated.,ស្ថានភាពទូទាត់ត្រូវបានធ្វើបច្ចុប្បន្នភាព។,,,views/AdminContentView.vue
+82,Admin Portal,Close,បិទ,,,views/AdminContentView.vue
+83,Admin Portal,Manual status changes should only be made after checking your payment provider.,សូមកែប្រែស្ថានភាពដោយដៃតែបន្ទាប់ពីបានពិនិត្យការទូទាត់ជាមួយអ្នកផ្តល់សេវាប៉ុណ្ណោះ។,,,views/AdminContentView.vue
+84,Admin Portal,Transaction,ប្រតិបត្តិការ,,,views/AdminContentView.vue
+85,Admin Portal,Student / course,សិស្ស / វគ្គសិក្សា,,,views/AdminContentView.vue
+86,Admin Portal,Log fields,ព័ត៌មានកំណត់ត្រា,,,views/AdminContentView.vue
+87,Admin Portal,Subtotal / discount / final,សរុបរង / បញ្ចុះតម្លៃ / សរុបចុងក្រោយ,,,views/AdminContentView.vue
+88,Admin Portal,Pending Scan,កំពុងរង់ចាំស្កេន,,,views/AdminContentView.vue
+89,Admin Portal,Paid,បានបង់ប្រាក់,,,views/AdminContentView.vue
+90,Admin Portal,Expired,ផុតកំណត់,,,"views/AdminContentView.vue, views/PaymentExpiredView.vue"
+91,Admin Portal,Refunded,បានសងប្រាក់វិញ,,,views/AdminContentView.vue
+92,Admin Portal,No payments recorded yet.,មិនទាន់មានកំណត់ត្រាទូទាត់ទេ។,,,views/AdminContentView.vue
+93,Admin Portal,Promo & Coupon Engine,ប្រព័ន្ធប្រូម៉ូសិន និងគូប៉ុង,,,views/AdminContentView.vue
+94,Admin Portal,Code,កូដ,,,views/AdminContentView.vue
+95,Admin Portal,Usage / expiry,ការប្រើប្រាស់ / ថ្ងៃផុតកំណត់,,,views/AdminContentView.vue
+96,Admin Portal,No expiry,គ្មានថ្ងៃផុតកំណត់,,,views/AdminContentView.vue
+97,Admin Portal,Active,សកម្ម,,,views/AdminContentView.vue
+98,Admin Portal,Inactive,អសកម្ម,,,views/AdminContentView.vue
+99,Admin Portal,No coupons saved.,មិនទាន់មានគូប៉ុងទេ។,,,views/AdminContentView.vue
+100,Admin Portal,Edit coupon,កែសម្រួលគូប៉ុង,,,views/AdminContentView.vue
+101,Admin Portal,Create coupon,បង្កើតគូប៉ុង,,,views/AdminContentView.vue
+102,Admin Portal,Discount type,ប្រភេទបញ្ចុះតម្លៃ,,,views/AdminContentView.vue
+103,Admin Portal,Percent,ភាគរយ,,,views/AdminContentView.vue
+104,Admin Portal,Fixed amount,ចំនួនថេរ,,,views/AdminContentView.vue
+105,Admin Portal,Discount value,តម្លៃបញ្ចុះ,,,views/AdminContentView.vue
+106,Admin Portal,Max usage limit,កំណត់ចំនួនប្រើប្រាស់អតិបរមា,,,views/AdminContentView.vue
+107,Admin Portal,Unlimited,គ្មានកំណត់,,,views/AdminContentView.vue
+108,Admin Portal,Expiry date,ថ្ងៃផុតកំណត់,,,views/AdminContentView.vue
+109,Admin Portal,Save coupon,រក្សាទុកគូប៉ុង,,,views/AdminContentView.vue
+110,Admin Portal,About Page Stats,ស្ថិតិទំព័រអំពីយើង,,,views/AdminContentView.vue
+111,Admin Portal,CMS Sections,ផ្នែក CMS,,,views/AdminContentView.vue
+112,Admin Portal,Contact email,អ៊ីមែលទំនាក់ទំនង,,,views/AdminContentView.vue
+113,Admin Portal,Contact phone,លេខទូរស័ព្ទទំនាក់ទំនង,,,views/AdminContentView.vue
+114,Admin Portal,Footer description,សេចក្តីពិពណ៌នា Footer,,,views/AdminContentView.vue
+115,Admin Portal,Payment Setup,ការកំណត់ការទូទាត់,,,views/AdminContentView.vue
+116,Admin Portal,Security,សុវត្ថិភាព,,,views/AdminContentView.vue
+117,Admin Portal,"Admin credentials and session secrets are configured on the backend server, not in website settings. Update the server environment and restart the API to rotate them.",ព័ត៌មានចូល និងសោសម្ងាត់វគ្គអ្នកគ្រប់គ្រងត្រូវបានកំណត់នៅលើម៉ាស៊ីនមេ Backend មិនមែនក្នុងការកំណត់វេបសាយទេ។ កែប្រែ environment របស់ម៉ាស៊ីនមេ ហើយចាប់ផ្តើម API ឡើងវិញ ដើម្បីប្តូរព័ត៌មានទាំងនេះ។,,,views/AdminContentView.vue
+118,Admin Portal,Merchant QR image URL,URL រូបភាព QR អាជីវករ,,,views/AdminContentView.vue
+119,Admin Portal,Merchant QR image,រូបភាព QR អាជីវករ,,,views/AdminContentView.vue
+120,Admin Portal,Upload QR image,ផ្ទុករូបភាព QR ឡើង,,,views/AdminContentView.vue
+121,Admin Portal,Bank info,ព័ត៌មានធនាគារ,,,views/AdminContentView.vue
+122,Admin Portal,Session timer (minutes),រយៈពេលវគ្គទូទាត់ (នាទី),,,views/AdminContentView.vue
+123,Admin Portal,"Edit About page metrics, contact details, footer text, and payment setup.",កែសម្រួលស្ថិតិទំព័រអំពីយើង ព័ត៌មានទំនាក់ទំនង អត្ថបទ Footer និងការកំណត់ការទូទាត់។,,,views/AdminContentView.vue
+124,Admin Portal,Settings saved.,បានរក្សាទុកការកំណត់។,,,views/AdminContentView.vue
+125,Admin Portal,Save site settings,រក្សាទុកការកំណត់វេបសាយ,,,views/AdminContentView.vue
+126,Admin Portal,Discount price / current price,តម្លៃបញ្ចុះ / តម្លៃបច្ចុប្បន្ន,,,views/AdminContentView.vue
+127,Admin Portal,List price before discount (optional),តម្លៃបញ្ជីមុនបញ្ចុះ (ជាជម្រើស),,,views/AdminContentView.vue
+128,Admin Portal,published,បានផ្សព្វផ្សាយ,,,views/AdminContentView.vue
+129,Admin Portal,draft,សេចក្តីព្រាង,,,views/AdminContentView.vue
+130,Admin Portal,archived,បានដាក់ក្នុងបណ្ណសារ,,,views/AdminContentView.vue
+131,Admin Portal,Badges,ស្លាក,,,views/AdminContentView.vue
+132,Admin Portal,"Bestseller, New, Starter (comma separated)","លក់ដាច់, ថ្មី, ចាប់ផ្តើម (បំបែកដោយក្បៀស)",,,views/AdminContentView.vue
+133,Admin Portal,Course cover image,រូបភាពគម្របវគ្គសិក្សា,,,views/AdminContentView.vue
+134,Admin Portal,Drag and drop a PNG or JPG image here,អូសរូបភាព PNG ឬ JPG មកទីនេះ,,,views/AdminContentView.vue
+135,Admin Portal,"PNG/JPG, 5 MB maximum",PNG/JPG ទំហំអតិបរមា 5 MB,,,views/AdminContentView.vue
+136,General & Common,Uploading,កំពុងផ្ទុកឡើង,,,i18n.js (Shared)
+137,Admin Portal,Choose image,ជ្រើសរើសរូបភាព,,,views/AdminContentView.vue
+138,Admin Portal,Or paste an image URL,ឬបិទភ្ជាប់ URL រូបភាព,,,views/AdminContentView.vue
+139,Admin Portal,Batch Schedule,កាលវិភាគវេនសិក្សា,,,views/AdminContentView.vue
+140,Admin Portal,Schedules shown to students and seat limits are stored with this course.,កាលវិភាគដែលបង្ហាញដល់សិស្ស និងចំនួនកៅអីត្រូវបានរក្សាទុកជាមួយវគ្គសិក្សានេះ។,,,views/AdminContentView.vue
+141,Admin Portal,Add batch,បន្ថែមវេនសិក្សា,,,views/AdminContentView.vue
+142,Admin Portal,Batch,វេន,,,views/AdminContentView.vue
+143,Admin Portal,Day type,ប្រភេទថ្ងៃ,,,views/AdminContentView.vue
+144,Admin Portal,Time slot,វេនម៉ោង,,,views/AdminContentView.vue
+145,Admin Portal,Start time,ម៉ោងចាប់ផ្តើម,,,views/AdminContentView.vue
+146,Admin Portal,End time,ម៉ោងបញ្ចប់,,,views/AdminContentView.vue
+147,Admin Portal,Max seat capacity,ចំនួនកៅអីអតិបរមា,,,views/AdminContentView.vue
+148,Course Enrollment,Maximum seats,ចំនួនកៅអីអតិបរមា,,,views/CourseEnrollmentView.vue
+149,Course Enrollment,No active batch is available for enrollment. Please contact the academy.,មិនមានវេនសិក្សាសកម្មសម្រាប់ចុះឈ្មោះទេ។ សូមទាក់ទងសាលា។,,,views/CourseEnrollmentView.vue
+150,Scan To Pay & Payment,Payment is confirmed after the academy verifies the transfer.,ការទូទាត់នឹងត្រូវបានបញ្ជាក់បន្ទាប់ពីសាលាបានផ្ទៀងផ្ទាត់ការផ្ទេរប្រាក់។,,,views/ScanToPayView.vue
+151,Scan To Pay & Payment,Your payment was verified by the academy. Use Download Receipt to print or save this confirmation as a PDF.,ការទូទាត់របស់អ្នកត្រូវបានសាលាផ្ទៀងផ្ទាត់។ ប្រើប៊ូតុងទាញយកបង្កាន់ដៃ ដើម្បីបោះពុម្ព ឬរក្សាទុកជាឯកសារ PDF។,,,views/PaymentSuccessfulView.vue
+152,Admin Portal,Dashboard Overview,ផ្ទាំងគ្រប់គ្រងទូទៅ,,,views/AdminContentView.vue
+153,Admin Portal,Review your admin sections and current course count.,ពិនិត្យផ្នែកអ្នកគ្រប់គ្រង និងចំនួនវគ្គសិក្សាបច្ចុប្បន្ន។,,,i18n.js (Shared)
+154,General & Common,Quick view of portal sections and available tools.,ទិដ្ឋភាពរហ័សនៃផ្នែកវិបផតថល និងឧបករណ៍ដែលមាន។,,,i18n.js (Shared)
+155,Explore Courses,Published course count,ចំនួនវគ្គសិក្សាដែលបានផ្សព្វផ្សាយ,,,i18n.js (Shared)
+156,Admin Portal,Admin section status,ស្ថានភាពផ្នែកអ្នកគ្រប់គ្រង,,,i18n.js (Shared)
+157,Admin Portal,Courses & Schedules,វគ្គសិក្សា និងកាលវិភាគ,,,views/AdminContentView.vue
+158,Explore Courses,Manage courses. Published course changes appear in the public catalog.,គ្រប់គ្រងវគ្គសិក្សា។ ការកែប្រែដែលបានផ្សព្វផ្សាយនឹងបង្ហាញនៅក្នុងកាតាឡុកសាធារណៈ។,,,i18n.js (Shared)
+159,Explore Courses,Manage course listings and course details.,គ្រប់គ្រងបញ្ជី និងព័ត៌មានលម្អិតវគ្គសិក្សា។,,,i18n.js (Shared)
+160,Explore Courses,Course details & specs,ព័ត៌មាន និងលក្ខណៈបច្ចេកទេសវគ្គសិក្សា,,,i18n.js (Shared)
+161,General & Common,Status & badges,ស្ថានភាព និងស្លាក,,,i18n.js (Shared)
+162,Admin Portal,Weekday/weekend batches,ក្រុមសិក្សាថ្ងៃធ្វើការ/ចុងសប្តាហ៍,,,i18n.js (Shared)
+163,Admin Portal,Time slots & capacity,ម៉ោងសិក្សា និងចំនួនទទួល,,,i18n.js (Shared)
+164,Admin Portal,Student Enrollments,ការចុះឈ្មោះសិស្ស,,,views/AdminContentView.vue
+165,General & Common,Review student information and enrollment preferences.,ពិនិត្យព័ត៌មានសិស្ស និងចំណូលចិត្តការចុះឈ្មោះ។,,,i18n.js (Shared)
+166,General & Common,Review enrollment records and student details.,ពិនិត្យកំណត់ត្រាចុះឈ្មោះ និងព័ត៌មានសិស្ស។,,,i18n.js (Shared)
+167,General & Common,Student info & background,ព័ត៌មាន និងប្រវត្តិសិស្ស,,,i18n.js (Shared)
+168,Admin Portal,Schedule preferences,ចំណូលចិត្តកាលវិភាគ,,,views/AdminContentView.vue
+169,General & Common,Enrollment status,ស្ថានភាពការចុះឈ្មោះ,,,i18n.js (Shared)
+170,Admin Portal,Export roster CSV,នាំចេញបញ្ជីជា CSV,,,views/AdminContentView.vue
+171,Admin Portal,Payments & QR Checkout,ការទូទាត់ និង QR Checkout,,,views/AdminContentView.vue
+172,Scan To Pay & Payment,Track payments and verify QR checkout records.,តាមដានការទូទាត់ និងផ្ទៀងផ្ទាត់កំណត់ត្រា QR checkout។,,,i18n.js (Shared)
+173,Admin Portal,Monitor transactions and payment statuses.,តាមដានប្រតិបត្តិការ និងស្ថានភាពការទូទាត់។,,,i18n.js (Shared)
+174,Admin Portal,Transactions log,កំណត់ហេតុប្រតិបត្តិការ,,,i18n.js (Shared)
+175,Scan To Pay & Payment,Payment status tracking,តាមដានស្ថានភាពការទូទាត់,,,i18n.js (Shared)
+176,Scan To Pay & Payment,Manual QR verification,ផ្ទៀងផ្ទាត់ QR ដោយដៃ,,,i18n.js (Shared)
+177,Scan To Pay & Payment,Digital receipts,បង្កាន់ដៃឌីជីថល,,,i18n.js (Shared)
+178,Admin Portal,Promo & Coupons,ប្រូម៉ូសិន និងប័ណ្ណបញ្ចុះតម្លៃ,,,views/AdminContentView.vue
+179,General & Common,Create and manage promotional discounts.,បង្កើត និងគ្រប់គ្រងការបញ្ចុះតម្លៃផ្សព្វផ្សាយ។,,,i18n.js (Shared)
+180,Admin Portal,Configure coupon codes and discount rules.,កំណត់លេខកូដបញ្ចុះតម្លៃ និងលក្ខខណ្ឌបញ្ចុះតម្លៃ។,,,i18n.js (Shared)
+181,Admin Portal,Coupon codes,លេខកូដបញ្ចុះតម្លៃ,,,i18n.js (Shared)
+182,General & Common,Discount percent or fixed,ភាគរយ ឬចំនួនបញ្ចុះតម្លៃ,,,i18n.js (Shared)
+183,General & Common,Usage limits & expiry,កំណត់ចំនួនប្រើ និងថ្ងៃផុតកំណត់,,,i18n.js (Shared)
+184,General & Common,Active toggle,ប៊ូតុងបើក/បិទ,,,i18n.js (Shared)
+185,Admin Portal,Site Settings & CMS,ការកំណត់វេបសាយ និង CMS,,,views/AdminContentView.vue
+186,General & Common,Manage public website content and site settings.,គ្រប់គ្រងមាតិកាវេបសាយសាធារណៈ និងការកំណត់។,,,i18n.js (Shared)
+187,Admin Portal,Edit public-site information and administrative settings.,កែសម្រួលព័ត៌មានវេបសាយសាធារណៈ និងការកំណត់អ្នកគ្រប់គ្រង។,,,i18n.js (Shared)
+188,Admin Portal,About page stats,ស្ថិតិទំព័រអំពីយើង,,,views/AdminContentView.vue
+189,Admin Portal,Merchant QR setup,ការកំណត់ QR អាជីវករ,,,i18n.js (Shared)
+190,General & Common,Contact & footer info,ព័ត៌មានទំនាក់ទំនង និង Footer,,,i18n.js (Shared)
+191,Admin Portal,Admin security,សុវត្ថិភាពអ្នកគ្រប់គ្រង,,,i18n.js (Shared)
+192,Admin Portal,Available,អាចប្រើបាន,,,views/AdminContentView.vue
+193,General & Common,Partially available,អាចប្រើបានមួយផ្នែក,,,i18n.js (Shared)
+194,General & Common,Coming soon,នឹងមានឆាប់ៗនេះ,,,i18n.js (Shared)
+195,Explore Courses,"Prices, images & language",តម្លៃ រូបភាព និងភាសា,,,i18n.js (Shared)
+196,General & Common,Modules & hardware specifications,មេរៀន និងលក្ខណៈបច្ចេកទេស Hardware,,,i18n.js (Shared)
+197,Admin Portal,Schedules & capacity (coming soon),កាលវិភាគ និងចំនួនទទួល (នឹងមានឆាប់ៗនេះ),,,i18n.js (Shared)
+198,Explore Courses,Courses published,វគ្គសិក្សាដែលបានផ្សព្វផ្សាយ,,,i18n.js (Shared)
+199,General & Common,Sections marked Partially available have only some listed tools connected. Other sections are planned.,ផ្នែកដែលសម្គាល់ថាអាចប្រើបានមួយផ្នែក មានតែឧបករណ៍មួយចំនួនប៉ុណ្ណោះដែលបានភ្ជាប់។ ផ្នែកផ្សេងទៀតស្ថិតក្នុងផែនការ។,,,i18n.js (Shared)
+200,Admin Portal,"This section is planned, but it is not connected to saved admin data yet.",ផ្នែកនេះមានក្នុងផែនការ ប៉ុន្តែមិនទាន់ភ្ជាប់ទៅទិន្នន័យអ្នកគ្រប់គ្រងដែលបានរក្សាទុកទេ។,,,i18n.js (Shared)
+201,General & Common,Back to dashboard,ត្រឡប់ទៅផ្ទាំងគ្រប់គ្រង,,,i18n.js (Shared)
+202,General & Common,Content manager,ការគ្រប់គ្រងមាតិកា,,,i18n.js (Shared)
+203,Explore Courses,Manage course listings. Changes are published to the course catalog immediately.,គ្រប់គ្រងបញ្ជីវគ្គសិក្សា។ ការកែប្រែនឹងបង្ហាញក្នុងកាតាឡុកភ្លាមៗ។,,,i18n.js (Shared)
+204,Admin Portal,Sign out,ចាកចេញ,,,views/AdminContentView.vue
+205,Admin Portal,Signing out...,កំពុងចាកចេញ...,,,views/AdminContentView.vue
+206,Sign In & Register,"Sign-in page opened, but the server could not confirm admin sign-out. Please retry sign-out before leaving this device unattended.",បានបើកទំព័រចូលគណនីហើយ ប៉ុន្តែម៉ាស៊ីនមេមិនអាចបញ្ជាក់ការចាកចេញរបស់អ្នកគ្រប់គ្រងបានទេ។ សូមព្យាយាមចាកចេញម្ដងទៀត មុនពេលទុកឧបករណ៍នេះចោល។,,,views/AccountAccessView.vue
+207,Explore Courses,courses published,វគ្គសិក្សាបានផ្សព្វផ្សាយ,,,i18n.js (Shared)
+208,Admin Portal,Add course,បន្ថែមវគ្គសិក្សា,,,views/AdminContentView.vue
+209,Admin Portal,Loading courses...,កំពុងផ្ទុកវគ្គសិក្សា...,,,views/AdminContentView.vue
+210,Admin Portal,No image,គ្មានរូបភាព,,,views/AdminContentView.vue
+211,Admin Portal,Edit,កែសម្រួល,,,views/AdminContentView.vue
+212,Admin Portal,Delete,លុប,,,views/AdminContentView.vue
+213,Admin Portal,No courses yet. Add your first course.,មិនទាន់មានវគ្គសិក្សាទេ។ សូមបន្ថែមវគ្គសិក្សាដំបូង។,,,views/AdminContentView.vue
+214,Admin Portal,Edit course,កែសម្រួលវគ្គសិក្សា,,,views/AdminContentView.vue
+215,Explore Courses,Course details appear in the public catalog and detail page.,ព័ត៌មានវគ្គសិក្សាបង្ហាញនៅក្នុងកាតាឡុកសាធារណៈ និងទំព័រព័ត៌មានលម្អិត។,,,i18n.js (Shared)
+216,Admin Portal,Course title,ចំណងជើងវគ្គសិក្សា,,,views/AdminContentView.vue
+217,Admin Portal,URL slug (optional),URL slug (ជាជម្រើស),,,views/AdminContentView.vue
+218,Admin Portal,Generated from course title if blank,នឹងបង្កើតពីចំណងជើង ប្រសិនបើទុកចន្លោះ,,,views/AdminContentView.vue
+219,Admin Portal,Short description,សេចក្តីពិពណ៌នាខ្លី,,,views/AdminContentView.vue
+220,Explore Courses,Original price (optional),តម្លៃដើម (ជាជម្រើស),,,i18n.js (Shared)
+221,Admin Portal,Duration,រយៈពេល,,,views/AdminContentView.vue
+222,Explore Courses,Course image URL,URL រូបភាពវគ្គសិក្សា,,,i18n.js (Shared)
+223,Admin Portal,Course modules,មេរៀនវគ្គសិក្សា,,,views/AdminContentView.vue
+224,Admin Portal,Add module,បន្ថែមមេរៀន,,,views/AdminContentView.vue
+225,Admin Portal,Module,ម៉ូឌុល,,,"views/AdminContentView.vue, views/CourseDetailView.vue"
+226,Admin Portal,title,ចំណងជើង,,,views/AdminContentView.vue
+227,Admin Portal,description,សេចក្តីពិពណ៌នា,,,views/AdminContentView.vue
+228,Admin Portal,Module title,ចំណងជើងមេរៀន,,,views/AdminContentView.vue
+229,Admin Portal,Module description,សេចក្តីពិពណ៌នាមេរៀន,,,views/AdminContentView.vue
+230,Admin Portal,Remove,ដកចេញ,,,views/AdminContentView.vue
+231,Admin Portal,Hardware specifications,លក្ខណៈបច្ចេកទេស Hardware,,,views/AdminContentView.vue
+232,Admin Portal,Add specification,បន្ថែមលក្ខណៈបច្ចេកទេស,,,views/AdminContentView.vue
+233,Admin Portal,Specification,លក្ខណៈបច្ចេកទេស,,,views/AdminContentView.vue
+234,Admin Portal,Specification title,ចំណងជើងលក្ខណៈបច្ចេកទេស,,,views/AdminContentView.vue
+235,Admin Portal,Add one item per line,បញ្ចូលធាតុមួយក្នុងមួយបន្ទាត់,,,views/AdminContentView.vue
+236,Admin Portal,Publish changes,ផ្សព្វផ្សាយការកែប្រែ,,,views/AdminContentView.vue
+237,Admin Portal,Saving...,កំពុងរក្សាទុក...,,,views/AdminContentView.vue
+238,Admin Portal,Course changes published.,បានផ្សព្វផ្សាយការកែប្រែវគ្គសិក្សា។,,,views/AdminContentView.vue
+239,Admin Portal,Course added and published.,បានបន្ថែម និងផ្សព្វផ្សាយវគ្គសិក្សា។,,,views/AdminContentView.vue
+240,Admin Portal,Course deleted.,បានលុបវគ្គសិក្សា។,,,views/AdminContentView.vue
+241,Explore Courses,Unable to load courses.,មិនអាចផ្ទុកវគ្គសិក្សាបានទេ។,,,i18n.js (Shared)
+242,Admin Portal,Unable to verify admin session.,មិនអាចផ្ទៀងផ្ទាត់វគ្គចូលរបស់អ្នកគ្រប់គ្រងបានទេ។,,,views/AdminContentView.vue
+243,Sign In & Register,Unable to sign in.,មិនអាចចូលគណនីបានទេ។,,,i18n.js (Shared)
+244,General & Common,Unable to sign out.,មិនអាចចាកចេញបានទេ។,,,i18n.js (Shared)
+245,Admin Portal,Unable to save course.,មិនអាចរក្សាទុកវគ្គសិក្សាបានទេ។,,,views/AdminContentView.vue
+246,Admin Portal,Unable to delete course.,មិនអាចលុបវគ្គសិក្សាបានទេ។,,,views/AdminContentView.vue
+247,Admin Portal,Admin sign-in is not configured on the server.,ការចូលគណនីអ្នកគ្រប់គ្រងមិនទាន់បានកំណត់រចនាសម្ព័ន្ធនៅលើម៉ាស៊ីនមេទេ។,,,i18n.js (Shared)
+248,Admin Portal,Invalid admin email or password. Other account sign-in is not connected yet.,អ៊ីមែល ឬពាក្យសម្ងាត់អ្នកគ្រប់គ្រងមិនត្រឹមត្រូវទេ។ ការចូលគណនីផ្សេងទៀតមិនទាន់បានភ្ជាប់ទេ។,,,i18n.js (Shared)
+249,Sign In & Register,Unable to reach the sign-in server. Please try again later.,មិនអាចភ្ជាប់ទៅម៉ាស៊ីនមេចូលគណនីបានទេ។ សូមព្យាយាមម្ដងទៀតពេលក្រោយ។,,,views/AccountAccessView.vue
+250,General & Common,Learn by building,រៀនតាមរយៈការបង្កើត,,,i18n.js (Shared)
+251,Sign In & Register,Create your account,បង្កើតគណនីរបស់អ្នក,,,views/AccountAccessView.vue
+252,Sign In & Register,Welcome back,សូមស្វាគមន៍ត្រឡប់មកវិញ,,,views/AccountAccessView.vue
+253,Explore Courses,Join a community of curious makers and start learning through hands-on technology courses.,ចូលរួមជាមួយសហគមន៍អ្នកច្នៃប្រឌិត និងចាប់ផ្តើមរៀនតាមរយៈវគ្គសិក្សាបច្ចេកវិទ្យាអនុវត្តផ្ទាល់។,,,i18n.js (Shared)
+254,Sign In & Register,Back to courses,ត្រឡប់ទៅវគ្គសិក្សា,,,views/AccountAccessView.vue
+255,Sign In & Register,New password,ពាក្យសម្ងាត់ថ្មី,,,views/AccountAccessView.vue
+256,Sign In & Register,Password must be at least 8 characters.,ពាក្យសម្ងាត់ត្រូវមានយ៉ាងតិច ៨ តួអក្សរ។,,,views/AccountAccessView.vue
+257,Sign In & Register,Register to keep your course information together.,ចុះឈ្មោះដើម្បីរក្សាព័ត៌មានវគ្គសិក្សារបស់អ្នកនៅកន្លែងតែមួយ។,,,views/AccountAccessView.vue
+258,Sign In & Register,Sign in to continue to your profile.,ចូលគណនីដើម្បីបន្តទៅកាន់ប្រវត្តិរូបរបស់អ្នក។,,,i18n.js (Shared)
+259,Sign In & Register,Confirm password,បញ្ជាក់ពាក្យសម្ងាត់,,,views/AccountAccessView.vue
+260,Sign In & Register,Already have an account?,មានគណនីរួចហើយមែនទេ?,,,views/AccountAccessView.vue
+261,General & Common,Don't have an account?,មិនទាន់មានគណនីមែនទេ?,,,i18n.js (Shared)
+262,Explore Courses,Need help choosing a course?,ត្រូវការជំនួយក្នុងការជ្រើសរើសវគ្គសិក្សាមែនទេ?,,,i18n.js (Shared)
+263,General & Common,Chat on Telegram,ជជែកតាម Telegram,,,i18n.js (Shared)
+264,Sign In & Register,Passwords do not match.,ពាក្យសម្ងាត់មិនដូចគ្នាទេ។,,,views/AccountAccessView.vue
+265,Sign In & Register,Nice to see you again! Please sign in to continue.,រីករាយដែលបានជួបអ្នកម្តងទៀត! សូមចូលគណនីដើម្បីបន្ត។,,,views/AccountAccessView.vue
+266,Admin Portal,Email,អ៊ីមែល,,,"views/AccountAccessView.vue, views/AdminContentView.vue"
+267,Sign In & Register,At least 8 characters,យ៉ាងតិច ៨ តួអក្សរ,,,views/AccountAccessView.vue
+268,Sign In & Register,Hide password,លាក់ពាក្យសម្ងាត់,,,views/AccountAccessView.vue
+269,Sign In & Register,Show password,បង្ហាញពាក្យសម្ងាត់,,,views/AccountAccessView.vue
+270,General & Common,Show,បង្ហាញ,,,i18n.js (Shared)
+271,General & Common,Hide,លាក់,,,i18n.js (Shared)
+272,Sign In & Register,Caps lock is on,Caps Lock កំពុងបើក,,,views/AccountAccessView.vue
+273,Sign In & Register,Password strength,កម្រិតសុវត្ថិភាពពាក្យសម្ងាត់,,,views/AccountAccessView.vue
+274,Sign In & Register,Very weak,ខ្សោយខ្លាំង,,,views/AccountAccessView.vue
+275,Sign In & Register,Weak,ខ្សោយ,,,views/AccountAccessView.vue
+276,Sign In & Register,Good,ល្អ,,,views/AccountAccessView.vue
+277,Sign In & Register,Strong,រឹងមាំ,,,views/AccountAccessView.vue
+278,Sign In & Register,Forgot Password?,ភ្លេចពាក្យសម្ងាត់មែនទេ?,,,views/AccountAccessView.vue
+279,Sign In & Register,Or,ឬ,,,views/AccountAccessView.vue
+280,Sign In & Register,Continue with Google,បន្តជាមួយ Google,,,views/AccountAccessView.vue
+281,Sign In & Register,Sign in with Google,ចូលគណនីជាមួយ Google,,,views/AccountAccessView.vue
+282,Sign In & Register,Don't you have an account?,មិនទាន់មានគណនីមែនទេ?,,,views/AccountAccessView.vue
+283,Sign In & Register,Sign up,ចុះឈ្មោះ,,,views/AccountAccessView.vue
+284,Sign In & Register,Password reset is not available yet. Please contact AeroByte Academy for help.,មិនទាន់អាចកំណត់ពាក្យសម្ងាត់ឡើងវិញបានទេ។ សូមទាក់ទង AeroByte Academy ដើម្បីស្នើសុំជំនួយ។,,,i18n.js (Shared)
+285,Sign In & Register,Google sign-in is not connected in this preview.,ការចូលគណនីតាម Google មិនទាន់បានភ្ជាប់ក្នុងការមើលជាមុននេះទេ។,,,i18n.js (Shared)
+286,General & Common,Language options,ជម្រើសភាសា,,,i18n.js (Shared)
+287,Navbar & Footer,Choose language,ជ្រើសរើសភាសា,,,components/layout/Navbar.vue
+288,General & Common,Appearance,រូបរាង,,,i18n.js (Shared)
+289,Profile & Account,Theme mode,ទម្រង់ពណ៌,,,views/ProfileInformationView.vue
+290,Profile & Account,Dark mode,ទម្រង់ងងឹត,,,"components/layout/Navbar.vue, views/ProfileInformationView.vue"
+291,Profile & Account,Light mode,ទម្រង់ភ្លឺ,,,"components/layout/Navbar.vue, views/ProfileInformationView.vue"
+292,Profile & Account,Light,ភ្លឺ,,,views/ProfileInformationView.vue
+293,Profile & Account,Dark,ងងឹត,,,views/ProfileInformationView.vue
+294,Profile & Account,Choose between light and dark mode for your experience.,ជ្រើសរើសរវាងទម្រង់ភ្លឺ ឬងងឹតសម្រាប់ការប្រើប្រាស់របស់អ្នក។,,,views/ProfileInformationView.vue
+295,Profile & Account,Dark theme is currently active,ទម្រង់ងងឹតកំពុងដំណើរការ,,,views/ProfileInformationView.vue
+296,Profile & Account,Light theme is currently active,ទម្រង់ភ្លឺកំពុងដំណើរការ,,,views/ProfileInformationView.vue
+297,Profile & Account,Switch to light mode,ប្តូរទៅទម្រង់ភ្លឺ,,,"components/layout/Navbar.vue, views/ProfileInformationView.vue"
+298,Profile & Account,Switch to dark mode,ប្តូរទៅទម្រង់ងងឹត,,,"components/layout/Navbar.vue, views/ProfileInformationView.vue"
+299,Navbar & Footer,Name,ឈ្មោះ,,,components/layout/Navbar.vue
+300,Admin Portal,English,អង់គ្លេស,,,"components/courses/FilterSidebar.vue, components/layout/Navbar.vue, views/AdminContentView.vue, views/ProfileInformationView.vue"
+301,Admin Portal,Khmer,ខ្មែរ,,,"components/courses/FilterSidebar.vue, views/AdminContentView.vue, views/CourseDetailView.vue, views/ProfileInformationView.vue"
+302,About Us & Contact,Explore Courses,ស្វែងរកវគ្គសិក្សា,,,"views/AboutView.vue, views/ContactView.vue"
+303,Explore Courses,"Hands-on courses in robotics, embedded systems, and autonomous technology.",វគ្គសិក្សាអនុវត្តផ្ទាល់អំពីមនុស្សយន្ត ប្រព័ន្ធបង្កប់ និងបច្ចេកវិទ្យាស្វ័យប្រវត្តិ។,,,i18n.js (Shared)
+304,General & Common,Quick Links,តំណភ្ជាប់រហ័ស,,,i18n.js (Shared)
+305,Navbar & Footer,Navigation,ការរុករក,,,components/layout/Footer.vue
+306,Navbar & Footer,Categories,ប្រភេទ,,,components/layout/Footer.vue
+307,Course Enrollment,Schedule details provided after enrollment,ព័ត៌មានកាលវិភាគនឹងត្រូវបានបញ្ជាក់ក្រោយពេលចុះឈ្មោះ,,,views/CourseEnrollmentView.vue
+308,Course Enrollment,To be confirmed,ត្រូវបញ្ជាក់នៅពេលក្រោយ,,,views/CourseEnrollmentView.vue
+309,Navbar & Footer,Legal & Support,ច្បាប់ និងជំនួយ,,,components/layout/Footer.vue
+310,Terms & Privacy,Terms of use,លក្ខខណ្ឌប្រើប្រាស់,,,"components/layout/Footer.vue, views/PrivacyPolicyView.vue, views/TermsOfUseView.vue"
+311,Terms & Privacy,Privacy Policy,គោលការណ៍ឯកជនភាព,,,"components/layout/Footer.vue, views/PrivacyPolicyView.vue, views/TermsOfUseView.vue"
+312,Common UI & Calendar,Select date,ជ្រើសរើសកាលបរិច្ឆេទ,,,components/common/DatePicker.vue
+313,Course Enrollment,Select date of birth,ជ្រើសរើសថ្ងៃខែឆ្នាំកំណើត,,,"views/CourseEnrollmentView.vue, views/ProfileInformationView.vue"
+314,Common UI & Calendar,Clear date,សម្អាតកាលបរិច្ឆេទ,,,components/common/DatePicker.vue
+315,Common UI & Calendar,Previous month,ខែមុន,,,components/common/DatePicker.vue
+316,Common UI & Calendar,Next month,ខែបន្ទាប់,,,components/common/DatePicker.vue
+317,Common UI & Calendar,Today,ថ្ងៃនេះ,,,components/common/DatePicker.vue
+318,Common UI & Calendar,Clear,សម្អាត,,,components/common/DatePicker.vue
+319,Common UI & Calendar,January,មករា,,,components/common/DatePicker.vue
+320,Common UI & Calendar,February,កុម្ភៈ,,,components/common/DatePicker.vue
+321,Common UI & Calendar,March,មីនា,,,components/common/DatePicker.vue
+322,Common UI & Calendar,April,មេសា,,,components/common/DatePicker.vue
+323,Common UI & Calendar,May,ឧសភា,,,components/common/DatePicker.vue
+324,Common UI & Calendar,June,មិថុនា,,,components/common/DatePicker.vue
+325,Common UI & Calendar,July,កក្កដា,,,components/common/DatePicker.vue
+326,Common UI & Calendar,August,សីហា,,,components/common/DatePicker.vue
+327,Common UI & Calendar,September,កញ្ញា,,,components/common/DatePicker.vue
+328,Common UI & Calendar,October,តុលា,,,components/common/DatePicker.vue
+329,Common UI & Calendar,November,វិច្ឆិកា,,,components/common/DatePicker.vue
+330,Common UI & Calendar,December,ធ្នូ,,,components/common/DatePicker.vue
+331,Common UI & Calendar,Su,អា,,,components/common/DatePicker.vue
+332,Common UI & Calendar,Mo,ច,,,components/common/DatePicker.vue
+333,Common UI & Calendar,Tu,អ,,,components/common/DatePicker.vue
+334,Common UI & Calendar,We,ព,,,components/common/DatePicker.vue
+335,Common UI & Calendar,Th,ព្រ,,,components/common/DatePicker.vue
+336,Common UI & Calendar,Fr,សុ,,,components/common/DatePicker.vue
+337,Common UI & Calendar,Sa,ស,,,components/common/DatePicker.vue
+338,Terms & Privacy,Last updated,ធ្វើបច្ចុប្បន្នភាពចុងក្រោយ,,,"views/PrivacyPolicyView.vue, views/TermsOfUseView.vue"
+339,Terms & Privacy,Table of Contents,មាតិកា,,,"views/PrivacyPolicyView.vue, views/TermsOfUseView.vue"
+340,Terms & Privacy,Questions? Contact us,មានសំណួរ? ទាក់ទងយើង,,,views/TermsOfUseView.vue
+341,Terms & Privacy,Acceptance of Terms,ការទទួលយកលក្ខខណ្ឌ,,,views/TermsOfUseView.vue
+342,Terms & Privacy,Account Registration & Security,ការចុះឈ្មោះគណនី និងសុវត្ថិភាព,,,views/TermsOfUseView.vue
+343,Terms & Privacy,Lab Safety Guidelines & Equipment Use,គោលការណ៍សុវត្ថិភាពមន្ទីរពិសោធន៍ និងការប្រើប្រាស់ឧបករណ៍,,,views/TermsOfUseView.vue
+344,Terms & Privacy,Maker Lab Protocol,ពិធីការមន្ទីរពិសោធន៍ Maker,,,views/TermsOfUseView.vue
+345,Terms & Privacy,"Tuition, Fees & Payment",ថ្លៃសិក្សា ថ្លៃសេវា និងការទូទាត់,,,views/TermsOfUseView.vue
+346,Terms & Privacy,Refund & Transfer Policy,គោលការណ៍សងប្រាក់ និងការផ្ទេរវគ្គ,,,views/TermsOfUseView.vue
+347,Terms & Privacy,Intellectual Property,កម្មសិទ្ធិបញ្ញា,,,views/TermsOfUseView.vue
+348,Terms & Privacy,Have questions regarding our terms?,មានសំណួរអំពីលក្ខខណ្ឌរបស់យើងមែនទេ?,,,views/TermsOfUseView.vue
+349,Terms & Privacy,Contact Academy,ទាក់ទងបណ្ឌិត្យសភា,,,"views/PrivacyPolicyView.vue, views/TermsOfUseView.vue"
+350,Terms & Privacy,Overview & Commitment,ទិដ្ឋភាពទូទៅ និងការប្តេជ្ញាចិត្ត,,,views/PrivacyPolicyView.vue
+351,Terms & Privacy,Information We Collect,ព័ត៌មានដែលយើងប្រមូល,,,views/PrivacyPolicyView.vue
+352,Terms & Privacy,How We Use Your Information,របៀបដែលយើងប្រើប្រាស់ព័ត៌មានរបស់អ្នក,,,views/PrivacyPolicyView.vue
+353,Terms & Privacy,Data Protection & Storage,ការការពារ និងរក្សាទុកទិន្នន័យ,,,views/PrivacyPolicyView.vue
+354,Terms & Privacy,Our Security Standards,ស្តង់ដារសុវត្ថិភាពរបស់យើង,,,views/PrivacyPolicyView.vue
+355,Terms & Privacy,Third-Party Service Providers,អ្នកផ្តល់សេវាកម្មភាគីទីបី,,,views/PrivacyPolicyView.vue
+356,Terms & Privacy,Your Data Rights & Control,សិទ្ធិ និងការគ្រប់គ្រងទិន្នន័យរបស់អ្នក,,,views/PrivacyPolicyView.vue
+357,Terms & Privacy,Questions about your data privacy?,មានសំណួរអំពីភាពឯកជននៃទិន្នន័យរបស់អ្នកមែនទេ?,,,views/PrivacyPolicyView.vue
+358,Terms & Privacy,We never sell your personal information,យើងមិនដែលលក់ព័ត៌មានផ្ទាល់ខ្លួនរបស់អ្នកឡើយ,,,views/PrivacyPolicyView.vue
+359,Navbar & Footer,All rights reserved.,រក្សាសិទ្ធិគ្រប់យ៉ាង។,,,components/layout/Footer.vue
+360,Navbar & Footer,Empowering the next generation of engineers and innovators through practical technology education.,ពង្រឹងសមត្ថភាពវិស្វករ និងអ្នកច្នៃប្រឌិតជំនាន់ក្រោយ តាមរយៈការអប់រំបច្ចេកវិទ្យាជាក់ស្តែង។,,,components/layout/Footer.vue
+361,Profile & Account,Your account,គណនីរបស់អ្នក,,,"components/layout/Navbar.vue, views/ProfileInformationView.vue"
+362,Profile & Account,Keep your contact and learning details up to date so we can make your AeroByte experience more personal.,សូមធ្វើបច្ចុប្បន្នភាពព័ត៌មានទំនាក់ទំនង និងការសិក្សា ដើម្បីឱ្យយើងអាចផ្តល់បទពិសោធន៍ AeroByte ផ្ទាល់ខ្លួនកាន់តែប្រសើរ។,,,views/ProfileInformationView.vue
+363,Profile & Account,Your information stays private,ព័ត៌មានរបស់អ្នកត្រូវបានរក្សាជាឯកជន,,,views/ProfileInformationView.vue
+364,Profile & Account,Profile completeness,ភាពពេញលេញនៃប្រវត្តិរូប,,,views/ProfileInformationView.vue
+365,Profile & Account,A complete profile helps our team support your learning journey.,ប្រវត្តិរូបពេញលេញជួយក្រុមការងាររបស់យើងគាំទ្រដំណើរសិក្សារបស់អ្នក។,,,views/ProfileInformationView.vue
+366,Profile & Account,Ready for your next step?,ត្រៀមខ្លួនសម្រាប់ជំហានបន្ទាប់ហើយឬនៅ?,,,views/ProfileInformationView.vue
+367,Profile & Account,Explore hands-on courses designed for curious minds.,ស្វែងរកវគ្គសិក្សាអនុវត្តសម្រាប់អ្នកចូលចិត្តស្វែងយល់។,,,views/ProfileInformationView.vue
+368,Profile & Account,Browse courses,មើលវគ្គសិក្សា,,,views/ProfileInformationView.vue
+369,Profile & Account,Personal details,ព័ត៌មានផ្ទាល់ខ្លួន,,,views/ProfileInformationView.vue
+370,Profile & Account,Your contact and personal information.,ព័ត៌មានទំនាក់ទំនង និងព័ត៌មានផ្ទាល់ខ្លួនរបស់អ្នក។,,,views/ProfileInformationView.vue
+371,Profile & Account,Add profile details,បន្ថែមព័ត៌មានប្រវត្តិរូប,,,views/ProfileInformationView.vue
+372,Profile & Account,Edit profile,កែសម្រួលប្រវត្តិរូប,,,views/ProfileInformationView.vue
+373,Profile & Account,Full name,ឈ្មោះពេញ,,,"views/AccountAccessView.vue, views/ProfileInformationView.vue"
+374,Profile & Account,Email address,អាសយដ្ឋានអ៊ីមែល,,,views/ProfileInformationView.vue
+375,Profile & Account,Phone number,លេខទូរស័ព្ទ,,,views/ProfileInformationView.vue
+376,Admin Portal,Telegram username,ឈ្មោះអ្នកប្រើ Telegram,,,"views/AdminContentView.vue, views/ProfileInformationView.vue"
+377,Admin Portal,Date of birth,ថ្ងៃខែឆ្នាំកំណើត,,,"views/AdminContentView.vue, views/ProfileInformationView.vue"
+378,Admin Portal,Phone Number,លេខទូរស័ព្ទ,,,"views/AdminContentView.vue, views/CourseEnrollmentView.vue"
+379,Admin Portal,Highest Qualification,កម្រិតសិក្សាខ្ពស់បំផុត,,,"views/AdminContentView.vue, views/CourseEnrollmentView.vue"
+380,Course Enrollment,High School,វិទ្យាល័យ,,,views/CourseEnrollmentView.vue
+381,Course Enrollment,Undergraduate / University,ថ្នាក់បរិញ្ញាបត្រ / សាកលវិទ្យាល័យ,,,"views/CourseEnrollmentView.vue, views/ProfileInformationView.vue"
+382,Course Enrollment,Bachelor's Degree,បរិញ្ញាបត្រ,,,views/CourseEnrollmentView.vue
+383,Admin Portal,Current Occupation / School,មុខរបរ / សាលាបច្ចុប្បន្ន,,,"views/AdminContentView.vue, views/CourseEnrollmentView.vue"
+384,Admin Portal,Previous Robotics / Coding Experience,បទពិសោធន៍មុនអំពីមនុស្សយន្ត / ការសរសេរកូដ,,,"views/AdminContentView.vue, views/CourseEnrollmentView.vue"
+385,Course Enrollment,Enter promo code (Try AEROBYTE10 or TEST1CENT),បញ្ចូលលេខកូដផ្សព្វផ្សាយ (សាកល្បង AEROBYTE10 ឬ TEST1CENT),,,views/CourseEnrollmentView.vue
+386,Course Enrollment,I confirm that all personal and academic details provided above are accurate.,ខ្ញុំបញ្ជាក់ថាព័ត៌មានផ្ទាល់ខ្លួន និងការសិក្សាដែលបានផ្តល់ខាងលើគឺត្រឹមត្រូវ។,,,views/CourseEnrollmentView.vue
+387,Course Enrollment,"Numbers and ""+"" sign only (e.g. +85512345678)","អនុញ្ញាតតែលេខ និងសញ្ញា ""+"" ប៉ុណ្ណោះ (ឧ. +85512345678)",,,"views/CourseEnrollmentView.vue, views/ProfileInformationView.vue"
+388,Profile & Account,Select your education level,ជ្រើសរើសកម្រិតវប្បធម៌របស់អ្នក,,,views/ProfileInformationView.vue
+389,Profile & Account,Choose your experience level,ជ្រើសរើសកម្រិតបទពិសោធន៍របស់អ្នក,,,views/ProfileInformationView.vue
+390,Course Enrollment,Select qualification,ជ្រើសរើសកម្រិតវប្បធម៌,,,views/CourseEnrollmentView.vue
+391,Course Enrollment,"I agree to AeroByte Academy's Enrollment Terms, Lab Safety Guidelines, and Refund Policy.",ខ្ញុំយល់ព្រមតាមលក្ខខណ្ឌចុះឈ្មោះ គោលការណ៍សុវត្ថិភាពមន្ទីរពិសោធន៍ និងគោលការណ៍សងប្រាក់របស់ AeroByte Academy។,,,views/CourseEnrollmentView.vue
+392,Course Enrollment,Price per student,តម្លៃក្នុងម្នាក់,,,views/CourseEnrollmentView.vue
+393,Course Enrollment,Administration fee,ថ្លៃរដ្ឋបាល,,,"views/CourseEnrollmentView.vue, views/PaymentSuccessfulView.vue, views/ScanToPayView.vue"
+394,Course Enrollment,Certification fee,ថ្លៃវិញ្ញាបនបត្រ,,,"views/CourseEnrollmentView.vue, views/PaymentSuccessfulView.vue, views/ScanToPayView.vue"
+395,Course Enrollment,Card fee,ថ្លៃកាត,,,"views/CourseEnrollmentView.vue, views/PaymentSuccessfulView.vue, views/ScanToPayView.vue"
+396,Admin Portal,Fees,ថ្លៃសេវា,,,views/AdminContentView.vue
+397,Admin Portal,Discount,បញ្ចុះតម្លៃ,,,"views/AdminContentView.vue, views/CourseEnrollmentView.vue"
+398,Course Enrollment,Base price,តម្លៃមូលដ្ឋាន,,,"views/CourseEnrollmentView.vue, views/PaymentSuccessfulView.vue, views/ScanToPayView.vue"
+399,Course Enrollment,Secure checkout. Your personal information is used to process your course registration.,ការទូទាត់មានសុវត្ថិភាព។ ព័ត៌មានផ្ទាល់ខ្លួនរបស់អ្នកត្រូវបានប្រើសម្រាប់ដំណើរការចុះឈ្មោះវគ្គសិក្សា។,,,views/CourseEnrollmentView.vue
+400,General & Common,Lab & Project Sessions,វគ្គអនុវត្តមន្ទីរពិសោធន៍ និងគម្រោង,,,i18n.js (Shared)
+401,Profile & Account,City or province,ទីក្រុង ឬខេត្ត,,,views/ProfileInformationView.vue
+402,Profile & Account,Learning background,ប្រវត្តិការសិក្សា,,,views/ProfileInformationView.vue
+403,Profile & Account,Your education and experience.,ការអប់រំ និងបទពិសោធន៍របស់អ្នក។,,,views/ProfileInformationView.vue
+404,Profile & Account,Highest qualification,កម្រិតសិក្សាខ្ពស់បំផុត,,,views/ProfileInformationView.vue
+405,Course Enrollment,Please specify your qualification,សូមបញ្ជាក់កម្រិតសិក្សារបស់អ្នក,,,"views/CourseEnrollmentView.vue, views/ProfileInformationView.vue"
+406,Profile & Account,High school,វិទ្យាល័យ,,,views/ProfileInformationView.vue
+407,Profile & Account,Graduate degree,សញ្ញាបត្រក្រោយបរិញ្ញាបត្រ,,,views/ProfileInformationView.vue
+408,Profile & Account,New to coding,ទើបចាប់ផ្តើមសរសេរកូដ,,,views/ProfileInformationView.vue
+409,Profile & Account,Some experience,មានបទពិសោធន៍ខ្លះ,,,views/ProfileInformationView.vue
+410,Profile & Account,Confident coder,សរសេរកូដបានល្អ,,,views/ProfileInformationView.vue
+411,Profile & Account,Experienced developer,អ្នកអភិវឌ្ឍន៍មានបទពិសោធន៍,,,views/ProfileInformationView.vue
+412,Profile & Account,Current occupation,មុខរបរបច្ចុប្បន្ន,,,views/ProfileInformationView.vue
+413,Profile & Account,Coding experience,បទពិសោធន៍សរសេរកូដ,,,views/ProfileInformationView.vue
+414,Profile & Account,Not added yet,មិនទាន់បានបន្ថែម,,,views/ProfileInformationView.vue
+415,Profile & Account,Your account name and email are saved securely. Additional profile details are saved in this browser.,ឈ្មោះ និងអ៊ីមែលគណនីរបស់អ្នកត្រូវបានរក្សាទុកដោយសុវត្ថិភាព។ ព័ត៌មានប្រវត្តិរូបបន្ថែមត្រូវបានរក្សាទុកក្នុងកម្មវិធីរុករកនេះ។,,,views/ProfileInformationView.vue
+416,Sign In & Register,An account with this email already exists. Sign in instead.,មានគណនីប្រើអ៊ីមែលនេះរួចហើយ។ សូមចូលគណនីជំនួសវិញ។,,,views/AccountAccessView.vue
+417,Sign In & Register,Invalid email or password.,អ៊ីមែល ឬពាក្យសម្ងាត់មិនត្រឹមត្រូវទេ។,,,views/AccountAccessView.vue
+418,Sign In & Register,Please wait...,សូមរង់ចាំ...,,,views/AccountAccessView.vue
+419,Profile & Account,Save changes,រក្សាទុកការផ្លាស់ប្តូរ,,,views/ProfileInformationView.vue
+420,Admin Portal,Cancel,បោះបង់,,,"views/AdminContentView.vue, views/ProfileInformationView.vue"
+421,Profile & Account,Profile details saved.,ព័ត៌មានប្រវត្តិរូបត្រូវបានរក្សាទុក។,,,views/ProfileInformationView.vue
+422,Profile & Account,"Account name and email were updated, but additional profile details could not be saved in this browser.",ឈ្មោះ និងអ៊ីមែលគណនីត្រូវបានធ្វើបច្ចុប្បន្នភាព ប៉ុន្តែព័ត៌មានប្រវត្តិរូបបន្ថែមមិនអាចរក្សាទុកក្នុងកម្មវិធីរុករកនេះបានទេ។,,,views/ProfileInformationView.vue
+423,Profile & Account,Your account details could not be updated. Please try again.,មិនអាចធ្វើបច្ចុប្បន្នភាពព័ត៌មានគណនីបានទេ។ សូមព្យាយាមម្ដងទៀត។,,,views/ProfileInformationView.vue
+424,Sign In & Register,Unable to continue right now. Please try again.,មិនអាចបន្តបានទេនៅពេលនេះ។ សូមព្យាយាមម្ដងទៀត។,,,views/AccountAccessView.vue
+425,Sign In & Register,Unable to create the account. Please check your details and try again.,មិនអាចបង្កើតគណនីបានទេ។ សូមពិនិត្យព័ត៌មាន ហើយព្យាយាមម្ដងទៀត។,,,views/AccountAccessView.vue
+426,Profile & Account,Unable to load your account. Please try again.,មិនអាចផ្ទុកគណនីរបស់អ្នកបានទេ។ សូមព្យាយាមម្ដងទៀត។,,,views/ProfileInformationView.vue
+427,Profile & Account,Unable to sign out right now. Please try again.,មិនអាចចាកចេញបានទេ។ សូមព្យាយាមម្ដងទៀត។,,,views/ProfileInformationView.vue
+428,Profile & Account,"You are signed out, but some profile data could not be cleared from this browser.",អ្នកបានចាកចេញហើយ ប៉ុន្តែទិន្នន័យប្រវត្តិរូបមួយចំនួនមិនអាចសម្អាតពីកម្មវិធីរុករកនេះបានទេ។,,,views/ProfileInformationView.vue
+429,Profile & Account,Account navigation,ការរុករកគណនី,,,views/ProfileInformationView.vue
+430,Profile & Account,Course history,ប្រវត្តិវគ្គសិក្សា,,,views/ProfileInformationView.vue
+431,Profile & Account,Settings,ការកំណត់,,,views/ProfileInformationView.vue
+432,Profile & Account,Log out,ចាកចេញ,,,views/ProfileInformationView.vue
+433,Profile & Account,Review your registrations and payment status.,ពិនិត្យការចុះឈ្មោះ និងស្ថានភាពទូទាត់របស់អ្នក។,,,views/ProfileInformationView.vue
+434,Profile & Account,Refresh history,ផ្ទុកប្រវត្តិឡើងវិញ,,,views/ProfileInformationView.vue
+435,Profile & Account,No course history yet,មិនទាន់មានប្រវត្តិវគ្គសិក្សាទេ,,,views/ProfileInformationView.vue
+436,Profile & Account,Courses you register for on this device will appear here.,វគ្គសិក្សាដែលអ្នកចុះឈ្មោះក្នុងឧបករណ៍នេះនឹងបង្ហាញនៅទីនេះ។,,,views/ProfileInformationView.vue
+437,Profile & Account,Enrollment reference,លេខយោងការចុះឈ្មោះ,,,views/ProfileInformationView.vue
+438,Profile & Account,Continue payment,បន្តការទូទាត់,,,views/ProfileInformationView.vue
+439,Profile & Account,View receipt,មើលបង្កាន់ដៃ,,,views/ProfileInformationView.vue
+440,Admin Portal,View details,មើលព័ត៌មានលម្អិត,,,"views/AdminContentView.vue, views/ProfileInformationView.vue"
+441,Profile & Account,Manage your language and local profile preferences.,គ្រប់គ្រងភាសា និងចំណូលចិត្តប្រវត្តិរូបក្នុងឧបករណ៍នេះ។,,,views/ProfileInformationView.vue
+442,Profile & Account,Choose the language used across the site.,ជ្រើសរើសភាសាសម្រាប់ប្រើប្រាស់ទូទាំងគេហទំព័រ។,,,views/ProfileInformationView.vue
+443,Profile & Account,Display language,ភាសាបង្ហាញ,,,views/ProfileInformationView.vue
+444,Profile & Account,Local profile data,ទិន្នន័យប្រវត្តិរូបក្នុងឧបករណ៍,,,views/ProfileInformationView.vue
+445,Profile & Account,Your profile and history are stored in this browser for this demo.,ព័ត៌មានបន្ថែមប្រវត្តិរូប និងប្រវត្តិវគ្គសិក្សាត្រូវបានរក្សាទុកក្នុងកម្មវិធីរុករកនេះ។,,,views/ProfileInformationView.vue
+446,Profile & Account,Clear profile,សម្អាតប្រវត្តិរូប,,,views/ProfileInformationView.vue
+447,Profile & Account,Log out of your account?,ចាកចេញពីគណនីរបស់អ្នក?,,,views/ProfileInformationView.vue
+448,Profile & Account,You will be signed out of this account on this device.,អ្នកនឹងត្រូវចាកចេញពីគណនីនេះនៅលើឧបករណ៍នេះ។,,,views/ProfileInformationView.vue
+449,Profile & Account,Some enrollment records are no longer available. Start a new enrollment to refresh your course history.,កំណត់ត្រាចុះឈ្មោះខ្លះមិនមានទៀតទេ។ ចាប់ផ្តើមចុះឈ្មោះថ្មី ដើម្បីធ្វើបច្ចុប្បន្នភាពប្រវត្តិវគ្គសិក្សា។,,,views/ProfileInformationView.vue
+450,Profile & Account,Could not load course history from this browser.,មិនអាចផ្ទុកប្រវត្តិវគ្គសិក្សាពីកម្មវិធីរុករកនេះបានទេ។,,,views/ProfileInformationView.vue
+451,Profile & Account,Could not clear profile information from this browser.,មិនអាចសម្អាតព័ត៌មានប្រវត្តិរូបពីកម្មវិធីរុករកនេះបានទេ។,,,views/ProfileInformationView.vue
+452,Profile & Account,Profile information cleared from this browser.,ព័ត៌មានប្រវត្តិរូបត្រូវបានសម្អាតពីកម្មវិធីរុករកនេះ។,,,views/ProfileInformationView.vue
+453,Admin Portal,pending,កំពុងរង់ចាំ,,,"views/AdminContentView.vue, views/ProfileInformationView.vue"
+454,Admin Portal,paid,បានទូទាត់,,,"views/AdminContentView.vue, views/PaymentSuccessfulView.vue, views/ProfileInformationView.vue, views/ScanToPayView.vue"
+455,Admin Portal,expired,ផុតកំណត់,,,"views/AdminContentView.vue, views/ProfileInformationView.vue, views/ScanToPayView.vue"
+456,Explore Courses,Explore Our Courses,ស្វែងរកវគ្គសិក្សារបស់យើង,,,views/ExploreCoursesView.vue
+457,Explore Courses,Featured Courses,វគ្គសិក្សាពិសេស,,,i18n.js (Shared)
+458,Explore Courses,Popular Courses,វគ្គសិក្សាពេញនិយម,,,i18n.js (Shared)
+459,Explore Courses,Newest Courses,វគ្គសិក្សាថ្មីៗ,,,i18n.js (Shared)
+460,Admin Portal,Robotics,មនុស្សយន្ត,,,"components/courses/FilterSidebar.vue, components/layout/Footer.vue, views/AdminContentView.vue"
+461,Explore Courses,IoT,អ៊ីនធឺណិតនៃវត្ថុ (IoT),,,"components/courses/FilterSidebar.vue, components/layout/Footer.vue"
+462,Explore Courses,Electronics,អេឡិចត្រូនិក,,,"components/courses/FilterSidebar.vue, components/layout/Footer.vue"
+463,Explore Courses,Mechanical,មេកានិច,,,"components/courses/FilterSidebar.vue, components/layout/Footer.vue"
+464,Explore Courses,ROS,ROS,,,"components/courses/FilterSidebar.vue, components/layout/Footer.vue"
+465,General & Common,Programming,ការសរសេរកម្មវិធី,,,i18n.js (Shared)
+466,Explore Courses,Beginner,កម្រិតដំបូង,,,i18n.js (Shared)
+467,Explore Courses,Intermediate,កម្រិតមធ្យម,,,i18n.js (Shared)
+468,Explore Courses,Advanced,កម្រិតខ្ពស់,,,i18n.js (Shared)
+469,Explore Courses,All,ទាំងអស់,,,components/courses/FilterSidebar.vue
+470,Explore Courses,Under $100,ក្រោម $100,,,components/courses/FilterSidebar.vue
+471,Explore Courses,$100 - $200,$100 - $200,,,components/courses/FilterSidebar.vue
+472,Explore Courses,$200+,$200+,,,components/courses/FilterSidebar.vue
+473,Explore Courses,Learn practical technology skills through hands-on courses designed by industry engineers.,រៀនជំនាញបច្ចេកវិទ្យាជាក់ស្តែងតាមរយៈវគ្គសិក្សាអនុវត្តដែលរៀបចំដោយវិស្វករឧស្សាហកម្ម។,,,views/ExploreCoursesView.vue
+474,Explore Courses,Search courses...,ស្វែងរកវគ្គសិក្សា...,,,views/ExploreCoursesView.vue
+475,Explore Courses,Filters,តម្រង,,,components/courses/FilterSidebar.vue
+476,Explore Courses,Clear All,សម្អាតទាំងអស់,,,components/courses/FilterSidebar.vue
+477,Admin Portal,Category,ប្រភេទ,,,"components/courses/FilterSidebar.vue, views/AdminContentView.vue"
+478,Admin Portal,Level,កម្រិត,,,views/AdminContentView.vue
+479,Course Detail,Price,តម្លៃ,,,"components/courses/FilterSidebar.vue, views/CourseDetailView.vue"
+480,Admin Portal,Language,ភាសា,,,"components/courses/FilterSidebar.vue, views/AdminContentView.vue, views/ProfileInformationView.vue"
+481,Explore Courses,No courses match your selected filters,គ្មានវគ្គសិក្សាដែលត្រូវនឹងតម្រងដែលអ្នកបានជ្រើសរើសទេ,,,views/ExploreCoursesView.vue
+482,Explore Courses,Try clearing some filters or searching for another robotics or IoT topic.,សាកល្បងសម្អាតតម្រងខ្លះ ឬស្វែងរកប្រធានបទមនុស្សយន្ត ឬ IoT ផ្សេងទៀត។,,,views/ExploreCoursesView.vue
+483,Explore Courses,Reset Filters,កំណត់តម្រងឡើងវិញ,,,views/ExploreCoursesView.vue
+484,General & Common,See More >,មើលបន្ថែម >,,,i18n.js (Shared)
+485,Explore Courses,Showing,កំពុងបង្ហាញ,,,views/ExploreCoursesView.vue
+486,Explore Courses,result(s),លទ្ធផល,,,views/ExploreCoursesView.vue
+487,Explore Courses,Reset all filters,កំណត់តម្រងទាំងអស់ឡើងវិញ,,,views/ExploreCoursesView.vue
+488,Course Detail,Retry,ព្យាយាមម្តងទៀត,,,"views/CourseDetailView.vue, views/ExploreCoursesView.vue"
+489,Explore Courses,View course details,មើលព័ត៌មានលម្អិតវគ្គសិក្សា,,,components/courses/CourseCard.vue
+490,Course Enrollment,Course Enrollment Form,ទម្រង់ចុះឈ្មោះវគ្គសិក្សា,,,views/CourseEnrollmentView.vue
+491,Course Enrollment,Complete your registration for,បំពេញការចុះឈ្មោះរបស់អ្នកសម្រាប់,,,views/CourseEnrollmentView.vue
+492,Course Enrollment,your selected course,វគ្គសិក្សាដែលអ្នកបានជ្រើសរើស,,,views/CourseEnrollmentView.vue
+493,Course Enrollment,Personal Information,ព័ត៌មានផ្ទាល់ខ្លួន,,,views/CourseEnrollmentView.vue
+494,Course Enrollment,Registerer Name,ឈ្មោះអ្នកចុះឈ្មោះ,,,views/CourseEnrollmentView.vue
+495,Course Enrollment,Enter full name,បញ្ចូលឈ្មោះពេញ,,,"views/AccountAccessView.vue, views/CourseEnrollmentView.vue, views/ProfileInformationView.vue"
+496,Course Enrollment,Please enter the exact name to appear on your certificate,សូមបញ្ចូលឈ្មោះត្រឹមត្រូវសម្រាប់បង្ហាញលើវិញ្ញាបនបត្រ,,,views/CourseEnrollmentView.vue
+497,Admin Portal,Gender,ភេទ,,,"views/AdminContentView.vue, views/CourseEnrollmentView.vue"
+498,Course Enrollment,Male,ប្រុស,,,views/CourseEnrollmentView.vue
+499,Course Enrollment,Female,ស្រី,,,views/CourseEnrollmentView.vue
+500,Course Enrollment,Other,ផ្សេងៗ,,,"views/CourseEnrollmentView.vue, views/ProfileInformationView.vue"
+501,Course Enrollment,Registerer Telegram,Telegram អ្នកចុះឈ្មោះ,,,views/CourseEnrollmentView.vue
+502,Course Enrollment,Enter Telegram username or number,បញ្ចូលឈ្មោះអ្នកប្រើ ឬលេខ Telegram,,,views/CourseEnrollmentView.vue
+503,Course Enrollment,Used for course communication and updates,ប្រើសម្រាប់ការទំនាក់ទំនង និងព័ត៌មានថ្មីៗអំពីវគ្គសិក្សា,,,views/CourseEnrollmentView.vue
+504,Course Enrollment,Email Address,អាសយដ្ឋានអ៊ីមែល,,,views/CourseEnrollmentView.vue
+505,Course Enrollment,Residential Address,អាសយដ្ឋានលំនៅដ្ឋាន,,,views/CourseEnrollmentView.vue
+506,Course Enrollment,Education & Background,ការអប់រំ និងប្រវត្តិ,,,views/CourseEnrollmentView.vue
+507,Admin Portal,Age Range,អាយុ,,,"views/AdminContentView.vue, views/CourseEnrollmentView.vue"
+508,Course Enrollment,Under 15,ក្រោម ១៥ ឆ្នាំ,,,views/CourseEnrollmentView.vue
+509,Course Enrollment,15 - 18 Years,១៥ - ១៨ ឆ្នាំ,,,views/CourseEnrollmentView.vue
+510,Course Enrollment,18 - 24 Years,១៨ - ២៤ ឆ្នាំ,,,views/CourseEnrollmentView.vue
+511,Course Enrollment,25+ Years,២៥ ឆ្នាំឡើង,,,views/CourseEnrollmentView.vue
+512,Course Enrollment,Schedule Preference,ជម្រើសកាលវិភាគ,,,views/CourseEnrollmentView.vue
+513,Course Enrollment,Cohort Start Date,ថ្ងៃចាប់ផ្តើមវគ្គ,,,views/CourseEnrollmentView.vue
+514,Course Enrollment,Estimated Completion,ថ្ងៃបញ្ចប់ប៉ាន់ស្មាន,,,views/CourseEnrollmentView.vue
+515,Course Enrollment,Weekend Batch,វេនចុងសប្តាហ៍,,,views/CourseEnrollmentView.vue
+516,Course Enrollment,Weekday Evening,វេនល្ងាចថ្ងៃធ្វើការ,,,views/CourseEnrollmentView.vue
+517,Admin Portal,Special Requirements or Notes,តម្រូវការពិសេស ឬកំណត់ចំណាំ,,,"views/AdminContentView.vue, views/CourseEnrollmentView.vue"
+518,Course Enrollment,Coupon Code,លេខកូដបញ្ចុះតម្លៃ,,,views/CourseEnrollmentView.vue
+519,Course Enrollment,Apply,អនុវត្ត,,,views/CourseEnrollmentView.vue
+520,Course Enrollment,Order Summary,សេចក្តីសង្ខេបការបញ្ជាទិញ,,,views/CourseEnrollmentView.vue
+521,Course Enrollment,Total Price,តម្លៃសរុប,,,views/CourseEnrollmentView.vue
+522,Course Enrollment,Proceed to Payment,បន្តទៅការទូទាត់,,,views/CourseEnrollmentView.vue
+523,Course Enrollment,Processing Enrollment...,កំពុងដំណើរការចុះឈ្មោះ...,,,views/CourseEnrollmentView.vue
+524,Scan To Pay & Payment,Scan to Pay,ស្កេនដើម្បីទូទាត់,,,views/ScanToPayView.vue
+525,Scan To Pay & Payment,"Open your banking app, scan the QR code, and confirm payment. This page will update automatically.",បើកកម្មវិធីធនាគាររបស់អ្នក ស្កេន QR Code ហើយបញ្ជាក់ការទូទាត់។ ទំព័រនេះនឹងធ្វើបច្ចុប្បន្នភាពដោយស្វ័យប្រវត្តិ។,,,views/ScanToPayView.vue
+526,General & Common,Prototype Simulation Actions,សកម្មភាពសាកល្បងគំរូ,,,i18n.js (Shared)
+527,Scan To Pay & Payment,Simulate Payment Success,សាកល្បងការទូទាត់ជោគជ័យ,,,i18n.js (Shared)
+528,Scan To Pay & Payment,Simulate Session Expired,សាកល្បងវគ្គទូទាត់ផុតកំណត់,,,i18n.js (Shared)
+529,Scan To Pay & Payment,Amount Due,ចំនួនត្រូវបង់,,,views/ScanToPayView.vue
+530,Scan To Pay & Payment,Time Left,ពេលវេលានៅសល់,,,views/ScanToPayView.vue
+531,Scan To Pay & Payment,Payment Successful!,ការទូទាត់ជោគជ័យ!,,,views/PaymentSuccessfulView.vue
+532,Scan To Pay & Payment,Payment Not Confirmed,មិនទាន់បានបញ្ជាក់ការទូទាត់,,,views/PaymentSuccessfulView.vue
+533,Scan To Pay & Payment,Your enrollment has been confirmed! We have sent your official receipt and lab welcome guide to your registered Telegram and email.,ការចុះឈ្មោះរបស់អ្នកត្រូវបានបញ្ជាក់ហើយ! យើងបានផ្ញើបង្កាន់ដៃផ្លូវការ និងសៀវភៅស្វាគមន៍មន្ទីរពិសោធន៍ទៅ Telegram និងអ៊ីមែលដែលអ្នកបានចុះឈ្មោះ។,,,i18n.js (Shared)
+534,Scan To Pay & Payment,We could not confirm a completed payment for this enrollment yet.,យើងមិនទាន់អាចបញ្ជាក់ការទូទាត់សម្រាប់ការចុះឈ្មោះនេះបានទេ។,,,views/PaymentSuccessfulView.vue
+535,Scan To Pay & Payment,Date,កាលបរិច្ឆេទ,,,views/PaymentSuccessfulView.vue
+536,Scan To Pay & Payment,Course,វគ្គសិក្សា,,,views/PaymentSuccessfulView.vue
+537,Course Enrollment,Back to Courses,ត្រឡប់ទៅវគ្គសិក្សា,,,"views/CourseDetailView.vue, views/CourseEnrollmentView.vue, views/PaymentSuccessfulView.vue"
+538,Scan To Pay & Payment,Download Receipt,ទាញយកបង្កាន់ដៃ,,,views/PaymentSuccessfulView.vue
+539,Scan To Pay & Payment,Payment Session Expired,វគ្គទូទាត់បានផុតកំណត់,,,views/PaymentExpiredView.vue
+540,Scan To Pay & Payment,Payment Session Status,ស្ថានភាពវគ្គទូទាត់,,,i18n.js (Shared)
+541,Scan To Pay & Payment,Your QR payment session for,វគ្គទូទាត់ QR របស់អ្នកសម្រាប់,,,i18n.js (Shared)
+542,Scan To Pay & Payment,has timed out. Please generate a new payment session to complete your enrollment.,បានអស់ពេលហើយ។ សូមបង្កើតវគ្គទូទាត់ថ្មី ដើម្បីបញ្ចប់ការចុះឈ្មោះ។,,,i18n.js (Shared)
+543,Scan To Pay & Payment,This payment session has not been confirmed as expired.,វគ្គទូទាត់នេះមិនទាន់ត្រូវបានបញ្ជាក់ថាផុតកំណត់ទេ។,,,i18n.js (Shared)
+544,General & Common,Enrollment Reference,លេខយោងការចុះឈ្មោះ,,,i18n.js (Shared)
+545,Admin Portal,Status,ស្ថានភាព,,,"views/AdminContentView.vue, views/PaymentExpiredView.vue"
+546,Scan To Pay & Payment,Try Again / New QR,ព្យាយាមម្តងទៀត / QR ថ្មី,,,i18n.js (Shared)
+547,Scan To Pay & Payment,Transaction ID,លេខប្រតិបត្តិការ,,,views/PaymentSuccessfulView.vue
+548,Scan To Pay & Payment,Amount Paid,ចំនួនបានបង់,,,views/PaymentSuccessfulView.vue
+549,About Us & Contact,About AeroByte Academy,អំពី AeroByte Academy,,,views/AboutView.vue
+550,Course Detail,Unable to Load Course,មិនអាចផ្ទុកវគ្គសិក្សាបានទេ,,,views/CourseDetailView.vue
+551,Course Detail,Course Not Found,រកមិនឃើញវគ្គសិក្សា,,,views/CourseDetailView.vue
+552,Course Detail,The course you are looking for does not exist or has been moved.,វគ្គសិក្សាដែលអ្នកកំពុងស្វែងរកមិនមាន ឬត្រូវបានផ្លាស់ទី។,,,views/CourseDetailView.vue
+553,Course Enrollment,course,វគ្គសិក្សា,,,"views/CourseEnrollmentView.vue, views/ExploreCoursesView.vue"
+554,Course Detail,Enroll Now,ចុះឈ្មោះឥឡូវនេះ,,,views/CourseDetailView.vue
+555,Course Detail,Description,ការពិពណ៌នា,,,views/CourseDetailView.vue
+556,Course Detail,Khmer script,អក្សរខ្មែរ,,,views/CourseDetailView.vue
+557,Course Detail,Course Contents,មាតិកាវគ្គសិក្សា,,,views/CourseDetailView.vue
+558,Course Detail,Learning Modules Included,ម៉ូឌុលសិក្សាដែលរួមបញ្ចូល,,,views/CourseDetailView.vue
+559,Course Detail,Course Topics & Skills,ប្រធានបទ និងជំនាញក្នុងវគ្គសិក្សា,,,views/CourseDetailView.vue
+560,Course Detail,Course topic details are being prepared. Contact us for the current syllabus.,កំពុងរៀបចំព័ត៌មានប្រធានបទវគ្គសិក្សា។ សូមទាក់ទងយើងសម្រាប់កម្មវិធីសិក្សាបច្ចុប្បន្ន។,,,views/CourseDetailView.vue
+561,Course Detail,Foundations,មូលដ្ឋានគ្រឹះ,,,views/CourseDetailView.vue
+562,Course Detail,Hands-on,ការអនុវត្តផ្ទាល់,,,views/CourseDetailView.vue
+563,Course Detail,Core Skills,ជំនាញស្នូល,,,views/CourseDetailView.vue
+564,Course Detail,Design,ការរចនា,,,views/CourseDetailView.vue
+565,Course Detail,Project,គម្រោង,,,views/CourseDetailView.vue
+566,Course Detail,Power,ថាមពល,,,views/CourseDetailView.vue
+567,General & Common,Kit Contents,មាតិកាក្នុងឧបករណ៍,,,i18n.js (Shared)
+568,General & Common,Component Modules Included,ម៉ូឌុលដែលមានក្នុងឧបករណ៍,,,i18n.js (Shared)
+569,Explore Courses,Course Outline,គ្រោងមាតិកាវគ្គសិក្សា,,,i18n.js (Shared)
+570,Course Detail,Course description coming soon. Contact us for the current syllabus and schedule.,ការពិពណ៌នាវគ្គសិក្សានឹងមានឆាប់ៗនេះ។ សូមទាក់ទងយើងសម្រាប់កម្មវិធីសិក្សា និងកាលវិភាគបច្ចុប្បន្ន។,,,views/CourseDetailView.vue
+571,Course Detail,Course outline coming soon. Contact us for the current syllabus and upcoming schedules.,គ្រោងមាតិកាវគ្គសិក្សានឹងមានឆាប់ៗនេះ។ សូមទាក់ទងយើងសម្រាប់កម្មវិធីសិក្សា និងកាលវិភាគថ្មីៗ។,,,views/CourseDetailView.vue
+572,Admin Portal,Module icon and label,រូបតំណាង និងស្លាកម៉ូឌុល,,,views/AdminContentView.vue
+573,Admin Portal,Upload module photo,បង្ហោះរូបភាពម៉ូឌុល,,,views/AdminContentView.vue
+574,Admin Portal,Or paste a module image URL,ឬបិទភ្ជាប់ URL រូបភាពម៉ូឌុល,,,views/AdminContentView.vue
+575,Admin Portal,Remove image,លុបរូបភាព,,,views/AdminContentView.vue
+576,Admin Portal,Core PCB,បន្ទះសៀគ្វីស្នូល,,,views/AdminContentView.vue
+577,Admin Portal,Telemetry,ទិន្នន័យតាមដាន,,,views/AdminContentView.vue
+578,Admin Portal,Motors,ម៉ូទ័រ,,,views/AdminContentView.vue
+579,Admin Portal,Frame,តួ,,,views/AdminContentView.vue
+580,General & Common,What You Will Learn,អ្វីដែលអ្នកនឹងរៀន,,,i18n.js (Shared)
+581,General & Common,Core Modules Included,មេរៀនស្នូលរួមបញ្ចូល,,,i18n.js (Shared)
+582,General & Common,Hardware Specifications,លក្ខណៈបច្ចេកទេស Hardware,,,i18n.js (Shared)
+583,Course Detail,Please check your connection and try again.,សូមពិនិត្យការតភ្ជាប់របស់អ្នក ហើយព្យាយាមម្តងទៀត។,,,views/CourseDetailView.vue
+584,Explore Courses,Could not load courses. Check that the API server is running and try again.,មិនអាចផ្ទុកវគ្គសិក្សាបានទេ។ សូមពិនិត្យថា API server កំពុងដំណើរការ ហើយព្យាយាមម្តងទៀត។,,,views/ExploreCoursesView.vue
+585,Course Enrollment,Could not validate coupon code.,មិនអាចផ្ទៀងផ្ទាត់លេខកូដបញ្ចុះតម្លៃបានទេ។,,,views/CourseEnrollmentView.vue
+586,Course Enrollment,Could not submit your enrollment. Please check the details and try again.,មិនអាចដាក់ស្នើការចុះឈ្មោះបានទេ។ សូមពិនិត្យព័ត៌មាន ហើយព្យាយាមម្តងទៀត។,,,views/CourseEnrollmentView.vue
+587,Course Enrollment,Unable to load this course for enrollment. Please try again later.,មិនអាចផ្ទុកវគ្គសិក្សានេះសម្រាប់ការចុះឈ្មោះបានទេ។ សូមព្យាយាមម្តងទៀតពេលក្រោយ។,,,views/CourseEnrollmentView.vue
+588,About Us & Contact,"Empowering the next generation of engineers and innovators through project-based robotics, embedded systems, and autonomous technology education.",ពង្រឹងសមត្ថភាពវិស្វករ និងអ្នកច្នៃប្រឌិតជំនាន់ក្រោយ តាមរយៈការអប់រំផ្អែកលើគម្រោងអំពីមនុស្សយន្ត ប្រព័ន្ធបង្កប់ និងបច្ចេកវិទ្យាស្វ័យប្រវត្តិ។,,,views/AboutView.vue
+589,About Us & Contact,Our Mission,បេសកកម្មរបស់យើង,,,views/AboutView.vue
+590,About Us & Contact,Our Vision,ចក្ខុវិស័យរបស់យើង,,,views/AboutView.vue
+591,About Us & Contact,Hands-On Engineering for Everyone,វិស្វកម្មអនុវត្តសម្រាប់មនុស្សគ្រប់គ្នា,,,views/AboutView.vue
+592,About Us & Contact,"We bridge the gap between classroom theory and real-world engineering. Every student at AeroByte Academy works directly with microcontrollers, sensors, custom PCBs, and mechanical actuators to build functional autonomous systems from day one.",យើងភ្ជាប់ទ្រឹស្តីក្នុងថ្នាក់រៀនទៅនឹងវិស្វកម្មក្នុងពិភពពិត។ សិស្សគ្រប់រូបនៅ AeroByte Academy អនុវត្តផ្ទាល់ជាមួយមីក្រូកុងត្រូល័រ ឧបករណ៍ចាប់សញ្ញា បន្ទះ PCB និងឧបករណ៍មេកានិច ដើម្បីបង្កើតប្រព័ន្ធស្វ័យប្រវត្តិដែលដំណើរការបានចាប់ពីថ្ងៃដំបូង។,,,views/AboutView.vue
+593,About Us & Contact,Building Future Tech Leaders,បណ្តុះបណ្តាលអ្នកដឹកនាំបច្ចេកវិទ្យានាពេលអនាគត,,,views/AboutView.vue
+594,About Us & Contact,"To cultivate a thriving community of robotics developers, hardware engineers, and IoT architects capable of designing scalable technological solutions for smart cities, automation, and modern industry.",បង្កើតសហគមន៍អ្នកអភិវឌ្ឍមនុស្សយន្ត វិស្វករផ្នែក Hardware និងអ្នករចនា IoT ដែលអាចបង្កើតដំណោះស្រាយបច្ចេកវិទ្យាដែលអាចពង្រីកបានសម្រាប់ទីក្រុងឆ្លាតវៃ ស្វ័យប្រវត្តិកម្ម និងឧស្សាហកម្មទំនើប។,,,views/AboutView.vue
+595,About Us & Contact,What We Teach & Build,អ្វីដែលយើងបង្រៀន និងបង្កើត,,,views/AboutView.vue
+596,About Us & Contact,Robotics & ROS,មនុស្សយន្ត និង ROS,,,views/AboutView.vue
+597,About Us & Contact,"Autonomous wheeled robots, kinematics, LiDAR SLAM navigation, and ROS2 middleware.",មនុស្សយន្តកង់ស្វ័យប្រវត្តិ គីណេម៉ាទិច ការរុករក LiDAR SLAM និង middleware ROS2។,,,views/AboutView.vue
+598,About Us & Contact,IoT & Smart Systems,IoT និងប្រព័ន្ធឆ្លាតវៃ,,,views/AboutView.vue
+599,About Us & Contact,"Connected sensor networks, ESP32 firmware, MQTT telemetry, and real-time cloud dashboards.",បណ្តាញឧបករណ៍ចាប់សញ្ញា កម្មវិធីបង្កប់ ESP32 ទិន្នន័យ MQTT និងផ្ទាំងគ្រប់គ្រង Cloud ជាក់ស្តែង។,,,views/AboutView.vue
+600,About Us & Contact,PCB & Electronics,PCB និងអេឡិចត្រូនិក,,,views/AboutView.vue
+601,About Us & Contact,"Schematic capture, multi-layer PCB layout in KiCad, SMD soldering, and power electronics.",ការរចនាសៀគ្វី ប្លង់ PCB ច្រើនស្រទាប់ក្នុង KiCad ការដាក់សំណ SMD និងអេឡិចត្រូនិកថាមពល។,,,views/AboutView.vue
+602,About Us & Contact,CAD & Prototyping,CAD និងការបង្កើតគំរូ,,,views/AboutView.vue
+603,About Us & Contact,"Parametric 3D mechanical design, structural analysis, and rapid 3D printing for robotics.",ការរចនាមេកានិច 3D ការវិភាគរចនាសម្ព័ន្ធ និងការបោះពុម្ព 3D រហ័សសម្រាប់មនុស្សយន្ត។,,,views/AboutView.vue
+604,Admin Portal,Hands-On Tech Courses,វគ្គសិក្សាបច្ចេកវិទ្យាអនុវត្ត,,,"views/AboutView.vue, views/AdminContentView.vue"
+605,Admin Portal,Project-Based Learning,ការសិក្សាផ្អែកលើគម្រោង,,,"views/AboutView.vue, views/AdminContentView.vue"
+606,Admin Portal,Industry Mentors,អ្នកណែនាំពីឧស្សាហកម្ម,,,"views/AboutView.vue, views/AdminContentView.vue"
+607,Admin Portal,Student Projects Built,គម្រោងសិស្សដែលបានបង្កើត,,,"views/AboutView.vue, views/AdminContentView.vue"
+608,About Us & Contact,Ready to Build Your First Robot?,ត្រៀមបង្កើតមនុស្សយន្តដំបូងរបស់អ្នកហើយឬនៅ?,,,views/AboutView.vue
+609,About Us & Contact,"Explore our hands-on robotics, IoT, and embedded systems courses and start building real hardware today.",ស្វែងរកវគ្គសិក្សាអនុវត្តអំពីមនុស្សយន្ត IoT និងប្រព័ន្ធបង្កប់ ហើយចាប់ផ្តើមបង្កើត Hardware ពិតប្រាកដនៅថ្ងៃនេះ។,,,views/AboutView.vue

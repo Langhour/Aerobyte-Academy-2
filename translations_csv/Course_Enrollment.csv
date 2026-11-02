@@ -1,0 +1,57 @@
+﻿No.,Page / Section,English (Original),Current Khmer Translation,New Khmer Translation (EDIT HERE),Notes / Context,Code Location
+1,Course Enrollment,Maximum seats,ចំនួនកៅអីអតិបរមា,,,views/CourseEnrollmentView.vue
+2,Course Enrollment,No active batch is available for enrollment. Please contact the academy.,មិនមានវេនសិក្សាសកម្មសម្រាប់ចុះឈ្មោះទេ។ សូមទាក់ទងសាលា។,,,views/CourseEnrollmentView.vue
+3,Course Enrollment,Schedule details provided after enrollment,ព័ត៌មានកាលវិភាគនឹងត្រូវបានបញ្ជាក់ក្រោយពេលចុះឈ្មោះ,,,views/CourseEnrollmentView.vue
+4,Course Enrollment,To be confirmed,ត្រូវបញ្ជាក់នៅពេលក្រោយ,,,views/CourseEnrollmentView.vue
+5,Course Enrollment,Select date of birth,ជ្រើសរើសថ្ងៃខែឆ្នាំកំណើត,,,"views/CourseEnrollmentView.vue, views/ProfileInformationView.vue"
+6,Course Enrollment,High School,វិទ្យាល័យ,,,views/CourseEnrollmentView.vue
+7,Course Enrollment,Undergraduate / University,ថ្នាក់បរិញ្ញាបត្រ / សាកលវិទ្យាល័យ,,,"views/CourseEnrollmentView.vue, views/ProfileInformationView.vue"
+8,Course Enrollment,Bachelor's Degree,បរិញ្ញាបត្រ,,,views/CourseEnrollmentView.vue
+9,Course Enrollment,Enter promo code (Try AEROBYTE10 or TEST1CENT),បញ្ចូលលេខកូដផ្សព្វផ្សាយ (សាកល្បង AEROBYTE10 ឬ TEST1CENT),,,views/CourseEnrollmentView.vue
+10,Course Enrollment,I confirm that all personal and academic details provided above are accurate.,ខ្ញុំបញ្ជាក់ថាព័ត៌មានផ្ទាល់ខ្លួន និងការសិក្សាដែលបានផ្តល់ខាងលើគឺត្រឹមត្រូវ។,,,views/CourseEnrollmentView.vue
+11,Course Enrollment,"Numbers and ""+"" sign only (e.g. +85512345678)","អនុញ្ញាតតែលេខ និងសញ្ញា ""+"" ប៉ុណ្ណោះ (ឧ. +85512345678)",,,"views/CourseEnrollmentView.vue, views/ProfileInformationView.vue"
+12,Course Enrollment,Select qualification,ជ្រើសរើសកម្រិតវប្បធម៌,,,views/CourseEnrollmentView.vue
+13,Course Enrollment,"I agree to AeroByte Academy's Enrollment Terms, Lab Safety Guidelines, and Refund Policy.",ខ្ញុំយល់ព្រមតាមលក្ខខណ្ឌចុះឈ្មោះ គោលការណ៍សុវត្ថិភាពមន្ទីរពិសោធន៍ និងគោលការណ៍សងប្រាក់របស់ AeroByte Academy។,,,views/CourseEnrollmentView.vue
+14,Course Enrollment,Price per student,តម្លៃក្នុងម្នាក់,,,views/CourseEnrollmentView.vue
+15,Course Enrollment,Administration fee,ថ្លៃរដ្ឋបាល,,,"views/CourseEnrollmentView.vue, views/PaymentSuccessfulView.vue, views/ScanToPayView.vue"
+16,Course Enrollment,Certification fee,ថ្លៃវិញ្ញាបនបត្រ,,,"views/CourseEnrollmentView.vue, views/PaymentSuccessfulView.vue, views/ScanToPayView.vue"
+17,Course Enrollment,Card fee,ថ្លៃកាត,,,"views/CourseEnrollmentView.vue, views/PaymentSuccessfulView.vue, views/ScanToPayView.vue"
+18,Course Enrollment,Base price,តម្លៃមូលដ្ឋាន,,,"views/CourseEnrollmentView.vue, views/PaymentSuccessfulView.vue, views/ScanToPayView.vue"
+19,Course Enrollment,Secure checkout. Your personal information is used to process your course registration.,ការទូទាត់មានសុវត្ថិភាព។ ព័ត៌មានផ្ទាល់ខ្លួនរបស់អ្នកត្រូវបានប្រើសម្រាប់ដំណើរការចុះឈ្មោះវគ្គសិក្សា។,,,views/CourseEnrollmentView.vue
+20,Course Enrollment,Please specify your qualification,សូមបញ្ជាក់កម្រិតសិក្សារបស់អ្នក,,,"views/CourseEnrollmentView.vue, views/ProfileInformationView.vue"
+21,Course Enrollment,Course Enrollment Form,ទម្រង់ចុះឈ្មោះវគ្គសិក្សា,,,views/CourseEnrollmentView.vue
+22,Course Enrollment,Complete your registration for,បំពេញការចុះឈ្មោះរបស់អ្នកសម្រាប់,,,views/CourseEnrollmentView.vue
+23,Course Enrollment,your selected course,វគ្គសិក្សាដែលអ្នកបានជ្រើសរើស,,,views/CourseEnrollmentView.vue
+24,Course Enrollment,Personal Information,ព័ត៌មានផ្ទាល់ខ្លួន,,,views/CourseEnrollmentView.vue
+25,Course Enrollment,Registerer Name,ឈ្មោះអ្នកចុះឈ្មោះ,,,views/CourseEnrollmentView.vue
+26,Course Enrollment,Enter full name,បញ្ចូលឈ្មោះពេញ,,,"views/AccountAccessView.vue, views/CourseEnrollmentView.vue, views/ProfileInformationView.vue"
+27,Course Enrollment,Please enter the exact name to appear on your certificate,សូមបញ្ចូលឈ្មោះត្រឹមត្រូវសម្រាប់បង្ហាញលើវិញ្ញាបនបត្រ,,,views/CourseEnrollmentView.vue
+28,Course Enrollment,Male,ប្រុស,,,views/CourseEnrollmentView.vue
+29,Course Enrollment,Female,ស្រី,,,views/CourseEnrollmentView.vue
+30,Course Enrollment,Other,ផ្សេងៗ,,,"views/CourseEnrollmentView.vue, views/ProfileInformationView.vue"
+31,Course Enrollment,Registerer Telegram,Telegram អ្នកចុះឈ្មោះ,,,views/CourseEnrollmentView.vue
+32,Course Enrollment,Enter Telegram username or number,បញ្ចូលឈ្មោះអ្នកប្រើ ឬលេខ Telegram,,,views/CourseEnrollmentView.vue
+33,Course Enrollment,Used for course communication and updates,ប្រើសម្រាប់ការទំនាក់ទំនង និងព័ត៌មានថ្មីៗអំពីវគ្គសិក្សា,,,views/CourseEnrollmentView.vue
+34,Course Enrollment,Email Address,អាសយដ្ឋានអ៊ីមែល,,,views/CourseEnrollmentView.vue
+35,Course Enrollment,Residential Address,អាសយដ្ឋានលំនៅដ្ឋាន,,,views/CourseEnrollmentView.vue
+36,Course Enrollment,Education & Background,ការអប់រំ និងប្រវត្តិ,,,views/CourseEnrollmentView.vue
+37,Course Enrollment,Under 15,ក្រោម ១៥ ឆ្នាំ,,,views/CourseEnrollmentView.vue
+38,Course Enrollment,15 - 18 Years,១៥ - ១៨ ឆ្នាំ,,,views/CourseEnrollmentView.vue
+39,Course Enrollment,18 - 24 Years,១៨ - ២៤ ឆ្នាំ,,,views/CourseEnrollmentView.vue
+40,Course Enrollment,25+ Years,២៥ ឆ្នាំឡើង,,,views/CourseEnrollmentView.vue
+41,Course Enrollment,Schedule Preference,ជម្រើសកាលវិភាគ,,,views/CourseEnrollmentView.vue
+42,Course Enrollment,Cohort Start Date,ថ្ងៃចាប់ផ្តើមវគ្គ,,,views/CourseEnrollmentView.vue
+43,Course Enrollment,Estimated Completion,ថ្ងៃបញ្ចប់ប៉ាន់ស្មាន,,,views/CourseEnrollmentView.vue
+44,Course Enrollment,Weekend Batch,វេនចុងសប្តាហ៍,,,views/CourseEnrollmentView.vue
+45,Course Enrollment,Weekday Evening,វេនល្ងាចថ្ងៃធ្វើការ,,,views/CourseEnrollmentView.vue
+46,Course Enrollment,Coupon Code,លេខកូដបញ្ចុះតម្លៃ,,,views/CourseEnrollmentView.vue
+47,Course Enrollment,Apply,អនុវត្ត,,,views/CourseEnrollmentView.vue
+48,Course Enrollment,Order Summary,សេចក្តីសង្ខេបការបញ្ជាទិញ,,,views/CourseEnrollmentView.vue
+49,Course Enrollment,Total Price,តម្លៃសរុប,,,views/CourseEnrollmentView.vue
+50,Course Enrollment,Proceed to Payment,បន្តទៅការទូទាត់,,,views/CourseEnrollmentView.vue
+51,Course Enrollment,Processing Enrollment...,កំពុងដំណើរការចុះឈ្មោះ...,,,views/CourseEnrollmentView.vue
+52,Course Enrollment,Back to Courses,ត្រឡប់ទៅវគ្គសិក្សា,,,"views/CourseDetailView.vue, views/CourseEnrollmentView.vue, views/PaymentSuccessfulView.vue"
+53,Course Enrollment,course,វគ្គសិក្សា,,,"views/CourseEnrollmentView.vue, views/ExploreCoursesView.vue"
+54,Course Enrollment,Could not validate coupon code.,មិនអាចផ្ទៀងផ្ទាត់លេខកូដបញ្ចុះតម្លៃបានទេ។,,,views/CourseEnrollmentView.vue
+55,Course Enrollment,Could not submit your enrollment. Please check the details and try again.,មិនអាចដាក់ស្នើការចុះឈ្មោះបានទេ។ សូមពិនិត្យព័ត៌មាន ហើយព្យាយាមម្តងទៀត។,,,views/CourseEnrollmentView.vue
+56,Course Enrollment,Unable to load this course for enrollment. Please try again later.,មិនអាចផ្ទុកវគ្គសិក្សានេះសម្រាប់ការចុះឈ្មោះបានទេ។ សូមព្យាយាមម្តងទៀតពេលក្រោយ។,,,views/CourseEnrollmentView.vue

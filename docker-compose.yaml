@@ -1,0 +1,89 @@
+# Production Docker Compose stack for AeroByte Academy on Coolify.
+#
+# Coolify setup:
+#   Build pack: Docker Compose
+#   Base directory: /
+#   Docker Compose location: /docker-compose.yaml
+#   Domain: https://your-domain.example:8010  (service: app)
+#
+# The single "app" service builds the Vue frontend into the FastAPI image and
+# serves both from port 8010. Persistent data (SQLite + uploaded images) lives
+# in the aerobyte_data volume mounted at /app/data.
+#
+# See COOLIFY.md for the full deployment guide.
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: hosting/backend.Dockerfile
+    environment:
+      # Coolify generates a domain for this service and routes it to port
+      # 8010. The two FRONTEND_* defaults below reuse that generated domain.
+      - SERVICE_FQDN_APP_8010
+      - PORT=8010
+
+      # Required admin account. Generate ADMIN_PASSWORD_HASH with:
+      #   cd backend && python3 create_admin_hash.py
+      - ADMIN_EMAIL=${ADMIN_EMAIL:?Set ADMIN_EMAIL in Coolify}
+      - ADMIN_PASSWORD_HASH=${ADMIN_PASSWORD_HASH:?Set ADMIN_PASSWORD_HASH in Coolify}
+      # Coolify generates and stores a random value for this. Set
+      # ADMIN_SESSION_SECRET explicitly if you deploy outside Coolify or want
+      # the same secret on another host.
+      - SERVICE_BASE64_64_ADMINSESSION
+      - ADMIN_SESSION_SECRET=${ADMIN_SESSION_SECRET:-${SERVICE_BASE64_64_ADMINSESSION}}
+      - ADMIN_COOKIE_SECURE=${ADMIN_COOKIE_SECURE:-true}
+
+      # Public site origin. Override both values with your custom domain if you
+      # do not use Coolify's generated domain. Do not add a trailing slash.
+      - FRONTEND_URL=${FRONTEND_URL:-https://${SERVICE_FQDN_APP_8010}}
+      - FRONTEND_ORIGINS=${FRONTEND_ORIGINS:-https://${SERVICE_FQDN_APP_8010}}
+
+      # Application data. Keep this on the persistent volume below.
+      - AEROBYTE_CONTENT_DB=/app/data/aerobyte-content.sqlite3
+
+      # Optional: use a Coolify PostgreSQL resource instead of SQLite for the
+      # content store. Uploaded files still live on the volume.
+      - DATABASE_URL=${DATABASE_URL:-}
+
+      # Optional: absolute origin used for uploaded image URLs.
+      - BACKEND_API_ORIGIN=${BACKEND_API_ORIGIN:-}
+
+      # Optional: Google sign-in. Redirect URI:
+      # https://your-domain.example/api/auth/google/callback
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID:-}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET:-}
+
+      # Optional: password-reset email (Resend, EmailJS, or SMTP).
+      - RESEND_API_KEY=${RESEND_API_KEY:-}
+      - EMAIL_FROM=${EMAIL_FROM:-}
+      - EMAILJS_SERVICE_ID=${EMAILJS_SERVICE_ID:-}
+      - EMAILJS_TEMPLATE_ID=${EMAILJS_TEMPLATE_ID:-}
+      - EMAILJS_VERIFICATION_TEMPLATE_ID=${EMAILJS_VERIFICATION_TEMPLATE_ID:-}
+      - EMAILJS_PUBLIC_KEY=${EMAILJS_PUBLIC_KEY:-}
+      - EMAILJS_PRIVATE_KEY=${EMAILJS_PRIVATE_KEY:-}
+      - SMTP_HOST=${SMTP_HOST:-smtp.gmail.com}
+      - SMTP_PORT=${SMTP_PORT:-587}
+      - SMTP_USER=${SMTP_USER:-}
+      - SMTP_PASSWORD=${SMTP_PASSWORD:-}
+
+      # Do not expose password-reset links in API responses in production.
+      - DEV_EMAIL_FALLBACK=${DEV_EMAIL_FALLBACK:-false}
+    expose:
+      - "8010"
+    volumes:
+      - aerobyte_data:/app/data
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - import urllib.request; urllib.request.urlopen('http://127.0.0.1:8010/api/health', timeout=3)
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    restart: unless-stopped
+
+volumes:
+  aerobyte_data:

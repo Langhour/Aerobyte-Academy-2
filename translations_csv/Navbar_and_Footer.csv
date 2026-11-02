@@ -1,0 +1,15 @@
+﻿No.,Page / Section,English (Original),Current Khmer Translation,New Khmer Translation (EDIT HERE),Notes / Context,Code Location
+1,Navbar & Footer,Main navigation,ការរុករកចម្បង,,,components/layout/Navbar.vue
+2,Navbar & Footer,Course categories,ប្រភេទវគ្គសិក្សា,,,components/layout/Footer.vue
+3,Navbar & Footer,Footer navigation,ការរុករកផ្នែកខាងក្រោម,,,components/layout/Footer.vue
+4,Navbar & Footer,About,អំពីយើង,,,"components/layout/Footer.vue, components/layout/Navbar.vue"
+5,Navbar & Footer,Account menu,ម៉ឺនុយគណនី,,,components/layout/Navbar.vue
+6,Navbar & Footer,Welcome to AeroByte,សូមស្វាគមន៍មកកាន់ AeroByte,,,components/layout/Navbar.vue
+7,Navbar & Footer,Sign in or create an account,ចូលគណនី ឬបង្កើតគណនី,,,components/layout/Navbar.vue
+8,Navbar & Footer,Choose language,ជ្រើសរើសភាសា,,,components/layout/Navbar.vue
+9,Navbar & Footer,Name,ឈ្មោះ,,,components/layout/Navbar.vue
+10,Navbar & Footer,Navigation,ការរុករក,,,components/layout/Footer.vue
+11,Navbar & Footer,Categories,ប្រភេទ,,,components/layout/Footer.vue
+12,Navbar & Footer,Legal & Support,ច្បាប់ និងជំនួយ,,,components/layout/Footer.vue
+13,Navbar & Footer,All rights reserved.,រក្សាសិទ្ធិគ្រប់យ៉ាង។,,,components/layout/Footer.vue
+14,Navbar & Footer,Empowering the next generation of engineers and innovators through practical technology education.,ពង្រឹងសមត្ថភាពវិស្វករ និងអ្នកច្នៃប្រឌិតជំនាន់ក្រោយ តាមរយៈការអប់រំបច្ចេកវិទ្យាជាក់ស្តែង។,,,components/layout/Footer.vue

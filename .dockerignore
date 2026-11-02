@@ -1,0 +1,13 @@
+.git
+.venv
+**/__pycache__
+**/*.py[cod]
+.env
+backend/.env
+backend/data
+frontend/node_modules
+frontend/dist
+frontend/.env
+*.xlsx
+translations_csv
+translations_editor.html

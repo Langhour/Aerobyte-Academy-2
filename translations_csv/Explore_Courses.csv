@@ -1,0 +1,59 @@
+﻿No.,Page / Section,English (Original),Current Khmer Translation,New Khmer Translation (EDIT HERE),Notes / Context,Code Location
+1,Explore Courses,Pagination,ការបែងចែកទំព័រ,,,components/courses/Pagination.vue
+2,Explore Courses,Previous page,ទំព័រមុន,,,components/courses/Pagination.vue
+3,Explore Courses,Next page,ទំព័របន្ទាប់,,,components/courses/Pagination.vue
+4,Explore Courses,Who can join AeroByte Academy courses?,តើនរណាអាចចូលរៀនវគ្គសិក្សារបស់ AeroByte Academy បាន?,,,i18n.js (Shared)
+5,Explore Courses,"Our courses welcome curious learners, students, and professionals. Each course lists its recommended level, and you can contact us if you are unsure where to begin.",វគ្គសិក្សារបស់យើងស្វាគមន៍អ្នកចូលចិត្តស្វែងយល់ សិស្សនិស្សិត និងអ្នកជំនាញ។ វគ្គនីមួយៗបង្ហាញកម្រិតដែលបានណែនាំ ហើយអ្នកអាចទាក់ទងយើង ប្រសិនបើមិនប្រាកដថាគួរចាប់ផ្តើមពីណា។,,,i18n.js (Shared)
+6,Explore Courses,Do I need previous coding or robotics experience?,តើខ្ញុំត្រូវមានបទពិសោធន៍សរសេរកូដ ឬមនុស្សយន្តជាមុនទេ?,,,i18n.js (Shared)
+7,Explore Courses,Not for beginner courses. Each course shows its level and any recommended experience so you can choose a good starting point.,មិនចាំបាច់សម្រាប់វគ្គកម្រិតដំបូងទេ។ វគ្គនីមួយៗបង្ហាញកម្រិត និងបទពិសោធន៍ដែលបានណែនាំ ដើម្បីឱ្យអ្នកអាចជ្រើសរើសចំណុចចាប់ផ្តើមសមស្រប។,,,i18n.js (Shared)
+8,Explore Courses,"Choose a course from the Courses page, open its details, and select Enroll. Complete the registration form to create your enrollment.",ជ្រើសរើសវគ្គសិក្សានៅទំព័រវគ្គសិក្សា បើកព័ត៌មានលម្អិត ហើយចុចចុះឈ្មោះ។ បំពេញទម្រង់ចុះឈ្មោះដើម្បីបញ្ចប់ការចុះឈ្មោះរបស់អ្នក។,,,i18n.js (Shared)
+9,Explore Courses,How long are the courses and when do they meet?,តើវគ្គសិក្សាមានរយៈពេលប៉ុន្មាន និងរៀននៅពេលណា?,,,i18n.js (Shared)
+10,Explore Courses,Course duration and available schedules vary. Check the course details and enrollment form for the current duration and schedule options.,រយៈពេល និងកាលវិភាគមានភាពខុសគ្នាតាមវគ្គ។ សូមពិនិត្យព័ត៌មានលម្អិត និងទម្រង់ចុះឈ្មោះសម្រាប់រយៈពេល និងកាលវិភាគបច្ចុប្បន្ន។,,,i18n.js (Shared)
+11,Explore Courses,AeroByte Academy focuses on practical technology education. Course activities and projects depend on the specific course; see its course details for the included modules.,AeroByte Academy ផ្តោតលើការអប់រំបច្ចេកវិទ្យាជាក់ស្តែង។ សកម្មភាព និងគម្រោងអាស្រ័យលើវគ្គនីមួយៗ សូមមើលព័ត៌មានវគ្គសិក្សាសម្រាប់មេរៀនដែលមាន។,,,i18n.js (Shared)
+12,Explore Courses,How can I get help choosing a course?,តើខ្ញុំអាចទទួលជំនួយក្នុងការជ្រើសរើសវគ្គសិក្សាដោយរបៀបណា?,,,i18n.js (Shared)
+13,Explore Courses,"Contact the AeroByte Academy team through the About page. Tell us about your interests and experience, and we can help you find a suitable course.",សូមទាក់ទងក្រុម AeroByte Academy តាមទំព័រអំពីយើង។ ប្រាប់យើងអំពីចំណាប់អារម្មណ៍ និងបទពិសោធន៍របស់អ្នក ដើម្បីឱ្យយើងជួយស្វែងរកវគ្គសមស្រប។,,,i18n.js (Shared)
+14,Explore Courses,"Contact the AeroByte Academy team through the Contact Us page. Tell us about your interests and experience, and we can help you find a suitable course.",ទាក់ទងក្រុម AeroByte Academy តាមទំព័រទាក់ទងយើង។ ប្រាប់យើងអំពីចំណាប់អារម្មណ៍ និងបទពិសោធន៍របស់អ្នក ដើម្បីឱ្យយើងជួយស្វែងរកវគ្គសមស្រប។,,,i18n.js (Shared)
+15,Explore Courses,Course & Schedules,វគ្គសិក្សា និងកាលវិភាគ,,,i18n.js (Shared)
+16,Explore Courses,Published course count,ចំនួនវគ្គសិក្សាដែលបានផ្សព្វផ្សាយ,,,i18n.js (Shared)
+17,Explore Courses,Manage courses. Published course changes appear in the public catalog.,គ្រប់គ្រងវគ្គសិក្សា។ ការកែប្រែដែលបានផ្សព្វផ្សាយនឹងបង្ហាញនៅក្នុងកាតាឡុកសាធារណៈ។,,,i18n.js (Shared)
+18,Explore Courses,Manage course listings and course details.,គ្រប់គ្រងបញ្ជី និងព័ត៌មានលម្អិតវគ្គសិក្សា។,,,i18n.js (Shared)
+19,Explore Courses,Course details & specs,ព័ត៌មាន និងលក្ខណៈបច្ចេកទេសវគ្គសិក្សា,,,i18n.js (Shared)
+20,Explore Courses,"Prices, images & language",តម្លៃ រូបភាព និងភាសា,,,i18n.js (Shared)
+21,Explore Courses,Courses published,វគ្គសិក្សាដែលបានផ្សព្វផ្សាយ,,,i18n.js (Shared)
+22,Explore Courses,Manage course listings. Changes are published to the course catalog immediately.,គ្រប់គ្រងបញ្ជីវគ្គសិក្សា។ ការកែប្រែនឹងបង្ហាញក្នុងកាតាឡុកភ្លាមៗ។,,,i18n.js (Shared)
+23,Explore Courses,courses published,វគ្គសិក្សាបានផ្សព្វផ្សាយ,,,i18n.js (Shared)
+24,Explore Courses,Course details appear in the public catalog and detail page.,ព័ត៌មានវគ្គសិក្សាបង្ហាញនៅក្នុងកាតាឡុកសាធារណៈ និងទំព័រព័ត៌មានលម្អិត។,,,i18n.js (Shared)
+25,Explore Courses,Original price (optional),តម្លៃដើម (ជាជម្រើស),,,i18n.js (Shared)
+26,Explore Courses,Course image URL,URL រូបភាពវគ្គសិក្សា,,,i18n.js (Shared)
+27,Explore Courses,Unable to load courses.,មិនអាចផ្ទុកវគ្គសិក្សាបានទេ។,,,i18n.js (Shared)
+28,Explore Courses,Join a community of curious makers and start learning through hands-on technology courses.,ចូលរួមជាមួយសហគមន៍អ្នកច្នៃប្រឌិត និងចាប់ផ្តើមរៀនតាមរយៈវគ្គសិក្សាបច្ចេកវិទ្យាអនុវត្តផ្ទាល់។,,,i18n.js (Shared)
+29,Explore Courses,Need help choosing a course?,ត្រូវការជំនួយក្នុងការជ្រើសរើសវគ្គសិក្សាមែនទេ?,,,i18n.js (Shared)
+30,Explore Courses,"Hands-on courses in robotics, embedded systems, and autonomous technology.",វគ្គសិក្សាអនុវត្តផ្ទាល់អំពីមនុស្សយន្ត ប្រព័ន្ធបង្កប់ និងបច្ចេកវិទ្យាស្វ័យប្រវត្តិ។,,,i18n.js (Shared)
+31,Explore Courses,Explore Our Courses,ស្វែងរកវគ្គសិក្សារបស់យើង,,,views/ExploreCoursesView.vue
+32,Explore Courses,Featured Courses,វគ្គសិក្សាពិសេស,,,i18n.js (Shared)
+33,Explore Courses,Popular Courses,វគ្គសិក្សាពេញនិយម,,,i18n.js (Shared)
+34,Explore Courses,Newest Courses,វគ្គសិក្សាថ្មីៗ,,,i18n.js (Shared)
+35,Explore Courses,IoT,អ៊ីនធឺណិតនៃវត្ថុ (IoT),,,"components/courses/FilterSidebar.vue, components/layout/Footer.vue"
+36,Explore Courses,Electronics,អេឡិចត្រូនិក,,,"components/courses/FilterSidebar.vue, components/layout/Footer.vue"
+37,Explore Courses,Mechanical,មេកានិច,,,"components/courses/FilterSidebar.vue, components/layout/Footer.vue"
+38,Explore Courses,ROS,ROS,,,"components/courses/FilterSidebar.vue, components/layout/Footer.vue"
+39,Explore Courses,Beginner,កម្រិតដំបូង,,,i18n.js (Shared)
+40,Explore Courses,Intermediate,កម្រិតមធ្យម,,,i18n.js (Shared)
+41,Explore Courses,Advanced,កម្រិតខ្ពស់,,,i18n.js (Shared)
+42,Explore Courses,All,ទាំងអស់,,,components/courses/FilterSidebar.vue
+43,Explore Courses,Under $100,ក្រោម $100,,,components/courses/FilterSidebar.vue
+44,Explore Courses,$100 - $200,$100 - $200,,,components/courses/FilterSidebar.vue
+45,Explore Courses,$200+,$200+,,,components/courses/FilterSidebar.vue
+46,Explore Courses,Learn practical technology skills through hands-on courses designed by industry engineers.,រៀនជំនាញបច្ចេកវិទ្យាជាក់ស្តែងតាមរយៈវគ្គសិក្សាអនុវត្តដែលរៀបចំដោយវិស្វករឧស្សាហកម្ម។,,,views/ExploreCoursesView.vue
+47,Explore Courses,Search courses...,ស្វែងរកវគ្គសិក្សា...,,,views/ExploreCoursesView.vue
+48,Explore Courses,Filters,តម្រង,,,components/courses/FilterSidebar.vue
+49,Explore Courses,Clear All,សម្អាតទាំងអស់,,,components/courses/FilterSidebar.vue
+50,Explore Courses,No courses match your selected filters,គ្មានវគ្គសិក្សាដែលត្រូវនឹងតម្រងដែលអ្នកបានជ្រើសរើសទេ,,,views/ExploreCoursesView.vue
+51,Explore Courses,Try clearing some filters or searching for another robotics or IoT topic.,សាកល្បងសម្អាតតម្រងខ្លះ ឬស្វែងរកប្រធានបទមនុស្សយន្ត ឬ IoT ផ្សេងទៀត។,,,views/ExploreCoursesView.vue
+52,Explore Courses,Reset Filters,កំណត់តម្រងឡើងវិញ,,,views/ExploreCoursesView.vue
+53,Explore Courses,Showing,កំពុងបង្ហាញ,,,views/ExploreCoursesView.vue
+54,Explore Courses,result(s),លទ្ធផល,,,views/ExploreCoursesView.vue
+55,Explore Courses,Reset all filters,កំណត់តម្រងទាំងអស់ឡើងវិញ,,,views/ExploreCoursesView.vue
+56,Explore Courses,View course details,មើលព័ត៌មានលម្អិតវគ្គសិក្សា,,,components/courses/CourseCard.vue
+57,Explore Courses,Course Outline,គ្រោងមាតិកាវគ្គសិក្សា,,,i18n.js (Shared)
+58,Explore Courses,Could not load courses. Check that the API server is running and try again.,មិនអាចផ្ទុកវគ្គសិក្សាបានទេ។ សូមពិនិត្យថា API server កំពុងដំណើរការ ហើយព្យាយាមម្តងទៀត។,,,views/ExploreCoursesView.vue

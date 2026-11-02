@@ -1,0 +1,8 @@
+﻿No.,Page / Section,English (Original),Current Khmer Translation,New Khmer Translation (EDIT HERE),Notes / Context,Code Location
+1,Questions & FAQ,Questions,សំណួរ,,,"components/layout/Footer.vue, components/layout/Navbar.vue, views/QuestionsView.vue"
+2,Questions & FAQ,"Answers about courses, enrollment, and learning at AeroByte Academy.",ចម្លើយអំពីវគ្គសិក្សា ការចុះឈ្មោះ និងការសិក្សានៅ AeroByte Academy។,,,views/QuestionsView.vue
+3,Questions & FAQ,Frequently asked questions,សំណួរដែលសួរញឹកញាប់,,,views/QuestionsView.vue
+4,Questions & FAQ,Quick answers to help you get started.,ចម្លើយខ្លីៗដើម្បីជួយអ្នកចាប់ផ្តើម។,,,views/QuestionsView.vue
+5,Questions & FAQ,How do I enroll in a course?,តើខ្ញុំចុះឈ្មោះចូលរៀនវគ្គសិក្សាដោយរបៀបណា?,,,views/QuestionsView.vue
+6,Questions & FAQ,Still have a question?,នៅមានសំណួរទៀតមែនទេ?,,,views/QuestionsView.vue
+7,Questions & FAQ,Contact our team and we will be happy to help.,ទាក់ទងក្រុមការងាររបស់យើង ហើយយើងរីករាយក្នុងការជួយអ្នក។,,,views/QuestionsView.vue

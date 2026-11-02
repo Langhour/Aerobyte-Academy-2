@@ -1,0 +1,150 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Lock root viewport on Admin portal to eliminate double scrollbar and window overscroll */
+html.admin-locked-viewport,
+body.admin-locked-viewport {
+  height: 100% !important;
+  max-height: 100vh !important;
+  overflow: hidden !important;
+}
+
+html {
+  min-width: 320px;
+  background: #f8fafc;
+  transition: background-color 200ms ease, color 200ms ease;
+  overflow-x: clip;
+}
+
+html.dark {
+  background: #0f172a;
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  color: #334155;
+  font-family: "Kantumruy Pro", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+  max-width: 100%;
+}
+
+html,
+body,
+#app,
+*,
+*::before,
+*::after,
+button,
+input,
+optgroup,
+select,
+textarea,
+code,
+pre,
+kbd,
+samp,
+p,
+span,
+a,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+li,
+td,
+th {
+  font-family: "Kantumruy Pro", sans-serif !important;
+}
+
+html.dark body {
+  color: #cbd5e1;
+  background: #0f172a;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+/* Remove duplicate native browser search cancel (X) icon across WebKit/Blink */
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-results-button,
+input[type="search"]::-webkit-search-results-decoration {
+  -webkit-appearance: none;
+  appearance: none;
+  display: none;
+}
+
+/* Remove duplicate native browser password reveal (eye) and clear (X) icons */
+input::-ms-reveal,
+input::-ms-clear,
+input::-webkit-credentials-auto-fill-button {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+.courses-hero {
+  background: linear-gradient(180deg, #e8eff9 0%, #f1f5fa 64%, #f8fafc 100%);
+}
+
+html.dark .courses-hero {
+  background: linear-gradient(180deg, #0b1120 0%, #0f172a 64%, #0f172a 100%);
+}
+
+/* Ensure checkboxes and radio inputs match the AeroByte navy logo color */
+input[type="checkbox"],
+input[type="radio"] {
+  accent-color: #102a49;
+}
+
+html.dark input[type="checkbox"],
+html.dark input[type="radio"] {
+  accent-color: #4f46e5;
+}
+
+/* Dark mode inputs global polish */
+html.dark .profile-input,
+html.dark .admin-input {
+  background-color: #1e293b !important;
+  border-color: #334155 !important;
+  color: #f1f5f9 !important;
+}
+
+html.dark .profile-input::placeholder,
+html.dark .admin-input::placeholder {
+  color: #94a3b8 !important;
+}
+
+html.dark .profile-input:focus,
+html.dark .admin-input:focus {
+  border-color: #6366f1 !important;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2) !important;
+}
+
+html.dark .admin-input option {
+  background-color: #1e293b !important;
+  color: #f8fafc !important;
+}
+
+/* Dark mode admin label */
+html.dark .admin-label {
+  color: #f1f5f9 !important;
+}
+
+/* Dark mode logo: automatically turns logo white so it is clearly visible for users and admins */
+html.dark .theme-logo,
+html.dark img[src*="aerobyte-logo"] {
+  filter: brightness(0) invert(1);
+  transition: filter 200ms ease;
+}

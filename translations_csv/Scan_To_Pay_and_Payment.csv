@@ -1,0 +1,29 @@
+﻿No.,Page / Section,English (Original),Current Khmer Translation,New Khmer Translation (EDIT HERE),Notes / Context,Code Location
+1,Scan To Pay & Payment,payment pending,កំពុងរង់ចាំការទូទាត់,,,i18n.js (Shared)
+2,Scan To Pay & Payment,Payment is confirmed after the academy verifies the transfer.,ការទូទាត់នឹងត្រូវបានបញ្ជាក់បន្ទាប់ពីសាលាបានផ្ទៀងផ្ទាត់ការផ្ទេរប្រាក់។,,,views/ScanToPayView.vue
+3,Scan To Pay & Payment,Your payment was verified by the academy. Use Download Receipt to print or save this confirmation as a PDF.,ការទូទាត់របស់អ្នកត្រូវបានសាលាផ្ទៀងផ្ទាត់។ ប្រើប៊ូតុងទាញយកបង្កាន់ដៃ ដើម្បីបោះពុម្ព ឬរក្សាទុកជាឯកសារ PDF។,,,views/PaymentSuccessfulView.vue
+4,Scan To Pay & Payment,Track payments and verify QR checkout records.,តាមដានការទូទាត់ និងផ្ទៀងផ្ទាត់កំណត់ត្រា QR checkout។,,,i18n.js (Shared)
+5,Scan To Pay & Payment,Payment status tracking,តាមដានស្ថានភាពការទូទាត់,,,i18n.js (Shared)
+6,Scan To Pay & Payment,Manual QR verification,ផ្ទៀងផ្ទាត់ QR ដោយដៃ,,,i18n.js (Shared)
+7,Scan To Pay & Payment,Digital receipts,បង្កាន់ដៃឌីជីថល,,,i18n.js (Shared)
+8,Scan To Pay & Payment,Scan to Pay,ស្កេនដើម្បីទូទាត់,,,views/ScanToPayView.vue
+9,Scan To Pay & Payment,"Open your banking app, scan the QR code, and confirm payment. This page will update automatically.",បើកកម្មវិធីធនាគាររបស់អ្នក ស្កេន QR Code ហើយបញ្ជាក់ការទូទាត់។ ទំព័រនេះនឹងធ្វើបច្ចុប្បន្នភាពដោយស្វ័យប្រវត្តិ។,,,views/ScanToPayView.vue
+10,Scan To Pay & Payment,Simulate Payment Success,សាកល្បងការទូទាត់ជោគជ័យ,,,i18n.js (Shared)
+11,Scan To Pay & Payment,Simulate Session Expired,សាកល្បងវគ្គទូទាត់ផុតកំណត់,,,i18n.js (Shared)
+12,Scan To Pay & Payment,Amount Due,ចំនួនត្រូវបង់,,,views/ScanToPayView.vue
+13,Scan To Pay & Payment,Time Left,ពេលវេលានៅសល់,,,views/ScanToPayView.vue
+14,Scan To Pay & Payment,Payment Successful!,ការទូទាត់ជោគជ័យ!,,,views/PaymentSuccessfulView.vue
+15,Scan To Pay & Payment,Payment Not Confirmed,មិនទាន់បានបញ្ជាក់ការទូទាត់,,,views/PaymentSuccessfulView.vue
+16,Scan To Pay & Payment,Your enrollment has been confirmed! We have sent your official receipt and lab welcome guide to your registered Telegram and email.,ការចុះឈ្មោះរបស់អ្នកត្រូវបានបញ្ជាក់ហើយ! យើងបានផ្ញើបង្កាន់ដៃផ្លូវការ និងសៀវភៅស្វាគមន៍មន្ទីរពិសោធន៍ទៅ Telegram និងអ៊ីមែលដែលអ្នកបានចុះឈ្មោះ។,,,i18n.js (Shared)
+17,Scan To Pay & Payment,We could not confirm a completed payment for this enrollment yet.,យើងមិនទាន់អាចបញ្ជាក់ការទូទាត់សម្រាប់ការចុះឈ្មោះនេះបានទេ។,,,views/PaymentSuccessfulView.vue
+18,Scan To Pay & Payment,Date,កាលបរិច្ឆេទ,,,views/PaymentSuccessfulView.vue
+19,Scan To Pay & Payment,Course,វគ្គសិក្សា,,,views/PaymentSuccessfulView.vue
+20,Scan To Pay & Payment,Download Receipt,ទាញយកបង្កាន់ដៃ,,,views/PaymentSuccessfulView.vue
+21,Scan To Pay & Payment,Payment Session Expired,វគ្គទូទាត់បានផុតកំណត់,,,views/PaymentExpiredView.vue
+22,Scan To Pay & Payment,Payment Session Status,ស្ថានភាពវគ្គទូទាត់,,,i18n.js (Shared)
+23,Scan To Pay & Payment,Your QR payment session for,វគ្គទូទាត់ QR របស់អ្នកសម្រាប់,,,i18n.js (Shared)
+24,Scan To Pay & Payment,has timed out. Please generate a new payment session to complete your enrollment.,បានអស់ពេលហើយ។ សូមបង្កើតវគ្គទូទាត់ថ្មី ដើម្បីបញ្ចប់ការចុះឈ្មោះ។,,,i18n.js (Shared)
+25,Scan To Pay & Payment,This payment session has not been confirmed as expired.,វគ្គទូទាត់នេះមិនទាន់ត្រូវបានបញ្ជាក់ថាផុតកំណត់ទេ។,,,i18n.js (Shared)
+26,Scan To Pay & Payment,Try Again / New QR,ព្យាយាមម្តងទៀត / QR ថ្មី,,,i18n.js (Shared)
+27,Scan To Pay & Payment,Transaction ID,លេខប្រតិបត្តិការ,,,views/PaymentSuccessfulView.vue
+28,Scan To Pay & Payment,Amount Paid,ចំនួនបានបង់,,,views/PaymentSuccessfulView.vue
