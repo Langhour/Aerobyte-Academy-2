@@ -298,8 +298,8 @@
                     @click="selectedInfill = inf"
                     class="rounded-lg border py-2 text-xs font-bold transition text-center"
                     :class="selectedInfill === inf
-                      ? 'border-sky-500 bg-sky-50 dark:bg-sky-950/40 text-navy-900 dark:text-indigo-300'
-                      : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50'"
+                      ? 'border-navy-900 bg-navy-900 text-white dark:border-indigo-500 dark:bg-indigo-600 dark:text-white shadow-xs'
+                      : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700/50'"
                   >
                     {{ inf }}%
                   </button>
@@ -322,11 +322,11 @@
                     @click="selectedLayerHeight = res.val"
                     class="rounded-lg border py-2 px-1 text-center transition"
                     :class="selectedLayerHeight === res.val
-                      ? 'border-sky-500 bg-sky-50 dark:bg-sky-950/40 text-navy-900 dark:text-indigo-300'
-                      : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50'"
+                      ? 'border-navy-900 bg-navy-900 text-white dark:border-indigo-500 dark:bg-indigo-600 dark:text-white shadow-xs'
+                      : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700/50'"
                   >
                     <div class="text-xs font-bold">{{ res.val }}</div>
-                    <div class="text-[9px] text-slate-400">{{ res.label }}</div>
+                    <div class="text-[9px]" :class="selectedLayerHeight === res.val ? 'text-slate-200 dark:text-indigo-200' : 'text-slate-400'">{{ res.label }}</div>
                   </button>
                 </div>
               </div>
@@ -341,7 +341,8 @@
                 <label
                   v-for="opt in postProcessOptions"
                   :key="opt.id"
-                  class="flex items-center justify-between p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/80 transition"
+                  :class="selectedPostProcess.includes(opt.id) ? 'border-navy-900 dark:border-indigo-500 bg-navy-50/50 dark:bg-slate-800 ring-1 ring-navy-900/20 dark:ring-indigo-500/30' : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/80'"
+                  class="flex items-center justify-between p-3 rounded-xl border cursor-pointer transition"
                 >
                   <div class="flex items-center gap-3">
                     <input
@@ -450,7 +451,7 @@
               <button
                 type="button"
                 @click="openOrderModal = true"
-                class="w-full rounded-xl bg-sky-600 hover:bg-sky-600 text-white font-extrabold py-3.5 px-4 text-sm shadow-md shadow-sky-600/20 active:scale-[0.99] transition flex items-center justify-center gap-2 cursor-pointer"
+                class="w-full rounded-xl bg-navy-900 hover:bg-navy-800 dark:bg-indigo-600 dark:hover:bg-indigo-500 text-white font-extrabold py-3.5 px-4 text-sm shadow-md shadow-navy-950/20 active:scale-[0.99] transition flex items-center justify-center gap-2 cursor-pointer"
               >
                 <span>🚀</span>
                 <span>Submit Print Order</span>
@@ -564,7 +565,7 @@
 
           <button
             type="submit"
-            class="w-full rounded-xl bg-sky-600 hover:bg-sky-600 text-white font-bold py-3 text-xs shadow-md transition cursor-pointer"
+            class="w-full rounded-xl bg-navy-900 hover:bg-navy-800 dark:bg-indigo-600 dark:hover:bg-indigo-500 text-white font-bold py-3 text-xs shadow-md shadow-navy-950/20 transition cursor-pointer"
           >
             Confirm & Send to Lab Engineers
           </button>
