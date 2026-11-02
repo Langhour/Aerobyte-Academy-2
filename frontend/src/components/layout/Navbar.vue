@@ -46,8 +46,8 @@
           to="/print"
           class="text-xs xl:text-[13px] font-bold tracking-tight transition-all duration-150 py-1.5 px-2.5 xl:px-3 rounded-lg flex items-center gap-1.5"
           :class="route.path === '/print'
-            ? 'text-orange-600 dark:text-orange-400 font-extrabold bg-orange-50 dark:bg-orange-950/40 shadow-xs'
-            : 'text-slate-600 dark:text-slate-300 hover:text-orange-600 dark:hover:text-orange-400 hover:bg-slate-100/70 dark:hover:bg-slate-800/60'"
+            ? 'text-sky-600 dark:text-sky-400 font-extrabold bg-sky-50 dark:bg-sky-950/40 shadow-xs'
+            : 'text-slate-600 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400 hover:bg-slate-100/70 dark:hover:bg-slate-800/60'"
         >
           <span>{{ t('Print') }}</span>
         </RouterLink>
@@ -66,8 +66,8 @@
           to="/store"
           class="text-xs xl:text-[13px] font-bold tracking-tight transition-all duration-150 py-1.5 px-2.5 xl:px-3 rounded-lg flex items-center gap-1.5"
           :class="route.path === '/store'
-            ? 'text-amber-600 dark:text-amber-400 font-extrabold bg-amber-50 dark:bg-amber-950/40 shadow-xs'
-            : 'text-slate-600 dark:text-slate-300 hover:text-amber-600 dark:hover:text-amber-400 hover:bg-slate-100/70 dark:hover:bg-slate-800/60'"
+            ? 'text-sky-600 dark:text-sky-400 font-extrabold bg-sky-50 dark:bg-sky-950/40 shadow-xs'
+            : 'text-slate-600 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400 hover:bg-slate-100/70 dark:hover:bg-slate-800/60'"
         >
           <span>{{ t('Store') }}</span>
         </RouterLink>
@@ -355,11 +355,11 @@
               to="/print"
               class="flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-bold transition hover:bg-slate-100 dark:hover:bg-slate-800"
               :class="route.path === '/print'
-                ? 'bg-orange-50 dark:bg-orange-950/40 text-orange-600 dark:text-orange-300 font-extrabold'
-                : 'text-slate-700 dark:text-slate-200 hover:text-orange-600 dark:hover:text-orange-400'"
+                ? 'bg-sky-50 dark:bg-sky-950/40 text-sky-600 dark:text-sky-300 font-extrabold'
+                : 'text-slate-700 dark:text-slate-200 hover:text-sky-600 dark:hover:text-sky-400'"
               @click="mobileDrawerOpen = false"
             >
-              <Printer class="h-5 w-5 text-orange-600 dark:text-orange-400 shrink-0" />
+              <Printer class="h-5 w-5 text-sky-600 dark:text-sky-400 shrink-0" />
               <span>{{ t('Print') }}</span>
             </RouterLink>
 
@@ -381,11 +381,11 @@
               to="/store"
               class="flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-bold transition hover:bg-slate-100 dark:hover:bg-slate-800"
               :class="route.path === '/store'
-                ? 'bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-300 font-extrabold'
-                : 'text-slate-700 dark:text-slate-200 hover:text-amber-600 dark:hover:text-amber-400'"
+                ? 'bg-sky-50 dark:bg-sky-950/40 text-sky-600 dark:text-sky-300 font-extrabold'
+                : 'text-slate-700 dark:text-slate-200 hover:text-sky-600 dark:hover:text-sky-400'"
               @click="mobileDrawerOpen = false"
             >
-              <ShoppingBag class="h-5 w-5 text-amber-600 dark:text-amber-400 shrink-0" />
+              <ShoppingBag class="h-5 w-5 text-sky-600 dark:text-sky-400 shrink-0" />
               <span>{{ t('Store') }}</span>
             </RouterLink>
 

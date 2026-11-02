@@ -29,7 +29,7 @@
         <div class="mt-8 flex flex-wrap justify-center gap-3">
           <RouterLink
             to="/contact"
-            class="inline-flex items-center gap-2 rounded-xl bg-navy-900 dark:bg-indigo-600 px-6 py-3 text-sm font-bold text-white shadow-sm hover:bg-navy-800 dark:hover:bg-indigo-500 transition"
+            class="inline-flex items-center gap-2 rounded-xl bg-sky-600 hover:bg-sky-500 dark:bg-sky-600 dark:hover:bg-sky-500 px-6 py-3 text-sm font-bold text-white shadow-sm shadow-sky-600/20 transition"
           >
             <span>{{ t('Join Flight Lab') }}</span>
           </RouterLink>
@@ -57,7 +57,7 @@
         </div>
 
         <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800/80 p-6 shadow-xs">
-          <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-100 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 mb-4 text-xl">
+          <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-sky-100 dark:bg-sky-950/50 text-sky-600 dark:text-sky-400 mb-4 text-xl">
             📡
           </div>
           <h3 class="text-lg font-bold text-navy-900 dark:text-white">{{ t('Autonomous Navigation') }}</h3>
@@ -67,7 +67,7 @@
         </div>
 
         <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800/80 p-6 shadow-xs sm:col-span-2 lg:col-span-1">
-          <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-100 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 mb-4 text-xl">
+          <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-sky-100 dark:bg-sky-950/50 text-sky-600 dark:text-sky-400 mb-4 text-xl">
             🏆
           </div>
           <h3 class="text-lg font-bold text-navy-900 dark:text-white">{{ t('Competitions & Teams') }}</h3>
