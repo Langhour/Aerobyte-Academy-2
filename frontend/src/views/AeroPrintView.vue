@@ -5,7 +5,7 @@
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div class="flex items-center gap-3.5">
-            <div class="p-2 rounded-xl bg-sky-50 dark:bg-sky-950/40 border border-sky-200 dark:border-sky-900/60 shrink-0">
+            <div class="p-2 rounded-xl bg-navy-50 dark:bg-slate-800 border border-navy-100 dark:border-slate-700 shrink-0">
               <img
                 src="/assets/brand/aero-print.png"
                 alt="Aero Print Logo"
@@ -17,7 +17,7 @@
                 <h1 class="text-xl sm:text-2xl font-black tracking-tight text-navy-900 dark:text-white">
                   Aero Print
                 </h1>
-                <span class="inline-flex items-center rounded-full bg-sky-100 dark:bg-sky-900/50 px-2.5 py-0.5 text-[11px] font-bold text-sky-700 dark:text-sky-300">
+                <span class="inline-flex items-center rounded-full bg-navy-50 dark:bg-slate-800 px-2.5 py-0.5 text-[11px] font-bold text-navy-900 dark:text-indigo-300">
                   Instant 3D Quote
                 </span>
               </div>
@@ -52,7 +52,7 @@
           <section class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6 shadow-xs">
             <div class="flex items-center justify-between mb-4">
               <div class="flex items-center gap-2.5">
-                <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-sky-600 text-white font-bold text-xs">
+                <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-navy-900 dark:bg-indigo-600 text-white font-bold text-xs">
                   1
                 </span>
                 <h2 class="text-base sm:text-lg font-bold text-navy-900 dark:text-white">
@@ -69,8 +69,8 @@
               @drop.prevent="handleFileDrop"
               class="relative rounded-xl border-2 border-dashed transition-all p-6 sm:p-8 text-center cursor-pointer"
               :class="isDragging
-                ? 'border-sky-500 bg-sky-50/50 dark:bg-sky-950/20'
-                : 'border-slate-300 dark:border-slate-700 hover:border-sky-400 dark:hover:border-sky-500 bg-slate-50/50 dark:bg-slate-800/40'"
+                ? 'border-navy-800 dark:border-indigo-500 bg-navy-50/50 dark:bg-slate-800/40'
+                : 'border-slate-300 dark:border-slate-700 hover:border-navy-600 dark:hover:border-indigo-400 bg-slate-50/50 dark:bg-slate-800/40'"
               @click="triggerFileInput"
             >
               <input
@@ -82,11 +82,11 @@
                 @change="handleFileInputChange"
               />
 
-              <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-sky-100 dark:bg-sky-950/60 text-sky-600 dark:text-sky-400 mb-3 text-2xl">
+              <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-navy-50 dark:bg-slate-800 text-navy-900 dark:text-indigo-300 mb-3 text-2xl">
                 📁
               </div>
               <p class="text-sm sm:text-base font-bold text-navy-900 dark:text-white">
-                Drag and drop your 3D models here, or <span class="text-sky-600 dark:text-sky-400 underline">browse files</span>
+                Drag and drop your 3D models here, or <span class="text-navy-900 dark:text-indigo-400 underline font-semibold">browse files</span>
               </p>
               <p class="text-xs text-slate-500 dark:text-slate-400 mt-1.5">
                 Max file size: 50MB per file. Multi-part assemblies supported.
@@ -104,7 +104,7 @@
                   :key="sample.id"
                   type="button"
                   @click="loadSampleModel(sample)"
-                  class="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-1.5 text-xs font-medium text-slate-700 dark:text-slate-200 hover:border-sky-400 hover:text-sky-600 dark:hover:text-sky-400 transition cursor-pointer"
+                  class="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-1.5 text-xs font-medium text-slate-700 dark:text-slate-200 hover:border-navy-600 hover:text-navy-900 dark:hover:text-indigo-300 transition cursor-pointer"
                 >
                   <span>{{ sample.icon }}</span>
                   <span>{{ sample.name }}</span>
@@ -120,7 +120,7 @@
                 class="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-3.5 sm:p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xs"
               >
                 <div class="flex items-center gap-3 min-w-0">
-                  <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-sky-100 dark:bg-sky-950/60 text-sky-600 dark:text-sky-400 font-bold text-xs uppercase">
+                  <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-navy-50 dark:bg-slate-800 text-navy-900 dark:text-indigo-300 font-bold text-xs uppercase">
                     3D
                   </div>
                   <div class="min-w-0">
@@ -168,7 +168,7 @@
           <!-- 2. Manufacturing Technology (FDM, SLA, SLS) -->
           <section class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6 shadow-xs">
             <div class="flex items-center gap-2.5 mb-4">
-              <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-sky-600 text-white font-bold text-xs">
+              <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-navy-900 dark:bg-indigo-600 text-white font-bold text-xs">
                 2
               </span>
               <h2 class="text-base sm:text-lg font-bold text-navy-900 dark:text-white">
@@ -184,12 +184,12 @@
                 @click="selectedTech = tech.id"
                 class="rounded-xl border-2 p-4 text-left transition-all cursor-pointer relative"
                 :class="selectedTech === tech.id
-                  ? 'border-sky-500 bg-sky-50/40 dark:bg-sky-950/30 ring-1 ring-sky-500'
+                  ? 'border-navy-900 dark:border-indigo-500 bg-navy-50/60 dark:bg-slate-800 ring-2 ring-navy-900/20 dark:ring-indigo-500/30'
                   : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-white dark:bg-slate-800/60'"
               >
                 <div class="flex items-center justify-between mb-1.5">
                   <span class="text-sm font-black text-navy-900 dark:text-white">{{ tech.name }}</span>
-                  <span class="text-xs font-bold text-sky-600 dark:text-sky-400">{{ tech.badge }}</span>
+                  <span class="text-xs font-bold text-navy-900 dark:text-indigo-300">{{ tech.badge }}</span>
                 </div>
                 <p class="text-[11px] font-medium text-slate-500 dark:text-slate-400 leading-snug">
                   {{ tech.desc }}
@@ -205,14 +205,14 @@
           <section class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6 shadow-xs">
             <div class="flex items-center justify-between mb-4">
               <div class="flex items-center gap-2.5">
-                <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-sky-600 text-white font-bold text-xs">
+                <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-navy-900 dark:bg-indigo-600 text-white font-bold text-xs">
                   3
                 </span>
                 <h2 class="text-base sm:text-lg font-bold text-navy-900 dark:text-white">
                   {{ t('Material') }}
                 </h2>
               </div>
-              <span class="text-xs text-sky-600 dark:text-sky-400 font-semibold">
+              <span class="text-xs text-navy-900 dark:text-indigo-300 font-bold">
                 {{ currentMaterials.length }} Options available
               </span>
             </div>
@@ -225,7 +225,7 @@
                 @click="selectedMaterial = mat.id"
                 class="rounded-xl border-2 p-3.5 text-left transition-all cursor-pointer"
                 :class="selectedMaterial === mat.id
-                  ? 'border-sky-500 bg-sky-50/40 dark:bg-sky-950/30 ring-1 ring-sky-500'
+                  ? 'border-navy-900 dark:border-indigo-500 bg-navy-50/60 dark:bg-slate-800 ring-2 ring-navy-900/20 dark:ring-indigo-500/30'
                   : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-white dark:bg-slate-800/60'"
               >
                 <div class="flex items-center justify-between">
@@ -251,7 +251,7 @@
           <!-- 4. Color, Infill & Layer Resolution -->
           <section class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6 shadow-xs space-y-6">
             <div class="flex items-center gap-2.5">
-              <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-sky-600 text-white font-bold text-xs">
+              <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-navy-900 dark:bg-indigo-600 text-white font-bold text-xs">
                 4
               </span>
               <h2 class="text-base sm:text-lg font-bold text-navy-900 dark:text-white">
@@ -272,7 +272,7 @@
                   @click="selectedColor = color.name"
                   class="flex items-center gap-2 rounded-xl border px-3 py-1.5 text-xs font-semibold transition cursor-pointer"
                   :class="selectedColor === color.name
-                    ? 'border-sky-500 bg-sky-50 dark:bg-sky-950/40 text-sky-950 dark:text-white ring-1 ring-sky-500'
+                    ? 'border-navy-900 dark:border-indigo-500 bg-navy-900 dark:bg-indigo-600 text-white font-bold shadow-xs'
                     : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300'"
                 >
                   <span class="h-3.5 w-3.5 rounded-full border border-slate-300 shadow-xs shrink-0" :style="{ backgroundColor: color.hex }"></span>
@@ -288,7 +288,7 @@
                   <label class="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
                     Infill Density
                   </label>
-                  <span class="text-xs font-bold text-sky-600 dark:text-sky-400">{{ selectedInfill }}%</span>
+                  <span class="text-xs font-bold text-navy-900 dark:text-indigo-300">{{ selectedInfill }}%</span>
                 </div>
                 <div class="grid grid-cols-4 gap-1.5">
                   <button
@@ -298,7 +298,7 @@
                     @click="selectedInfill = inf"
                     class="rounded-lg border py-2 text-xs font-bold transition text-center"
                     :class="selectedInfill === inf
-                      ? 'border-sky-500 bg-sky-50 dark:bg-sky-950/40 text-sky-700 dark:text-sky-300'
+                      ? 'border-sky-500 bg-sky-50 dark:bg-sky-950/40 text-navy-900 dark:text-indigo-300'
                       : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50'"
                   >
                     {{ inf }}%
@@ -322,7 +322,7 @@
                     @click="selectedLayerHeight = res.val"
                     class="rounded-lg border py-2 px-1 text-center transition"
                     :class="selectedLayerHeight === res.val
-                      ? 'border-sky-500 bg-sky-50 dark:bg-sky-950/40 text-sky-700 dark:text-sky-300'
+                      ? 'border-sky-500 bg-sky-50 dark:bg-sky-950/40 text-navy-900 dark:text-indigo-300'
                       : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50'"
                   >
                     <div class="text-xs font-bold">{{ res.val }}</div>
@@ -348,7 +348,7 @@
                       type="checkbox"
                       :value="opt.id"
                       v-model="selectedPostProcess"
-                      class="h-4 w-4 rounded border-slate-300 text-sky-600 focus:ring-sky-500"
+                      class="h-4 w-4 rounded border-slate-300 text-navy-900 focus:ring-navy-900 dark:focus:ring-indigo-500"
                     />
                     <div>
                       <p class="text-xs font-bold text-navy-900 dark:text-white">{{ opt.name }}</p>
@@ -438,9 +438,9 @@
             </div>
 
             <!-- Lead Time Notice -->
-            <div class="mt-4 rounded-xl bg-sky-50/70 dark:bg-sky-950/30 p-3 border border-sky-200 dark:border-sky-900/50 flex items-center gap-2.5">
-              <span class="text-sky-600 text-lg">⚡</span>
-              <p class="text-[11px] text-sky-900 dark:text-sky-300 font-medium leading-tight">
+            <div class="mt-4 rounded-xl bg-navy-50/80 dark:bg-slate-800/60 p-3 border border-navy-100 dark:border-slate-700 flex items-center gap-2.5">
+              <span class="text-navy-900 dark:text-indigo-400 text-lg">⚡</span>
+              <p class="text-[11px] text-navy-900 dark:text-indigo-200 font-medium leading-tight">
                 <strong>Fast Turnaround:</strong> Print will be completed and ready for pickup/delivery in Phnom Penh in <strong>24–48 hours</strong>.
               </p>
             </div>
@@ -521,7 +521,7 @@
               type="text"
               required
               placeholder="e.g. Sokha Chan"
-              class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:outline-sky-500"
+              class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:outline-navy-900 dark:focus:outline-indigo-500"
             />
           </div>
 
@@ -533,7 +533,7 @@
                 type="tel"
                 required
                 placeholder="012 345 678"
-                class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:outline-sky-500"
+                class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:outline-navy-900 dark:focus:outline-indigo-500"
               />
             </div>
             <div>
@@ -542,7 +542,7 @@
                 v-model="orderForm.telegram"
                 type="text"
                 placeholder="@username"
-                class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:outline-sky-500"
+                class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:outline-navy-900 dark:focus:outline-indigo-500"
               />
             </div>
           </div>
@@ -553,7 +553,7 @@
               v-model="orderForm.notes"
               rows="2"
               placeholder="Pick up at AeroByte Academy Lab, or deliver in Phnom Penh..."
-              class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:outline-sky-500"
+              class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:outline-navy-900 dark:focus:outline-indigo-500"
             ></textarea>
           </div>
 
