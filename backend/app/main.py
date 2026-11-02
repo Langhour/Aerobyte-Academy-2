@@ -206,6 +206,10 @@ def serve_uploaded_file(
     )
 
 frontend_directory = Path(__file__).resolve().parents[1] / "static"
+if not (frontend_directory / "index.html").exists():
+    alt_frontend = Path(__file__).resolve().parents[2] / "frontend" / "dist"
+    if (alt_frontend / "index.html").exists():
+        frontend_directory = alt_frontend
 
 
 
@@ -272,6 +276,17 @@ def health_check():
 
 @app.get("/{path:path}", include_in_schema=False)
 def serve_frontend(path: str):
+    index_file = frontend_directory / "index.html"
+    if not index_file.exists():
+        return Response(
+            content="""<!DOCTYPE html>
+<html><head><title>AeroByte Academy API</title><meta name="viewport" content="width=device-width, initial-scale=1"></head>
+<body style="font-family:sans-serif;text-align:center;padding:50px;">
+<h2>AeroByte Academy API is Running</h2>
+<p><a href="/api/health">Check Health (/api/health)</a> | <a href="/docs">API Docs (/docs)</a></p>
+</body></html>""",
+            media_type="text/html",
+        )
     requested_file = (frontend_directory / path).resolve()
     if requested_file.is_relative_to(frontend_directory.resolve()) and requested_file.is_file():
         if path:
@@ -282,7 +297,7 @@ def serve_frontend(path: str):
     if path == "api" or path.startswith("api/") or path == "uploads" or path.startswith("uploads/"):
         raise HTTPException(status_code=404, detail="Not Found")
     return FileResponse(
-        frontend_directory / "index.html",
+        index_file,
         headers={"Cache-Control": "no-cache, must-revalidate"}
     )
 
