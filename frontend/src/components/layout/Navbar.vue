@@ -223,26 +223,28 @@
                 </button>
               </div>
 
-              <RouterLink
-                v-if="!profileName"
-                :to="{ path: '/account', query: { mode: 'register' } }"
-                role="menuitem"
-                class="flex items-center gap-3 rounded-xl px-3 py-2.5 sm:py-3 text-xs sm:text-sm font-semibold text-navy-900 dark:text-white transition hover:bg-navy-50 dark:hover:bg-slate-700"
-                @click="closeAccountMenu"
-              >
-                <UserPlus class="h-4 w-4 sm:h-5 sm:w-5" aria-hidden="true" />
-                <span>{{ t('Register') }}</span>
-              </RouterLink>
-              <RouterLink
-                v-if="!profileName"
-                :to="{ path: '/account', query: { mode: 'signin' } }"
-                role="menuitem"
-                class="flex items-center gap-3 rounded-xl px-3 py-2.5 sm:py-3 text-xs sm:text-sm font-semibold text-navy-900 dark:text-white transition hover:bg-navy-50 dark:hover:bg-slate-700"
-                @click="closeAccountMenu"
-              >
-                <LogIn class="h-4 w-4 sm:h-5 sm:w-5" aria-hidden="true" />
-                <span>{{ t('Sign in') }}</span>
-              </RouterLink>
+              <!-- Same Line: Sign in & Register Buttons -->
+              <div v-if="!profileName" class="grid grid-cols-2 gap-2 pt-1.5 px-0.5">
+                <RouterLink
+                  :to="{ path: '/account', query: { mode: 'signin' } }"
+                  role="menuitem"
+                  class="flex items-center justify-center gap-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-700/60 py-2 px-2 text-xs font-bold text-navy-900 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-700 transition"
+                  @click="closeAccountMenu"
+                >
+                  <LogIn class="h-3.5 w-3.5 shrink-0 text-slate-500 dark:text-slate-400" aria-hidden="true" />
+                  <span>{{ t('Sign in') }}</span>
+                </RouterLink>
+
+                <RouterLink
+                  :to="{ path: '/account', query: { mode: 'register' } }"
+                  role="menuitem"
+                  class="flex items-center justify-center gap-1.5 rounded-xl bg-navy-900 dark:bg-indigo-600 text-white py-2 px-2 text-xs font-bold hover:bg-navy-800 dark:hover:bg-indigo-500 shadow-xs transition"
+                  @click="closeAccountMenu"
+                >
+                  <UserPlus class="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                  <span>{{ t('Register') }}</span>
+                </RouterLink>
+              </div>
             </div>
           </div>
         </div>
@@ -448,22 +450,24 @@
               <p class="px-3 pt-1 pb-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
                 {{ t('Account') }}
               </p>
-              <RouterLink
-                :to="{ path: '/account', query: { mode: 'signin' } }"
-                class="flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-semibold text-navy-900 dark:text-white transition hover:bg-navy-50 dark:hover:bg-slate-800"
-                @click="mobileDrawerOpen = false"
-              >
-                <LogIn class="h-5 w-5 text-slate-500 dark:text-slate-400 shrink-0" />
-                <span>{{ t('Sign in') }}</span>
-              </RouterLink>
-              <RouterLink
-                :to="{ path: '/account', query: { mode: 'register' } }"
-                class="flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-semibold text-navy-900 dark:text-white transition hover:bg-navy-50 dark:hover:bg-slate-800"
-                @click="mobileDrawerOpen = false"
-              >
-                <UserPlus class="h-5 w-5 text-slate-500 dark:text-slate-400 shrink-0" />
-                <span>{{ t('Register') }}</span>
-              </RouterLink>
+              <div class="grid grid-cols-2 gap-2 px-3 py-1">
+                <RouterLink
+                  :to="{ path: '/account', query: { mode: 'signin' } }"
+                  class="flex items-center justify-center gap-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 py-2.5 px-3 text-xs font-bold text-navy-900 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-700 transition"
+                  @click="mobileDrawerOpen = false"
+                >
+                  <LogIn class="h-4 w-4 text-slate-500 dark:text-slate-400 shrink-0" />
+                  <span>{{ t('Sign in') }}</span>
+                </RouterLink>
+                <RouterLink
+                  :to="{ path: '/account', query: { mode: 'register' } }"
+                  class="flex items-center justify-center gap-2 rounded-xl bg-navy-900 dark:bg-indigo-600 text-white py-2.5 px-3 text-xs font-bold hover:bg-navy-800 dark:hover:bg-indigo-500 shadow-xs transition"
+                  @click="mobileDrawerOpen = false"
+                >
+                  <UserPlus class="h-4 w-4 shrink-0" />
+                  <span>{{ t('Register') }}</span>
+                </RouterLink>
+              </div>
             </template>
           </div>
 
