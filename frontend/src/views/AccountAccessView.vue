@@ -94,7 +94,7 @@
             <p class="text-xs font-bold text-navy-900 dark:text-white">Dev mode reset link generated:</p>
             <a
               :href="devResetUrl"
-              class="inline-block mt-0.5 font-semibold text-xs text-blue-700 dark:text-sky-400 underline hover:text-navy-900 dark:hover:text-sky-300 break-all"
+              class="inline-block mt-0.5 font-semibold text-xs text-blue-700 dark:text-blue-500 underline hover:text-navy-900 dark:hover:text-blue-400 break-all"
             >
               Click here to test resetting your password &rarr;
             </a>
@@ -132,7 +132,7 @@
           <div>
             <div class="mb-1 flex items-center justify-between">
               <label class="block text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-200">{{ t('New password') }}</label>
-              <span v-if="capsLockOn" class="inline-flex items-center gap-1.5 text-[11px] font-medium text-[#1570ef] dark:text-sky-400">
+              <span v-if="capsLockOn" class="inline-flex items-center gap-1.5 text-[11px] font-medium text-[#1570ef] dark:text-blue-500">
                 <svg class="h-3.5 w-3.5 shrink-0" viewBox="0 0 20 20" fill="none" aria-hidden="true">
                   <circle cx="10" cy="10" r="9" fill="#1570EF" />
                   <circle cx="10" cy="6.25" r="1.1" fill="#FFFFFF" />
@@ -324,7 +324,7 @@
           <div>
             <div class="mb-1 flex items-center justify-between">
               <label class="block text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-200">{{ t('Password') }}</label>
-              <span v-if="capsLockOn" class="inline-flex items-center gap-1.5 text-[11px] font-medium text-[#1570ef] dark:text-sky-400">
+              <span v-if="capsLockOn" class="inline-flex items-center gap-1.5 text-[11px] font-medium text-[#1570ef] dark:text-blue-500">
                 <svg class="h-3.5 w-3.5 shrink-0" viewBox="0 0 20 20" fill="none" aria-hidden="true">
                   <circle cx="10" cy="10" r="9" fill="#1570EF" />
                   <circle cx="10" cy="6.25" r="1.1" fill="#FFFFFF" />
@@ -415,7 +415,7 @@
           <div v-if="!isRegister" class="flex justify-end">
             <button
               type="button"
-              class="text-xs sm:text-sm font-medium text-slate-800 dark:text-sky-400 underline underline-offset-2 hover:text-navy-700 dark:hover:text-sky-300"
+              class="text-xs sm:text-sm font-medium text-slate-800 dark:text-blue-500 underline underline-offset-2 hover:text-navy-700 dark:hover:text-blue-400"
               @click="goToForgotPassword"
             >
               {{ t('Forgot Password?') }}
@@ -451,7 +451,7 @@
           {{ isRegister ? t('Already have an account?') : t("Don't you have an account?") }}
           <RouterLink
             :to="{ path: '/account', query: { mode: isRegister ? 'signin' : 'register', ...(route.query.redirect ? { redirect: route.query.redirect } : {}) } }"
-            class="ml-1 font-bold text-slate-900 dark:text-sky-400 underline underline-offset-2 hover:text-navy-700 dark:hover:text-sky-300"
+            class="ml-1 font-bold text-slate-900 dark:text-blue-500 underline underline-offset-2 hover:text-navy-700 dark:hover:text-blue-400"
           >
             {{ isRegister ? t('Sign in') : t('Sign up') }}
           </RouterLink>
