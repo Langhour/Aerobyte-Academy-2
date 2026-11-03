@@ -35,7 +35,7 @@
         <RouterLink
           to="/courses"
           class="text-xs xl:text-[13px] font-bold tracking-tight transition-all duration-150 py-1.5 px-2.5 xl:px-3 rounded-lg"
-          :class="route.path.startsWith('/courses') || route.path.startsWith('/course')
+          :class="route.path === '/' || route.path.startsWith('/courses') || route.path.startsWith('/course')
             ? 'text-navy-900 dark:text-white font-extrabold bg-slate-100 dark:bg-slate-800 shadow-xs'
             : 'text-slate-600 dark:text-slate-300 hover:text-navy-900 dark:hover:text-white hover:bg-slate-100/70 dark:hover:bg-slate-800/60'"
         >
@@ -341,7 +341,7 @@
             <RouterLink
               to="/courses"
               class="flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-bold transition hover:bg-slate-100 dark:hover:bg-slate-800"
-              :class="route.path.startsWith('/courses') || route.path.startsWith('/course')
+              :class="route.path === '/' || route.path.startsWith('/courses') || route.path.startsWith('/course')
                 ? 'bg-navy-50 dark:bg-slate-800 text-navy-900 dark:text-indigo-300 font-extrabold'
                 : 'text-slate-700 dark:text-slate-200 hover:text-navy-900 dark:hover:text-white'"
               @click="mobileDrawerOpen = false"

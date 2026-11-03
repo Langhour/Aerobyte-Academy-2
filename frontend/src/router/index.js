@@ -22,7 +22,7 @@ const AeroStoreView = () => import('../views/AeroStoreView.vue')
 const router = createRouter({
   history: createWebHistory(),
   routes: [
-    { path: '/', redirect: '/questions' },
+    { path: '/', redirect: '/courses' },
     { path: '/questions', name: 'questions', component: QuestionsView },
     { path: '/courses', name: 'courses', component: ExploreCoursesView },
     { path: '/print', name: 'print', component: AeroPrintView },
