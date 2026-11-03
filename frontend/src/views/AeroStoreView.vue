@@ -44,35 +44,24 @@
           <div class="absolute inset-0 bg-gradient-to-t from-[#102a49] via-[#102a49]/60 to-transparent lg:bg-gradient-to-r lg:from-transparent lg:via-[#102a49]/60 lg:to-[#102a49] pointer-events-none"></div>
 
           <!-- Content Grid overlaying the banner -->
-          <div class="relative z-10 w-full px-6 sm:px-12 lg:px-16 py-10 sm:py-16 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          <div class="relative z-10 w-full px-6 sm:px-10 lg:px-16 py-12 sm:py-16 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center min-h-[460px] sm:min-h-[520px]">
             <!-- Left spacer so the staged products on the left remain clearly visible -->
             <div class="hidden lg:block lg:col-span-6 pointer-events-none"></div>
 
-            <!-- Right: Big Punchy Typography & "SHOP ALL" Button (1:1 with User Reference) -->
-            <div class="lg:col-span-6 text-center lg:text-left space-y-4 sm:space-y-5">
-              <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/10 backdrop-blur-md text-amber-300 text-xs font-bold tracking-wide uppercase border border-white/10">
-                <span class="h-2 w-2 rounded-full bg-amber-400 animate-pulse"></span>
-                <span>AeroByte Engineering 2026</span>
-              </div>
-
-              <h1 class="text-4xl sm:text-6xl md:text-7xl font-black text-white tracking-tight uppercase leading-[0.95] drop-shadow-md">
+            <!-- Right: Big Punchy Typography & "SHOP ALL" Button (1:1 Match with User Reference Image) -->
+            <div class="lg:col-span-6 flex flex-col items-center justify-center text-center">
+              <h1 class="text-5xl sm:text-6xl md:text-7xl lg:text-[84px] font-black text-white tracking-tight uppercase leading-[1.02] drop-shadow-md select-none">
                 MAKER KITS<br />
-                <span class="text-amber-400">2026!</span>
+                2026!
               </h1>
 
-              <p class="text-xs sm:text-sm md:text-base text-slate-200 font-medium max-w-md mx-auto lg:mx-0 leading-relaxed drop-shadow-sm">
-                Authentic robotics learning kits, FPV racing drone hardware, microcontroller boards, and precision 3D filaments.
-              </p>
-
               <!-- Yellow/Amber SHOP ALL Pill Button (Matching user's reference button!) -->
-              <div class="pt-2">
-                <a
-                  href="#catalog"
-                  class="inline-flex items-center justify-center px-10 py-4 rounded-full bg-amber-400 hover:bg-amber-300 text-[#102a49] font-black text-sm uppercase tracking-wider shadow-xl hover:shadow-amber-400/25 hover:scale-105 active:scale-95 transition-all duration-200"
-                >
-                  SHOP ALL
-                </a>
-              </div>
+              <a
+                href="#catalog"
+                class="mt-6 sm:mt-8 inline-flex items-center justify-center px-10 sm:px-12 py-3.5 sm:py-4 rounded-full bg-amber-400 hover:bg-amber-300 text-[#102a49] font-black text-sm sm:text-base uppercase tracking-wider shadow-2xl hover:shadow-amber-400/30 hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer"
+              >
+                SHOP ALL
+              </a>
             </div>
           </div>
 
