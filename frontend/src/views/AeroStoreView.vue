@@ -30,7 +30,7 @@
     <!-- 2. Commercial Hero Showcase Banner (AeroByte Official Dark Blue #102a49) - Exact Match to Aero Print Frame -->
     <section class="pt-4 pb-6 sm:pb-8">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div class="relative w-full overflow-hidden rounded-2xl sm:rounded-3xl bg-[#102a49] shadow-xl border border-navy-800/80 h-[360px] sm:h-[420px] lg:h-[460px] flex items-center">
+        <div class="relative w-full overflow-hidden rounded-2xl sm:rounded-3xl bg-[#102a49] shadow-xl border border-navy-800/80 aspect-[16/9] sm:aspect-[16/9] lg:aspect-[1376/768] min-h-[380px] flex items-center">
           
           <!-- Background Showcase Image (Staged Products on Left, Deep Navy Space on Right - 100% Bright, Sharp & Natural) -->
           <img
