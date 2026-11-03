@@ -17,12 +17,11 @@ WORKDIR /app
 COPY backend/requirements.txt ./requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 COPY backend/app ./app
-COPY backend/data ./seed_data
 COPY --from=frontend-build /frontend/dist ./static
 RUN mkdir -p /app/data/uploads \
     && addgroup --system app \
     && adduser --system --ingroup app app \
-    && chown -R app:app /app/data /app/seed_data
+    && chown -R app:app /app/data
 
 USER app
 
