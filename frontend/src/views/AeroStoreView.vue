@@ -32,16 +32,12 @@
       <div class="mx-auto max-w-7xl">
         <div class="relative overflow-hidden rounded-[28px] sm:rounded-[36px] bg-[#102a49] shadow-2xl border border-navy-800/80 min-h-[420px] sm:min-h-[480px] lg:min-h-[520px] flex items-center">
           
-          <!-- Background Showcase Image (Staged Products on Left, Deep Navy Space on Right) -->
+          <!-- Background Showcase Image (Staged Products on Left, Deep Navy Space on Right - 100% Bright & Sharp) -->
           <img
             src="/assets/brand/store-hero-showcase.jpg"
             alt="AeroByte Maker Kit Hardware Showcase"
-            class="absolute inset-0 w-full h-full object-cover object-left lg:object-center select-none mix-blend-luminosity opacity-90"
+            class="absolute inset-0 w-full h-full object-cover object-left lg:object-center select-none"
           />
-
-          <!-- AeroByte Dark Blue (#102a49) Color Wash & Gradient Overlay -->
-          <div class="absolute inset-0 bg-[#102a49]/60 pointer-events-none"></div>
-          <div class="absolute inset-0 bg-gradient-to-t from-[#102a49] via-[#102a49]/60 to-transparent lg:bg-gradient-to-r lg:from-transparent lg:via-[#102a49]/60 lg:to-[#102a49] pointer-events-none"></div>
 
           <!-- Content Grid overlaying the banner -->
           <div class="relative z-10 w-full px-6 sm:px-10 lg:px-16 py-12 sm:py-16 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center min-h-[460px] sm:min-h-[520px]">
