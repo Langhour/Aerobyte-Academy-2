@@ -172,34 +172,6 @@
             @click="openQuickView(item)"
             class="relative aspect-[4/5] w-full rounded-[20px] sm:rounded-[24px] bg-[#f5f5f7] dark:bg-slate-850/80 border border-slate-200/50 dark:border-slate-800/60 p-4 sm:p-6 flex items-center justify-center overflow-hidden transition-all duration-300 hover:shadow-md cursor-pointer select-none"
           >
-            <!-- Badge 1: Viral / Special Badge (Top-Left) -->
-            <div
-              v-if="item.badge"
-              class="absolute top-3 left-3 z-10"
-            >
-              <div
-                v-if="item.badgeType === 'tiktok'"
-                class="flex items-center gap-1 px-2 py-0.5 rounded-full bg-slate-900 text-white text-[9px] font-bold tracking-tight shadow-2xs"
-              >
-                <span>💚</span>
-                <span>VIRAL ON TikTok</span>
-              </div>
-              <div
-                v-else
-                class="px-2 py-0.5 rounded-full bg-slate-900/90 text-white text-[9px] font-bold tracking-tight backdrop-blur-xs"
-              >
-                {{ item.badge }}
-              </div>
-            </div>
-
-            <!-- Badge 2: Award / Seal Badge (Top-Right) -->
-            <div
-              v-if="item.awardBadge"
-              class="absolute top-3 right-3 z-10 h-7 w-7 rounded-full bg-slate-900 text-white text-[8px] font-extrabold flex items-center justify-center text-center p-0.5 shadow-2xs leading-tight"
-            >
-              ★ LAB
-            </div>
-
             <!-- Centered Floating Hardware / Product Visual -->
             <div class="flex h-full w-full items-center justify-center text-6xl sm:text-7xl group-hover:scale-108 transition-transform duration-300 drop-shadow-sm">
               <span>{{ item.icon }}</span>
