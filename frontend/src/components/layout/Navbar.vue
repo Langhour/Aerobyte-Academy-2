@@ -386,6 +386,17 @@
 
               </RouterLink>
 
+              <RouterLink
+                v-if="profileName"
+                to="/profile?section=orders"
+                role="menuitem"
+                class="flex items-center gap-3 rounded-xl px-3 py-2.5 sm:py-3 text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-200 transition hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-navy-900 dark:hover:text-white"
+                @click="closeAccountMenu"
+              >
+                <ShoppingBag class="h-4 w-4 sm:h-5 sm:w-5 text-slate-400" aria-hidden="true" />
+                <span>{{ t('My orders') }}</span>
+              </RouterLink>
+
 
 
               <!-- Dark / Light Mode Switch inside Account Dropdown -->
@@ -880,6 +891,15 @@
 
                 <span>{{ t('Profile information') }}</span>
 
+              </RouterLink>
+
+              <RouterLink
+                to="/profile?section=orders"
+                class="flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-semibold text-slate-700 dark:text-slate-200 transition hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-navy-900 dark:hover:text-white"
+                @click="mobileDrawerOpen = false"
+              >
+                <ShoppingBag class="h-5 w-5 text-slate-500 dark:text-slate-400 shrink-0" />
+                <span>{{ t('My orders') }}</span>
               </RouterLink>
 
             </template>
