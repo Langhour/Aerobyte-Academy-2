@@ -216,19 +216,51 @@
 
       <div class="flex items-center justify-self-end gap-1.5 sm:gap-2.5 shrink-0">
 
-        <!-- Lucian UX/UI Prompt #267 Language Switcher -->
-
-        <LanguageSwitchMotion
-
-          :locale="locale"
-
-          :anim-class="getSwClass(6)"
-
-          :anim-style="getSwStyle(6)"
-
-          @select="handleLanguageSelect"
-
-        />
+                <!-- Language Dropdown -->
+        <div ref="languageMenu" class="relative">
+          <button
+            ref="languageTrigger"
+            type="button"
+            class="inline-flex h-8 sm:h-9 cursor-pointer items-center gap-1 sm:gap-2 rounded-lg px-2 text-slate-600 dark:text-slate-300 transition hover:bg-slate-50 dark:hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy-800/30"
+            :aria-label="locale === 'kh' ? 'KH - ជ្រើសរើសភាសា' : 'EN - Choose language'"
+            aria-haspopup="listbox"
+            :aria-expanded="languageMenuOpen"
+            @click="toggleLanguageMenu"
+            @keydown.down.prevent="openLanguageMenu"
+          >
+            <Globe2 class="h-4 w-4 sm:h-5 sm:w-5" aria-hidden="true" />
+            <span class="text-xs sm:text-sm font-semibold text-navy-900 dark:text-white">{{ locale.toUpperCase() }}</span>
+          </button>
+          <div
+            v-if="languageMenuOpen"
+            class="absolute right-0 top-full z-50 mt-2 w-44 max-w-[calc(100vw-24px)] overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-1.5 shadow-xl"
+            role="listbox"
+            :aria-label="t('Choose language')"
+            @keydown.esc.prevent="closeLanguageMenu"
+          >
+            <button
+              v-for="language in languages"
+              :key="language.value"
+              :ref="language.value === locale ? 'selectedLanguageOption' : undefined"
+              type="button"
+              role="option"
+              :aria-selected="locale === language.value"
+              class="flex w-full items-center justify-between rounded-xl px-3 py-2 text-xs font-semibold transition"
+              :class="locale === language.value
+                ? 'bg-navy-50 dark:bg-slate-700 text-navy-900 dark:text-white font-bold'
+                : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700/60 hover:text-navy-900 dark:hover:text-white font-medium'"
+              @click="selectLanguage(language.value)"
+            >
+              <div class="flex items-center gap-2">
+                <span class="font-bold tracking-wide">{{ language.label }}</span>
+                <span class="text-[11px] font-medium" :class="locale === language.value ? 'text-navy-700 dark:text-indigo-400' : 'text-slate-400 dark:text-slate-500'">
+                  {{ language.sublabel }}
+                </span>
+              </div>
+              <Check v-if="locale === language.value" class="h-4 w-4 text-navy-900 dark:text-white shrink-0" />
+            </button>
+          </div>
+        </div>
 
 
 
@@ -1028,7 +1060,7 @@ import { accountService } from '../../services/api'
 
 import { resolveImageUrl } from '../../utils/image'
 
-import LanguageSwitchMotion from './LanguageSwitchMotion.vue'
+// original dropdown restored
 
 
 
