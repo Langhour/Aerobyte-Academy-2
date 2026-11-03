@@ -40,13 +40,13 @@
           />
 
           <!-- Content Grid overlaying the banner -->
-          <div class="relative z-10 w-full px-4 sm:px-8 lg:px-12 py-8 sm:py-12 grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-center h-full">
+          <div class="relative z-10 w-full px-4 sm:px-8 lg:px-8 xl:px-10 py-8 sm:py-12 grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-center h-full">
             <!-- Left spacer so all staged products (Box, Drone, PCB & 3D Printer) remain completely visible without overlap -->
             <div class="hidden lg:block lg:col-span-6 xl:col-span-6 pointer-events-none"></div>
 
-            <!-- Right: Big Punchy Typography & "SHOP ALL" Button (1:1 Match with User Reference Image) -->
-            <div class="lg:col-span-6 xl:col-span-6 flex flex-col items-center justify-center text-center">
-              <h1 class="text-3xl sm:text-5xl md:text-6xl lg:text-[54px] xl:text-[68px] 2xl:text-[76px] font-black text-white tracking-tight uppercase leading-[1.06] drop-shadow-md select-none">
+            <!-- Right: Big Punchy Typography & "SHOP ALL" Button shifted to the right hand side and made bigger -->
+            <div class="lg:col-span-6 xl:col-span-6 flex flex-col items-center justify-center text-center lg:translate-x-6 xl:translate-x-10 2xl:translate-x-12">
+              <h1 class="text-4xl sm:text-6xl md:text-7xl lg:text-[66px] xl:text-[82px] 2xl:text-[92px] font-black text-white tracking-tight uppercase leading-[1.02] drop-shadow-lg select-none">
                 <span class="whitespace-nowrap">AERO STORE</span><br />
                 2026!
               </h1>
@@ -54,7 +54,7 @@
               <!-- Yellow/Amber SHOP ALL Pill Button (Matching user's reference button!) -->
               <a
                 href="#catalog"
-                class="mt-5 sm:mt-7 inline-flex items-center justify-center px-9 sm:px-11 py-3.5 sm:py-4 rounded-full bg-amber-400 hover:bg-amber-300 text-[#102a49] font-black text-sm sm:text-base uppercase tracking-wider shadow-2xl hover:shadow-amber-400/30 hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer"
+                class="mt-6 sm:mt-8 inline-flex items-center justify-center px-10 sm:px-12 py-3.5 sm:py-4.5 rounded-full bg-amber-400 hover:bg-amber-300 text-[#102a49] font-black text-sm sm:text-lg uppercase tracking-wider shadow-2xl hover:shadow-amber-400/30 hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer"
               >
                 SHOP ALL
               </a>
