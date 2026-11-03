@@ -1417,6 +1417,25 @@ export const khmerTranslations = {
   "Brushless Motors & ESCs": "ម៉ូទ័រប៊្រូសឡេស & ESCs",
   "Tools & Equipment": "ឧបករណ៍ & សម្ភារៈ",
   "3D Filaments & Parts": "ខ្សែប្លាស្ទិក 3D & គ្រឿងបន្លាស់",
+  "My orders": "ការកម្ម៉ង់របស់ខ្ញុំ",
+  "Review your store purchases and hardware orders.": "ពិនិត្យមើលការទិញ និងការកម្ម៉ង់ឧបករណ៍របស់អ្នក។",
+  "No store orders yet": "មិនទាន់មានការកម្ម៉ង់នៅឡើយទេ",
+  "Hardware kits, drone components, and 3D printing supplies you order will appear here.": "ឈុតឧបករណ៍ គ្រឿងបន្លាស់ដ្រូន និងសម្ភារៈបោះពុម្ព 3D ដែលអ្នកបានកម្ម៉ង់នឹងបង្ហាញនៅទីនេះ។",
+  "Visit Aero Store": "ចូលទៅកាន់ Aero Store",
+  "Fulfillment": "ការទទួលទំនិញ",
+  "Order Total": "តម្លៃសរុប",
+  "Express Delivery": "ដឹកជញ្ជូនរហ័ស",
+  "Same-Day Lab Pickup (Phnom Penh)": "មកយកនៅ Lab ថ្ងៃនេះ (ភ្នំពេញ)",
+
+
+  "SHOP ALL": "ទិញទាំងអស់",
+  "EXPLORE DRONES": "ស្វែងយល់ដ្រូន",
+  "VIEW ROBOTICS": "មើលមនុស្សយន្ត",
+  "DISCOVER TOOLS": "ស្វែងរកឧបករណ៍",
+  "MAKER HARDWARE & ROBOTICS": "ឧបករណ៍ MAKERS & មនុស្សយន្ត",
+  "FPV RACING & AERIAL TECH": "ការប្រណាំង FPV & បច្ចេកវិទ្យាហោះហើរ",
+  "AI & SMART ROVER KITS": "ឈុតរ៉ូបូតឆ្លាតវៃ AI & ROVER",
+  "PRECISION LAB & PROTOTYPING": "ឧបករណ៍ពិសោធន៍កម្រិតខ្ពស់ & គំរូដើម",
 
 }
 

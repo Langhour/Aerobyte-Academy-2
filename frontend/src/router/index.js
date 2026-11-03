@@ -18,6 +18,7 @@ const PrivacyPolicyView = () => import('../views/PrivacyPolicyView.vue')
 const AeroPrintView = () => import('../views/AeroPrintView.vue')
 const AeroFlyView = () => import('../views/AeroFlyView.vue')
 const AeroStoreView = () => import('../views/AeroStoreView.vue')
+const ProductDetailView = () => import('../views/ProductDetailView.vue')
 
 const router = createRouter({
   history: createWebHistory(),
@@ -28,6 +29,7 @@ const router = createRouter({
     { path: '/print', name: 'print', component: AeroPrintView },
     { path: '/fly', name: 'fly', component: AeroFlyView },
     { path: '/store', name: 'store', component: AeroStoreView },
+    { path: '/store/:id', name: 'ProductDetail', component: ProductDetailView, props: true, alias: ['/product/:id'] },
     { path: '/account', name: 'account', component: AccountAccessView },
     { path: '/register', redirect: { path: '/account', query: { mode: 'register' } } },
     { path: '/signin', redirect: { path: '/account', query: { mode: 'signin' } } },
