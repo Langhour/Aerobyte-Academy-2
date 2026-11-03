@@ -97,20 +97,11 @@
         </div>
         <div v-else class="h-3 shrink-0"></div>
 
-        <nav class="relative flex-1 px-2.5 space-y-1.5 overflow-y-auto lg:overflow-visible">
-          <!-- Smooth Spring Sliding Highlight Box -->
-          <div
-            v-if="highlightStyle.height"
-            class="absolute left-2.5 right-2.5 rounded-xl bg-navy-900 dark:bg-blue-600 shadow-sm pointer-events-none transition-all duration-300 z-0"
-            :style="highlightStyle"
-            aria-hidden="true"
-          ></div>
-
+        <nav class="flex-1 px-2.5 space-y-1.5 overflow-y-auto lg:overflow-visible">
           <div
             v-for="(section, idx) in adminSections"
             :key="section.id"
-            :ref="el => { if (el) navItemRefs[idx] = el }"
-            class="relative group z-10"
+            class="relative group"
           >
             <!-- Navigation Button -->
             <button
@@ -119,7 +110,7 @@
               :class="[
                 sidebarCollapsed ? 'justify-center p-3' : 'gap-3 px-3.5 py-3',
                 activeSection === section.id
-                  ? 'text-white border-transparent'
+                  ? 'bg-navy-900 dark:bg-blue-600 text-white shadow-sm border-navy-900 dark:border-blue-600'
                   : 'text-slate-600 dark:text-slate-400 border-transparent hover:text-navy-900 dark:hover:text-white hover:bg-slate-100/90 dark:hover:bg-slate-800/80 hover:border-slate-200/70 dark:hover:border-slate-700/60 hover:shadow-2xs'
               ]"
               :title="sidebarCollapsed ? t(section.title) : undefined"
@@ -2566,28 +2557,11 @@ const { isDark, toggleTheme } = useTheme()
 const authenticated = ref(false)
 const sidebarOpen = ref(false)
 const sidebarCollapsed = ref(localStorage.getItem('admin_sidebar_collapsed') === 'true')
-const navItemRefs = ref([])
-const highlightStyle = ref({})
 const isTitleSwapping = ref(false)
-
-function updateHighlight() {
-  nextTick(() => {
-    const idx = adminSections.findIndex(s => s.id === activeSection.value)
-    if (idx !== -1 && navItemRefs.value[idx]) {
-      const el = navItemRefs.value[idx]
-      highlightStyle.value = {
-        top: `${el.offsetTop}px`,
-        height: `${el.offsetHeight}px`,
-        transitionTimingFunction: 'cubic-bezier(0.34, 1.45, 0.64, 1)',
-      }
-    }
-  })
-}
 
 function toggleSidebarCollapse() {
   sidebarCollapsed.value = !sidebarCollapsed.value
   localStorage.setItem('admin_sidebar_collapsed', String(sidebarCollapsed.value))
-  setTimeout(updateHighlight, 320)
 }
 const loadingCourses = ref(false)
 const busy = ref(false)
@@ -3258,7 +3232,6 @@ function selectSection(sectionId) {
     }, 180)
   }
   activeSection.value = sectionId
-  updateHighlight()
   sidebarOpen.value = false
   errorMessage.value = ''
   successMessage.value = ''
