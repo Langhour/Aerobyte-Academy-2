@@ -202,15 +202,6 @@
                 <Heart class="w-3.5 h-3.5 sm:w-4 sm:h-4" :class="{ 'fill-white': isFavorite(item.id) }" />
               </button>
             </div>
-
-            <!-- Quick Add Pill (Bottom-Left on Hover) -->
-            <div
-              class="absolute bottom-3 left-3 z-20 px-2.5 py-1 rounded-full bg-slate-900/90 hover:bg-slate-900 text-white text-[10px] sm:text-[11px] font-bold backdrop-blur-xs opacity-0 sm:group-hover:opacity-100 transition-all duration-200 transform translate-y-1 sm:translate-y-2 group-hover:translate-y-0 shadow-sm flex items-center gap-1 cursor-pointer"
-              @click.stop="addToCart(item)"
-            >
-              <Plus class="w-3 h-3" />
-              <span>{{ t('Quick Add') }}</span>
-            </div>
           </div>
 
           <!-- 2. Typography & Details BELOW the Card (Matches Reference Screenshot) -->
