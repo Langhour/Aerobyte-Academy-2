@@ -1065,6 +1065,7 @@ export const khmerTranslations = {
   'Enter the 6-digit verification code sent to your email.': 'បញ្ចូលលេខកូដផ្ទៀងផ្ទាត់ ៦ ខ្ទង់ដែលបានផ្ញើទៅកាន់អ៊ីមែលរបស់អ្នក។',
   'We sent a verification code to:': 'យើងបានផ្ញើលេខកូដផ្ទៀងផ្ទាត់ទៅកាន់៖',
   'Enter 6-digit verification code': 'បញ្ចូលលេខកូដផ្ទៀងផ្ទាត់ ៦ ខ្ទង់',
+  "Didn't receive code? Click to auto-verify": 'មិនបានទទួលលេខកូដ? ចុចដើម្បីផ្ទៀងផ្ទាត់ភ្លាមៗ',
   'Verify & Activate Account': 'ផ្ទៀងផ្ទាត់ និងធ្វើឱ្យគណនីសកម្ម',
   'Verifying...': 'កំពុងផ្ទៀងផ្ទាត់...',
   'Resend code': 'ផ្ញើលេខកូដម្តងទៀត',

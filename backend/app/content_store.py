@@ -358,6 +358,12 @@ def initialize_content_store() -> None:
         )
 
 
+def mark_user_verified(user_id: str) -> None:
+    with _connect() as connection:
+        connection.execute("UPDATE users SET is_verified = 1 WHERE id = ?", (user_id,))
+        connection.execute("DELETE FROM email_verification_tokens WHERE user_id = ?", (user_id,))
+
+
 def create_user(
     user_id: str,
     email: str,

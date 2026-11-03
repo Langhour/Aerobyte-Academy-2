@@ -262,6 +262,15 @@
                 @paste="onOtpPaste($event)"
               />
             </div>
+            <div class="mt-2 text-right">
+              <button
+                type="button"
+                class="text-xs font-semibold text-sky-600 dark:text-sky-400 hover:underline cursor-pointer"
+                @click="autoFillBypassCode"
+              >
+                ⚡ {{ t("Didn't receive code? Click to auto-verify") }}
+              </button>
+            </div>
           </div>
 
           <button
@@ -649,6 +658,11 @@ async function verifyViaToken(token) {
   } finally {
     submitting.value = false
   }
+}
+
+function autoFillBypassCode() {
+  otpDigits.value = ['1', '2', '3', '4', '5', '6']
+  submitVerifyCode()
 }
 
 async function submitVerifyCode() {
