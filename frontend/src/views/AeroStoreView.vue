@@ -1,42 +1,15 @@
 <template>
   <div class="min-h-screen pb-24 bg-white dark:bg-slate-950 transition-colors">
-    <!-- Top Announcement Bar (Minimalist Luxury Style) -->
-    <div class="border-b border-slate-100 dark:border-slate-800/80 bg-slate-50 dark:bg-slate-900/60 py-2.5 text-xs text-slate-700 dark:text-slate-300">
-      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex flex-wrap items-center justify-between gap-3">
-        <div class="flex items-center gap-2">
-          <span class="inline-flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
-          <span class="font-medium">
-            <strong class="font-bold text-slate-900 dark:text-white">AeroByte Hardware Lab:</strong>
-            {{ t('Authentic robotics kits, drone parts & filaments. Free same-day lab pickup in Phnom Penh.') }}
-          </span>
-        </div>
-
-        <div class="flex items-center gap-4 text-[11px] sm:text-xs">
-          <span class="hidden md:inline text-slate-500 dark:text-slate-400">
-            {{ t('Student Code:') }} <code class="font-bold text-slate-900 dark:text-white bg-slate-200/80 dark:bg-slate-800 px-1.5 py-0.5 rounded">AEROSTUDENT</code> (-10%)
-          </span>
-          <button
-            type="button"
-            @click="isCartOpen = true"
-            class="flex items-center gap-1.5 font-bold text-slate-900 dark:text-white hover:text-indigo-600 dark:hover:text-indigo-400 transition cursor-pointer"
-          >
-            <ShoppingBag class="w-3.5 h-3.5" />
-            <span>{{ t('Bag') }} ({{ totalCartItemsCount }})</span>
-          </button>
-        </div>
-      </div>
-    </div>
-
     <!-- 2. Commercial Hero Showcase Banner (AeroByte Official Dark Blue #102a49) - Exact Match to Aero Print Frame -->
     <section class="pt-4 pb-6 sm:pb-8">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div class="relative w-full overflow-hidden rounded-2xl sm:rounded-3xl bg-[#102a49] shadow-xl border border-navy-800/80 aspect-[16/9] sm:aspect-[2.1/1] lg:aspect-[2.4/1] min-h-[360px] max-h-[520px] flex items-center">
+        <div class="relative w-full overflow-hidden rounded-2xl sm:rounded-3xl bg-[#102a49] shadow-xl border border-navy-800/80 aspect-[16/9] sm:aspect-[2.1/1] lg:aspect-[2.3/1] min-h-[380px] max-h-[540px] flex items-center">
           
           <!-- Background Showcase Image (Staged Products on Left, Deep Navy Space on Right - 100% Bright, Sharp & Natural) -->
           <img
             src="/assets/brand/store-hero-showcase.jpg"
             alt="AeroByte Maker Kit Hardware Showcase"
-            class="absolute inset-0 w-full h-full object-cover object-[left_18%] select-none"
+            class="absolute inset-0 w-full h-full object-cover object-[left_30%] select-none"
           />
 
           <!-- Content Grid overlaying the banner -->
