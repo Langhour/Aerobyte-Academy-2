@@ -92,6 +92,10 @@ export function getGoogleSignInUrl() {
   return `${apiClient.defaults.baseURL}/auth/google/start`
 }
 
+export function googleDirectLogin(payload) {
+  return apiClient.post('/auth/google/direct', payload)
+}
+
 export const adminService = {
   login(payload) {
     return apiClient.post('/admin/login', payload)

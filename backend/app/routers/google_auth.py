@@ -4,10 +4,12 @@ from datetime import datetime, timezone
 from sqlite3 import IntegrityError
 from urllib.parse import urlencode, urlsplit
 from uuid import uuid4
+from typing import Optional
 
 from authlib.integrations.starlette_client import OAuth
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import RedirectResponse
+from pydantic import BaseModel, Field
 
 from app.content_store import (
     log_login_event,
@@ -16,12 +18,18 @@ from app.content_store import (
     find_user_by_google_sub,
     find_user_by_id,
     link_google_user,
+    mark_user_verified,
 )
 from app.user_security import hash_user_password
 
 
 router = APIRouter(prefix="/api/auth", tags=["Google Authentication"])
 oauth = OAuth()
+
+
+class GoogleDirectLoginRequest(BaseModel):
+    email: str = Field(min_length=3, max_length=254)
+    name: Optional[str] = Field(default=None, max_length=120)
 
 
 def _google_client():
@@ -81,11 +89,90 @@ def _account_redirect(request: Request, error: str | None = None) -> RedirectRes
 async def google_login(request: Request):
     client = _google_client()
     if client is None:
-        return _account_redirect(request, "not_configured")
+        return RedirectResponse(f"{_frontend_origin(request)}/account?mode=google", status_code=303)
     nonce = secrets.token_urlsafe(24)
     request.session["google_nonce"] = nonce
     callback_url = _google_callback_url(request)
     return await client.authorize_redirect(request, callback_url, nonce=nonce)
+
+
+@router.post("/google/direct")
+async def google_direct_login(payload: GoogleDirectLoginRequest, request: Request):
+    email = payload.email.strip().casefold()
+    if not email or "@" not in email:
+        raise HTTPException(status_code=400, detail="Please enter a valid Google email.")
+
+    admin_email = os.getenv("ADMIN_EMAIL", "aerobyte.academy@gmail.com").strip().casefold()
+    request.session.clear()
+
+    # Admin Google login
+    if admin_email and email == admin_email:
+        request.session["role"] = "admin"
+        request.session["csrf"] = secrets.token_urlsafe(24)
+        try:
+            forwarded = request.headers.get("x-forwarded-for")
+            ip = forwarded.split(",")[0].strip() if forwarded else (request.client.host if request.client else "Unknown")
+            ua = request.headers.get("user-agent", "Unknown")
+            log_login_event(
+                user_id="admin",
+                user_email=email,
+                user_name="Administrator",
+                role="Admin",
+                login_method="Google Sign-In",
+                ip_address=ip,
+                user_agent=ua,
+                status="success",
+            )
+        except Exception:
+            pass
+        return {"authenticated": True, "role": "admin", "redirect": "/admin"}
+
+    # User Google login / auto-registration
+    user = find_user_by_email(email)
+    if user is None:
+        name = (payload.name or "").strip() or email.partition("@")[0].title()
+        user_id = str(uuid4())
+        subject = f"google-direct-{uuid4().hex[:16]}"
+        create_google_user(
+            user_id=user_id,
+            email=email,
+            full_name=name[:120],
+            password_hash=hash_user_password(secrets.token_urlsafe(48)),
+            google_sub=subject,
+            created_at=datetime.now(timezone.utc).isoformat(),
+        )
+        user = find_user_by_id(user_id)
+
+    mark_user_verified(user["id"])
+    request.session["role"] = "user"
+    request.session["user_id"] = user["id"]
+    try:
+        forwarded = request.headers.get("x-forwarded-for")
+        ip = forwarded.split(",")[0].strip() if forwarded else (request.client.host if request.client else "Unknown")
+        ua = request.headers.get("user-agent", "Unknown")
+        log_login_event(
+            user_id=user["id"],
+            user_email=user["email"],
+            user_name=user["full_name"],
+            role="User",
+            login_method="Google Sign-In",
+            ip_address=ip,
+            user_agent=ua,
+            status="success",
+        )
+    except Exception:
+        pass
+
+    return {
+        "authenticated": True,
+        "role": "user",
+        "redirect": "/profile",
+        "user": {
+            "id": user["id"],
+            "name": user["full_name"],
+            "email": user["email"],
+        },
+    }
 
 
 @router.get("/google/callback", name="google_callback")

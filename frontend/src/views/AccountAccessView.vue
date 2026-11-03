@@ -67,10 +67,10 @@
         </RouterLink>
 
         <h1 class="text-2xl font-bold leading-tight tracking-tight text-slate-950 dark:text-white sm:text-[1.65rem]">
-          {{ isForgot ? t('Forgot your password?') : isReset ? t('Choose a new password') : isVerify ? t('Verify your email') : isRegister ? t('Create your account') : t('Welcome back') }}
+          {{ isGoogle ? t('Sign in with Google') : isForgot ? t('Forgot your password?') : isReset ? t('Choose a new password') : isVerify ? t('Verify your email') : isRegister ? t('Create your account') : t('Welcome back') }}
         </h1>
         <p class="mt-0.5 text-xs sm:text-[13px] leading-snug text-slate-700 dark:text-slate-300">
-          {{ isForgot ? t('Enter your email and we will send you a password reset link.') : isReset ? t('Choose a new password for your account.') : isVerify ? t('Enter the 6-digit verification code sent to your email.') : isRegister ? t('Register to keep your course information together.') : t('Nice to see you again! Please sign in to continue.') }}
+          {{ isGoogle ? t('Enter your Google email to continue.') : isForgot ? t('Enter your email and we will send you a password reset link.') : isReset ? t('Choose a new password for your account.') : isVerify ? t('Enter the 6-digit verification code sent to your email.') : isRegister ? t('Register to keep your course information together.') : t('Nice to see you again! Please sign in to continue.') }}
         </p>
 
         <!-- Informative notice when redirected from course enrollment -->
@@ -301,6 +301,49 @@
           </div>
         </form>
 
+                <!-- Google Direct Sign-In Form -->
+        <form v-else-if="isGoogle" class="mt-2.5 sm:mt-3 space-y-3" @submit.prevent="submitGoogleDirect">
+          <label class="block">
+            <span class="mb-1 block text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-200">{{ t('Google Email') }}</span>
+            <input
+              v-model.trim="googleForm.email"
+              type="email"
+              required
+              autocomplete="email"
+              placeholder="you@gmail.com"
+              class="account-input dark:!bg-slate-800 dark:!border-slate-700 dark:!text-white dark:placeholder:!text-slate-400"
+            />
+          </label>
+
+          <label class="block">
+            <span class="mb-1 block text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-200">{{ t('Full name (optional)') }}</span>
+            <input
+              v-model.trim="googleForm.name"
+              type="text"
+              autocomplete="name"
+              placeholder="e.g. Sok Dara"
+              class="account-input dark:!bg-slate-800 dark:!border-slate-700 dark:!text-white dark:placeholder:!text-slate-400"
+            />
+          </label>
+
+          <button
+            type="submit"
+            :disabled="submitting || !googleForm.email"
+            class="mt-1 inline-flex h-10 w-full items-center justify-center gap-2 rounded-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-5 text-sm font-semibold text-slate-800 dark:text-slate-100 shadow-2xs transition hover:bg-slate-50 dark:hover:bg-slate-700 cursor-pointer disabled:opacity-50"
+          >
+            <img src="/google-icon.png" alt="" class="h-4 w-4" />
+            {{ submitting ? t('Please wait...') : t('Sign in with Google') }}
+          </button>
+
+          <button
+            type="button"
+            class="w-full text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-300 underline underline-offset-2 hover:text-navy-900 dark:hover:text-white cursor-pointer"
+            @click="goToSignIn"
+          >
+            {{ t('Back to sign in') }}
+          </button>
+        </form>
+
         <form v-else class="mt-2.5 sm:mt-3 space-y-2 sm:space-y-2.5" @submit.prevent="submitAccountForm">
           <label v-if="isRegister" class="block">
             <span class="mb-1 block text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-200">{{ t('Full name') }}</span>
@@ -477,7 +520,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { ArrowLeft, Eye, EyeOff, Mail, Moon, Sun } from 'lucide-vue-next'
 import { useLanguage } from '../i18n'
 import { useTheme } from '../composables/useTheme'
-import { accountService, adminService, getGoogleSignInUrl } from '../services/api'
+import { accountService, adminService, getGoogleSignInUrl, googleDirectLogin } from '../services/api'
 
 const route = useRoute()
 const router = useRouter()
@@ -487,6 +530,11 @@ const isRegister = computed(() => route.query.mode === 'register')
 const isForgot = computed(() => route.query.mode === 'forgot')
 const isReset = computed(() => route.query.mode === 'reset')
 const isVerify = computed(() => route.query.mode === 'verify')
+const isGoogle = computed(() => route.query.mode === 'google')
+const googleForm = reactive({
+  email: '',
+  name: '',
+})
 const verifyEmail = ref(route.query.email || '')
 const otpDigits = ref(['', '', '', '', '', ''])
 const otpInputs = ref([])
@@ -584,8 +632,14 @@ watch([() => route.query.mode, () => route.query.email, () => route.query.adminL
   } else if (route.query.reset_success === '1') {
     message.value = t('Your password has been reset. You can now sign in.')
   } else if (googleError === 'not_configured') {
-    isError.value = true
-    message.value = t('Google sign-in is not configured yet. Please configure GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET.')
+    router.replace({
+      path: '/account',
+      query: {
+        mode: 'google',
+        ...(route.query.redirect ? { redirect: route.query.redirect } : {}),
+      },
+    })
+    return
   } else if (googleError) {
     isError.value = true
     message.value = t('Google sign-in could not be completed. Please try again or use your email and password.')
@@ -864,6 +918,30 @@ async function submitPasswordReset() {
     await router.replace({ path: '/account', query: { mode: 'signin', reset_success: '1' } })
   } catch (error) {
     message.value = error.response?.data?.detail || t('This reset link is invalid or has expired. Request a new one.')
+  } finally {
+    submitting.value = false
+  }
+}
+
+async function submitGoogleDirect() {
+  if (!googleForm.email) return
+  submitting.value = true
+  message.value = ''
+  isError.value = false
+  try {
+    const res = await googleDirectLogin({
+      email: googleForm.email,
+      name: googleForm.name || undefined,
+    })
+    window.dispatchEvent(new Event('aerobyte-auth-updated'))
+    const redirectUrl = (typeof route.query.redirect === 'string' && route.query.redirect.startsWith('/'))
+      ? route.query.redirect
+      : (res.data?.redirect || '/profile')
+    sessionStorage.removeItem('aerobyte_enroll_redirect')
+    await router.push(redirectUrl)
+  } catch (error) {
+    isError.value = true
+    message.value = error.response?.data?.detail || t('Unable to sign in with Google. Please try again.')
   } finally {
     submitting.value = false
   }
