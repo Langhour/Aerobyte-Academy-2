@@ -17,9 +17,7 @@
                 <h1 class="text-xl sm:text-2xl font-black tracking-tight text-navy-900 dark:text-white">
                   Aero Print
                 </h1>
-                <span class="inline-flex items-center rounded-full bg-navy-50 dark:bg-slate-800 px-2.5 py-0.5 text-[11px] font-bold text-navy-900 dark:text-indigo-300">
-                  Instant 3D Quote
-                </span>
+                <span class="inline-flex items-center rounded-full bg-navy-50 dark:bg-slate-800 px-2.5 py-0.5 text-[11px] font-bold text-navy-900 dark:text-indigo-300">{{ t('Instant 3D Quote') }}</span>
               </div>
               <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">
                 {{ t('Instant Online 3D Printing Quotation & Rapid Prototyping Service in Cambodia') }}
@@ -33,7 +31,7 @@
               <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
               <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
             </span>
-            <span class="font-semibold text-slate-700 dark:text-slate-200">Lab Status: Ready</span>
+            <span class="font-semibold text-slate-700 dark:text-slate-200">{{ t('Lab Status: Ready') }}</span>
 
           </div>
         </div>
@@ -85,7 +83,7 @@
                 📁
               </div>
               <p class="text-sm sm:text-base font-bold text-navy-900 dark:text-white">
-                Drag and drop your 3D models here, or <span class="text-navy-900 dark:text-indigo-400 underline font-semibold">browse files</span>
+                Drag and drop your 3D models here, or <span class="text-navy-900 dark:text-indigo-400 underline font-semibold">{{ t('browse files') }}</span>
               </p>
               <p class="text-xs text-slate-500 dark:text-slate-400 mt-1.5">
                 Max file size: 50MB per file. Multi-part assemblies supported.
@@ -260,9 +258,7 @@
 
             <!-- Color Palette -->
             <div>
-              <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-2.5 uppercase tracking-wider">
-                Color
-              </label>
+              <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-2.5 uppercase tracking-wider">{{ t('Color') }}</label>
               <div class="flex flex-wrap gap-2.5">
                 <button
                   v-for="color in colors"
@@ -377,11 +373,11 @@
             <!-- Parameters Overview -->
             <div class="mt-4 space-y-2.5 text-xs">
               <div class="flex justify-between text-slate-500 dark:text-slate-400">
-                <span>Technology</span>
+                <span>{{ t('Technology') }}</span>
                 <span class="font-bold text-navy-900 dark:text-white">{{ currentTechName }}</span>
               </div>
               <div class="flex justify-between text-slate-500 dark:text-slate-400">
-                <span>Material</span>
+                <span>{{ t('Material') }}</span>
                 <span class="font-bold text-navy-900 dark:text-white">{{ currentMaterialName }}</span>
               </div>
               <div class="flex justify-between text-slate-500 dark:text-slate-400">
@@ -389,15 +385,15 @@
                 <span class="font-bold text-navy-900 dark:text-white">{{ selectedColor }}</span>
               </div>
               <div class="flex justify-between text-slate-500 dark:text-slate-400">
-                <span>Infill / Layer</span>
+                <span>{{ t('Infill / Layer') }}</span>
                 <span class="font-bold text-navy-900 dark:text-white">{{ selectedInfill }}% / {{ selectedLayerHeight }}</span>
               </div>
               <div class="flex justify-between text-slate-500 dark:text-slate-400">
-                <span>Total Parts</span>
+                <span>{{ t('Total Parts') }}</span>
                 <span class="font-bold text-navy-900 dark:text-white">{{ totalPartCount }} pcs</span>
               </div>
               <div class="flex justify-between text-slate-500 dark:text-slate-400">
-                <span>Est. Material Weight</span>
+                <span>{{ t('Est. Material Weight') }}</span>
                 <span class="font-bold text-navy-900 dark:text-white">{{ totalWeightGrams }} g</span>
               </div>
             </div>
@@ -405,19 +401,19 @@
             <!-- Cost Breakdown -->
             <div class="mt-5 border-t border-slate-100 dark:border-slate-800 pt-4 space-y-2 text-xs">
               <div class="flex justify-between text-slate-500 dark:text-slate-400">
-                <span>Base Machine Setup</span>
+                <span>{{ t('Base Machine Setup') }}</span>
                 <span>${{ baseFee.toFixed(2) }}</span>
               </div>
               <div class="flex justify-between text-slate-500 dark:text-slate-400">
-                <span>Material & Runtime</span>
+                <span>{{ t('Material & Runtime') }}</span>
                 <span>${{ materialCost.toFixed(2) }}</span>
               </div>
               <div v-if="postProcessCost > 0" class="flex justify-between text-slate-500 dark:text-slate-400">
-                <span>Post-Processing</span>
+                <span>{{ t('Post-Processing') }}</span>
                 <span>${{ postProcessCost.toFixed(2) }}</span>
               </div>
               <div v-if="quantityDiscount > 0" class="flex justify-between text-emerald-600 font-medium">
-                <span>Volume Discount</span>
+                <span>{{ t('Volume Discount') }}</span>
                 <span>-${{ quantityDiscount.toFixed(2) }}</span>
               </div>
             </div>
@@ -425,7 +421,7 @@
             <!-- Grand Total -->
             <div class="mt-5 border-t-2 border-slate-200 dark:border-slate-700 pt-4">
               <div class="flex items-baseline justify-between">
-                <span class="text-xs uppercase tracking-wider font-bold text-slate-400">Estimated Total</span>
+                <span class="text-xs uppercase tracking-wider font-bold text-slate-400">{{ t('Estimated Total') }}</span>
                 <div class="text-right">
                   <div class="text-2xl sm:text-3xl font-black text-navy-900 dark:text-white">
                     ${{ finalPriceUsd }}
@@ -447,7 +443,7 @@
                 class="w-full rounded-xl bg-navy-900 hover:bg-navy-800 dark:bg-indigo-600 dark:hover:bg-indigo-500 text-white font-extrabold py-3.5 px-4 text-sm shadow-md shadow-navy-950/20 active:scale-[0.99] transition flex items-center justify-center gap-2 cursor-pointer"
               >
                 <span>🚀</span>
-                <span>Submit Print Order</span>
+                <span>{{ t('Submit Print Order') }}</span>
               </button>
 
               <a
@@ -457,7 +453,7 @@
                 class="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold py-2.5 px-4 text-xs transition flex items-center justify-center gap-2"
               >
                 <span>💬</span>
-                <span>Direct Quote via Telegram</span>
+                <span>{{ t('Direct Quote via Telegram') }}</span>
               </a>
             </div>
 
@@ -479,7 +475,7 @@
         <div class="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
           <div class="flex items-center gap-2">
             <span class="text-xl">🖨️</span>
-            <h3 class="text-lg font-bold text-navy-900 dark:text-white">Submit 3D Print Request</h3>
+            <h3 class="text-lg font-bold text-navy-900 dark:text-white">{{ t('Submit 3D Print Request') }}</h3>
           </div>
           <button
             type="button"
@@ -494,7 +490,7 @@
           <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 text-2xl font-bold">
             ✓
           </div>
-          <h4 class="text-xl font-bold text-navy-900 dark:text-white">Quote Request Received!</h4>
+          <h4 class="text-xl font-bold text-navy-900 dark:text-white">{{ t('Quote Request Received!') }}</h4>
           <p class="text-xs text-slate-500 max-w-xs mx-auto">
             Our Aero Print lab engineers will review your 3D files and contact you on Telegram / Phone within 2 hours.
           </p>
@@ -509,7 +505,7 @@
 
         <form v-else @submit.prevent="submitPrintOrder" class="mt-4 space-y-3.5">
           <div>
-            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Your Full Name</label>
+            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">{{ t('Your Full Name') }}</label>
             <input
               v-model="orderForm.name"
               type="text"
@@ -521,7 +517,7 @@
 
           <div class="grid grid-cols-2 gap-3">
             <div>
-              <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Phone Number</label>
+              <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">{{ t('Phone Number') }}</label>
               <input
                 v-model="orderForm.phone"
                 type="tel"
@@ -531,7 +527,7 @@
               />
             </div>
             <div>
-              <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Telegram Handle</label>
+              <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">{{ t('Telegram Handle') }}</label>
               <input
                 v-model="orderForm.telegram"
                 type="text"
@@ -542,7 +538,7 @@
           </div>
 
           <div>
-            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Delivery / Notes (Optional)</label>
+            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">{{ t('Delivery / Notes (Optional)') }}</label>
             <textarea
               v-model="orderForm.notes"
               rows="2"

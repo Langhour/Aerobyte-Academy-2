@@ -72,7 +72,7 @@
             </blockquote>
           </div>
           <div class="mt-6 pt-4 border-t border-orange-100 dark:border-slate-700 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
-            <span>AeroByte Core Mission</span>
+            <span>{{ t('AeroByte Core Mission') }}</span>
             <CheckCircle2 class="w-4 h-4 text-accent-orange" />
           </div>
         </div>
@@ -91,7 +91,7 @@
             </blockquote>
           </div>
           <div class="mt-6 pt-4 border-t border-indigo-100 dark:border-slate-700 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
-            <span>Industry 4.0 Vision</span>
+            <span>{{ t('Industry 4.0 Vision') }}</span>
             <CheckCircle2 class="w-4 h-4 text-navy-800 dark:text-indigo-400" />
           </div>
         </div>
@@ -115,7 +115,7 @@
             <div class="w-12 h-12 rounded-xl bg-orange-50 dark:bg-orange-950/60 text-accent-orange flex items-center justify-center mb-4">
               <ShoppingBag class="w-6 h-6" />
             </div>
-            <span class="text-[10px] font-bold uppercase tracking-wider text-accent-orange">Retail</span>
+            <span class="text-[10px] font-bold uppercase tracking-wider text-accent-orange">{{ t('Retail') }}</span>
             <h3 class="text-base font-bold text-navy-900 dark:text-white mt-1 mb-2">{{ t('Retail & Maker Kits') }}</h3>
             <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
               {{ t('In-house hardware production, robotics starter kits, microcontrollers, and DIY maker components designed to remove all barriers to hands-on learning.') }}
@@ -127,7 +127,7 @@
             <div class="w-12 h-12 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-4">
               <GraduationCap class="w-6 h-6" />
             </div>
-            <span class="text-[10px] font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">Education</span>
+            <span class="text-[10px] font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">{{ t('Education') }}</span>
             <h3 class="text-base font-bold text-navy-900 dark:text-white mt-1 mb-2">{{ t('Technical Education') }}</h3>
             <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
               {{ t('Structured courses from beginner to advanced levels, spanning robotics engineering, ROS2 middleware, embedded firmware, PCB layout, and 3D prototyping.') }}
@@ -139,7 +139,7 @@
             <div class="w-12 h-12 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mb-4">
               <Wrench class="w-6 h-6" />
             </div>
-            <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">Services</span>
+            <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">{{ t('Services') }}</span>
             <h3 class="text-base font-bold text-navy-900 dark:text-white mt-1 mb-2">{{ t('Engineering Services') }}</h3>
             <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
               {{ t('Hardware maintenance, specialized prototyping, rapid 3D printing, and continuous engineering support for students, makers, and corporate clients.') }}
@@ -206,7 +206,7 @@
             <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-black uppercase tracking-wider bg-orange-600 text-white w-fit mb-2">
               Cambodia Premier Tech-Sport
             </span>
-            <p class="text-sm font-black text-white">The Racing Drone Warrior Championship</p>
+            <p class="text-sm font-black text-white">{{ t('The Racing Drone Warrior Championship') }}</p>
           </div>
         </div>
 
@@ -227,14 +227,14 @@
                 <Users class="w-3.5 h-3.5 text-blue-500" />
                 {{ t('CDTA Association') }}
               </p>
-              <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">2,000+ aerial robotics & FPV pilot community members</p>
+              <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">{{ t('2,000+ aerial robotics & FPV pilot community members') }}</p>
             </div>
             <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-700">
               <p class="text-xs font-bold text-navy-900 dark:text-white flex items-center gap-1.5">
                 <Trophy class="w-3.5 h-3.5 text-accent-orange" />
                 {{ t('National Drone Championship') }}
               </p>
-              <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">Merging competitive FPV piloting with advanced STEM</p>
+              <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">{{ t('Merging competitive FPV piloting with advanced STEM') }}</p>
             </div>
           </div>
         </div>
@@ -249,7 +249,7 @@
             </div>
             <div>
               <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">{{ t('Campus Location') }}</p>
-              <p class="text-xs font-bold text-navy-900 dark:text-white mt-0.5">Ta Kmau Krong, Kandal Province, Cambodia</p>
+              <p class="text-xs font-bold text-navy-900 dark:text-white mt-0.5">{{ t('Ta Kmau Krong, Kandal Province, Cambodia') }}</p>
             </div>
           </div>
 

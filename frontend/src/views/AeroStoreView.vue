@@ -276,7 +276,7 @@
 
         <div v-if="orderSubmitted" class="text-center py-8">
           <div class="text-5xl mb-3">✅</div>
-          <h3 class="text-lg font-bold text-navy-900 dark:text-white">Order Request Received!</h3>
+          <h3 class="text-lg font-bold text-navy-900 dark:text-white">{{ t('Order Request Received!') }}</h3>
           <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 max-w-xs mx-auto">
             Our team will contact you via Telegram or phone within 1 hour to confirm delivery or lab pickup.
           </p>
@@ -310,7 +310,7 @@
 
           <form @submit.prevent="submitOrder" class="mt-4 space-y-3">
             <div>
-              <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Quantity</label>
+              <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">{{ t('Quantity') }}</label>
               <div class="flex items-center gap-2">
                 <button
                   type="button"
@@ -327,7 +327,7 @@
             </div>
 
             <div>
-              <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Full Name</label>
+              <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">{{ t('Full Name') }}</label>
               <input
                 v-model="orderForm.name"
                 type="text"
@@ -339,7 +339,7 @@
 
             <div class="grid grid-cols-2 gap-3">
               <div>
-                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Phone Number</label>
+                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">{{ t('Phone Number') }}</label>
                 <input
                   v-model="orderForm.phone"
                   type="tel"
@@ -349,7 +349,7 @@
                 />
               </div>
               <div>
-                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Telegram (Optional)</label>
+                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">{{ t('Telegram (Optional)') }}</label>
                 <input
                   v-model="orderForm.telegram"
                   type="text"
@@ -360,7 +360,7 @@
             </div>
 
             <div>
-              <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Delivery Address or Lab Pickup</label>
+              <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">{{ t('Delivery Address or Lab Pickup') }}</label>
               <textarea
                 v-model="orderForm.address"
                 rows="2"
@@ -373,9 +373,7 @@
               <button
                 type="submit"
                 class="w-full rounded-xl bg-navy-900 hover:bg-navy-800 dark:bg-indigo-600 dark:hover:bg-indigo-500 text-white font-bold py-3 text-xs shadow-md shadow-navy-950/20 transition cursor-pointer"
-              >
-                Confirm Order
-              </button>
+              >{{ t('Confirm Order') }}</button>
 
               <a
                 :href="telegramOrderLink"
@@ -384,7 +382,7 @@
                 class="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold py-2.5 px-4 text-xs transition flex items-center justify-center gap-2"
               >
                 <span>💬</span>
-                <span>Order Directly on Telegram</span>
+                <span>{{ t('Order Directly on Telegram') }}</span>
               </a>
             </div>
           </form>
