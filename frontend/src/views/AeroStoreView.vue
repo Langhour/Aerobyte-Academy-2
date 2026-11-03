@@ -28,9 +28,9 @@
     </div>
 
     <!-- 2. Commercial Hero Showcase Banner (AeroByte Official Dark Blue #102a49) -->
-    <section class="px-4 sm:px-6 lg:px-8 pt-4 pb-6 sm:pb-10">
-      <div class="mx-auto max-w-7xl">
-        <div class="relative overflow-hidden rounded-[28px] sm:rounded-[36px] bg-[#102a49] shadow-2xl border border-navy-800/80 aspect-[16/9] sm:aspect-[2/1] lg:aspect-[2.3/1] min-h-[360px] sm:min-h-[440px] max-h-[520px] flex items-center">
+    <section class="px-3 sm:px-6 lg:px-8 pt-4 pb-6 sm:pb-10">
+      <div class="mx-auto w-full max-w-[1640px]">
+        <div class="relative overflow-hidden rounded-[28px] sm:rounded-[36px] bg-[#102a49] shadow-2xl border border-navy-800/80 aspect-[16/9] sm:aspect-[2/1] lg:aspect-[2.1/1] xl:aspect-[2.2/1] min-h-[440px] sm:min-h-[520px] lg:min-h-[560px] max-h-[640px] flex items-center">
           
           <!-- Background Showcase Image (Staged Products on Left, Deep Navy Space on Right - 100% Bright, Sharp & Natural) -->
           <img
@@ -40,21 +40,21 @@
           />
 
           <!-- Content Grid overlaying the banner -->
-          <div class="relative z-10 w-full px-4 sm:px-8 lg:px-8 xl:px-10 py-8 sm:py-12 grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-center h-full">
+          <div class="relative z-10 w-full px-6 sm:px-10 lg:px-16 py-10 sm:py-16 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center h-full">
             <!-- Left spacer so all staged products (Box, Drone, PCB & 3D Printer) remain completely visible without overlap -->
             <div class="hidden lg:block lg:col-span-6 xl:col-span-6 pointer-events-none"></div>
 
-            <!-- Right: Big Punchy Typography & "SHOP ALL" Button shifted to the right hand side and made bigger -->
-            <div class="lg:col-span-6 xl:col-span-6 flex flex-col items-center justify-center text-center lg:translate-x-6 xl:translate-x-10 2xl:translate-x-12">
-              <h1 class="text-4xl sm:text-6xl md:text-7xl lg:text-[66px] xl:text-[82px] 2xl:text-[92px] font-black text-white tracking-tight uppercase leading-[1.02] drop-shadow-lg select-none">
+            <!-- Right: Big Punchy Typography & "SHOP ALL" Button -->
+            <div class="lg:col-span-6 xl:col-span-6 flex flex-col items-center justify-center text-center">
+              <h1 class="text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-[80px] font-black text-white tracking-tight uppercase leading-[1.05] drop-shadow-md select-none">
                 <span class="whitespace-nowrap">AERO STORE</span><br />
                 2026!
               </h1>
 
-              <!-- Yellow/Amber SHOP ALL Pill Button (Matching user's reference button!) -->
+              <!-- Yellow/Amber SHOP ALL Pill Button -->
               <a
                 href="#catalog"
-                class="mt-6 sm:mt-8 inline-flex items-center justify-center px-10 sm:px-12 py-3.5 sm:py-4.5 rounded-full bg-amber-400 hover:bg-amber-300 text-[#102a49] font-black text-sm sm:text-lg uppercase tracking-wider shadow-2xl hover:shadow-amber-400/30 hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer"
+                class="mt-6 sm:mt-8 inline-flex items-center justify-center px-10 sm:px-12 py-3.5 sm:py-4.5 rounded-full bg-amber-400 hover:bg-amber-300 text-[#102a49] font-black text-sm sm:text-base uppercase tracking-wider shadow-2xl hover:shadow-amber-400/30 hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer"
               >
                 SHOP ALL
               </a>
