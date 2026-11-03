@@ -13,7 +13,7 @@
           @click="setLocale('en')"
           class="px-2.5 py-1 text-xs font-bold rounded-full transition cursor-pointer"
           :class="locale === 'en'
-            ? 'bg-navy-900 text-white dark:bg-indigo-600 shadow-xs'
+            ? 'bg-navy-900 text-white dark:bg-blue-600 shadow-xs'
             : 'text-slate-600 dark:text-slate-300 hover:text-navy-900 dark:hover:text-white'"
           :aria-pressed="locale === 'en'"
         >
@@ -24,7 +24,7 @@
           @click="setLocale('kh')"
           class="px-2.5 py-1 text-xs font-bold rounded-full transition cursor-pointer font-khmer"
           :class="locale === 'kh'
-            ? 'bg-navy-900 text-white dark:bg-indigo-600 shadow-xs'
+            ? 'bg-navy-900 text-white dark:bg-blue-600 shadow-xs'
             : 'text-slate-600 dark:text-slate-300 hover:text-navy-900 dark:hover:text-white'"
           :aria-pressed="locale === 'kh'"
         >
@@ -94,7 +94,7 @@
             <p class="text-xs font-bold text-navy-900 dark:text-white">Dev mode reset link generated:</p>
             <a
               :href="devResetUrl"
-              class="inline-block mt-0.5 font-semibold text-xs text-blue-700 dark:text-indigo-400 underline hover:text-navy-900 dark:hover:text-indigo-300 break-all"
+              class="inline-block mt-0.5 font-semibold text-xs text-blue-700 dark:text-sky-400 underline hover:text-navy-900 dark:hover:text-sky-300 break-all"
             >
               Click here to test resetting your password &rarr;
             </a>
@@ -112,13 +112,13 @@
               required
               maxlength="254"
               placeholder="you@example.com"
-              class="account-input"
+              class="account-input dark:!bg-slate-800 dark:!border-slate-700 dark:!text-white dark:placeholder:!text-slate-400"
             />
           </label>
           <button
             type="submit"
             :disabled="submitting"
-            class="mt-1 inline-flex h-10 w-full items-center justify-center rounded-full bg-[#17313d] px-5 text-sm font-semibold text-white transition hover:bg-navy-900 disabled:opacity-60 dark:bg-indigo-600 dark:hover:bg-indigo-500"
+            class="mt-1 inline-flex h-10 w-full items-center justify-center rounded-full bg-[#17313d] px-5 text-sm font-semibold text-white transition hover:bg-navy-900 disabled:opacity-60 dark:bg-blue-600 dark:hover:bg-blue-500"
           >
             {{ submitting ? t('Please wait...') : t('Send reset link') }}
           </button>
@@ -132,7 +132,7 @@
           <div>
             <div class="mb-1 flex items-center justify-between">
               <label class="block text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-200">{{ t('New password') }}</label>
-              <span v-if="capsLockOn" class="inline-flex items-center gap-1.5 text-[11px] font-medium text-[#1570ef] dark:text-indigo-400">
+              <span v-if="capsLockOn" class="inline-flex items-center gap-1.5 text-[11px] font-medium text-[#1570ef] dark:text-sky-400">
                 <svg class="h-3.5 w-3.5 shrink-0" viewBox="0 0 20 20" fill="none" aria-hidden="true">
                   <circle cx="10" cy="10" r="9" fill="#1570EF" />
                   <circle cx="10" cy="6.25" r="1.1" fill="#FFFFFF" />
@@ -149,7 +149,7 @@
                 required
                 minlength="8"
                 maxlength="256"
-                class="pw-input"
+                class="pw-input dark:!bg-slate-800 dark:!border-slate-700 dark:!text-white dark:placeholder:!text-slate-400"
                 @keydown="checkCapsLock"
                 @keyup="checkCapsLock"
                 @click="checkCapsLock"
@@ -198,7 +198,7 @@
                 required
                 minlength="8"
                 maxlength="256"
-                class="pw-input"
+                class="pw-input dark:!bg-slate-800 dark:!border-slate-700 dark:!text-white dark:placeholder:!text-slate-400"
                 :class="{ 'pw-input-error': passwordMismatch }"
                 @keydown="checkCapsLock"
                 @keyup="checkCapsLock"
@@ -223,7 +223,7 @@
           <button
             type="submit"
             :disabled="submitting || !resetToken"
-            class="mt-1 inline-flex h-10 w-full items-center justify-center rounded-full bg-[#17313d] px-5 text-sm font-semibold text-white transition hover:bg-navy-900 disabled:opacity-60 dark:bg-indigo-600 dark:hover:bg-indigo-500"
+            class="mt-1 inline-flex h-10 w-full items-center justify-center rounded-full bg-[#17313d] px-5 text-sm font-semibold text-white transition hover:bg-navy-900 disabled:opacity-60 dark:bg-blue-600 dark:hover:bg-blue-500"
           >
             {{ submitting ? t('Please wait...') : t('Update password') }}
           </button>
@@ -256,7 +256,7 @@
                 inputmode="numeric"
                 pattern="[0-9]*"
                 maxlength="1"
-                class="w-10 sm:w-12 h-12 text-center text-lg sm:text-xl font-black rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-navy-950 dark:text-white focus:border-navy-900 dark:focus:border-indigo-500 focus:ring-2 focus:ring-navy-900/20 dark:focus:ring-indigo-500/20 outline-none transition"
+                class="w-10 sm:w-12 h-12 text-center text-lg sm:text-xl font-black rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-navy-950 dark:text-white focus:border-navy-900 dark:focus:border-blue-500 focus:ring-2 focus:ring-navy-900/20 dark:focus:ring-blue-500/20 outline-none transition"
                 @input="onOtpInput(index, $event)"
                 @keydown="onOtpKeydown(index, $event)"
                 @paste="onOtpPaste($event)"
@@ -267,7 +267,7 @@
           <button
             type="submit"
             :disabled="submitting || otpDigits.join('').length !== 6"
-            class="inline-flex h-10 w-full items-center justify-center rounded-full bg-[#17313d] px-5 text-sm font-semibold text-white transition hover:bg-navy-900 disabled:opacity-50 dark:bg-indigo-600 dark:hover:bg-indigo-500 cursor-pointer"
+            class="inline-flex h-10 w-full items-center justify-center rounded-full bg-[#17313d] px-5 text-sm font-semibold text-white transition hover:bg-navy-900 disabled:opacity-50 dark:bg-blue-600 dark:hover:bg-blue-500 cursor-pointer"
           >
             {{ submitting ? t('Verifying...') : t('Verify & Activate Account') }}
           </button>
@@ -304,7 +304,7 @@
               @keypress="onNameKeypress"
               @input="onNameInput"
               :placeholder="t('Enter full name')"
-              class="account-input"
+              class="account-input dark:!bg-slate-800 dark:!border-slate-700 dark:!text-white dark:placeholder:!text-slate-400"
             />
           </label>
 
@@ -317,14 +317,14 @@
               required
               maxlength="254"
               placeholder="you@example.com"
-              class="account-input"
+              class="account-input dark:!bg-slate-800 dark:!border-slate-700 dark:!text-white dark:placeholder:!text-slate-400"
             />
           </label>
 
           <div>
             <div class="mb-1 flex items-center justify-between">
               <label class="block text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-200">{{ t('Password') }}</label>
-              <span v-if="capsLockOn" class="inline-flex items-center gap-1.5 text-[11px] font-medium text-[#1570ef] dark:text-indigo-400">
+              <span v-if="capsLockOn" class="inline-flex items-center gap-1.5 text-[11px] font-medium text-[#1570ef] dark:text-sky-400">
                 <svg class="h-3.5 w-3.5 shrink-0" viewBox="0 0 20 20" fill="none" aria-hidden="true">
                   <circle cx="10" cy="10" r="9" fill="#1570EF" />
                   <circle cx="10" cy="6.25" r="1.1" fill="#FFFFFF" />
@@ -341,7 +341,7 @@
                 required
                 minlength="8"
                 :placeholder="t('At least 8 characters')"
-                class="account-input pr-10"
+                class="account-input pr-10 dark:!bg-slate-800 dark:!border-slate-700 dark:!text-white dark:placeholder:!text-slate-400"
                 @keydown="checkCapsLock"
                 @keyup="checkCapsLock"
                 @click="checkCapsLock"
@@ -389,7 +389,7 @@
                 required
                 minlength="8"
                 :placeholder="t('Confirm password')"
-                class="account-input pr-10"
+                class="account-input pr-10 dark:!bg-slate-800 dark:!border-slate-700 dark:!text-white dark:placeholder:!text-slate-400"
                 :class="{ 'account-input-error': passwordMismatch }"
                 @keydown="checkCapsLock"
                 @keyup="checkCapsLock"
@@ -415,7 +415,7 @@
           <div v-if="!isRegister" class="flex justify-end">
             <button
               type="button"
-              class="text-xs sm:text-sm font-medium text-slate-800 dark:text-indigo-400 underline underline-offset-2 hover:text-navy-700 dark:hover:text-indigo-300"
+              class="text-xs sm:text-sm font-medium text-slate-800 dark:text-sky-400 underline underline-offset-2 hover:text-navy-700 dark:hover:text-sky-300"
               @click="goToForgotPassword"
             >
               {{ t('Forgot Password?') }}
@@ -425,7 +425,7 @@
           <button
             type="submit"
             :disabled="submitting"
-            class="mt-1 inline-flex h-10 w-full items-center justify-center rounded-full bg-[#17313d] px-5 text-sm font-semibold text-white transition hover:bg-navy-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy-800 focus-visible:ring-offset-2 dark:bg-indigo-600 dark:hover:bg-indigo-500"
+            class="mt-1 inline-flex h-10 w-full items-center justify-center rounded-full bg-[#17313d] px-5 text-sm font-semibold text-white transition hover:bg-navy-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy-800 focus-visible:ring-offset-2 dark:bg-blue-600 dark:hover:bg-blue-500"
           >
             {{ submitting ? t('Please wait...') : isRegister ? t('Register') : t('Sign in') }}
           </button>
@@ -451,7 +451,7 @@
           {{ isRegister ? t('Already have an account?') : t("Don't you have an account?") }}
           <RouterLink
             :to="{ path: '/account', query: { mode: isRegister ? 'signin' : 'register', ...(route.query.redirect ? { redirect: route.query.redirect } : {}) } }"
-            class="ml-1 font-bold text-slate-900 dark:text-indigo-400 underline underline-offset-2 hover:text-navy-700 dark:hover:text-indigo-300"
+            class="ml-1 font-bold text-slate-900 dark:text-sky-400 underline underline-offset-2 hover:text-navy-700 dark:hover:text-sky-300"
           >
             {{ isRegister ? t('Sign in') : t('Sign up') }}
           </RouterLink>
@@ -540,12 +540,12 @@ const strengthLabel = computed(() => {
 })
 
 function getStrengthBarClass(index) {
-  if (!form.password) return 'bg-slate-200'
+  if (!form.password) return 'bg-slate-200 dark:bg-slate-700'
   const score = passwordScore.value
-  if (index > score) return 'bg-slate-200'
+  if (index > score) return 'bg-slate-200 dark:bg-slate-700'
   if (score === 1) return 'bg-[#dc2626]'
   if (score === 2) return 'bg-[#ea580c]'
-  if (score === 3) return 'bg-[#0e7051]'
+  if (score === 3) return 'bg-[#0284c7]'
   return 'bg-[#0e7051]'
 }
 const message = ref('')
@@ -905,7 +905,7 @@ onMounted(async () => {
   color: #0f172a;
   font-size: 13px;
   outline: none;
-  transition: border-color 150ms ease, box-shadow 150ms ease;
+  transition: border-color 150ms ease, box-shadow 150ms ease, background-color 150ms ease;
 }
 
 .pw-input::placeholder {
@@ -913,8 +913,8 @@ onMounted(async () => {
 }
 
 .pw-input:focus {
-  border-color: #0f172a;
-  box-shadow: 0 0 0 1px #0f172a;
+  border-color: #0284c7;
+  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.2);
 }
 
 .pw-input.pw-input-error {
@@ -927,79 +927,63 @@ onMounted(async () => {
   box-shadow: 0 0 0 1px #dc2626;
 }
 
-:global(html.dark) .pw-input {
-  border-color: #334155;
-  background: #1e293b;
-  color: #f8fafc;
-}
-
-:global(html.dark) .pw-input::placeholder {
-  color: #64748b;
-}
-
-:global(html.dark) .pw-input:focus {
-  border-color: #6366f1;
-  box-shadow: 0 0 0 1px #6366f1;
-}
-
-:global(html.dark) .pw-input.pw-input-error {
-  border-color: #ef4444;
-  background: rgba(127, 29, 29, 0.2);
-}
-
 .account-input {
   display: block;
   width: 100%;
   height: 40px;
-  border: 1px solid rgb(148 163 184 / 0.65);
+  border: 1px solid #cbd5e1;
   border-radius: 9999px;
-  background: rgb(255 255 255 / 0.68);
+  background: #ffffff;
   padding: 0 14px;
-  color: #1e293b;
+  color: #0f172a;
   font-size: 13px;
   outline: none;
   transition: border-color 150ms ease, box-shadow 150ms ease, background-color 150ms ease;
 }
 
 .account-input::placeholder {
-  color: #64748b;
+  color: #94a3b8;
 }
 
 .account-input:focus {
-  border-color: #27466d;
-  background: rgb(255 255 255 / 0.92);
-  box-shadow: 0 0 0 3px rgb(39 70 109 / 0.12);
+  border-color: #0284c7;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.2);
 }
 
 .account-input.account-input-error {
   border-color: #ef4444;
-  background: rgb(254 242 242 / 0.65);
+  background: #fef2f2;
 }
 
 .account-input.account-input-error:focus {
   border-color: #dc2626;
-  box-shadow: 0 0 0 3px rgb(239 68 68 / 0.2);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
 }
 
-:global(html.dark) .account-input {
-  border-color: #334155;
-  background: rgba(30, 41, 59, 0.85);
-  color: #f8fafc;
+:global(html.dark .pw-input),
+:global(html.dark .account-input) {
+  border-color: #334155 !important;
+  background-color: #1e293b !important;
+  color: #f8fafc !important;
 }
 
-:global(html.dark) .account-input::placeholder {
-  color: #64748b;
+:global(html.dark .pw-input::placeholder),
+:global(html.dark .account-input::placeholder) {
+  color: #94a3b8 !important;
 }
 
-:global(html.dark) .account-input:focus {
-  border-color: #6366f1;
-  background: rgba(30, 41, 59, 0.98);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+:global(html.dark .pw-input:focus),
+:global(html.dark .account-input:focus) {
+  border-color: #38bdf8 !important;
+  background-color: #1e293b !important;
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.25) !important;
 }
 
-:global(html.dark) .account-input.account-input-error {
-  border-color: #ef4444;
-  background: rgba(127, 29, 29, 0.25);
+:global(html.dark .pw-input.pw-input-error),
+:global(html.dark .account-input.account-input-error) {
+  border-color: #ef4444 !important;
+  background-color: rgba(127, 29, 29, 0.25) !important;
 }
 
 :global(input::-ms-reveal),

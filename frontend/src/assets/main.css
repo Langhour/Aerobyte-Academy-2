@@ -128,13 +128,39 @@ html.dark .admin-input::placeholder {
 
 html.dark .profile-input:focus,
 html.dark .admin-input:focus {
-  border-color: #6366f1 !important;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2) !important;
+  border-color: #38bdf8 !important;
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2) !important;
 }
 
 html.dark .admin-input option {
   background-color: #1e293b !important;
   color: #f8fafc !important;
+}
+
+/* Dark mode account access inputs */
+html.dark .account-input,
+html.dark .pw-input {
+  background-color: #1e293b !important;
+  border-color: #334155 !important;
+  color: #f8fafc !important;
+}
+
+html.dark .account-input::placeholder,
+html.dark .pw-input::placeholder {
+  color: #94a3b8 !important;
+}
+
+html.dark .account-input:focus,
+html.dark .pw-input:focus {
+  border-color: #38bdf8 !important;
+  background-color: #1e293b !important;
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.25) !important;
+}
+
+html.dark .account-input.account-input-error,
+html.dark .pw-input.pw-input-error {
+  border-color: #ef4444 !important;
+  background-color: rgba(127, 29, 29, 0.25) !important;
 }
 
 /* Dark mode admin label */
