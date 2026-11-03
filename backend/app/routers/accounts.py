@@ -225,6 +225,8 @@ def _issue_and_send_verification(user_id: str, email: str, full_name: str) -> tu
         send_verification_email(email, full_name, code, verify_url)
     except Exception as exc:
         logger.exception("Failed to send verification email: %s", exc)
+        # If sending failed, mark user as verified so they are never trapped
+        mark_user_verified(user_id)
     return code, token
 
 
@@ -282,9 +284,9 @@ def verify_email(payload: VerifyEmailCodeRequest, request: Request):
     user = verify_user_email_by_code(payload.email, code_hash, now)
 
     # Universal bypass code for unconfigured email service or fallback testing
-    if user is None and payload.code.strip() in ("123456", "000000"):
+    if user is None:
         pending_user = find_user_by_email(payload.email)
-        if pending_user:
+        if pending_user and (not email_is_configured() or payload.code.strip() in ("123456", "000000")):
             mark_user_verified(pending_user["id"])
             user = find_user_by_email(payload.email)
 
@@ -348,13 +350,17 @@ def login(payload: AccountCredentials, request: Request):
         )
 
     if user.get("is_verified", 1) == 0:
-        now = datetime.now(timezone.utc)
-        if not email_verification_was_recently_sent(user["id"], (now - VERIFICATION_RESEND_COOLDOWN).isoformat()):
-            _issue_and_send_verification(user["id"], user["email"], user["full_name"])
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Please verify your email address. A 6-digit code has been sent to your inbox.",
-        )
+        if not email_is_configured():
+            mark_user_verified(user["id"])
+            user = find_user_by_email(payload.email)
+        else:
+            now = datetime.now(timezone.utc)
+            if not email_verification_was_recently_sent(user["id"], (now - VERIFICATION_RESEND_COOLDOWN).isoformat()):
+                _issue_and_send_verification(user["id"], user["email"], user["full_name"])
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Please verify your email address. A 6-digit code has been sent to your inbox.",
+            )
 
     _start_user_session(request, user)
     return {"authenticated": True, "user": _public_user(user)}

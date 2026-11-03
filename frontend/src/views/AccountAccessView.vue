@@ -262,10 +262,10 @@
                 @paste="onOtpPaste($event)"
               />
             </div>
-            <div class="mt-2 text-right">
+            <div class="mt-3 flex items-center justify-center">
               <button
                 type="button"
-                class="text-xs font-semibold text-sky-600 dark:text-sky-400 hover:underline cursor-pointer"
+                class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-sky-50 dark:bg-sky-950/40 border border-sky-200 dark:border-sky-800 text-xs font-bold text-sky-800 dark:text-sky-300 hover:bg-sky-100 dark:hover:bg-sky-900/50 transition cursor-pointer"
                 @click="autoFillBypassCode"
               >
                 ⚡ {{ t("Didn't receive code? Click to auto-verify") }}
