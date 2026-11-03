@@ -1,5 +1,50 @@
 <template>
   <div class="account-access relative isolate flex min-h-screen items-center justify-center overflow-x-hidden overflow-y-auto bg-slate-100 dark:bg-slate-950 px-3 py-4 sm:px-8 sm:py-6">
+    <!-- Top-Right Actions: Language Switcher & Dark/Light Mode -->
+    <div class="fixed top-3 right-3 sm:top-5 sm:right-6 z-30 flex items-center gap-2">
+      <!-- Language Toggle Pill -->
+      <div
+        class="inline-flex items-center rounded-full border border-slate-200/90 dark:border-slate-700/80 bg-white/90 dark:bg-slate-800/90 p-0.5 shadow-2xs backdrop-blur transition"
+        role="group"
+        :aria-label="t('Language')"
+      >
+        <button
+          type="button"
+          @click="setLocale('en')"
+          class="px-2.5 py-1 text-xs font-bold rounded-full transition cursor-pointer"
+          :class="locale === 'en'
+            ? 'bg-navy-900 text-white dark:bg-indigo-600 shadow-xs'
+            : 'text-slate-600 dark:text-slate-300 hover:text-navy-900 dark:hover:text-white'"
+          :aria-pressed="locale === 'en'"
+        >
+          EN
+        </button>
+        <button
+          type="button"
+          @click="setLocale('kh')"
+          class="px-2.5 py-1 text-xs font-bold rounded-full transition cursor-pointer font-khmer"
+          :class="locale === 'kh'
+            ? 'bg-navy-900 text-white dark:bg-indigo-600 shadow-xs'
+            : 'text-slate-600 dark:text-slate-300 hover:text-navy-900 dark:hover:text-white'"
+          :aria-pressed="locale === 'kh'"
+        >
+          ខ្មែរ
+        </button>
+      </div>
+
+      <!-- Dark / Light Mode Toggle Button -->
+      <button
+        type="button"
+        @click="toggleTheme"
+        class="inline-flex h-8 w-8 items-center justify-center rounded-full border border-slate-200/90 dark:border-slate-700/80 bg-white/90 dark:bg-slate-800/90 text-slate-700 dark:text-slate-200 shadow-2xs backdrop-blur transition hover:bg-white dark:hover:bg-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy-800/40 cursor-pointer"
+        :aria-label="isDark ? t('Switch to light mode') : t('Switch to dark mode')"
+        :title="isDark ? t('Switch to light mode') : t('Switch to dark mode')"
+      >
+        <Sun v-if="isDark" class="h-4 w-4 text-amber-400" aria-hidden="true" />
+        <Moon v-else class="h-4 w-4 text-slate-700 dark:text-slate-200" aria-hidden="true" />
+      </button>
+    </div>
+
     <img
       src="/account-access-bg.png"
       alt=""
@@ -420,13 +465,15 @@
 <script setup>
 import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { ArrowLeft, Eye, EyeOff, Mail } from 'lucide-vue-next'
+import { ArrowLeft, Eye, EyeOff, Mail, Moon, Sun } from 'lucide-vue-next'
 import { useLanguage } from '../i18n'
+import { useTheme } from '../composables/useTheme'
 import { accountService, adminService, getGoogleSignInUrl } from '../services/api'
 
 const route = useRoute()
 const router = useRouter()
-const { t } = useLanguage()
+const { locale, setLocale, t } = useLanguage()
+const { isDark, toggleTheme } = useTheme()
 const isRegister = computed(() => route.query.mode === 'register')
 const isForgot = computed(() => route.query.mode === 'forgot')
 const isReset = computed(() => route.query.mode === 'reset')
