@@ -3,13 +3,13 @@
     <!-- 2. Commercial Hero Showcase Banner (AeroByte Official Dark Blue #102a49) - Exact Match to Aero Print Frame -->
     <section class="pt-4 pb-6 sm:pb-8">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div class="relative w-full overflow-hidden rounded-2xl sm:rounded-3xl bg-[#102a49] shadow-xl border border-navy-800/80 aspect-[16/9] sm:aspect-[2.1/1] lg:aspect-[2.3/1] min-h-[380px] max-h-[540px] flex items-center">
+        <div class="relative w-full overflow-hidden rounded-2xl sm:rounded-3xl bg-[#102a49] shadow-xl border border-navy-800/80 aspect-[16/9] sm:aspect-[2.1/1] lg:aspect-[2.2/1] min-h-[380px] max-h-[540px] flex items-center">
           
           <!-- Background Showcase Image (Staged Products on Left, Deep Navy Space on Right - 100% Bright, Sharp & Natural) -->
           <img
             src="/assets/brand/store-hero-showcase.jpg"
             alt="AeroByte Maker Kit Hardware Showcase"
-            class="absolute inset-0 w-full h-full object-cover object-[left_30%] select-none"
+            class="absolute inset-0 w-full h-full object-cover object-left select-none"
           />
 
           <!-- Content Grid overlaying the banner -->
@@ -19,7 +19,7 @@
 
             <!-- Right: Big Punchy Typography & "SHOP ALL" Button -->
             <div class="lg:col-span-6 xl:col-span-6 flex flex-col items-center justify-center text-center">
-              <h1 class="text-3xl sm:text-5xl md:text-6xl lg:text-[54px] xl:text-[68px] font-black text-white tracking-tight uppercase leading-[1.05] drop-shadow-md select-none">
+              <h1 class="text-3xl sm:text-5xl md:text-5xl lg:text-[54px] xl:text-[66px] font-black text-white tracking-tight uppercase leading-[1.05] drop-shadow-md select-none">
                 <span class="whitespace-nowrap">AERO STORE</span><br />
                 2026!
               </h1>
@@ -27,7 +27,7 @@
               <!-- Yellow/Amber SHOP ALL Pill Button -->
               <a
                 href="#catalog"
-                class="mt-5 sm:mt-7 inline-flex items-center justify-center px-9 sm:px-11 py-3.5 sm:py-4 rounded-full bg-amber-400 hover:bg-amber-300 text-[#102a49] font-black text-sm sm:text-base uppercase tracking-wider shadow-2xl hover:shadow-amber-400/30 hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer"
+                class="mt-6 sm:mt-8 inline-flex items-center justify-center px-9 sm:px-11 py-3.5 sm:py-4 rounded-full bg-amber-400 hover:bg-amber-300 text-[#102a49] font-black text-sm sm:text-base uppercase tracking-wider shadow-2xl hover:shadow-amber-400/30 hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer"
               >
                 SHOP ALL
               </a>
