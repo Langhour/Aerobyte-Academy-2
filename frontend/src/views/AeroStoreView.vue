@@ -27,20 +27,21 @@
       </div>
     </div>
 
-    <!-- 2. Commercial Hero Showcase Banner (Matches User Example: Staged Hardware on Left, Big Punchy Typography & SHOP ALL on Right) -->
+    <!-- 2. Commercial Hero Showcase Banner (AeroByte Official Dark Blue #102a49) -->
     <section class="px-4 sm:px-6 lg:px-8 pt-4 pb-6 sm:pb-10">
       <div class="mx-auto max-w-7xl">
-        <div class="relative overflow-hidden rounded-[28px] sm:rounded-[36px] bg-[#0c1b30] shadow-2xl border border-slate-800/60 min-h-[420px] sm:min-h-[480px] lg:min-h-[520px] flex items-center">
+        <div class="relative overflow-hidden rounded-[28px] sm:rounded-[36px] bg-[#102a49] shadow-2xl border border-navy-800/80 min-h-[420px] sm:min-h-[480px] lg:min-h-[520px] flex items-center">
           
-          <!-- Background Showcase Image (Staged Products on Left, Deep Navy Negative Space on Right) -->
+          <!-- Background Showcase Image (Staged Products on Left, Deep Navy Space on Right) -->
           <img
             src="/assets/brand/store-hero-showcase.jpg"
             alt="AeroByte Maker Kit Hardware Showcase"
-            class="absolute inset-0 w-full h-full object-cover object-left lg:object-center select-none"
+            class="absolute inset-0 w-full h-full object-cover object-left lg:object-center select-none mix-blend-luminosity opacity-90"
           />
 
-          <!-- Subtle Gradient Overlay for Clean Contrast & Seamless Blending -->
-          <div class="absolute inset-0 bg-gradient-to-t from-[#0c1b30]/95 via-[#0c1b30]/40 to-transparent lg:bg-gradient-to-r lg:from-transparent lg:via-[#0c1b30]/30 lg:to-[#0c1b30]/95 pointer-events-none"></div>
+          <!-- AeroByte Dark Blue (#102a49) Color Wash & Gradient Overlay -->
+          <div class="absolute inset-0 bg-[#102a49]/60 pointer-events-none"></div>
+          <div class="absolute inset-0 bg-gradient-to-t from-[#102a49] via-[#102a49]/60 to-transparent lg:bg-gradient-to-r lg:from-transparent lg:via-[#102a49]/60 lg:to-[#102a49] pointer-events-none"></div>
 
           <!-- Content Grid overlaying the banner -->
           <div class="relative z-10 w-full px-6 sm:px-12 lg:px-16 py-10 sm:py-16 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
@@ -49,7 +50,7 @@
 
             <!-- Right: Big Punchy Typography & "SHOP ALL" Button (1:1 with User Reference) -->
             <div class="lg:col-span-6 text-center lg:text-left space-y-4 sm:space-y-5">
-              <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/10 backdrop-blur-md text-amber-300 text-xs font-bold tracking-wide uppercase">
+              <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/10 backdrop-blur-md text-amber-300 text-xs font-bold tracking-wide uppercase border border-white/10">
                 <span class="h-2 w-2 rounded-full bg-amber-400 animate-pulse"></span>
                 <span>AeroByte Engineering 2026</span>
               </div>
@@ -59,7 +60,7 @@
                 <span class="text-amber-400">2026!</span>
               </h1>
 
-              <p class="text-xs sm:text-sm md:text-base text-slate-200/90 font-medium max-w-md mx-auto lg:mx-0 leading-relaxed drop-shadow-sm">
+              <p class="text-xs sm:text-sm md:text-base text-slate-200 font-medium max-w-md mx-auto lg:mx-0 leading-relaxed drop-shadow-sm">
                 Authentic robotics learning kits, FPV racing drone hardware, microcontroller boards, and precision 3D filaments.
               </p>
 
@@ -67,7 +68,7 @@
               <div class="pt-2">
                 <a
                   href="#catalog"
-                  class="inline-flex items-center justify-center px-10 py-4 rounded-full bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-sm uppercase tracking-wider shadow-xl hover:shadow-amber-400/20 hover:scale-105 active:scale-95 transition-all duration-200"
+                  class="inline-flex items-center justify-center px-10 py-4 rounded-full bg-amber-400 hover:bg-amber-300 text-[#102a49] font-black text-sm uppercase tracking-wider shadow-xl hover:shadow-amber-400/25 hover:scale-105 active:scale-95 transition-all duration-200"
                 >
                   SHOP ALL
                 </a>
