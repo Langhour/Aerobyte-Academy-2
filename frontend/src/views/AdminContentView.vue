@@ -42,226 +42,27 @@
         @click="sidebarOpen = false"
       ></div>
 
-      <!-- LEFT SIDEBAR (Desktop Mini Collapsible + Mobile Slide-over) -->
+      <!-- LEFT SIDE RAIL (Lucian UX/UI Prompt #040: Expanding Side Rail) -->
       <aside
-        class="fixed inset-y-0 left-0 z-50 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col transition-all duration-300 ease-in-out lg:static lg:relative lg:h-full lg:shrink-0 select-none shadow-sm lg:shadow-none lg:overflow-visible"
+        class="fixed inset-y-0 left-0 z-50 flex flex-col transition-transform duration-300 ease-in-out lg:static lg:relative lg:h-full lg:shrink-0 select-none"
         :class="[
-          sidebarOpen ? 'translate-x-0 w-72' : '-translate-x-full lg:translate-x-0',
-          sidebarCollapsed ? 'lg:w-20' : 'lg:w-72'
+          sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         ]"
       >
-        <!-- Logo Header (Fixed 76px height with button anchored directly to bottom border line in both states) -->
-        <div
-          class="relative h-[76px] px-5 border-b border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 shrink-0 flex items-center transition-all"
-          :class="sidebarCollapsed ? 'justify-center px-3' : 'justify-start'"
-        >
-          <!-- Expanded View: Logo + Text -->
-          <RouterLink
-            v-if="!sidebarCollapsed"
-            to="/courses"
-            class="flex items-center gap-2.5 text-base font-extrabold tracking-tight text-navy-900 dark:text-white group min-w-0"
-          >
-            <img src="/aerobyte-logo.png" alt="AeroByte Logo" class="h-9 w-11 object-contain shrink-0 transition duration-200 dark:brightness-0 dark:invert" />
-            <span class="text-base font-extrabold tracking-tight text-navy-900 dark:text-white truncate">AeroByte Academy</span>
-          </RouterLink>
-
-          <!-- Collapsed View: Just Logo Icon -->
-          <RouterLink
-            v-else
-            to="/courses"
-            class="flex items-center justify-center hover:opacity-85 transition"
-            title="AeroByte Academy"
-          >
-            <img src="/aerobyte-logo.png" alt="AeroByte Logo" class="h-9 w-11 object-contain shrink-0 transition duration-200 dark:brightness-0 dark:invert" />
-          </RouterLink>
-
-          <!-- Floating Border Toggle Arrow Button anchored to bottom-0 of the logo header (Always exactly centered on the horizontal border line in both open and closed navigation) -->
-          <button
-            type="button"
-            class="hidden lg:flex absolute -right-3.5 bottom-0 translate-y-1/2 z-30 w-7 h-7 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-md hover:shadow-lg items-center justify-center text-slate-600 dark:text-slate-300 hover:text-navy-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-700 transition cursor-pointer"
-            :title="sidebarCollapsed ? t('Expand sidebar') : t('Collapse sidebar')"
-            :aria-label="sidebarCollapsed ? t('Expand sidebar') : t('Collapse sidebar')"
-            @click="toggleSidebarCollapse"
-          >
-            <ChevronRight v-if="sidebarCollapsed" class="w-3.5 h-3.5" />
-            <ChevronLeft v-else class="w-3.5 h-3.5" />
-          </button>
-        </div>
-
-        <!-- Section Category Header -->
-        <div
-          v-if="!sidebarCollapsed"
-          class="p-3 text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 shrink-0 px-4 pt-4"
-        >
-          {{ t('Admin sections') }}
-        </div>
-        <div v-else class="h-3 shrink-0"></div>
-
-        <nav class="flex-1 px-2.5 space-y-1.5 overflow-y-auto lg:overflow-visible">
-          <div
-            v-for="section in adminSections"
-            :key="section.id"
-            class="relative group"
-          >
-            <!-- Navigation Button -->
-            <button
-              type="button"
-              class="w-full flex items-center rounded-xl text-left text-xs font-bold transition-all duration-150 cursor-pointer border"
-              :class="[
-                sidebarCollapsed ? 'justify-center p-3' : 'gap-3 px-3.5 py-3',
-                activeSection === section.id
-                  ? 'bg-navy-900 dark:bg-indigo-600 text-white shadow-sm border-navy-900 dark:border-indigo-600'
-                  : 'text-slate-600 dark:text-slate-400 border-transparent hover:text-navy-900 dark:hover:text-white hover:bg-slate-100/90 dark:hover:bg-slate-800/80 hover:border-slate-200/70 dark:hover:border-slate-700/60 hover:shadow-2xs'
-              ]"
-              :title="sidebarCollapsed ? t(section.title) : undefined"
-              @click="selectSection(section.id)"
-            >
-              <!-- Icon with active / hover effect -->
-              <component
-                :is="section.icon"
-                class="shrink-0 transition-transform duration-150"
-                :class="[
-                  activeSection === section.id
-                    ? 'text-white'
-                    : 'text-slate-400 group-hover:text-navy-900 dark:group-hover:text-white group-hover:scale-110',
-                  sidebarCollapsed ? 'w-5 h-5' : 'w-4 h-4'
-                ]"
-              />
-
-              <!-- Label (visible when expanded) -->
-              <span v-if="!sidebarCollapsed" class="truncate flex-1">{{ t(section.title) }}</span>
-
-              <!-- Animated Arrow Indicator (visible when expanded) -->
-              <ChevronRight
-                v-if="!sidebarCollapsed"
-                class="w-3.5 h-3.5 shrink-0 transition-all duration-150"
-                :class="activeSection === section.id
-                  ? 'opacity-100 text-white translate-x-0'
-                  : 'opacity-0 -translate-x-1.5 group-hover:opacity-100 group-hover:translate-x-0 text-slate-400 group-hover:text-navy-900 dark:group-hover:text-white'"
-              />
-            </button>
-
-            <!-- Floating Preview Card on Hover (Desktop) -->
-            <div
-              class="hidden lg:block absolute left-full top-0 ml-3 z-50 w-64 p-4 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/90 dark:border-slate-700 shadow-xl opacity-0 translate-x-1 pointer-events-none group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 ease-out"
-            >
-              <div class="flex items-center gap-2 mb-1.5">
-                <component :is="section.icon" class="w-4 h-4 text-navy-800 dark:text-indigo-400" />
-                <h4 class="font-extrabold text-xs text-navy-900 dark:text-white">{{ t(section.title) }}</h4>
-              </div>
-              <p class="text-[11px] leading-relaxed text-slate-600 dark:text-slate-300 mb-2.5">{{ t(section.summary) }}</p>
-              
-              <div class="space-y-1 pt-2 border-t border-slate-100 dark:border-slate-700">
-                <p v-for="feat in section.features.slice(0, 3)" :key="feat" class="text-[10px] text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
-                  <span class="w-1.5 h-1.5 rounded-full bg-navy-600 dark:bg-indigo-400 shrink-0"></span>
-                  <span class="truncate">{{ t(feat) }}</span>
-                </p>
-              </div>
-
-              <div class="mt-2.5 pt-2 border-t border-slate-100 dark:border-slate-700 flex items-center justify-between text-[10px]">
-                <span class="text-slate-400">{{ activeSection === section.id ? t('Currently Active') : t('Click to View') }}</span>
-                <span
-                  class="font-bold px-2 py-0.5 rounded border"
-                  :class="activeSection === section.id
-                    ? 'text-navy-800 dark:text-indigo-300 bg-navy-50 dark:bg-indigo-950/50 border-navy-200 dark:border-indigo-800'
-                    : 'text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/50 border-emerald-200 dark:border-emerald-800'"
-                >
-                  {{ activeSection === section.id ? t('Active') : t('Open') }}
-                </span>
-              </div>
-            </div>
-          </div>
-        </nav>
-
-        <!-- Sidebar Footer Controls -->
-        <div class="p-2.5 border-t border-slate-100 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-900/60 shrink-0 space-y-2">
-          <!-- Language Switcher in Sidebar -->
-          <div
-            v-if="!sidebarCollapsed"
-            class="flex items-center justify-between px-2.5 py-1.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 shadow-2xs"
-          >
-            <span class="text-xs font-bold text-slate-700 dark:text-slate-200 flex items-center gap-1.5">
-              <Globe class="w-3.5 h-3.5 text-slate-400 dark:text-slate-500" />
-              <span>{{ t('Language') }}</span>
-            </span>
-            <div class="flex items-center gap-1 rounded-lg bg-slate-100 dark:bg-slate-900/80 p-0.5 border border-slate-200/50 dark:border-slate-700/50">
-              <button
-                type="button"
-                @click="setLocale('en')"
-                class="px-2 py-0.5 rounded-md text-[11px] font-bold transition-all cursor-pointer"
-                :class="locale === 'en'
-                  ? 'bg-white dark:bg-slate-700 text-navy-900 dark:text-white shadow-2xs font-extrabold'
-                  : 'text-slate-500 dark:text-slate-400 hover:text-navy-900 dark:hover:text-white'"
-              >
-                EN
-              </button>
-              <button
-                type="button"
-                @click="setLocale('kh')"
-                class="px-2 py-0.5 rounded-md text-[11px] font-bold transition-all cursor-pointer"
-                :class="locale === 'kh'
-                  ? 'bg-white dark:bg-slate-700 text-navy-900 dark:text-white shadow-2xs font-extrabold'
-                  : 'text-slate-500 dark:text-slate-400 hover:text-navy-900 dark:hover:text-white'"
-              >
-                KH
-              </button>
-            </div>
-          </div>
-          <!-- Language Toggle Button in Mini / Collapsed Mode -->
-          <div v-else class="flex justify-center py-0.5">
-            <button
-              type="button"
-              @click="setLocale(locale === 'en' ? 'kh' : 'en')"
-              class="flex h-7 w-7 items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-[10px] font-black text-navy-900 dark:text-white hover:bg-slate-50 dark:hover:bg-slate-700 transition cursor-pointer shadow-2xs"
-              :title="locale === 'en' ? t('Switch to Khmer') : t('Switch to English')"
-            >
-              {{ locale.toUpperCase() }}
-            </button>
-          </div>
-
-          <!-- Animated Cat Light/Dark Switch -->
-          <div
-            v-if="!sidebarCollapsed"
-            class="flex items-center justify-between px-2.5 py-1.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 shadow-2xs"
-          >
-            <span class="text-xs font-bold text-slate-700 dark:text-slate-200 flex items-center gap-1.5">
-              <span>{{ t('Theme') }}</span>
-              <span class="text-[10px] text-slate-400 font-normal">({{ isDark ? t('Dark') : t('Light') }})</span>
-            </span>
-            <CatThemeSwitch compact />
-          </div>
-          <!-- Cat Head Only Switch in Mini / Collapsed Mode -->
-          <div v-else class="flex justify-center py-1">
-            <CatThemeSwitch head-only />
-          </div>
-
-          <!-- Public Site Link -->
-          <RouterLink
-            to="/courses"
-            class="w-full flex items-center rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-navy-900 dark:hover:text-white hover:bg-white dark:hover:bg-slate-800 transition border border-transparent hover:border-slate-200 dark:hover:border-slate-700"
-            :class="sidebarCollapsed ? 'justify-center p-2.5' : 'justify-between px-3 py-2'"
-            :title="sidebarCollapsed ? t('Explore Courses') : undefined"
-          >
-            <span class="flex items-center gap-2">
-              <ExternalLink class="w-3.5 h-3.5 text-slate-400" />
-              <span v-if="!sidebarCollapsed">{{ t('Explore Courses') }}</span>
-            </span>
-            <span v-if="!sidebarCollapsed" class="text-[10px] text-slate-400 font-medium">{{ t('Public') }}</span>
-          </RouterLink>
-
-          <!-- Sign Out Button -->
-          <button
-            type="button"
-            :disabled="busy"
-            class="w-full flex items-center justify-center rounded-lg text-xs font-bold text-red-600 dark:text-red-400 hover:text-red-700 bg-red-50/80 dark:bg-red-950/30 hover:bg-red-100 dark:hover:bg-red-900/40 transition border border-red-100 dark:border-red-900/40 cursor-pointer disabled:opacity-60"
-            :class="sidebarCollapsed ? 'p-2.5' : 'gap-2 px-3 py-2.5'"
-            :title="sidebarCollapsed ? t('Sign out') : undefined"
-            @click="signOut"
-          >
-            <LogOut class="w-3.5 h-3.5" />
-            <span v-if="!sidebarCollapsed">{{ busy ? t('Signing out...') : t('Sign out') }}</span>
-          </button>
-        </div>
+        <AdminSideRail
+          :sections="adminSections"
+          :active-section="activeSection"
+          :is-wide="!sidebarCollapsed"
+          :locale="locale"
+          :is-dark="isDark"
+          :admin-email="adminEmail"
+          :busy="busy"
+          :badge-counts="badgeCounts"
+          @update:is-wide="val => toggleSidebarCollapse(val)"
+          @select="selectSection"
+          @update:locale="setLocale"
+          @signout="signOut"
+        />
       </aside>
 
       <!-- RIGHT MAIN CONTENT AREA -->
@@ -269,7 +70,10 @@
         <!-- Header Bar: Title on Left, Controls & Cat Theme Switch on Right -->
         <header class="px-6 sm:px-8 pt-6 pb-2 flex flex-col sm:flex-row sm:items-center justify-between shrink-0 bg-transparent gap-4">
           <div class="flex items-center gap-3">
-            <h1 class="text-xl sm:text-2xl font-extrabold text-navy-900 dark:text-white tracking-tight">
+            <h1
+              class="text-xl sm:text-2xl font-extrabold text-navy-900 dark:text-white tracking-tight u040-main-title"
+              :class="{ 'swap': isTitleSwapping }"
+            >
               {{ t(currentSection.title) }}
             </h1>
           </div>
@@ -2529,6 +2333,7 @@ import { useTheme } from '../composables/useTheme'
 import { adminService } from '../services/api'
 import { formatCambodiaTime } from '../utils/date'
 import CatThemeSwitch from '../components/common/CatThemeSwitch.vue'
+import AdminSideRail from '../components/layout/AdminSideRail.vue'
 import CustomSelect from '../components/common/CustomSelect.vue'
 import DatePicker from '../components/common/DatePicker.vue'
 import AdminPagination from '../components/common/AdminPagination.vue'
@@ -2554,9 +2359,23 @@ const { isDark, toggleTheme } = useTheme()
 const authenticated = ref(false)
 const sidebarOpen = ref(false)
 const sidebarCollapsed = ref(localStorage.getItem('admin_sidebar_collapsed') === 'true')
+const adminEmail = ref('')
+const isTitleSwapping = ref(false)
+const badgeCounts = computed(() => {
+  const counts = {}
+  if (enrollments.value?.length) {
+    const pending = enrollments.value.filter(e => e.status === 'pending').length
+    if (pending > 0) counts.students = pending
+  }
+  return counts
+})
 
-function toggleSidebarCollapse() {
-  sidebarCollapsed.value = !sidebarCollapsed.value
+function toggleSidebarCollapse(isWide) {
+  if (typeof isWide === 'boolean') {
+    sidebarCollapsed.value = !isWide
+  } else {
+    sidebarCollapsed.value = !sidebarCollapsed.value
+  }
   localStorage.setItem('admin_sidebar_collapsed', String(sidebarCollapsed.value))
 }
 const loadingCourses = ref(false)
@@ -3221,6 +3040,12 @@ watch([userSearch, userMethodFilter, userVerifiedFilter], () => {
 })
 
 function selectSection(sectionId) {
+  if (activeSection.value !== sectionId) {
+    isTitleSwapping.value = true
+    setTimeout(() => {
+      isTitleSwapping.value = false
+    }, 180)
+  }
   activeSection.value = sectionId
   sidebarOpen.value = false
   errorMessage.value = ''
@@ -3294,8 +3119,9 @@ async function loadAdminData() {
 
 async function checkSession() {
   try {
-    await adminService.getSession()
+    const res = await adminService.getSession()
     authenticated.value = true
+    adminEmail.value = res.data?.email || 'admin@aerobyte.edu.kh'
     await loadAdminData()
   } catch (error) {
     if (error.response?.status === 401) {
@@ -4215,5 +4041,21 @@ html.dark .admin-scroll-box::-webkit-scrollbar-thumb {
 
 html.dark .admin-scroll-box::-webkit-scrollbar-thumb:hover {
   background-color: #475569;
+}
+
+/* Lucian UX/UI Prompt #040 Title Swap Motion */
+.u040-main-title {
+  white-space: nowrap;
+  transition: opacity 0.2s, transform 0.4s cubic-bezier(0.34, 1.45, 0.64, 1);
+}
+.u040-main-title.swap {
+  opacity: 0;
+  transform: translateY(8px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .u040-main-title {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
 }
 </style>
