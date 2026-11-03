@@ -40,14 +40,14 @@
           />
 
           <!-- Content Grid overlaying the banner -->
-          <div class="relative z-10 w-full px-6 sm:px-10 lg:px-16 py-10 sm:py-14 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center h-full">
+          <div class="relative z-10 w-full px-4 sm:px-8 lg:px-12 py-8 sm:py-12 grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-center h-full">
             <!-- Left spacer so all staged products (Box, Drone, PCB & 3D Printer) remain completely visible without overlap -->
-            <div class="hidden lg:block lg:col-span-6 xl:col-span-7 pointer-events-none"></div>
+            <div class="hidden lg:block lg:col-span-6 xl:col-span-6 pointer-events-none"></div>
 
             <!-- Right: Big Punchy Typography & "SHOP ALL" Button (1:1 Match with User Reference Image) -->
-            <div class="lg:col-span-6 xl:col-span-5 flex flex-col items-center justify-center text-center">
-              <h1 class="text-4xl sm:text-6xl md:text-7xl lg:text-[76px] font-black text-white tracking-tight uppercase leading-[1.02] drop-shadow-md select-none">
-                AERO STORE<br />
+            <div class="lg:col-span-6 xl:col-span-6 flex flex-col items-center justify-center text-center">
+              <h1 class="text-3xl sm:text-5xl md:text-6xl lg:text-[54px] xl:text-[68px] 2xl:text-[76px] font-black text-white tracking-tight uppercase leading-[1.06] drop-shadow-md select-none">
+                <span class="whitespace-nowrap">AERO STORE</span><br />
                 2026!
               </h1>
 
