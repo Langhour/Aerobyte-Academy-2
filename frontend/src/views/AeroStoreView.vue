@@ -124,24 +124,7 @@
             </div>
           </div>
 
-          <!-- 3. Availability Filter -->
-          <div>
-            <h3 class="text-xs font-bold uppercase tracking-wider text-navy-900 mb-2 dark:text-slate-200 select-none">
-              {{ t('Availability') }}
-            </h3>
-            <div class="space-y-1">
-              <label class="flex items-center gap-2.5 px-2 py-1.5 -mx-2 rounded-lg cursor-pointer select-none hover:bg-slate-50 dark:hover:bg-slate-700/60 transition group">
-                <input
-                  type="checkbox"
-                  v-model="inStockOnly"
-                  class="w-4 h-4 rounded border-slate-300 text-navy-900 dark:text-indigo-500 focus:ring-navy-900 cursor-pointer"
-                />
-                <span class="text-xs text-slate-600 dark:text-slate-300 group-hover:text-navy-900 dark:group-hover:text-white transition">
-                  {{ t('In Stock Only') }}
-                </span>
-              </label>
-            </div>
-          </div>
+
         </div>
       </aside>
 
