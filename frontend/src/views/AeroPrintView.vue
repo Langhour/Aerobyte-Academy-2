@@ -34,8 +34,7 @@
               <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
             </span>
             <span class="font-semibold text-slate-700 dark:text-slate-200">Lab Status: Ready</span>
-            <span class="text-slate-400">•</span>
-            <span>24–48h Dispatch</span>
+
           </div>
         </div>
       </div>
@@ -438,13 +437,7 @@
               </div>
             </div>
 
-            <!-- Lead Time Notice -->
-            <div class="mt-4 rounded-xl bg-navy-50/80 dark:bg-slate-800/60 p-3 border border-navy-100 dark:border-slate-700 flex items-center gap-2.5">
-              <span class="text-navy-900 dark:text-indigo-400 text-lg">⚡</span>
-              <p class="text-[11px] text-navy-900 dark:text-indigo-200 font-medium leading-tight">
-                <strong>Fast Turnaround:</strong> Print will be completed and ready for pickup/delivery in Phnom Penh in <strong>24–48 hours</strong>.
-              </p>
-            </div>
+
 
             <!-- Action Buttons -->
             <div class="mt-5 space-y-2.5">
