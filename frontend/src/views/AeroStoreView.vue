@@ -1,8 +1,8 @@
 <template>
   <div class="min-h-screen pb-24 bg-white dark:bg-slate-950 transition-colors">
     <!-- Top Announcement Bar (Minimalist Luxury Style) -->
-    <div class="border-b border-slate-100 dark:border-slate-800/80 bg-slate-50 dark:bg-slate-900/60 py-2.5 px-4 text-xs text-slate-700 dark:text-slate-300">
-      <div class="mx-auto max-w-7xl flex flex-wrap items-center justify-between gap-3">
+    <div class="border-b border-slate-100 dark:border-slate-800/80 bg-slate-50 dark:bg-slate-900/60 py-2.5 text-xs text-slate-700 dark:text-slate-300">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex flex-wrap items-center justify-between gap-3">
         <div class="flex items-center gap-2">
           <span class="inline-flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
           <span class="font-medium">
@@ -27,10 +27,10 @@
       </div>
     </div>
 
-    <!-- 2. Commercial Hero Showcase Banner (AeroByte Official Dark Blue #102a49) -->
-    <section class="px-4 sm:px-6 lg:px-8 pt-4 pb-6 sm:pb-10">
-      <div class="mx-auto max-w-7xl">
-        <div class="relative overflow-hidden rounded-[28px] sm:rounded-[36px] bg-[#102a49] shadow-2xl border border-navy-800/80 aspect-[16/9] sm:aspect-[2/1] lg:aspect-[2.2/1] min-h-[380px] sm:min-h-[440px] max-h-[500px] flex items-center">
+    <!-- 2. Commercial Hero Showcase Banner (AeroByte Official Dark Blue #102a49) - Exact Match to Aero Print Frame -->
+    <section class="pt-4 pb-6 sm:pb-8">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-[#102a49] shadow-xl border border-navy-800/80 aspect-[16/9] sm:aspect-[2/1] lg:aspect-[2.2/1] min-h-[360px] sm:min-h-[420px] max-h-[480px] flex items-center">
           
           <!-- Background Showcase Image (Staged Products on Left, Deep Navy Space on Right - 100% Bright, Sharp & Natural) -->
           <img
@@ -66,8 +66,8 @@
     </section>
 
     <!-- Header & Brand Bar -->
-    <header id="catalog" class="border-b border-slate-100 dark:border-slate-800/80 pt-8 pb-6 px-4 sm:px-6 lg:px-8">
-      <div class="mx-auto max-w-7xl">
+    <header id="catalog" class="border-b border-slate-100 dark:border-slate-800/80 pt-8 pb-6">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div>
             <div class="flex items-center gap-2 mb-2">
