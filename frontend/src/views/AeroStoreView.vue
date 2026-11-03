@@ -27,8 +27,102 @@
       </div>
     </div>
 
+    <!-- 2. Split Hero Banner (User Wireframe Layout: Left Image [Drone + PCB + 3D Printer] | Right Text) -->
+    <section class="border-b border-slate-100 dark:border-slate-800/80 bg-gradient-to-b from-slate-50/70 to-white dark:from-slate-900/50 dark:to-slate-950 py-8 sm:py-12 px-4 sm:px-6 lg:px-8">
+      <div class="mx-auto max-w-7xl">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+          
+          <!-- LEFT: The Designed Image Container (Drone, PCB Board & 3D Printer) -->
+          <div class="lg:col-span-7">
+            <div class="relative overflow-hidden rounded-[24px] sm:rounded-[30px] border border-slate-200/80 dark:border-slate-800 bg-[#f4f4f6] dark:bg-slate-900 shadow-md group">
+              <!-- Designed Hero Image -->
+              <img
+                src="/assets/brand/store-hero-banner.jpg"
+                alt="AeroByte Drone, PCB Board, and 3D Printer Hardware"
+                class="w-full h-64 sm:h-80 md:h-[380px] object-cover object-center transition-transform duration-700 group-hover:scale-105"
+              />
+
+              <!-- Floating Micro Badges -->
+              <div class="absolute top-4 left-4 flex flex-wrap gap-2">
+                <span class="px-3 py-1 rounded-full bg-slate-900/85 backdrop-blur-md text-white text-[10px] sm:text-xs font-bold tracking-tight shadow-sm flex items-center gap-1.5">
+                  <span>🚁</span>
+                  <span>FPV Drones</span>
+                </span>
+                <span class="px-3 py-1 rounded-full bg-slate-900/85 backdrop-blur-md text-white text-[10px] sm:text-xs font-bold tracking-tight shadow-sm flex items-center gap-1.5">
+                  <span>⚡</span>
+                  <span>PCB Electronics</span>
+                </span>
+                <span class="px-3 py-1 rounded-full bg-slate-900/85 backdrop-blur-md text-white text-[10px] sm:text-xs font-bold tracking-tight shadow-sm flex items-center gap-1.5">
+                  <span>🧵</span>
+                  <span>3D Prototyping</span>
+                </span>
+              </div>
+
+              <!-- Lab Verified Pill -->
+              <div class="absolute bottom-4 right-4 px-3 py-1 rounded-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-md text-slate-800 dark:text-slate-200 text-[10px] sm:text-xs font-bold border border-slate-200/60 dark:border-slate-700/60 shadow-xs flex items-center gap-1.5">
+                <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span>AeroByte Lab Verified</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT: The "Text" Container (Matches Wireframe Sketch) -->
+          <div class="lg:col-span-5 space-y-4 sm:space-y-5">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold">
+              <span class="h-1.5 w-1.5 rounded-full bg-indigo-600 dark:bg-indigo-400"></span>
+              <span>{{ t('Official Hardware Store • Phnom Penh Lab') }}</span>
+            </div>
+
+            <h1 class="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-slate-900 dark:text-white leading-[1.12]">
+              {{ t('Engineered for Makers & FPV Pilots') }}
+            </h1>
+
+            <p class="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed">
+              {{ t('Official hardware store for authentic robotics learning kits, drone parts, microcontrollers, brushless motors, and lab tools.') }}
+            </p>
+
+            <!-- Feature Bullet List -->
+            <div class="space-y-2 pt-1 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+              <div class="flex items-center gap-2.5">
+                <div class="h-5 w-5 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xs font-bold shrink-0">✓</div>
+                <span><strong>FPV Drones:</strong> Pure 3K carbon frames, Betaflight stacks & 6S motors</span>
+              </div>
+              <div class="flex items-center gap-2.5">
+                <div class="h-5 w-5 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xs font-bold shrink-0">✓</div>
+                <span><strong>PCB Electronics:</strong> Authentic ESP32, STM32 & pre-flashed modules</span>
+              </div>
+              <div class="flex items-center gap-2.5">
+                <div class="h-5 w-5 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xs font-bold shrink-0">✓</div>
+                <span><strong>3D Prototyping:</strong> AeroPLA tough & TPU flexible filaments in stock</span>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="pt-2 flex flex-wrap items-center gap-3">
+              <a
+                href="#catalog"
+                class="px-5 py-2.5 rounded-full bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-900 text-xs sm:text-sm font-bold transition shadow-sm"
+              >
+                {{ t('Explore Hardware') }} &darr;
+              </a>
+              <a
+                href="https://t.me/aerobyte_academy"
+                target="_blank"
+                rel="noopener"
+                class="px-5 py-2.5 rounded-full border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs sm:text-sm font-semibold transition flex items-center gap-1.5"
+              >
+                <span>💬</span>
+                <span>{{ t('Ask Lab Engineer') }}</span>
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
     <!-- Header & Brand Bar -->
-    <header class="border-b border-slate-100 dark:border-slate-800/80 pt-8 pb-6 px-4 sm:px-6 lg:px-8">
+    <header id="catalog" class="border-b border-slate-100 dark:border-slate-800/80 pt-8 pb-6 px-4 sm:px-6 lg:px-8">
       <div class="mx-auto max-w-7xl">
         <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div>
