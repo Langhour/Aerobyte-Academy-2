@@ -101,6 +101,12 @@
             >
               {{ courseHistory.length }}
             </span>
+            <span
+              v-if="item.id === 'orders' && storeOrders.length"
+              class="ml-auto rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-2 py-0.5 text-[11px] text-slate-500 dark:text-slate-400"
+            >
+              {{ storeOrders.length }}
+            </span>
           </button>
           <div class="my-2 border-t border-slate-100 dark:border-slate-800"></div>
           <button
@@ -257,6 +263,124 @@
                   >
                     {{ t('View details') }}
                   </RouterLink>
+                </div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <!-- MY ORDERS SECTION -->
+        <section v-if="activeSection === 'orders'" class="space-y-5">
+          <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <h2 class="text-xl font-extrabold text-navy-900 dark:text-white">{{ t('My orders') }}</h2>
+              <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ t('Review your store purchases and hardware orders.') }}</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <RouterLink
+                to="/store"
+                class="inline-flex w-fit items-center gap-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-700 dark:text-slate-300 transition hover:bg-slate-50 dark:hover:bg-slate-700 cursor-pointer"
+              >
+                <ShoppingBag class="h-3.5 w-3.5 text-slate-500" />
+                {{ t('Visit Aero Store') }}
+              </RouterLink>
+              <button
+                v-if="storeOrders.length"
+                type="button"
+                class="inline-flex w-fit items-center gap-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-700 dark:text-slate-300 transition hover:bg-slate-50 dark:hover:bg-slate-700 cursor-pointer"
+                :disabled="ordersLoading"
+                @click="loadStoreOrders"
+              >
+                <RefreshCw class="h-3.5 w-3.5" :class="{ 'animate-spin': ordersLoading }" aria-hidden="true" />
+                {{ t('Refresh') }}
+              </button>
+            </div>
+          </div>
+
+          <!-- Empty Orders State -->
+          <div
+            v-if="!ordersLoading && !storeOrders.length"
+            class="rounded-2xl border border-dashed border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-6 py-12 text-center"
+          >
+            <span class="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-navy-50 dark:bg-slate-800 text-navy-800 dark:text-slate-200">
+              <ShoppingBag class="h-6 w-6" aria-hidden="true" />
+            </span>
+            <h3 class="mt-4 text-base font-bold text-navy-900 dark:text-white">{{ t('No store orders yet') }}</h3>
+            <p class="mx-auto mt-2 max-w-md text-sm leading-6 text-slate-500 dark:text-slate-400">
+              {{ t('Hardware kits, drone components, and 3D printing supplies you order will appear here.') }}
+            </p>
+            <RouterLink
+              to="/store"
+              class="mt-5 inline-flex items-center gap-2 rounded-lg bg-navy-900 dark:bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-navy-800 dark:hover:bg-indigo-700"
+            >
+              {{ t('Visit Aero Store') }}
+              <ArrowRight class="h-4 w-4" aria-hidden="true" />
+            </RouterLink>
+          </div>
+
+          <!-- Orders List -->
+          <div v-else class="space-y-4">
+            <article
+              v-for="order in storeOrders"
+              :key="order.id"
+              class="overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs"
+            >
+              <div class="border-b border-slate-100 dark:border-slate-800 px-5 py-3.5 flex flex-wrap items-center justify-between gap-3 bg-slate-50/50 dark:bg-slate-800/40">
+                <div class="flex items-center gap-3">
+                  <span class="font-mono text-xs font-bold text-navy-900 dark:text-white">
+                    #{{ order.id }}
+                  </span>
+                  <span class="text-xs text-slate-400">·</span>
+                  <span class="text-xs text-slate-500 dark:text-slate-400">
+                    {{ formatCambodiaTime(order.date) }}
+                  </span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60">
+                    <span class="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                    {{ order.status || 'Confirmed' }}
+                  </span>
+                </div>
+              </div>
+
+              <div class="p-5 space-y-4">
+                <!-- Order items -->
+                <div class="divide-y divide-slate-100 dark:divide-slate-800">
+                  <div
+                    v-for="item in order.items"
+                    :key="item.id"
+                    class="py-3 flex items-center justify-between gap-3 first:pt-0 last:pb-0"
+                  >
+                    <div class="flex items-center gap-3">
+                      <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-800 text-lg border border-slate-200/50 dark:border-slate-700/50">
+                        {{ item.icon }}
+                      </div>
+                      <div>
+                        <h4 class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white line-clamp-1">
+                          {{ item.name }}
+                        </h4>
+                        <p class="text-[11px] text-slate-400">
+                          Qty: {{ item.quantity }} × ${{ Number(item.priceUsd).toFixed(2) }}
+                        </p>
+                      </div>
+                    </div>
+                    <span class="text-xs sm:text-sm font-extrabold text-slate-900 dark:text-white">
+                      ${{ (item.priceUsd * item.quantity).toFixed(2) }}
+                    </span>
+                  </div>
+                </div>
+
+                <!-- Footer Summary -->
+                <div class="border-t border-slate-100 dark:border-slate-800 pt-3 flex flex-wrap items-center justify-between gap-3 text-xs">
+                  <div class="text-slate-500 dark:text-slate-400">
+                    <span class="font-semibold">{{ t('Fulfillment') }}:</span>
+                    {{ order.fulfillment === 'pickup' ? t('Same-Day Lab Pickup (Phnom Penh)') : t('Express Delivery') }}
+                  </div>
+                  <div class="flex items-baseline gap-2">
+                    <span class="text-slate-500 dark:text-slate-400 font-semibold">{{ t('Order Total') }}:</span>
+                    <span class="text-base font-black text-navy-900 dark:text-white">${{ Number(order.total || 0).toFixed(2) }}</span>
+                    <span class="text-[11px] text-slate-400">({{ Math.round((order.total || 0) * 4100).toLocaleString() }} ៛)</span>
+                  </div>
                 </div>
               </div>
             </article>
@@ -841,6 +965,7 @@ import {
   Send,
   Settings,
   ShieldCheck,
+  ShoppingBag,
   Sun,
   Trash2,
   Upload,
@@ -854,6 +979,7 @@ const router = useRouter()
 const accountSections = [
   { id: 'profile', label: 'Profile information', icon: UserRound },
   { id: 'history', label: 'Course history', icon: BookOpen },
+  { id: 'orders', label: 'My orders', icon: ShoppingBag },
   { id: 'settings', label: 'Settings', icon: Settings },
 ]
 const emptyProfile = () => ({
@@ -879,6 +1005,22 @@ const isEditing = ref(false)
 const notice = ref('')
 const noticeType = ref('success')
 const activeSection = ref('profile')
+const storeOrders = ref([])
+const ordersLoading = ref(false)
+
+function loadStoreOrders() {
+  ordersLoading.value = true
+  try {
+    const raw = localStorage.getItem('aerobyte_store_orders')
+    storeOrders.value = raw ? JSON.parse(raw) : []
+  } catch (e) {
+    console.error('Failed to parse store orders', e)
+    storeOrders.value = []
+  } finally {
+    ordersLoading.value = false
+  }
+}
+
 const courseHistory = ref([])
 const historyLoading = ref(false)
 const historyError = ref('')
@@ -1069,11 +1211,19 @@ onMounted(async () => {
 
   copyProfile(draft, profile)
   loadCourseHistory()
+  loadStoreOrders()
+  window.addEventListener('storage', loadStoreOrders)
+  window.addEventListener('aerobyte-orders-updated', loadStoreOrders)
+  if (router.currentRoute.value.query.section === 'orders') {
+    activeSection.value = 'orders'
+  }
   document.addEventListener('click', handleDropdownClickOutside)
 })
 
 onBeforeUnmount(() => {
   document.removeEventListener('click', handleDropdownClickOutside)
+  window.removeEventListener('storage', loadStoreOrders)
+  window.removeEventListener('aerobyte-orders-updated', loadStoreOrders)
 })
 
 function selectSection(section) {
@@ -1081,6 +1231,7 @@ function selectSection(section) {
   notice.value = ''
   if (section !== 'profile') isEditing.value = false
   if (section === 'history' && !courseHistory.value.length) loadCourseHistory()
+  if (section === 'orders') loadStoreOrders()
 }
 
 function statusClasses(status) {
