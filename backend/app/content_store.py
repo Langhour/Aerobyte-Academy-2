@@ -94,6 +94,16 @@ def _connect() -> Iterator[object]:
             yield _PostgresConnection(raw_connection)
         return
     DATABASE_PATH.parent.mkdir(parents=True, exist_ok=True)
+    if not DATABASE_PATH.exists() or DATABASE_PATH.stat().st_size == 0:
+        seed_db = Path(__file__).resolve().parents[2] / "seed_data" / "aerobyte-content.sqlite3"
+        if not seed_db.exists():
+            seed_db = Path(__file__).resolve().parents[1] / "data" / "aerobyte-content.sqlite3"
+        if seed_db.exists() and seed_db.resolve() != DATABASE_PATH.resolve():
+            import shutil
+            try:
+                shutil.copyfile(seed_db, DATABASE_PATH)
+            except Exception:
+                pass
     connection = sqlite3.connect(DATABASE_PATH, timeout=10)
     connection.row_factory = sqlite3.Row
     try:
@@ -289,12 +299,16 @@ def initialize_content_store() -> None:
             connection.execute(
                 "INSERT INTO store_metadata (key, value) VALUES ('initial_courses_seeded', 'true')"
             )
-        for seed_course in COURSES_DB:
+        for i, seed_course in enumerate(COURSES_DB):
             row = connection.execute(
                 "SELECT content_json FROM courses WHERE id = ?",
                 (seed_course.id,),
             ).fetchone()
             if row is None:
+                connection.execute(
+                    "INSERT INTO courses (id, slug, content_json, order_index) VALUES (?, ?, ?, ?)",
+                    (seed_course.id, seed_course.slug, seed_course.model_dump_json(), i),
+                )
                 continue
 
             existing_course = Course.model_validate_json(row["content_json"])
@@ -352,6 +366,21 @@ def initialize_content_store() -> None:
             "INSERT OR IGNORE INTO coupons (code, content_json) VALUES (?, ?)",
             [(coupon.code, coupon.model_dump_json()) for coupon in default_coupons],
         )
+
+        # Sync any seed uploaded images
+        seed_db = Path(__file__).resolve().parents[2] / "seed_data" / "aerobyte-content.sqlite3"
+        if not seed_db.exists():
+            seed_db = Path(__file__).resolve().parents[1] / "data" / "aerobyte-content.sqlite3"
+        if seed_db.exists() and seed_db.resolve() != DATABASE_PATH.resolve():
+            try:
+                with sqlite3.connect(seed_db) as s_conn:
+                    s_files = s_conn.execute("SELECT filename, content_type, data, created_at FROM uploaded_files").fetchall()
+                    connection.executemany(
+                        "INSERT OR IGNORE INTO uploaded_files (filename, content_type, data, created_at) VALUES (?, ?, ?, ?)",
+                        s_files,
+                    )
+            except Exception:
+                pass
 
 
 def create_user(
