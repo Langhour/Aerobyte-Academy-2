@@ -47,7 +47,7 @@
             <!-- Right: Big Punchy Typography & "SHOP ALL" Button (1:1 Match with User Reference Image) -->
             <div class="lg:col-span-6 flex flex-col items-center justify-center text-center">
               <h1 class="text-5xl sm:text-6xl md:text-7xl lg:text-[84px] font-black text-white tracking-tight uppercase leading-[1.02] drop-shadow-md select-none">
-                MAKER KITS<br />
+                AERO STORE<br />
                 2026!
               </h1>
 
