@@ -452,6 +452,293 @@
       </div>
 
       <!-- ==========================================
+           CUSTOMER REVIEWS & RATINGS SECTION
+           ========================================== -->
+      <section id="reviews" class="mt-16 sm:mt-24 pt-12 border-t border-slate-200/80 dark:border-slate-800 scroll-mt-24">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+          <div>
+            <h2 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+              {{ t('Customer Reviews') }}
+            </h2>
+            <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
+              {{ t('Verified feedback from students, makers, and lab engineers in Cambodia.') }}
+            </p>
+          </div>
+
+          <button
+            type="button"
+            @click="openWriteReview"
+            class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-900 text-xs sm:text-sm font-bold shadow-md transition active:scale-95 cursor-pointer w-fit"
+          >
+            <MessageSquare class="w-4 h-4" />
+            <span>{{ t('Write a Review') }}</span>
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+          <!-- LEFT SUMMARY CARD (lg:col-span-4) -->
+          <div class="lg:col-span-4 rounded-3xl bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200/70 dark:border-slate-800 p-6 sm:p-7 space-y-6">
+            <div class="flex items-baseline gap-3">
+              <span class="text-5xl font-black text-slate-900 dark:text-white tracking-tight">4.9</span>
+              <div>
+                <div class="flex items-center text-amber-400 text-lg tracking-tighter">
+                  ★★★★★
+                </div>
+                <div class="text-[11px] font-semibold text-slate-400 mt-0.5">
+                  {{ t('Based on') }} {{ product.reviewsCount || '1.2K' }} {{ t('ratings') }}
+                </div>
+              </div>
+            </div>
+
+            <!-- Star Progress Breakdown -->
+            <div class="space-y-2 text-xs">
+              <div
+                v-for="bar in [
+                  { star: 5, pct: 88, count: '88%' },
+                  { star: 4, pct: 9, count: '9%' },
+                  { star: 3, pct: 2, count: '2%' },
+                  { star: 2, pct: 1, count: '<1%' },
+                  { star: 1, pct: 0, count: '0%' }
+                ]"
+                :key="bar.star"
+                class="flex items-center gap-2.5 text-slate-600 dark:text-slate-400"
+              >
+                <span class="w-7 font-bold text-slate-700 dark:text-slate-300 text-right">{{ bar.star }} ★</span>
+                <div class="flex-1 h-2 rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden">
+                  <div class="h-full rounded-full bg-amber-400" :style="{ width: `${bar.pct}%` }"></div>
+                </div>
+                <span class="w-8 text-[11px] text-slate-400 text-right font-medium">{{ bar.count }}</span>
+              </div>
+            </div>
+
+            <!-- Recommendation callout -->
+            <div class="pt-4 border-t border-slate-200/70 dark:border-slate-800 flex items-center gap-3">
+              <div class="h-10 w-10 rounded-2xl bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+                <Check class="w-5 h-5 stroke-[2.5]" />
+              </div>
+              <div>
+                <div class="text-xs font-bold text-slate-900 dark:text-white">98% Recommendation</div>
+                <div class="text-[11px] text-slate-400 mt-0.5">Students recommend this hardware for practical labs</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT REVIEWS FEED (lg:col-span-8) -->
+          <div class="lg:col-span-8 space-y-5">
+            <!-- Filter Pills -->
+            <div class="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
+              <button
+                type="button"
+                @click="selectedReviewFilter = 'all'"
+                class="h-8 px-3.5 rounded-full text-xs font-semibold transition active:scale-95 cursor-pointer whitespace-nowrap"
+                :class="selectedReviewFilter === 'all'
+                  ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-bold shadow-xs'
+                  : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300'"
+              >
+                {{ t('All Reviews') }} ({{ allReviews.length }})
+              </button>
+
+              <button
+                type="button"
+                @click="selectedReviewFilter = 5"
+                class="h-8 px-3.5 rounded-full text-xs font-semibold transition active:scale-95 cursor-pointer whitespace-nowrap"
+                :class="selectedReviewFilter === 5
+                  ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-bold shadow-xs'
+                  : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300'"
+              >
+                5 ★ ({{ allReviews.filter(r => r.rating === 5).length }})
+              </button>
+
+              <button
+                type="button"
+                @click="selectedReviewFilter = 4"
+                class="h-8 px-3.5 rounded-full text-xs font-semibold transition active:scale-95 cursor-pointer whitespace-nowrap"
+                :class="selectedReviewFilter === 4
+                  ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-bold shadow-xs'
+                  : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300'"
+              >
+                4 ★ ({{ allReviews.filter(r => r.rating === 4).length }})
+              </button>
+
+              <button
+                type="button"
+                @click="selectedReviewFilter = 'verified'"
+                class="h-8 px-3.5 rounded-full text-xs font-semibold transition active:scale-95 cursor-pointer whitespace-nowrap"
+                :class="selectedReviewFilter === 'verified'
+                  ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-bold shadow-xs'
+                  : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300'"
+              >
+                ✓ {{ t('Verified Buyer') }}
+              </button>
+            </div>
+
+            <!-- Review Cards -->
+            <div class="space-y-4">
+              <article
+                v-for="rev in filteredReviews"
+                :key="rev.id"
+                class="rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-5 sm:p-6 shadow-2xs space-y-3 transition hover:border-slate-300 dark:hover:border-slate-700"
+              >
+                <!-- Reviewer Header -->
+                <div class="flex items-start justify-between gap-3">
+                  <div class="flex items-center gap-3">
+                    <div
+                      class="h-10 w-10 rounded-full flex items-center justify-center font-bold text-white text-xs shrink-0 shadow-xs"
+                      :class="rev.avatarColor || 'bg-indigo-600'"
+                    >
+                      {{ rev.author.split(' ').map(n => n[0]).join('').slice(0, 2) }}
+                    </div>
+                    <div>
+                      <div class="flex items-center gap-2">
+                        <span class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white">{{ rev.author }}</span>
+                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200/60 dark:border-emerald-800">
+                          <Check class="w-2.5 h-2.5 stroke-[3]" />
+                          <span>{{ rev.badge || t('Verified Student') }}</span>
+                        </span>
+                      </div>
+                      <div class="flex items-center gap-2 mt-0.5 text-[11px] text-slate-400">
+                        <span>{{ rev.date }}</span>
+                        <span v-if="rev.variant">•</span>
+                        <span v-if="rev.variant">{{ rev.variant }}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Stars -->
+                  <div class="flex items-center text-amber-400 text-sm tracking-tight">
+                    <span v-for="s in 5" :key="s" :class="s <= rev.rating ? 'text-amber-400' : 'text-slate-200 dark:text-slate-700'">★</span>
+                  </div>
+                </div>
+
+                <!-- Review Content -->
+                <div class="space-y-1.5">
+                  <h4 class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white">
+                    {{ rev.title }}
+                  </h4>
+                  <p class="text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed">
+                    {{ rev.content }}
+                  </p>
+                </div>
+
+                <!-- Helpful Button -->
+                <div class="pt-2 flex items-center gap-2">
+                  <button
+                    type="button"
+                    @click="toggleHelpful(rev)"
+                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition active:scale-95 cursor-pointer"
+                    :class="rev.userHelpful
+                      ? 'bg-indigo-50 dark:bg-indigo-950/80 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800'
+                      : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-750 text-slate-600 dark:text-slate-400'"
+                  >
+                    <ThumbsUp class="w-3.5 h-3.5" :class="{ 'fill-indigo-600 dark:fill-indigo-400': rev.userHelpful }" />
+                    <span>{{ t('Helpful') }} ({{ rev.helpfulCount }})</span>
+                  </button>
+                </div>
+              </article>
+            </div>
+          </div>
+        </div>
+
+        <!-- Write Review Modal -->
+        <div
+          v-if="isWriteReviewOpen"
+          class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs overflow-y-auto"
+          @click.self="isWriteReviewOpen = false"
+        >
+          <div class="w-full max-w-lg rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 sm:p-7 shadow-2xl relative my-8">
+            <button
+              type="button"
+              @click="isWriteReviewOpen = false"
+              class="absolute top-5 right-5 text-slate-400 hover:text-slate-700 dark:hover:text-white cursor-pointer"
+            >
+              <X class="w-5 h-5" />
+            </button>
+
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white">{{ t('Write a Review') }}</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+              Share your feedback for <span class="font-bold text-slate-800 dark:text-slate-200">{{ product.name }}</span>
+            </p>
+
+            <form @submit.prevent="submitNewReview" class="mt-5 space-y-4">
+              <!-- Rating Picker -->
+              <div>
+                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">{{ t('Your Rating') }}</label>
+                <div class="flex items-center gap-1.5">
+                  <button
+                    v-for="star in 5"
+                    :key="star"
+                    type="button"
+                    @click="reviewForm.rating = star"
+                    @mouseenter="reviewHoverRating = star"
+                    @mouseleave="reviewHoverRating = 0"
+                    class="text-2xl transition cursor-pointer"
+                    :class="(reviewHoverRating || reviewForm.rating) >= star ? 'text-amber-400' : 'text-slate-200 dark:text-slate-700'"
+                  >
+                    ★
+                  </button>
+                  <span class="text-xs font-bold text-slate-600 dark:text-slate-400 ml-2">
+                    {{ reviewHoverRating || reviewForm.rating }} / 5 Stars
+                  </span>
+                </div>
+              </div>
+
+              <!-- Name -->
+              <div>
+                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">{{ t('Your Name') }}</label>
+                <input
+                  v-model="reviewForm.name"
+                  type="text"
+                  required
+                  placeholder="e.g. Sokha Chan"
+                  class="w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 px-3.5 py-2.5 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+                />
+              </div>
+
+              <!-- Title -->
+              <div>
+                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">{{ t('Review Title') }}</label>
+                <input
+                  v-model="reviewForm.title"
+                  type="text"
+                  placeholder="e.g. Great kit for STEM coursework"
+                  class="w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 px-3.5 py-2.5 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+                />
+              </div>
+
+              <!-- Comment -->
+              <div>
+                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">{{ t('Your Review') }}</label>
+                <textarea
+                  v-model="reviewForm.content"
+                  rows="4"
+                  required
+                  placeholder="Write your honest review about component quality, assembly, and performance..."
+                  class="w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 px-3.5 py-2.5 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 resize-none"
+                ></textarea>
+              </div>
+
+              <div class="flex items-center gap-3 pt-2">
+                <button
+                  type="button"
+                  @click="isWriteReviewOpen = false"
+                  class="flex-1 py-2.5 rounded-full border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition cursor-pointer"
+                >
+                  {{ t('Cancel') }}
+                </button>
+                <button
+                  type="submit"
+                  class="flex-1 py-2.5 rounded-full bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 text-xs font-bold transition shadow-md cursor-pointer"
+                >
+                  {{ t('Submit Review') }}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- ==========================================
            BOTTOM SEARCH PILL PROMPT (Exact match to Shop.com screenshot!)
            ========================================== -->
       <div class="mt-16 sm:mt-24 pt-8 border-t border-slate-100 dark:border-slate-800 flex justify-center">
@@ -649,6 +936,10 @@ import {
   MoreHorizontal,
   MessageCircle,
   Share2,
+  Star,
+  ThumbsUp,
+  Check,
+  MessageSquare,
   Zap,
   Trash2,
   X
@@ -762,6 +1053,153 @@ function handleBuyNow() {
     window.open(telegramUrl, '_blank')
   }
 }
+
+// Reviews Logic & Dataset
+const defaultReviews = [
+  {
+    id: 'rev-1',
+    author: 'Vireak S.',
+    avatarColor: 'bg-emerald-600',
+    rating: 5,
+    title: 'Exceptional quality for robotics coursework!',
+    content: 'Bought this kit for my final year embedded systems project at ITC. All components are authentic, ESP32 flashed without issue, and motor shield handles 2S Li-ion batteries smoothly. Fast lab pickup in Phnom Penh!',
+    date: '2 days ago',
+    verified: true,
+    badge: 'Verified Student',
+    variant: 'Standard Kit',
+    helpfulCount: 28,
+    userHelpful: false
+  },
+  {
+    id: 'rev-2',
+    author: 'Sophea Meng',
+    avatarColor: 'bg-indigo-600',
+    rating: 5,
+    title: 'Well packaged & beginner-friendly documentation',
+    content: 'Very impressed with the hardware build. The motor driver and chassis fit together seamlessly. Customer service on Telegram answered my wiring questions within 10 minutes.',
+    date: '1 week ago',
+    verified: true,
+    badge: 'Lab Fellow',
+    variant: 'Pro with Sensors',
+    helpfulCount: 19,
+    userHelpful: false
+  },
+  {
+    id: 'rev-3',
+    author: 'Dara Kim',
+    avatarColor: 'bg-amber-600',
+    rating: 5,
+    title: 'Solid precision hardware, zero issues',
+    content: 'Genuine authentic parts. Tested the telemetry via Wi-Fi dashboard and latency was under 20ms. Exactly what our university STEM club needed.',
+    date: '2 weeks ago',
+    verified: true,
+    badge: 'Verified Student',
+    variant: 'Standard Kit',
+    helpfulCount: 12,
+    userHelpful: false
+  },
+  {
+    id: 'rev-4',
+    author: 'Bona Chen',
+    avatarColor: 'bg-purple-600',
+    rating: 4,
+    title: 'Great value, fast delivery in Phnom Penh',
+    content: 'Ordered via Grab delivery and arrived within 2 hours. Kit is complete with extra screws and standoffs. Would love to see additional sensor attachments in the future.',
+    date: '3 weeks ago',
+    verified: true,
+    badge: 'Verified Buyer',
+    variant: 'Standard Kit',
+    helpfulCount: 8,
+    userHelpful: false
+  }
+]
+
+const customReviews = ref([])
+
+function loadCustomReviews() {
+  if (typeof localStorage === 'undefined') return
+  try {
+    const raw = localStorage.getItem(`aerobyte_reviews_${productId.value}`)
+    customReviews.value = raw ? JSON.parse(raw) : []
+  } catch {
+    customReviews.value = []
+  }
+}
+
+watch(productId, () => {
+  loadCustomReviews()
+}, { immediate: true })
+
+const allReviews = computed(() => {
+  return [...customReviews.value, ...defaultReviews]
+})
+
+const selectedReviewFilter = ref('all')
+
+const filteredReviews = computed(() => {
+  if (selectedReviewFilter.value === 'all') return allReviews.value
+  if (selectedReviewFilter.value === 'verified') return allReviews.value.filter(r => r.verified)
+  return allReviews.value.filter(r => r.rating === selectedReviewFilter.value)
+})
+
+const isWriteReviewOpen = ref(false)
+const reviewForm = reactive({
+  name: '',
+  rating: 5,
+  title: '',
+  content: ''
+})
+const reviewHoverRating = ref(0)
+
+function openWriteReview() {
+  reviewForm.name = ''
+  reviewForm.rating = 5
+  reviewForm.title = ''
+  reviewForm.content = ''
+  reviewHoverRating.value = 0
+  isWriteReviewOpen.value = true
+}
+
+function submitNewReview() {
+  if (!reviewForm.name.trim() || !reviewForm.content.trim()) return
+
+  const newRev = {
+    id: 'rev-' + Date.now(),
+    author: reviewForm.name.trim(),
+    avatarColor: 'bg-indigo-700',
+    rating: reviewForm.rating,
+    title: reviewForm.title.trim() || t('Verified Review'),
+    content: reviewForm.content.trim(),
+    date: 'Just now',
+    verified: true,
+    badge: 'Verified Buyer',
+    variant: selectedSize.value || 'Standard Kit',
+    helpfulCount: 0,
+    userHelpful: false
+  }
+
+  customReviews.value.unshift(newRev)
+  try {
+    localStorage.setItem(
+      `aerobyte_reviews_${productId.value}`,
+      JSON.stringify(customReviews.value)
+    )
+  } catch {}
+
+  isWriteReviewOpen.value = false
+  showToast(t('Thank you! Your review has been submitted.'))
+}
+
+function toggleHelpful(review) {
+  if (review.userHelpful) {
+    review.helpfulCount--
+    review.userHelpful = false
+  } else {
+    review.helpfulCount++
+    review.userHelpful = true
+  }
+}
+
 
 function copyProductLink() {
   if (typeof window === 'undefined') return
