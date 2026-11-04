@@ -77,7 +77,7 @@ _DEFAULT_SECRET_PREFIX = "GOCSPX"
 _DEFAULT_SECRET_SUFFIX = "gQfIQcOPrhUBfs1qZYyR9tqToY67"
 DEFAULT_GOOGLE_CLIENT_SECRET = f"{_DEFAULT_SECRET_PREFIX}-{_DEFAULT_SECRET_SUFFIX}"
 
-DEFAULT_GOOGLE_CALLBACK_URL = "https://aerobyte-academy.onrender.com/api/auth/google/callback"
+DEFAULT_GOOGLE_CALLBACK_URL = "http://localhost:5173/api/auth/google/callback"
 
 
 @router.get("/google/config")
@@ -129,7 +129,28 @@ def _google_callback_url(request: Request) -> str:
     custom = os.getenv("GOOGLE_CALLBACK_URL", "").strip()
     if custom:
         return custom
-    return DEFAULT_GOOGLE_CALLBACK_URL
+
+    # Detect if we are on localhost
+    host = request.headers.get("host", "").casefold()
+    referer = request.headers.get("referer", "").casefold()
+    origin = request.headers.get("origin", "").casefold()
+
+    is_local = any(
+        target in val
+        for target in ("localhost", "127.0.0.1")
+        for val in (host, referer, origin)
+    )
+
+    if is_local:
+        if "5173" in referer or "5173" in origin or "5173" in host:
+            return "http://localhost:5173/api/auth/google/callback"
+        return "http://localhost:8000/api/auth/google/callback"
+
+    configured = os.getenv("FRONTEND_URL", "").strip().rstrip("/")
+    if configured:
+        return f"{configured}/api/auth/google/callback"
+
+    return "https://aerobyte-academy.onrender.com/api/auth/google/callback"
 
 
 def _account_redirect(request: Request, error: str | None = None) -> RedirectResponse:
