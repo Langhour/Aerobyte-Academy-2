@@ -153,12 +153,46 @@
             <div class="relative">
               <button
                 type="button"
-                @click="copyProductLink"
-                :title="t('Share product link')"
-                class="h-8 w-8 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-slate-700 dark:hover:text-white flex items-center justify-center transition cursor-pointer"
+                @click="isMoreMenuOpen = !isMoreMenuOpen"
+                :title="t('More options')"
+                class="h-8 w-8 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white flex items-center justify-center transition cursor-pointer select-none active:scale-95"
+                :class="{ 'bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white': isMoreMenuOpen }"
               >
                 <MoreHorizontal class="w-4 h-4" />
               </button>
+
+              <!-- Transparent Backdrop to dismiss dropdown -->
+              <div
+                v-if="isMoreMenuOpen"
+                class="fixed inset-0 z-30 bg-transparent cursor-default"
+                @click="isMoreMenuOpen = false"
+              ></div>
+
+              <!-- 3-Dot Dropdown Card (Matches screenshot with speech bubble & Contact Fellow!) -->
+              <transition
+                enter-active-class="transition ease-out duration-150"
+                enter-from-class="transform opacity-0 scale-95"
+                enter-to-class="transform opacity-100 scale-100"
+                leave-active-class="transition ease-in duration-100"
+                leave-from-class="transform opacity-100 scale-100"
+                leave-to-class="transform opacity-0 scale-95"
+              >
+                <div
+                  v-if="isMoreMenuOpen"
+                  class="absolute right-0 top-full mt-2 z-40 w-48 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-2xl p-1.5 select-none"
+                >
+                  <a
+                    :href="contactFellowLink"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    @click="isMoreMenuOpen = false"
+                    class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs sm:text-[13px] font-semibold text-slate-900 dark:text-white hover:bg-slate-100/80 dark:hover:bg-slate-800 transition cursor-pointer"
+                  >
+                    <MessageCircle class="w-4 h-4 text-slate-900 dark:text-white stroke-[2.2]" />
+                    <span>{{ t('Contact Fellow') }}</span>
+                  </a>
+                </div>
+              </transition>
             </div>
           </div>
 
@@ -613,6 +647,7 @@ import {
   Heart,
   ShoppingBag,
   MoreHorizontal,
+  MessageCircle,
   Share2,
   Zap,
   Trash2,
@@ -642,6 +677,13 @@ const {
 } = useStoreCart()
 
 // Fetch product by route param :id
+const isMoreMenuOpen = ref(false)
+const contactFellowLink = computed(() => {
+  const pName = product.value ? product.value.name : 'Hardware Kit'
+  const pPrice = product.value ? `$${product.value.priceUsd}` : ''
+  const msg = `Hello AeroByte Fellow! I have a question about ${pName} (${pPrice}).`
+  return `https://t.me/aerobyte_academy?text=${encodeURIComponent(msg)}`
+})
 const productId = computed(() => String(route.params.id || ''))
 const product = computed(() => getProductById(productId.value))
 

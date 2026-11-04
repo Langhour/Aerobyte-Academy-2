@@ -1418,6 +1418,7 @@ export const khmerTranslations = {
   "Tools & Equipment": "ឧបករណ៍ & សម្ភារៈ",
   "3D Filaments & Parts": "ខ្សែប្លាស្ទិក 3D & គ្រឿងបន្លាស់",
   "My orders": "ការកម្ម៉ង់របស់ខ្ញុំ",
+  "Contact Fellow": "ទាក់ទង Fellow (អ្នកទទួលបន្ទុក)",
   "Review your store purchases and hardware orders.": "ពិនិត្យមើលការទិញ និងការកម្ម៉ង់ឧបករណ៍របស់អ្នក។",
   "No store orders yet": "មិនទាន់មានការកម្ម៉ង់នៅឡើយទេ",
   "Hardware kits, drone components, and 3D printing supplies you order will appear here.": "ឈុតឧបករណ៍ គ្រឿងបន្លាស់ដ្រូន និងសម្ភារៈបោះពុម្ព 3D ដែលអ្នកបានកម្ម៉ង់នឹងបង្ហាញនៅទីនេះ។",
