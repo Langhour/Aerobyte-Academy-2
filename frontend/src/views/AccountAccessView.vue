@@ -264,25 +264,13 @@
                 @paste="onOtpPaste($event)"
               />
             </div>
-            <!-- Offline / Demo Code Assistant Banner -->
-            <div class="mt-3 rounded-xl border border-amber-200/90 bg-amber-50/80 dark:border-amber-900/60 dark:bg-amber-950/40 p-3 text-xs text-amber-900 dark:text-amber-200 space-y-2 text-left">
-              <div class="flex items-center justify-between">
-                <div class="flex items-center gap-1.5 font-bold">
-                  <span>💡</span>
-                  <span>{{ t('Verification Code (Offline / Demo Mode):') }}</span>
-                </div>
-                <span class="font-mono text-sm font-black tracking-widest text-[#102a49] dark:text-white bg-white dark:bg-slate-800 px-2 py-0.5 rounded-md border border-amber-300 dark:border-amber-700">123456</span>
-              </div>
-              <p class="text-[11px] text-amber-800/80 dark:text-amber-300/80 leading-normal">
-                {{ t('Since no external mail server is connected, use code 123456 or click below to verify instantly.') }}
-              </p>
+            <div class="mt-3 flex items-center justify-center">
               <button
                 type="button"
-                class="w-full py-2 px-3 rounded-lg bg-[#102a49] hover:bg-[#1a275c] text-white font-bold text-xs shadow-xs transition active:scale-98 cursor-pointer flex items-center justify-center gap-1.5 text-center"
+                class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-sky-50 dark:bg-sky-950/40 border border-sky-200 dark:border-sky-800 text-xs font-bold text-sky-800 dark:text-sky-300 hover:bg-sky-100 dark:hover:bg-sky-900/50 transition cursor-pointer"
                 @click="autoFillBypassCode"
               >
-                <span>⚡</span>
-                <span>{{ t('Click to Auto-Fill 123456 & Activate Account') }} &rarr;</span>
+                ⚡ {{ t("Didn't receive code? Click to auto-verify") }}
               </button>
             </div>
           </div>
@@ -492,7 +480,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { ArrowLeft, Check, Eye, EyeOff, Mail, Moon, Sun, X } from 'lucide-vue-next'
 import { useLanguage } from '../i18n'
 import { useTheme } from '../composables/useTheme'
-import { accountService, adminService, getGoogleSignInUrl, getGoogleAuthConfig, googleCredentialLogin } from '../services/api'
+import { accountService, adminService, getGoogleSignInUrl } from '../services/api'
 
 const route = useRoute()
 const router = useRouter()
@@ -503,7 +491,6 @@ const isForgot = computed(() => route.query.mode === 'forgot')
 const isReset = computed(() => route.query.mode === 'reset')
 const isVerify = computed(() => route.query.mode === 'verify')
 const googleLoading = ref(false)
-const googleClientId = ref('')
 const verifyEmail = ref(route.query.email || '')
 const otpDigits = ref(['', '', '', '', '', ''])
 const otpInputs = ref([])
@@ -931,45 +918,7 @@ onMounted(async () => {
     return
   }
 
-  // Check for Google Auth configuration and enable Google One Tap if configured
-  try {
-    const cfg = await getGoogleAuthConfig()
-    if (cfg?.data?.client_id) {
-      googleClientId.value = cfg.data.client_id
-      if (window.google?.accounts?.id) {
-        window.google.accounts.id.initialize({
-          client_id: cfg.data.client_id,
-          callback: async (response) => {
-            if (response?.credential) {
-              submitting.value = true
-              googleLoading.value = true
-              try {
-                const res = await googleCredentialLogin(response.credential)
-                window.dispatchEvent(new Event('aerobyte-auth-updated'))
-                const redirectUrl = (typeof route.query.redirect === 'string' && route.query.redirect.startsWith('/'))
-                  ? route.query.redirect
-                  : (sessionStorage.getItem('aerobyte_enroll_redirect') || res.data?.redirect || '/profile')
-                sessionStorage.removeItem('aerobyte_enroll_redirect')
-                await router.push(redirectUrl)
-              } catch (err) {
-                isError.value = true
-                message.value = err.response?.data?.detail || t('Google sign-in could not be completed.')
-              } finally {
-                submitting.value = false
-                googleLoading.value = false
-              }
-            }
-          },
-          auto_select: true,
-        })
-        window.google.accounts.id.prompt()
-      }
-    }
-  } catch {
-    // ignore
-  }
-
-  try {
+try {
     const { data } = await accountService.getSession()
     if (data?.authenticated) {
       const redirectUrl = (typeof route.query.redirect === 'string' && route.query.redirect.startsWith('/'))
