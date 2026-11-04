@@ -827,7 +827,7 @@
 
           :key="item.id"
 
-          class="group flex flex-col justify-between"
+          class="group flex flex-col"
 
         >
 
@@ -872,42 +872,24 @@
 
           <!-- 2. Typography & Details BELOW the Card (Matches Reference Screenshot) -->
 
-          <div class="mt-2.5 sm:mt-3 px-0.5 space-y-0.5">
-
-            <!-- Brand / Category Name (Subtle muted gray text, line 1) -->
-
-            <div class="text-[11px] sm:text-xs font-medium text-slate-400 dark:text-slate-500 truncate">
-
+          <div class="mt-2.5 sm:mt-3 px-0.5 space-y-1">
+            <!-- Brand / Category Name (Uniform 1-line height) -->
+            <div class="text-[11px] sm:text-xs font-medium text-slate-400 dark:text-slate-500 truncate h-4 flex items-center">
               {{ item.brand || item.category }}
-
             </div>
 
-
-
-            <!-- Product Title (Bold clean typography, line 2) -->
-
+            <!-- Product Title (Consistent 2-line height so all cards align on the exact same line) -->
             <RouterLink
               :to="`/store/${item.id}`"
-
-
-              class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white line-clamp-1 hover:text-navy-600 dark:hover:text-sky-400 transition cursor-pointer block"
-
+              class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white line-clamp-2 leading-snug h-8 sm:h-10 hover:text-navy-600 dark:hover:text-sky-400 transition cursor-pointer flex items-start"
             >
-
               {{ item.name }}
-
             </RouterLink>
 
-
-
-            <!-- Star Rating Row: Solid black stars + review count (line 3) -->
-
-            <div class="flex items-center gap-1 text-[11px] sm:text-xs text-slate-900 dark:text-slate-100 font-bold">
-
+            <!-- Star Rating Row (Uniform 1-line height on the exact same horizontal level) -->
+            <div class="flex items-center gap-1 text-[11px] sm:text-xs text-slate-900 dark:text-slate-100 font-bold h-4">
               <span class="tracking-tighter">★★★★★</span>
-
               <span class="font-normal text-slate-500 dark:text-slate-400">({{ item.reviewsCount || item.reviews }})</span>
-
             </div>
 
 

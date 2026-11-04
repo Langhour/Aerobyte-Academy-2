@@ -136,10 +136,54 @@
           
           <!-- Product Title & Rating -->
           <div class="space-y-1.5">
-            <div class="flex items-center gap-2 mb-1">
+            <div class="flex items-center justify-between gap-3 mb-1">
               <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/80">
                 {{ product.category }}
               </span>
+
+              <!-- 3-Dot More Options Button -->
+              <div class="relative">
+                <button
+                  type="button"
+                  @click.stop="isMoreMenuOpen = !isMoreMenuOpen"
+                  :title="t('More options')"
+                  class="h-8 w-8 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white flex items-center justify-center transition cursor-pointer select-none active:scale-95"
+                  :class="{ 'bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white': isMoreMenuOpen }"
+                >
+                  <MoreHorizontal class="w-4 h-4" />
+                </button>
+
+                <!-- Transparent Backdrop to dismiss dropdown -->
+                <div
+                  v-if="isMoreMenuOpen"
+                  class="fixed inset-0 z-30 bg-transparent cursor-default"
+                  @click="isMoreMenuOpen = false"
+                ></div>
+
+                <!-- 3-Dot Dropdown Card (Matches screenshot with speech bubble & Contact Fellow!) -->
+                <transition
+                  enter-active-class="transition ease-out duration-150"
+                  enter-from-class="transform opacity-0 scale-95"
+                  enter-to-class="transform opacity-100 scale-100"
+                  leave-active-class="transition ease-in duration-100"
+                  leave-from-class="transform opacity-100 scale-100"
+                  leave-to-class="transform opacity-0 scale-95"
+                >
+                  <div
+                    v-if="isMoreMenuOpen"
+                    class="absolute right-0 top-full mt-2 z-40 w-48 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-2xl p-1.5 select-none"
+                  >
+                    <button
+                      type="button"
+                      @click="openContactFellowModal"
+                      class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs sm:text-[13px] font-semibold text-slate-900 dark:text-white hover:bg-slate-100/80 dark:hover:bg-slate-800 transition cursor-pointer text-left"
+                    >
+                      <MessageCircle class="w-4 h-4 text-slate-900 dark:text-white stroke-[2.2]" />
+                      <span>{{ t('Contact Fellow') }}</span>
+                    </button>
+                  </div>
+                </transition>
+              </div>
             </div>
             <h1 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight leading-tight">
               {{ product.name }}
@@ -149,7 +193,7 @@
               <div class="flex items-center text-slate-900 dark:text-slate-100 font-black text-sm tracking-tighter">
                 ★★★★★
               </div>
-              <a href="#reviews" class="text-xs font-semibold text-slate-500 dark:text-slate-400 hover:underline">
+              <a href="#reviews" @click.prevent="openReviewsAccordion" class="text-xs font-semibold text-slate-500 dark:text-slate-400 hover:underline cursor-pointer">
                 {{ product.reviewsCount }} {{ t('ratings') }}
               </a>
               <span class="text-slate-300 dark:text-slate-700">•</span>
@@ -388,297 +432,196 @@
               </div>
             </div>
 
+            <!-- 5. Customer Reviews Accordion (Directly under Shipping & Lab Pickup) -->
+            <div id="reviews" class="py-3.5 scroll-mt-24">
+              <button
+                type="button"
+                @click="toggleAccordion('reviews')"
+                class="w-full flex items-center justify-between text-left text-sm font-extrabold text-slate-900 dark:text-white cursor-pointer"
+              >
+                <span class="flex items-center gap-2">
+                  <span>{{ t('Customer Reviews') }}</span>
+                  <span class="text-xs font-semibold text-slate-400">({{ allReviews.length || product.reviewsCount }})</span>
+                </span>
+                <ChevronUp v-if="accordionOpen.reviews" class="w-4 h-4 text-slate-400" />
+                <ChevronDown v-else class="w-4 h-4 text-slate-400" />
+              </button>
+
+              <div v-show="accordionOpen.reviews" class="mt-4 space-y-4">
+                <!-- Summary Card & Write Review Action -->
+                <div class="rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800 p-4 space-y-4">
+                  <div class="flex items-center justify-between gap-3">
+                    <div class="flex items-baseline gap-2.5">
+                      <span class="text-3xl font-black text-slate-900 dark:text-white">4.9</span>
+                      <div>
+                        <div class="flex items-center text-amber-400 text-sm tracking-tighter">
+                          ★★★★★
+                        </div>
+                        <div class="text-[10px] font-semibold text-slate-400 mt-0.5">
+                          {{ t('Based on') }} {{ product.reviewsCount || '1.2K' }} {{ t('ratings') }}
+                        </div>
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      @click="openWriteReview"
+                      class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-900 text-xs font-bold shadow-xs transition active:scale-95 cursor-pointer shrink-0"
+                    >
+                      <MessageSquare class="w-3.5 h-3.5" />
+                      <span>{{ t('Write a Review') }}</span>
+                    </button>
+                  </div>
+
+                  <!-- Star breakdown bars -->
+                  <div class="space-y-1.5 text-xs">
+                    <div
+                      v-for="bar in [
+                        { star: 5, pct: 88, count: '88%' },
+                        { star: 4, pct: 9, count: '9%' },
+                        { star: 3, pct: 2, count: '2%' },
+                        { star: 2, pct: 1, count: '<1%' },
+                        { star: 1, pct: 0, count: '0%' }
+                      ]"
+                      :key="bar.star"
+                      class="flex items-center gap-2 text-slate-600 dark:text-slate-400 text-[11px]"
+                    >
+                      <span class="w-6 font-bold text-slate-700 dark:text-slate-300 text-right">{{ bar.star }} ★</span>
+                      <div class="flex-1 h-1.5 rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden">
+                        <div class="h-full rounded-full bg-amber-400" :style="{ width: `${bar.pct}%` }"></div>
+                      </div>
+                      <span class="w-7 text-[10px] text-slate-400 text-right font-medium">{{ bar.count }}</span>
+                    </div>
+                  </div>
+
+                  <!-- Recommendation badge -->
+                  <div class="pt-2 border-t border-slate-200/60 dark:border-slate-800/80 flex items-center gap-2 text-[11px] text-slate-500 dark:text-slate-400">
+                    <span class="text-emerald-500 font-bold">✓ 98%</span>
+                    <span>{{ t('Students recommend this hardware for practical labs') }}</span>
+                  </div>
+                </div>
+
+                <!-- Review Filter Pills -->
+                <div class="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar">
+                  <button
+                    type="button"
+                    @click="selectedReviewFilter = 'all'"
+                    class="h-7 px-3 rounded-full text-[11px] font-semibold transition active:scale-95 cursor-pointer whitespace-nowrap"
+                    :class="selectedReviewFilter === 'all'
+                      ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-bold'
+                      : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300'"
+                  >
+                    {{ t('All') }} ({{ allReviews.length }})
+                  </button>
+
+                  <button
+                    type="button"
+                    @click="selectedReviewFilter = 5"
+                    class="h-7 px-3 rounded-full text-[11px] font-semibold transition active:scale-95 cursor-pointer whitespace-nowrap"
+                    :class="selectedReviewFilter === 5
+                      ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-bold'
+                      : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300'"
+                  >
+                    5 ★ ({{ allReviews.filter(r => r.rating === 5).length }})
+                  </button>
+
+                  <button
+                    type="button"
+                    @click="selectedReviewFilter = 4"
+                    class="h-7 px-3 rounded-full text-[11px] font-semibold transition active:scale-95 cursor-pointer whitespace-nowrap"
+                    :class="selectedReviewFilter === 4
+                      ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-bold'
+                      : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300'"
+                  >
+                    4 ★ ({{ allReviews.filter(r => r.rating === 4).length }})
+                  </button>
+
+                  <button
+                    type="button"
+                    @click="selectedReviewFilter = 'verified'"
+                    class="h-7 px-3 rounded-full text-[11px] font-semibold transition active:scale-95 cursor-pointer whitespace-nowrap"
+                    :class="selectedReviewFilter === 'verified'
+                      ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-bold'
+                      : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300'"
+                  >
+                    ✓ {{ t('Verified') }}
+                  </button>
+                </div>
+
+                <!-- Review Items -->
+                <div class="space-y-3">
+                  <article
+                    v-for="rev in filteredReviews"
+                    :key="rev.id"
+                    class="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-4 shadow-2xs space-y-2.5 transition hover:border-slate-300 dark:hover:border-slate-700"
+                  >
+                    <!-- Reviewer Header -->
+                    <div class="flex items-start justify-between gap-2">
+                      <div class="flex items-center gap-2.5">
+                        <div
+                          class="h-8 w-8 rounded-full flex items-center justify-center font-bold text-white text-[11px] shrink-0 shadow-xs"
+                          :class="rev.avatarColor || 'bg-indigo-600'"
+                        >
+                          {{ rev.author.split(' ').map(n => n[0]).join('').slice(0, 2) }}
+                        </div>
+                        <div>
+                          <div class="flex items-center gap-1.5 flex-wrap">
+                            <span class="text-xs font-bold text-slate-900 dark:text-white">{{ rev.author }}</span>
+                            <span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200/60 dark:border-emerald-800">
+                              <Check class="w-2 h-2 stroke-[3]" />
+                              <span>{{ rev.badge || t('Verified Student') }}</span>
+                            </span>
+                          </div>
+                          <div class="flex items-center gap-1.5 text-[10px] text-slate-400 mt-0.5">
+                            <span>{{ rev.date }}</span>
+                            <span v-if="rev.variant">•</span>
+                            <span v-if="rev.variant">{{ rev.variant }}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Stars -->
+                      <div class="flex items-center text-amber-400 text-xs tracking-tight shrink-0">
+                        <span v-for="s in 5" :key="s" :class="s <= rev.rating ? 'text-amber-400' : 'text-slate-200 dark:text-slate-700'">★</span>
+                      </div>
+                    </div>
+
+                    <!-- Review Content -->
+                    <div class="space-y-1">
+                      <h4 class="text-xs font-bold text-slate-900 dark:text-white">
+                        {{ rev.title }}
+                      </h4>
+                      <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                        {{ rev.content }}
+                      </p>
+                    </div>
+
+                    <!-- Helpful Button -->
+                    <div class="pt-1 flex items-center gap-2">
+                      <button
+                        type="button"
+                        @click="toggleHelpful(rev)"
+                        class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold transition active:scale-95 cursor-pointer"
+                        :class="rev.userHelpful
+                          ? 'bg-indigo-50 dark:bg-indigo-950/80 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800'
+                          : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-750 text-slate-600 dark:text-slate-400'"
+                      >
+                        <ThumbsUp class="w-3 h-3" :class="{ 'fill-indigo-600 dark:fill-indigo-400': rev.userHelpful }" />
+                        <span>{{ t('Helpful') }} ({{ rev.helpfulCount }})</span>
+                      </button>
+                    </div>
+                  </article>
+                </div>
+              </div>
+            </div>
+
           </div>
 
         </div>
 
       </div>
 
-      <!-- ==========================================
-           CUSTOMER REVIEWS & RATINGS SECTION
-           ========================================== -->
-      <section id="reviews" class="mt-16 sm:mt-24 pt-12 border-t border-slate-200/80 dark:border-slate-800 scroll-mt-24">
-        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
-          <div>
-            <h2 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
-              {{ t('Customer Reviews') }}
-            </h2>
-            <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
-              {{ t('Verified feedback from students, makers, and lab engineers in Cambodia.') }}
-            </p>
-          </div>
-
-          <button
-            type="button"
-            @click="openWriteReview"
-            class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-900 text-xs sm:text-sm font-bold shadow-md transition active:scale-95 cursor-pointer w-fit"
-          >
-            <MessageSquare class="w-4 h-4" />
-            <span>{{ t('Write a Review') }}</span>
-          </button>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
-          <!-- LEFT SUMMARY CARD (lg:col-span-4) -->
-          <div class="lg:col-span-4 rounded-3xl bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200/70 dark:border-slate-800 p-6 sm:p-7 space-y-6">
-            <div class="flex items-baseline gap-3">
-              <span class="text-5xl font-black text-slate-900 dark:text-white tracking-tight">4.9</span>
-              <div>
-                <div class="flex items-center text-amber-400 text-lg tracking-tighter">
-                  ★★★★★
-                </div>
-                <div class="text-[11px] font-semibold text-slate-400 mt-0.5">
-                  {{ t('Based on') }} {{ product.reviewsCount || '1.2K' }} {{ t('ratings') }}
-                </div>
-              </div>
-            </div>
-
-            <!-- Star Progress Breakdown -->
-            <div class="space-y-2 text-xs">
-              <div
-                v-for="bar in [
-                  { star: 5, pct: 88, count: '88%' },
-                  { star: 4, pct: 9, count: '9%' },
-                  { star: 3, pct: 2, count: '2%' },
-                  { star: 2, pct: 1, count: '<1%' },
-                  { star: 1, pct: 0, count: '0%' }
-                ]"
-                :key="bar.star"
-                class="flex items-center gap-2.5 text-slate-600 dark:text-slate-400"
-              >
-                <span class="w-7 font-bold text-slate-700 dark:text-slate-300 text-right">{{ bar.star }} ★</span>
-                <div class="flex-1 h-2 rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden">
-                  <div class="h-full rounded-full bg-amber-400" :style="{ width: `${bar.pct}%` }"></div>
-                </div>
-                <span class="w-8 text-[11px] text-slate-400 text-right font-medium">{{ bar.count }}</span>
-              </div>
-            </div>
-
-            <!-- Recommendation callout -->
-            <div class="pt-4 border-t border-slate-200/70 dark:border-slate-800 flex items-center gap-3">
-              <div class="h-10 w-10 rounded-2xl bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
-                <Check class="w-5 h-5 stroke-[2.5]" />
-              </div>
-              <div>
-                <div class="text-xs font-bold text-slate-900 dark:text-white">98% Recommendation</div>
-                <div class="text-[11px] text-slate-400 mt-0.5">Students recommend this hardware for practical labs</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- RIGHT REVIEWS FEED (lg:col-span-8) -->
-          <div class="lg:col-span-8 space-y-5">
-            <!-- Filter Pills -->
-            <div class="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
-              <button
-                type="button"
-                @click="selectedReviewFilter = 'all'"
-                class="h-8 px-3.5 rounded-full text-xs font-semibold transition active:scale-95 cursor-pointer whitespace-nowrap"
-                :class="selectedReviewFilter === 'all'
-                  ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-bold shadow-xs'
-                  : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300'"
-              >
-                {{ t('All Reviews') }} ({{ allReviews.length }})
-              </button>
-
-              <button
-                type="button"
-                @click="selectedReviewFilter = 5"
-                class="h-8 px-3.5 rounded-full text-xs font-semibold transition active:scale-95 cursor-pointer whitespace-nowrap"
-                :class="selectedReviewFilter === 5
-                  ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-bold shadow-xs'
-                  : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300'"
-              >
-                5 ★ ({{ allReviews.filter(r => r.rating === 5).length }})
-              </button>
-
-              <button
-                type="button"
-                @click="selectedReviewFilter = 4"
-                class="h-8 px-3.5 rounded-full text-xs font-semibold transition active:scale-95 cursor-pointer whitespace-nowrap"
-                :class="selectedReviewFilter === 4
-                  ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-bold shadow-xs'
-                  : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300'"
-              >
-                4 ★ ({{ allReviews.filter(r => r.rating === 4).length }})
-              </button>
-
-              <button
-                type="button"
-                @click="selectedReviewFilter = 'verified'"
-                class="h-8 px-3.5 rounded-full text-xs font-semibold transition active:scale-95 cursor-pointer whitespace-nowrap"
-                :class="selectedReviewFilter === 'verified'
-                  ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-bold shadow-xs'
-                  : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300'"
-              >
-                ✓ {{ t('Verified Buyer') }}
-              </button>
-            </div>
-
-            <!-- Review Cards -->
-            <div class="space-y-4">
-              <article
-                v-for="rev in filteredReviews"
-                :key="rev.id"
-                class="rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-5 sm:p-6 shadow-2xs space-y-3 transition hover:border-slate-300 dark:hover:border-slate-700"
-              >
-                <!-- Reviewer Header -->
-                <div class="flex items-start justify-between gap-3">
-                  <div class="flex items-center gap-3">
-                    <div
-                      class="h-10 w-10 rounded-full flex items-center justify-center font-bold text-white text-xs shrink-0 shadow-xs"
-                      :class="rev.avatarColor || 'bg-indigo-600'"
-                    >
-                      {{ rev.author.split(' ').map(n => n[0]).join('').slice(0, 2) }}
-                    </div>
-                    <div>
-                      <div class="flex items-center gap-2">
-                        <span class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white">{{ rev.author }}</span>
-                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200/60 dark:border-emerald-800">
-                          <Check class="w-2.5 h-2.5 stroke-[3]" />
-                          <span>{{ rev.badge || t('Verified Student') }}</span>
-                        </span>
-                      </div>
-                      <div class="flex items-center gap-2 mt-0.5 text-[11px] text-slate-400">
-                        <span>{{ rev.date }}</span>
-                        <span v-if="rev.variant">•</span>
-                        <span v-if="rev.variant">{{ rev.variant }}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Stars -->
-                  <div class="flex items-center text-amber-400 text-sm tracking-tight">
-                    <span v-for="s in 5" :key="s" :class="s <= rev.rating ? 'text-amber-400' : 'text-slate-200 dark:text-slate-700'">★</span>
-                  </div>
-                </div>
-
-                <!-- Review Content -->
-                <div class="space-y-1.5">
-                  <h4 class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white">
-                    {{ rev.title }}
-                  </h4>
-                  <p class="text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed">
-                    {{ rev.content }}
-                  </p>
-                </div>
-
-                <!-- Helpful Button -->
-                <div class="pt-2 flex items-center gap-2">
-                  <button
-                    type="button"
-                    @click="toggleHelpful(rev)"
-                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition active:scale-95 cursor-pointer"
-                    :class="rev.userHelpful
-                      ? 'bg-indigo-50 dark:bg-indigo-950/80 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800'
-                      : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-750 text-slate-600 dark:text-slate-400'"
-                  >
-                    <ThumbsUp class="w-3.5 h-3.5" :class="{ 'fill-indigo-600 dark:fill-indigo-400': rev.userHelpful }" />
-                    <span>{{ t('Helpful') }} ({{ rev.helpfulCount }})</span>
-                  </button>
-                </div>
-              </article>
-            </div>
-          </div>
-        </div>
-
-        <!-- Write Review Modal -->
-        <div
-          v-if="isWriteReviewOpen"
-          class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs overflow-y-auto"
-          @click.self="isWriteReviewOpen = false"
-        >
-          <div class="w-full max-w-lg rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 sm:p-7 shadow-2xl relative my-8">
-            <button
-              type="button"
-              @click="isWriteReviewOpen = false"
-              class="absolute top-5 right-5 text-slate-400 hover:text-slate-700 dark:hover:text-white cursor-pointer"
-            >
-              <X class="w-5 h-5" />
-            </button>
-
-            <h3 class="text-lg font-bold text-slate-900 dark:text-white">{{ t('Write a Review') }}</h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
-              Share your feedback for <span class="font-bold text-slate-800 dark:text-slate-200">{{ product.name }}</span>
-            </p>
-
-            <form @submit.prevent="submitNewReview" class="mt-5 space-y-4">
-              <!-- Rating Picker -->
-              <div>
-                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">{{ t('Your Rating') }}</label>
-                <div class="flex items-center gap-1.5">
-                  <button
-                    v-for="star in 5"
-                    :key="star"
-                    type="button"
-                    @click="reviewForm.rating = star"
-                    @mouseenter="reviewHoverRating = star"
-                    @mouseleave="reviewHoverRating = 0"
-                    class="text-2xl transition cursor-pointer"
-                    :class="(reviewHoverRating || reviewForm.rating) >= star ? 'text-amber-400' : 'text-slate-200 dark:text-slate-700'"
-                  >
-                    ★
-                  </button>
-                  <span class="text-xs font-bold text-slate-600 dark:text-slate-400 ml-2">
-                    {{ reviewHoverRating || reviewForm.rating }} / 5 Stars
-                  </span>
-                </div>
-              </div>
-
-              <!-- Name -->
-              <div>
-                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">{{ t('Your Name') }}</label>
-                <input
-                  v-model="reviewForm.name"
-                  type="text"
-                  required
-                  placeholder="e.g. Sokha Chan"
-                  class="w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 px-3.5 py-2.5 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
-                />
-              </div>
-
-              <!-- Title -->
-              <div>
-                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">{{ t('Review Title') }}</label>
-                <input
-                  v-model="reviewForm.title"
-                  type="text"
-                  placeholder="e.g. Great kit for STEM coursework"
-                  class="w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 px-3.5 py-2.5 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
-                />
-              </div>
-
-              <!-- Comment -->
-              <div>
-                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">{{ t('Your Review') }}</label>
-                <textarea
-                  v-model="reviewForm.content"
-                  rows="4"
-                  required
-                  placeholder="Write your honest review about component quality, assembly, and performance..."
-                  class="w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 px-3.5 py-2.5 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 resize-none"
-                ></textarea>
-              </div>
-
-              <div class="flex items-center gap-3 pt-2">
-                <button
-                  type="button"
-                  @click="isWriteReviewOpen = false"
-                  class="flex-1 py-2.5 rounded-full border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition cursor-pointer"
-                >
-                  {{ t('Cancel') }}
-                </button>
-                <button
-                  type="submit"
-                  class="flex-1 py-2.5 rounded-full bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 text-xs font-bold transition shadow-md cursor-pointer"
-                >
-                  {{ t('Submit Review') }}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </section>
+      
 
 
       <!-- ==========================================
@@ -724,16 +667,16 @@
             v-for="rel in relatedProducts"
             :key="rel.id"
             :to="`/store/${rel.id}`"
-            class="group flex flex-col justify-between"
+            class="group flex flex-col"
           >
             <div class="relative aspect-[4/5] rounded-2xl bg-[#f5f5f7] dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 p-4 flex items-center justify-center overflow-hidden transition-all duration-300 group-hover:shadow-md">
               <span class="text-6xl group-hover:scale-108 transition-transform duration-300 select-none">
                 {{ rel.icon }}
               </span>
             </div>
-            <div class="mt-2.5 px-0.5 space-y-0.5">
-              <div class="text-[10px] text-slate-400 font-medium truncate">{{ rel.brand }}</div>
-              <h4 class="text-xs font-bold text-slate-900 dark:text-white truncate group-hover:text-navy-600 dark:group-hover:text-sky-400">
+            <div class="mt-2.5 px-0.5 space-y-1">
+              <div class="text-[10px] text-slate-400 font-medium truncate h-4 flex items-center">{{ rel.brand || rel.category }}</div>
+              <h4 class="text-xs font-bold text-slate-900 dark:text-white line-clamp-2 leading-snug h-8 group-hover:text-navy-600 dark:group-hover:text-sky-400 flex items-start">
                 {{ rel.name }}
               </h4>
               <div class="text-xs font-black text-slate-900 dark:text-white">
@@ -858,6 +801,265 @@
     <!-- ==========================================
          CONTACT FELLOW MODAL (Matches user screenshot)
          ========================================== -->
+    <Teleport to="body">
+      <transition
+        enter-active-class="transition ease-out duration-200"
+        enter-from-class="opacity-0"
+        enter-to-class="opacity-100"
+        leave-active-class="transition ease-in duration-150"
+        leave-from-class="opacity-100"
+        leave-to-class="opacity-0"
+      >
+        <div
+          v-if="isContactFellowModalOpen"
+          class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/45 backdrop-blur-[2px]"
+          @click.self="isContactFellowModalOpen = false"
+        >
+          <div
+            class="relative w-full max-w-[560px] rounded-[32px] bg-white dark:bg-slate-900 text-slate-900 dark:text-white p-7 sm:p-9 shadow-2xl border border-slate-100 dark:border-slate-800 select-none animate-in fade-in zoom-in-95 duration-200"
+          >
+            <!-- Header: Title & Circular Close Button -->
+            <div class="flex items-center justify-between pb-7 sm:pb-8">
+              <h3 class="text-xl sm:text-2xl font-black tracking-tight text-slate-900 dark:text-white">
+                {{ t('Contact Fellow') }}
+              </h3>
+              <button
+                type="button"
+                @click="isContactFellowModalOpen = false"
+                class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 flex items-center justify-center text-slate-700 dark:text-slate-300 transition active:scale-95 cursor-pointer"
+                aria-label="Close"
+              >
+                <X class="w-4 h-4 sm:w-4.5 sm:h-4.5 stroke-[2.5]" />
+              </button>
+            </div>
+
+            <!-- Content Grid: 2 Columns with 4 Platforms matching user request -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-5 gap-x-8 text-[13px] sm:text-sm font-semibold">
+              <!-- Left Column: YouTube & Telegram -->
+              <div class="space-y-5">
+                <!-- YouTube -->
+                <div class="flex items-center justify-between group">
+                  <div class="flex items-center gap-2.5 min-w-0">
+                    <img src="/youtube-icon.png" alt="YouTube" class="w-5 h-5 rounded-md object-contain shrink-0" />
+                    <a
+                      href="https://www.youtube.com/@aerobyte168"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="text-slate-900 dark:text-slate-100 hover:text-red-600 transition truncate"
+                    >
+                      @aerobyte168
+                    </a>
+                  </div>
+                  <button
+                    type="button"
+                    @click="copyToClipboard('https://www.youtube.com/@aerobyte168', 'youtube')"
+                    class="p-0.5 text-slate-400 hover:text-slate-900 dark:hover:text-white transition cursor-pointer shrink-0 ml-1.5"
+                    :title="copiedField === 'youtube' ? t('Copied!') : 'Copy link'"
+                  >
+                    <Check v-if="copiedField === 'youtube'" class="w-3.5 h-3.5 text-emerald-600 stroke-[2.5]" />
+                    <Copy v-else class="w-3.5 h-3.5 stroke-[2]" />
+                  </button>
+                </div>
+
+                <!-- Telegram -->
+                <div class="flex items-center justify-between group">
+                  <div class="flex items-center gap-2.5 min-w-0">
+                    <img src="/telegram-icon.png" alt="Telegram" class="w-5 h-5 rounded-full object-contain shrink-0" />
+                    <a
+                      href="https://t.me/aerobyte168"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="text-slate-900 dark:text-slate-100 hover:text-sky-500 transition truncate"
+                    >
+                      t.me/aerobyte168
+                    </a>
+                  </div>
+                  <button
+                    type="button"
+                    @click="copyToClipboard('https://t.me/aerobyte168', 'telegram')"
+                    class="p-0.5 text-slate-400 hover:text-slate-900 dark:hover:text-white transition cursor-pointer shrink-0 ml-1.5"
+                    :title="copiedField === 'telegram' ? t('Copied!') : 'Copy link'"
+                  >
+                    <Check v-if="copiedField === 'telegram'" class="w-3.5 h-3.5 text-emerald-600 stroke-[2.5]" />
+                    <Copy v-else class="w-3.5 h-3.5 stroke-[2]" />
+                  </button>
+                </div>
+              </div>
+
+              <!-- Right Column: Facebook & TikTok -->
+              <div class="space-y-5">
+                <!-- Facebook -->
+                <div class="flex items-center justify-between group">
+                  <div class="flex items-center gap-2.5 min-w-0">
+                    <img src="/facebook-icon.png" alt="Facebook" class="w-5 h-5 rounded-full object-contain shrink-0" />
+                    <a
+                      href="https://www.facebook.com/Robotxacademy168"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="text-slate-900 dark:text-slate-100 hover:text-blue-600 transition truncate"
+                    >
+                      AeroByte Academy
+                    </a>
+                  </div>
+                  <button
+                    type="button"
+                    @click="copyToClipboard('https://www.facebook.com/Robotxacademy168', 'facebook')"
+                    class="p-0.5 text-slate-400 hover:text-slate-900 dark:hover:text-white transition cursor-pointer shrink-0 ml-1.5"
+                    :title="copiedField === 'facebook' ? t('Copied!') : 'Copy link'"
+                  >
+                    <Check v-if="copiedField === 'facebook'" class="w-3.5 h-3.5 text-emerald-600 stroke-[2.5]" />
+                    <Copy v-else class="w-3.5 h-3.5 stroke-[2]" />
+                  </button>
+                </div>
+
+                <!-- TikTok -->
+                <div class="flex items-center justify-between group">
+                  <div class="flex items-center gap-2.5 min-w-0">
+                    <img src="/tiktok-icon.png" alt="TikTok" class="w-5 h-5 rounded-full object-contain shrink-0" />
+                    <a
+                      href="https://www.tiktok.com/@aero.byte.academy168"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="text-slate-900 dark:text-slate-100 hover:text-pink-600 transition truncate"
+                    >
+                      @aero.byte.academy168
+                    </a>
+                  </div>
+                  <button
+                    type="button"
+                    @click="copyToClipboard('https://www.tiktok.com/@aero.byte.academy168', 'tiktok')"
+                    class="p-0.5 text-slate-400 hover:text-slate-900 dark:hover:text-white transition cursor-pointer shrink-0 ml-1.5"
+                    :title="copiedField === 'tiktok' ? t('Copied!') : 'Copy link'"
+                  >
+                    <Check v-if="copiedField === 'tiktok'" class="w-3.5 h-3.5 text-emerald-600 stroke-[2.5]" />
+                    <Copy v-else class="w-3.5 h-3.5 stroke-[2]" />
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Bottom Address with Google Map Link & Copy Icon -->
+            <div class="mt-14 sm:mt-16 pt-2 flex items-center gap-2 text-xs sm:text-[13px] text-slate-500 dark:text-slate-400 font-normal">
+              <a
+                href="https://maps.app.goo.gl/Pj7oV9NrPmbc5mnFA"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="hover:underline hover:text-slate-900 dark:hover:text-white transition break-words"
+                :title="t('View on Google Maps')"
+              >
+                {{ t('Phum Lekh Muoy, Sangkat Svay Rolum Ta Khmau, Kandal 08110701') }}
+              </a>
+              <button
+                type="button"
+                @click="copyToClipboard('https://maps.app.goo.gl/Pj7oV9NrPmbc5mnFA', 'address')"
+                class="p-0.5 text-slate-500 hover:text-slate-900 dark:hover:text-white transition cursor-pointer shrink-0"
+                :title="copiedField === 'address' ? t('Copied!') : 'Copy map link'"
+              >
+                <Check v-if="copiedField === 'address'" class="w-3.5 h-3.5 text-emerald-600 stroke-[2.5]" />
+                <Copy v-else class="w-3.5 h-3.5 stroke-[2]" />
+              </button>
+            </div>
+          </div>
+        </div>
+      </transition>
+    </Teleport>
+
+    <!-- Write Review Modal -->
+        <div
+          v-if="isWriteReviewOpen"
+          class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs overflow-y-auto"
+          @click.self="isWriteReviewOpen = false"
+        >
+          <div class="w-full max-w-lg rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 sm:p-7 shadow-2xl relative my-8">
+            <button
+              type="button"
+              @click="isWriteReviewOpen = false"
+              class="absolute top-5 right-5 text-slate-400 hover:text-slate-700 dark:hover:text-white cursor-pointer"
+            >
+              <X class="w-5 h-5" />
+            </button>
+
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white">{{ t('Write a Review') }}</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+              Share your feedback for <span class="font-bold text-slate-800 dark:text-slate-200">{{ product.name }}</span>
+            </p>
+
+            <form @submit.prevent="submitNewReview" class="mt-5 space-y-4">
+              <!-- Rating Picker -->
+              <div>
+                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">{{ t('Your Rating') }}</label>
+                <div class="flex items-center gap-1.5">
+                  <button
+                    v-for="star in 5"
+                    :key="star"
+                    type="button"
+                    @click="reviewForm.rating = star"
+                    @mouseenter="reviewHoverRating = star"
+                    @mouseleave="reviewHoverRating = 0"
+                    class="text-2xl transition cursor-pointer"
+                    :class="(reviewHoverRating || reviewForm.rating) >= star ? 'text-amber-400' : 'text-slate-200 dark:text-slate-700'"
+                  >
+                    ★
+                  </button>
+                  <span class="text-xs font-bold text-slate-600 dark:text-slate-400 ml-2">
+                    {{ reviewHoverRating || reviewForm.rating }} / 5 Stars
+                  </span>
+                </div>
+              </div>
+
+              <!-- Name -->
+              <div>
+                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">{{ t('Your Name') }}</label>
+                <input
+                  v-model="reviewForm.name"
+                  type="text"
+                  required
+                  placeholder="e.g. Sokha Chan"
+                  class="w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 px-3.5 py-2.5 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+                />
+              </div>
+
+              <!-- Title -->
+              <div>
+                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">{{ t('Review Title') }}</label>
+                <input
+                  v-model="reviewForm.title"
+                  type="text"
+                  placeholder="e.g. Great kit for STEM coursework"
+                  class="w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 px-3.5 py-2.5 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+                />
+              </div>
+
+              <!-- Comment -->
+              <div>
+                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">{{ t('Your Review') }}</label>
+                <textarea
+                  v-model="reviewForm.content"
+                  rows="4"
+                  required
+                  placeholder="Write your honest review about component quality, assembly, and performance..."
+                  class="w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 px-3.5 py-2.5 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 resize-none"
+                ></textarea>
+              </div>
+
+              <div class="flex items-center gap-3 pt-2">
+                <button
+                  type="button"
+                  @click="isWriteReviewOpen = false"
+                  class="flex-1 py-2.5 rounded-full border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition cursor-pointer"
+                >
+                  {{ t('Cancel') }}
+                </button>
+                <button
+                  type="submit"
+                  class="flex-1 py-2.5 rounded-full bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 text-xs font-bold transition shadow-md cursor-pointer"
+                >
+                  {{ t('Submit Review') }}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
 
     <!-- Toast Notification -->
     <div
@@ -880,6 +1082,8 @@ import {
   ChevronUp,
   Heart,
   ShoppingBag,
+  MoreHorizontal,
+  MessageCircle,
   Share2,
   Star,
   ThumbsUp,
@@ -887,7 +1091,8 @@ import {
   MessageSquare,
   Zap,
   Trash2,
-  X
+  X,
+  Copy
 } from 'lucide-vue-next'
 import CustomSelect from '../components/common/CustomSelect.vue'
 import { getProductById, getRelatedProducts } from '../data/products'
@@ -896,42 +1101,6 @@ import { useStoreCart } from '../composables/useStoreCart'
 const route = useRoute()
 const router = useRouter()
 const { t } = useI18n()
-
-// 3-Dot More Options Menu & Contact Fellow Modal
-const isMoreMenuOpen = ref(false)
-const isContactFellowModalOpen = ref(false)
-const copiedField = ref('')
-
-function openContactFellowModal() {
-  isMoreMenuOpen.value = false
-  isContactFellowModalOpen.value = true
-}
-
-async function copyToClipboard(text, field) {
-  try {
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      await navigator.clipboard.writeText(text)
-    } else {
-      const ta = document.createElement('textarea')
-      ta.value = text
-      ta.style.position = 'fixed'
-      ta.style.opacity = '0'
-      document.body.appendChild(ta)
-      ta.select()
-      document.execCommand('copy')
-      document.body.removeChild(ta)
-    }
-    copiedField.value = field
-    showToast(t('Copied!'))
-    setTimeout(() => {
-      if (copiedField.value === field) {
-        copiedField.value = ''
-      }
-    }, 2000)
-  } catch (e) {
-    console.error('Failed to copy', e)
-  }
-}
 
 
 const {
@@ -950,6 +1119,42 @@ const {
 } = useStoreCart()
 
 // Fetch product by route param :id
+// Contact Fellow Modal State & Copy Helper
+const isMoreMenuOpen = ref(false)
+const isContactFellowModalOpen = ref(false)
+const copiedField = ref('')
+
+const openContactFellowModal = () => {
+  isMoreMenuOpen.value = false
+  isContactFellowModalOpen.value = true
+}
+
+const copyToClipboard = async (text, field) => {
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      await navigator.clipboard.writeText(text)
+    } else {
+      const ta = document.createElement('textarea')
+      ta.value = text
+      ta.style.position = 'fixed'
+      ta.style.opacity = '0'
+      document.body.appendChild(ta)
+      ta.select()
+      document.execCommand('copy')
+      document.body.removeChild(ta)
+    }
+    copiedField.value = field
+    showToast(t('Copied!'))
+    setTimeout(() => {
+      if (copiedField.value === field) {
+        copiedField.value = ''
+      }
+    }, 2000)
+  } catch (e) {
+    console.error('Failed to copy', e)
+  }
+}
+
 const productId = computed(() => String(route.params.id || ''))
 const product = computed(() => getProductById(productId.value))
 
@@ -977,8 +1182,17 @@ const accordionOpen = reactive({
   desc: true,
   specs: true,
   box: false,
-  shipping: false
+  shipping: false,
+  reviews: false
 })
+
+function openReviewsAccordion() {
+  accordionOpen.reviews = true
+  const el = document.getElementById('reviews')
+  if (el) {
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+}
 
 function toggleAccordion(key) {
   accordionOpen[key] = !accordionOpen[key]
