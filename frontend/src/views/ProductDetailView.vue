@@ -945,94 +945,118 @@
               </button>
             </div>
 
-            <!-- Content Grid: 2 Columns matching screenshot -->
+            <!-- Content Grid: 2 Columns with 4 Platforms matching user request -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-5 gap-x-8 text-[13px] sm:text-sm font-semibold">
-              <!-- Left Column: Zendesk & Email -->
+              <!-- Left Column: YouTube & Telegram -->
               <div class="space-y-5">
-                <!-- Zendesk URL -->
-                <div class="flex items-center gap-2.5">
-                  <svg class="w-5 h-5 shrink-0 text-slate-800 dark:text-slate-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <rect width="18" height="13" x="2" y="3" rx="2.5" />
-                    <path d="M5 6.5h.01M7.5 6.5h.01M10 6.5h.01" />
-                    <path d="m14 15 5.5 2.5-2 1-.8 2z" />
-                  </svg>
-                  <a
-                    href="https://fellowproducts.zendesk.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="text-slate-900 dark:text-slate-100 hover:underline transition"
-                  >
-                    fellowproducts.zendesk.com
-                  </a>
+                <!-- YouTube -->
+                <div class="flex items-center justify-between group">
+                  <div class="flex items-center gap-2.5 min-w-0">
+                    <img src="/youtube-icon.png" alt="YouTube" class="w-5 h-5 rounded-md object-contain shrink-0" />
+                    <a
+                      href="https://www.youtube.com/@aerobyte168"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="text-slate-900 dark:text-slate-100 hover:text-red-600 transition truncate"
+                    >
+                      @aerobyte168
+                    </a>
+                  </div>
                   <button
                     type="button"
-                    @click="copyToClipboard('fellowproducts.zendesk.com', 'zendesk')"
-                    class="p-0.5 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition cursor-pointer"
-                    :title="copiedField === 'zendesk' ? t('Copied!') : 'Copy'"
+                    @click="copyToClipboard('https://www.youtube.com/@aerobyte168', 'youtube')"
+                    class="p-0.5 text-slate-400 hover:text-slate-900 dark:hover:text-white transition cursor-pointer shrink-0 ml-1.5"
+                    :title="copiedField === 'youtube' ? t('Copied!') : 'Copy link'"
                   >
-                    <Check v-if="copiedField === 'zendesk'" class="w-3.5 h-3.5 text-emerald-600 stroke-[2.5]" />
+                    <Check v-if="copiedField === 'youtube'" class="w-3.5 h-3.5 text-emerald-600 stroke-[2.5]" />
                     <Copy v-else class="w-3.5 h-3.5 stroke-[2]" />
                   </button>
                 </div>
 
-                <!-- Email -->
-                <div class="flex items-center gap-2.5">
-                  <Mail class="w-5 h-5 shrink-0 text-slate-800 dark:text-slate-200 stroke-[1.8]" />
-                  <a
-                    href="mailto:hello@fellowproducts.com"
-                    class="text-slate-900 dark:text-slate-100 hover:underline transition"
-                  >
-                    hello@fellowproducts.com
-                  </a>
+                <!-- Telegram -->
+                <div class="flex items-center justify-between group">
+                  <div class="flex items-center gap-2.5 min-w-0">
+                    <img src="/telegram-icon.png" alt="Telegram" class="w-5 h-5 rounded-full object-contain shrink-0" />
+                    <a
+                      href="https://t.me/aerobyte168"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="text-slate-900 dark:text-slate-100 hover:text-sky-500 transition truncate"
+                    >
+                      t.me/aerobyte168
+                    </a>
+                  </div>
                   <button
                     type="button"
-                    @click="copyToClipboard('hello@fellowproducts.com', 'email')"
-                    class="p-0.5 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition cursor-pointer"
-                    :title="copiedField === 'email' ? t('Copied!') : 'Copy'"
+                    @click="copyToClipboard('https://t.me/aerobyte168', 'telegram')"
+                    class="p-0.5 text-slate-400 hover:text-slate-900 dark:hover:text-white transition cursor-pointer shrink-0 ml-1.5"
+                    :title="copiedField === 'telegram' ? t('Copied!') : 'Copy link'"
                   >
-                    <Check v-if="copiedField === 'email'" class="w-3.5 h-3.5 text-emerald-600 stroke-[2.5]" />
+                    <Check v-if="copiedField === 'telegram'" class="w-3.5 h-3.5 text-emerald-600 stroke-[2.5]" />
                     <Copy v-else class="w-3.5 h-3.5 stroke-[2]" />
                   </button>
                 </div>
               </div>
 
-              <!-- Right Column: Instagram & YouTube -->
+              <!-- Right Column: Facebook & TikTok -->
               <div class="space-y-5">
-                <!-- Instagram -->
-                <div class="flex items-center gap-2.5">
-                  <Instagram class="w-5 h-5 shrink-0 text-slate-800 dark:text-slate-200 stroke-[1.8]" />
-                  <a
-                    href="https://www.instagram.com/fellowproducts"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="text-slate-900 dark:text-slate-100 hover:underline transition"
+                <!-- Facebook -->
+                <div class="flex items-center justify-between group">
+                  <div class="flex items-center gap-2.5 min-w-0">
+                    <img src="/facebook-icon.png" alt="Facebook" class="w-5 h-5 rounded-full object-contain shrink-0" />
+                    <a
+                      href="https://www.facebook.com/Robotxacademy168"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="text-slate-900 dark:text-slate-100 hover:text-blue-600 transition truncate"
+                    >
+                      AeroByte Academy
+                    </a>
+                  </div>
+                  <button
+                    type="button"
+                    @click="copyToClipboard('https://www.facebook.com/Robotxacademy168', 'facebook')"
+                    class="p-0.5 text-slate-400 hover:text-slate-900 dark:hover:text-white transition cursor-pointer shrink-0 ml-1.5"
+                    :title="copiedField === 'facebook' ? t('Copied!') : 'Copy link'"
                   >
-                    Instagram
-                  </a>
+                    <Check v-if="copiedField === 'facebook'" class="w-3.5 h-3.5 text-emerald-600 stroke-[2.5]" />
+                    <Copy v-else class="w-3.5 h-3.5 stroke-[2]" />
+                  </button>
                 </div>
 
-                <!-- YouTube -->
-                <div class="flex items-center gap-2.5">
-                  <Youtube class="w-5 h-5 shrink-0 text-slate-800 dark:text-slate-200 stroke-[1.8]" />
-                  <a
-                    href="https://www.youtube.com/@fellowproducts"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="text-slate-900 dark:text-slate-100 hover:underline transition"
+                <!-- TikTok -->
+                <div class="flex items-center justify-between group">
+                  <div class="flex items-center gap-2.5 min-w-0">
+                    <img src="/tiktok-icon.png" alt="TikTok" class="w-5 h-5 rounded-full object-contain shrink-0" />
+                    <a
+                      href="https://www.tiktok.com/@aero.byte.academy168"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="text-slate-900 dark:text-slate-100 hover:text-pink-600 transition truncate"
+                    >
+                      @aero.byte.academy168
+                    </a>
+                  </div>
+                  <button
+                    type="button"
+                    @click="copyToClipboard('https://www.tiktok.com/@aero.byte.academy168', 'tiktok')"
+                    class="p-0.5 text-slate-400 hover:text-slate-900 dark:hover:text-white transition cursor-pointer shrink-0 ml-1.5"
+                    :title="copiedField === 'tiktok' ? t('Copied!') : 'Copy link'"
                   >
-                    YouTube
-                  </a>
+                    <Check v-if="copiedField === 'tiktok'" class="w-3.5 h-3.5 text-emerald-600 stroke-[2.5]" />
+                    <Copy v-else class="w-3.5 h-3.5 stroke-[2]" />
+                  </button>
                 </div>
               </div>
             </div>
 
-            <!-- Bottom Address with Copy Icon (Matching screenshot) -->
+            <!-- Bottom Address with Copy Icon (Matching user location) -->
             <div class="mt-14 sm:mt-16 pt-2 flex items-center gap-2 text-xs sm:text-[13px] text-slate-500 dark:text-slate-400 font-normal">
-              <span>320 Florida St, San Francisco, California 94110, United States</span>
+              <span class="break-words">{{ t('Phum Lekh Muoy, Sangkat Svay Rolum Ta Khmau, Kandal 08110701') }}</span>
               <button
                 type="button"
-                @click="copyToClipboard('320 Florida St, San Francisco, California 94110, United States', 'address')"
-                class="p-0.5 text-slate-500 hover:text-slate-900 dark:hover:text-white transition cursor-pointer"
+                @click="copyToClipboard(t('Phum Lekh Muoy, Sangkat Svay Rolum Ta Khmau, Kandal 08110701'), 'address')"
+                class="p-0.5 text-slate-500 hover:text-slate-900 dark:hover:text-white transition cursor-pointer shrink-0"
                 :title="copiedField === 'address' ? t('Copied!') : 'Copy address'"
               >
                 <Check v-if="copiedField === 'address'" class="w-3.5 h-3.5 text-emerald-600 stroke-[2.5]" />
