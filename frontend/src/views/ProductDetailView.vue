@@ -14,7 +14,7 @@
     </div>
     <!-- Top Breadcrumb & Back Bar (No background, compact shorter height) -->
     <div class="relative z-20 bg-transparent">
-      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-1.5 sm:py-2 flex items-center justify-between">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-1 sm:py-1.5 flex items-center justify-between">
         <nav class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 truncate">
           <RouterLink
             to="/store"
@@ -81,7 +81,7 @@
     </div>
 
     <!-- MAIN PRODUCT DETAIL CONTAINER (Shop.com Reference Style) -->
-    <main v-else class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-6 sm:pt-10">
+    <main v-else class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-1.5 sm:pt-3">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-start">
         
         <!-- ==========================================
