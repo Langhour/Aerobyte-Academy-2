@@ -596,6 +596,9 @@ watch([() => route.query.mode, () => route.query.email, () => route.query.adminL
       },
     })
     return
+  } else if (googleError === 'missing_secret') {
+    isError.value = true
+    message.value = t('Google Client Secret is required on the server to complete sign-in. Please add GOOGLE_CLIENT_SECRET.')
   } else if (googleError) {
     isError.value = true
     message.value = t('Google sign-in could not be completed. Please try again or use your email and password.')
@@ -906,7 +909,9 @@ function goToSignIn() {
 onMounted(async () => {
   if (route.query.google_error) {
     isError.value = true
-    if (route.query.google_error === 'unverified') {
+    if (route.query.google_error === 'missing_secret') {
+      message.value = t('Google Client Secret is required on the server to complete sign-in. Please add GOOGLE_CLIENT_SECRET.')
+    } else if (route.query.google_error === 'unverified') {
       message.value = t('Your Google account email is not verified.')
     } else {
       message.value = t('Google sign-in could not be completed. Please try again.')

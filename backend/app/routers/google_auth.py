@@ -232,6 +232,11 @@ async def google_callback(request: Request):
     nonce = request.session.pop("google_nonce", None)
     if client is None:
         return _account_redirect(request, "failed")
+
+    client_secret = os.getenv("GOOGLE_CLIENT_SECRET", "").strip()
+    if not client_secret:
+        return _account_redirect(request, "missing_secret")
+
     try:
         token = await client.authorize_access_token(request)
         claims = token.get("userinfo")
@@ -239,7 +244,9 @@ async def google_callback(request: Request):
             claims = await client.parse_id_token(request, token, nonce=nonce)
         elif not claims:
             claims = await client.parse_id_token(request, token)
-    except Exception:
+    except Exception as exc:
+        import logging
+        logging.error(f"[Google OAuth Error] Failed to authorize access token: {exc}", exc_info=True)
         return _account_redirect(request, "failed")
 
     if not isinstance(claims, dict):
