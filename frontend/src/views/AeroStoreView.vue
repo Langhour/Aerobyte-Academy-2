@@ -275,10 +275,10 @@
 
 
 
-        <!-- Backdrop to close dropdowns when clicking outside -->
+        <!-- Backdrop to close dropdowns when clicking outside (100% transparent, no blur) -->
         <div
           v-if="isSortDropdownOpen || isPriceDropdownOpen"
-          class="fixed inset-0 z-40 bg-black/5 backdrop-blur-[0.5px] cursor-default"
+          class="fixed inset-0 z-40 bg-transparent cursor-default"
           @click="closeDropdowns"
         ></div>
 
