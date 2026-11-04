@@ -321,10 +321,10 @@
                 ? 'bg-rose-600 text-white shadow-sm'
                 : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800'"
             >
-              <Heart class="w-3.5 h-3.5" :class="showFavoritesOnly ? 'fill-white text-white' : (favorites.size > 0 ? 'fill-rose-500 text-rose-500' : '')" />
+              <Heart class="w-3.5 h-3.5" :class="showFavoritesOnly ? 'fill-white text-white' : (favoritesCount > 0 ? 'fill-rose-500 text-rose-500' : '')" />
               <span>{{ t('Favorites') }}</span>
-              <span v-if="favorites.size > 0" class="ml-0.5 px-1.5 py-0.2 rounded-full text-[10px] font-extrabold" :class="showFavoritesOnly ? 'bg-white/20 text-white' : 'bg-rose-500 text-white'">
-                {{ favorites.size }}
+              <span v-if="favoritesCount > 0" class="ml-0.5 px-1.5 py-0.2 rounded-full text-[10px] font-extrabold" :class="showFavoritesOnly ? 'bg-white/20 text-white' : 'bg-rose-500 text-white'">
+                {{ favoritesCount }}
               </span>
             </button>
           </div>
@@ -1596,13 +1596,13 @@
         leave-to-class="opacity-0 scale-90"
       >
         <button
-          v-if="favorites.size > 0"
+          v-if="favoritesCount > 0"
           type="button"
           @click="isWishlistOpen = true"
           class="pointer-events-auto flex items-center gap-2 rounded-full bg-slate-900 text-white px-4 py-3 shadow-2xl hover:bg-slate-800 transition cursor-pointer border border-white/20 active:scale-95 group"
         >
           <Heart class="w-4 h-4 text-rose-500 fill-rose-500 group-hover:scale-110 transition-transform" />
-          <span class="text-xs font-bold">{{ favorites.size }} {{ favorites.size === 1 ? t('in Favorite') : t('in Favorites') }}</span>
+          <span class="text-xs font-bold">{{ favoritesCount }} {{ favoritesCount === 1 ? t('in Favorite') : t('in Favorites') }}</span>
         </button>
       </transition>
 
@@ -1635,6 +1635,7 @@
 
 
 <script setup>
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 
 import {
   Search,
@@ -2025,6 +2026,7 @@ try {
 }
 
 const favorites = ref(new Set(initialFavs))
+const favoritesCount = computed(() => favorites.value.size)
 
 
 
@@ -2709,13 +2711,15 @@ const favoritesList = computed(() => {
 })
 
 function toggleFavorite(productId) {
-  if (favorites.value.has(productId)) {
-    favorites.value.delete(productId)
+  const next = new Set(favorites.value)
+  if (next.has(productId)) {
+    next.delete(productId)
     showToast('Removed from wishlist')
   } else {
-    favorites.value.add(productId)
+    next.add(productId)
     showToast('Saved to your wishlist')
   }
+  favorites.value = next
   persistFavorites()
 }
 
@@ -2724,7 +2728,7 @@ function isFavorite(productId) {
 }
 
 function clearFavorites() {
-  favorites.value.clear()
+  favorites.value = new Set()
   persistFavorites()
   showToast('Cleared all favorites')
 }
