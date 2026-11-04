@@ -98,6 +98,14 @@ export function getGoogleSignInUrl() {
   return `${apiClient.defaults.baseURL}/auth/google/start`
 }
 
+export function getGoogleAuthConfig() {
+  return apiClient.get('/auth/google/config')
+}
+
+export function googleCredentialLogin(credential) {
+  return apiClient.post('/auth/google/credential', { credential })
+}
+
 export function googleDirectLogin(payload) {
   return apiClient.post('/auth/google/direct', payload)
 }

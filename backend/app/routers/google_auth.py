@@ -32,6 +32,19 @@ class GoogleDirectLoginRequest(BaseModel):
     name: Optional[str] = Field(default=None, max_length=120)
 
 
+class GoogleCredentialRequest(BaseModel):
+    credential: str = Field(min_length=10)
+
+
+@router.get("/google/config")
+async def google_config():
+    client_id = os.getenv("GOOGLE_CLIENT_ID", "").strip()
+    return {
+        "configured": bool(client_id and os.getenv("GOOGLE_CLIENT_SECRET", "").strip()),
+        "client_id": client_id,
+    }
+
+
 def _google_client():
     client_id = os.getenv("GOOGLE_CLIENT_ID", "").strip()
     client_secret = os.getenv("GOOGLE_CLIENT_SECRET", "").strip()
@@ -173,6 +186,34 @@ async def google_direct_login(payload: GoogleDirectLoginRequest, request: Reques
             "email": user["email"],
         },
     }
+
+
+@router.post("/google/credential")
+async def google_credential_login(payload: GoogleCredentialRequest, request: Request):
+    token = payload.credential.strip()
+    claims = None
+    try:
+        import httpx
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            resp = await client.get(f"https://oauth2.googleapis.com/tokeninfo?id_token={token}")
+            if resp.status_code == 200:
+                claims = resp.json()
+    except Exception:
+        pass
+
+    if not claims or not isinstance(claims, dict):
+        raise HTTPException(status_code=400, detail="Invalid Google credential token.")
+
+    email = str(claims.get("email", "")).strip().casefold()
+    if not email:
+        raise HTTPException(status_code=400, detail="Google token does not contain an email.")
+
+    name = str(claims.get("name", "")).strip() or email.partition("@")[0].title()
+
+    return await google_direct_login(
+        GoogleDirectLoginRequest(email=email, name=name),
+        request,
+    )
 
 
 @router.get("/google/callback", name="google_callback")
