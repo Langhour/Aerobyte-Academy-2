@@ -331,40 +331,165 @@
 
 
 
-          <!-- Secondary Quick Filters (In Stock Only + Sort) -->
-
-          <div class="flex items-center gap-3 shrink-0 pl-4 border-l border-slate-200 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-400">
-
-            <label class="flex items-center gap-1.5 cursor-pointer select-none">
-
-              <input
-
-                type="checkbox"
-
-                v-model="inStockOnly"
-
-                class="rounded text-slate-900 focus:ring-0 cursor-pointer"
-
-              />
-
-              <span class="font-medium text-[11px] sm:text-xs">{{ t('In Stock Only') }}</span>
-
-            </label>
-
-
-
-            <div class="w-44 sm:w-48">
-              <CustomSelect
-                v-model="sortBy"
-                size="sm"
-                :options="sortOptions"
-                trigger-class="!py-1.5 !px-3 rounded-full border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs font-semibold text-slate-800 dark:text-slate-200 shadow-2xs hover:border-slate-300 dark:hover:border-slate-700"
-                menu-class="w-48 right-0 left-auto"
-              />
-            </div>
-
           </div>
 
+        <!-- Shop.com Quick Filters Row (Exact Match to Reference Screenshot: Sliders, Sort by, On sale, Price, In-stock) -->
+        <div class="mt-4 flex items-center justify-between gap-3 overflow-x-auto no-scrollbar py-1">
+          <div class="flex items-center gap-2 sm:gap-2.5 shrink-0">
+            <!-- 1. Circular Filter Icon Button -->
+            <button
+              type="button"
+              @click="resetFilters"
+              :title="activeFiltersCount > 0 ? t('Clear all filters') : t('Filters')"
+              class="h-9 w-9 sm:h-10 sm:w-10 rounded-full flex items-center justify-center transition-all cursor-pointer relative shrink-0 active:scale-95"
+              :class="activeFiltersCount > 0
+                ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm'
+                : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-750 text-slate-700 dark:text-slate-300 border border-slate-200/70 dark:border-slate-700/70'"
+            >
+              <SlidersHorizontal class="w-4 h-4" />
+              <span
+                v-if="activeFiltersCount > 0"
+                class="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-rose-500 text-white text-[10px] font-extrabold flex items-center justify-center shadow-xs"
+              >
+                {{ activeFiltersCount }}
+              </span>
+            </button>
+
+            <!-- 2. Sort by Dropdown Pill -->
+            <div class="relative filter-dropdown-container">
+              <button
+                type="button"
+                @click.stop="isSortDropdownOpen = !isSortDropdownOpen; isPriceDropdownOpen = false"
+                class="h-9 sm:h-10 px-4 rounded-full text-xs sm:text-[13px] font-semibold flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap active:scale-95 select-none"
+                :class="sortBy !== 'featured'
+                  ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm'
+                  : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-750 text-slate-700 dark:text-slate-200 border border-slate-200/70 dark:border-slate-700/70'"
+              >
+                <span>{{ sortLabel }}</span>
+                <ChevronDown class="w-3.5 h-3.5 transition-transform duration-200" :class="{ 'rotate-180': isSortDropdownOpen }" />
+              </button>
+
+              <!-- Sort Dropdown Menu -->
+              <transition
+                enter-active-class="transition ease-out duration-150"
+                enter-from-class="transform opacity-0 scale-95"
+                enter-to-class="transform opacity-100 scale-100"
+                leave-active-class="transition ease-in duration-100"
+                leave-from-class="transform opacity-100 scale-100"
+                leave-to-class="transform opacity-0 scale-95"
+              >
+                <div
+                  v-if="isSortDropdownOpen"
+                  class="absolute top-full left-0 mt-2 z-30 w-52 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl p-1.5 space-y-0.5"
+                >
+                  <button
+                    v-for="opt in [
+                      { value: 'featured', label: t('Featured') },
+                      { value: 'best-selling', label: t('Best Selling') },
+                      { value: 'price-low', label: t('Price: Low to High') },
+                      { value: 'price-high', label: t('Price: High to Low') },
+                      { value: 'rating', label: t('Highest Rated') }
+                    ]"
+                    :key="opt.value"
+                    type="button"
+                    @click="sortBy = opt.value; isSortDropdownOpen = false"
+                    class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold flex items-center justify-between transition cursor-pointer"
+                    :class="sortBy === opt.value
+                      ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900'
+                      : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'"
+                  >
+                    <span>{{ opt.label }}</span>
+                    <Check v-if="sortBy === opt.value" class="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </transition>
+            </div>
+
+            <!-- 3. On sale Toggle Pill -->
+            <button
+              type="button"
+              @click="onSaleOnly = !onSaleOnly"
+              class="h-9 sm:h-10 px-4 rounded-full text-xs sm:text-[13px] font-semibold flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap active:scale-95 select-none"
+              :class="onSaleOnly
+                ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm border border-slate-900 dark:border-white font-bold'
+                : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-750 text-slate-700 dark:text-slate-200 border border-slate-200/70 dark:border-slate-700/70'"
+            >
+              <span>{{ t('On sale') }}</span>
+            </button>
+
+            <!-- 4. Price Dropdown Pill -->
+            <div class="relative filter-dropdown-container">
+              <button
+                type="button"
+                @click.stop="isPriceDropdownOpen = !isPriceDropdownOpen; isSortDropdownOpen = false"
+                class="h-9 sm:h-10 px-4 rounded-full text-xs sm:text-[13px] font-semibold flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap active:scale-95 select-none"
+                :class="selectedPriceRange !== 'all'
+                  ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm font-bold'
+                  : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-750 text-slate-700 dark:text-slate-200 border border-slate-200/70 dark:border-slate-700/70'"
+              >
+                <span>{{ priceLabel }}</span>
+                <ChevronDown class="w-3.5 h-3.5 transition-transform duration-200" :class="{ 'rotate-180': isPriceDropdownOpen }" />
+              </button>
+
+              <!-- Price Dropdown Menu -->
+              <transition
+                enter-active-class="transition ease-out duration-150"
+                enter-from-class="transform opacity-0 scale-95"
+                enter-to-class="transform opacity-100 scale-100"
+                leave-active-class="transition ease-in duration-100"
+                leave-from-class="transform opacity-100 scale-100"
+                leave-to-class="transform opacity-0 scale-95"
+              >
+                <div
+                  v-if="isPriceDropdownOpen"
+                  class="absolute top-full left-0 mt-2 z-30 w-44 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl p-1.5 space-y-0.5"
+                >
+                  <button
+                    v-for="opt in [
+                      { value: 'all', label: t('All Prices') },
+                      { value: 'under-25', label: t('Under $25') },
+                      { value: '25-50', label: '$25 - $50' },
+                      { value: 'over-50', label: t('Over $50') }
+                    ]"
+                    :key="opt.value"
+                    type="button"
+                    @click="selectedPriceRange = opt.value; isPriceDropdownOpen = false"
+                    class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold flex items-center justify-between transition cursor-pointer"
+                    :class="selectedPriceRange === opt.value
+                      ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900'
+                      : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'"
+                  >
+                    <span>{{ opt.label }}</span>
+                    <Check v-if="selectedPriceRange === opt.value" class="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </transition>
+            </div>
+
+            <!-- 5. In-stock Toggle Pill -->
+            <button
+              type="button"
+              @click="inStockOnly = !inStockOnly"
+              class="h-9 sm:h-10 px-4 rounded-full text-xs sm:text-[13px] font-semibold flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap active:scale-95 select-none"
+              :class="inStockOnly
+                ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm border border-slate-900 dark:border-white font-bold'
+                : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-750 text-slate-700 dark:text-slate-200 border border-slate-200/70 dark:border-slate-700/70'"
+            >
+              <span>{{ t('In-stock') }}</span>
+            </button>
+          </div>
+
+          <!-- Active Filters Summary & Reset -->
+          <div v-if="activeFiltersCount > 0" class="flex items-center gap-2 shrink-0 text-xs">
+            <button
+              type="button"
+              @click="resetFilters"
+              class="text-xs font-semibold text-slate-500 hover:text-slate-900 dark:hover:text-white transition cursor-pointer underline flex items-center gap-1"
+            >
+              <X class="w-3.5 h-3.5" />
+              <span>{{ t('Clear all') }} ({{ activeFiltersCount }})</span>
+            </button>
+          </div>
         </div>
 
       </div>
@@ -525,16 +650,16 @@
             <!-- Clean Price (line 4) -->
 
             <div class="pt-0.5 flex items-baseline gap-1.5 text-xs sm:text-sm font-bold text-slate-900 dark:text-white">
-
               <span>${{ item.priceUsd.toFixed(2) }}</span>
-
-              <span class="text-[10px] sm:text-[11px] font-normal text-slate-400">
-
-                · {{ (item.priceUsd * 4100).toLocaleString() }}៛
-
+              <span v-if="item.originalPriceUsd" class="text-[11px] text-slate-400 line-through font-normal">
+                ${{ item.originalPriceUsd.toFixed(2) }}
               </span>
-
-            </div>
+              <span v-if="item.onSale" class="text-[10px] font-black text-rose-500 uppercase">
+                {{ t('Sale') }}
+              </span>
+              <span class="text-[10px] sm:text-[11px] font-normal text-slate-400">
+                · {{ (item.priceUsd * 4100).toLocaleString() }}៛
+              </span></div>
 
           </div>
 
@@ -1511,35 +1636,25 @@
 
 <script setup>
 
-import { ref, computed, onMounted, onUnmounted } from 'vue'
-
 import {
-
   Search,
-
   X,
-
   ShoppingBag,
-
   ShoppingCart,
-
   Heart,
-
   Plus,
-
   Trash2,
-
   CheckCircle2,
-
   ChevronLeft,
-
   ChevronRight,
-  Eye
-
+  SlidersHorizontal,
+  ChevronDown,
+  Check
 } from 'lucide-vue-next'
 
 import { useI18n } from '../i18n'
 import CustomSelect from '../components/common/CustomSelect.vue'
+import { accountService } from '../services/api'
 
 
 
@@ -1780,17 +1895,17 @@ function selectSlideCategory(cat) {
 
 
 onMounted(() => {
-
   startHeroCarousel()
-
+  if (typeof window !== 'undefined') {
+    window.addEventListener('click', handleWindowClick)
+  }
 })
 
-
-
 onUnmounted(() => {
-
   stopHeroCarousel()
-
+  if (typeof window !== 'undefined') {
+    window.removeEventListener('click', handleWindowClick)
+  }
 })
 
 
@@ -1798,14 +1913,49 @@ onUnmounted(() => {
 
 
 // Filters
-
 const searchQuery = ref('')
-
 const selectedCategory = ref('All')
-
 const inStockOnly = ref(false)
-
+const onSaleOnly = ref(false)
+const selectedPriceRange = ref('all')
 const sortBy = ref('featured')
+const isSortDropdownOpen = ref(false)
+const isPriceDropdownOpen = ref(false)
+
+const activeFiltersCount = computed(() => {
+  let count = 0
+  if (inStockOnly.value) count++
+  if (onSaleOnly.value) count++
+  if (selectedPriceRange.value !== 'all') count++
+  if (sortBy.value !== 'featured') count++
+  return count
+})
+
+const sortLabel = computed(() => {
+  if (sortBy.value === 'price-low') return t('Price: Low to High')
+  if (sortBy.value === 'price-high') return t('Price: High to Low')
+  if (sortBy.value === 'rating') return t('Highest Rated')
+  if (sortBy.value === 'best-selling') return t('Best Selling')
+  return t('Sort by')
+})
+
+const priceLabel = computed(() => {
+  if (selectedPriceRange.value === 'under-25') return t('Under $25')
+  if (selectedPriceRange.value === '25-50') return '$25 - $50'
+  if (selectedPriceRange.value === 'over-50') return t('Over $50')
+  return t('Price')
+})
+
+function closeDropdowns() {
+  isSortDropdownOpen.value = false
+  isPriceDropdownOpen.value = false
+}
+
+function handleWindowClick(e) {
+  if (!e.target.closest || !e.target.closest('.filter-dropdown-container')) {
+    closeDropdowns()
+  }
+}
 
 const sortOptions = computed(() => [
   { value: 'featured', label: t('Featured') },
@@ -1955,6 +2105,8 @@ const products = [
     category: 'Student Lab Kits',
 
     priceUsd: 45.0,
+    originalPriceUsd: 55.0,
+    onSale: true,
 
     rating: 5.0,
 
@@ -2001,6 +2153,8 @@ const products = [
     category: 'Student Lab Kits',
 
     priceUsd: 35.0,
+    originalPriceUsd: 42.0,
+    onSale: true,
 
     rating: 4.9,
 
@@ -2043,6 +2197,8 @@ const products = [
     category: 'FPV Drone Hardware',
 
     priceUsd: 29.0,
+    originalPriceUsd: 36.0,
+    onSale: true,
 
     rating: 4.8,
 
@@ -2463,16 +2619,14 @@ const products = [
 
 
 function resetFilters() {
-
   searchQuery.value = ''
-
   selectedCategory.value = 'All'
-
   inStockOnly.value = false
-
+  onSaleOnly.value = false
+  selectedPriceRange.value = 'all'
   sortBy.value = 'featured'
   showFavoritesOnly.value = false
-
+  closeDropdowns()
 }
 
 
@@ -2511,30 +2665,34 @@ const filteredProducts = computed(() => {
 
 
 
-  if (inStockOnly.value) {
-
+    if (inStockOnly.value) {
     list = list.filter(p => p.inStock)
+  }
 
+  if (onSaleOnly.value) {
+    list = list.filter(p => p.onSale || (p.originalPriceUsd && p.originalPriceUsd > p.priceUsd))
+  }
+
+  if (selectedPriceRange.value === 'under-25') {
+    list = list.filter(p => p.priceUsd < 25)
+  } else if (selectedPriceRange.value === '25-50') {
+    list = list.filter(p => p.priceUsd >= 25 && p.priceUsd <= 50)
+  } else if (selectedPriceRange.value === 'over-50') {
+    list = list.filter(p => p.priceUsd > 50)
   }
 
   if (showFavoritesOnly.value) {
     list = list.filter(p => favorites.value.has(p.id))
   }
 
-
-
   if (sortBy.value === 'price-low') {
-
     list.sort((a, b) => a.priceUsd - b.priceUsd)
-
   } else if (sortBy.value === 'price-high') {
-
     list.sort((a, b) => b.priceUsd - a.priceUsd)
-
   } else if (sortBy.value === 'rating') {
-
-    list.sort((a, b) => b.rating - a.rating)
-
+    list.sort((a, b) => (b.rating || 0) - (a.rating || 0))
+  } else if (sortBy.value === 'best-selling') {
+    list.sort((a, b) => (parseFloat(b.reviewsCount) || 0) - (parseFloat(a.reviewsCount) || 0))
   }
 
 
@@ -2737,7 +2895,7 @@ function closeOrderModal() {
 
 
 
-function submitOrder() {
+async function submitOrder() {
   const newOrder = {
     id: 'AERO-' + Math.floor(100000 + Math.random() * 900000),
     date: new Date().toISOString(),
@@ -2755,6 +2913,26 @@ function submitOrder() {
     total: cartTotalUsd.value,
     status: 'confirmed'
   }
+
+  // 1. Save to database via API
+  try {
+    await accountService.createStoreOrder({
+      id: newOrder.id,
+      name: orderForm.value.name,
+      phone: orderForm.value.phone,
+      telegram: orderForm.value.telegram,
+      address: orderForm.value.address,
+      fulfillment: selectedDeliveryMethod.value,
+      items: newOrder.items,
+      subtotal: cartSubtotalUsd.value,
+      delivery_fee: deliveryFeeUsd.value,
+      total: cartTotalUsd.value,
+    })
+  } catch (err) {
+    console.warn('Backend order storage fallback to localStorage:', err)
+  }
+
+  // 2. Also keep in localStorage for immediate sync & offline resilience
   try {
     const existing = JSON.parse(localStorage.getItem('aerobyte_store_orders') || '[]')
     existing.unshift(newOrder)

@@ -1008,16 +1008,59 @@ const activeSection = ref('profile')
 const storeOrders = ref([])
 const ordersLoading = ref(false)
 
-function loadStoreOrders() {
+async function loadStoreOrders() {
   ordersLoading.value = true
+  try {
+    // 1. Fetch persistent orders from database
+    const { data } = await accountService.getUserOrders()
+    const serverOrders = Array.isArray(data) ? data : []
+
+    // 2. Check if there are local orders created before login that can be synced
+    try {
+      const raw = localStorage.getItem('aerobyte_store_orders')
+      const localOrders = raw ? JSON.parse(raw) : []
+      const serverOrderIds = new Set(serverOrders.map((o) => o.id))
+      for (const localOrder of localOrders) {
+        if (!serverOrderIds.has(localOrder.id)) {
+          try {
+            await accountService.createStoreOrder({
+              id: localOrder.id,
+              name: localOrder.customer?.name || localOrder.name || account.value?.name || 'Customer',
+              phone: localOrder.customer?.phone || localOrder.phone || account.value?.phone || '',
+              telegram: localOrder.customer?.telegram || localOrder.telegram || '',
+              address: localOrder.customer?.address || localOrder.address || '',
+              fulfillment: localOrder.fulfillment || 'pickup',
+              items: localOrder.items || [],
+              subtotal: localOrder.subtotal || 0,
+              delivery_fee: localOrder.delivery_fee || localOrder.deliveryFee || 0,
+              discount: localOrder.discount || 0,
+              total: localOrder.total || 0,
+            })
+            serverOrders.unshift(localOrder)
+          } catch (syncErr) {
+            console.warn('Could not sync local order to database:', syncErr)
+          }
+        }
+      }
+    } catch (_) {}
+
+    storeOrders.value = serverOrders
+    try {
+      localStorage.setItem('aerobyte_store_orders', JSON.stringify(serverOrders))
+    } catch {}
+    return
+  } catch (e) {
+    console.warn('Could not fetch store orders from server, using local cache:', e)
+  } finally {
+    ordersLoading.value = false
+  }
+
   try {
     const raw = localStorage.getItem('aerobyte_store_orders')
     storeOrders.value = raw ? JSON.parse(raw) : []
   } catch (e) {
     console.error('Failed to parse store orders', e)
     storeOrders.value = []
-  } finally {
-    ordersLoading.value = false
   }
 }
 
