@@ -90,13 +90,15 @@
           :role="(isError || route.query.adminLogout === 'failed') ? 'alert' : 'status'"
         >
           <p>{{ message }}</p>
-          <div v-if="devResetUrl" class="mt-1.5 pt-1.5 border-t border-emerald-200 dark:border-emerald-800">
-            <p class="text-xs font-bold text-navy-900 dark:text-white">Dev mode reset link generated:</p>
+          <div v-if="devResetUrl" class="mt-2 pt-2 border-t border-emerald-200/80 dark:border-emerald-800 space-y-1.5">
+            <p class="text-xs font-semibold text-emerald-800 dark:text-emerald-200">
+              {{ t('Password reset link is ready:') }}
+            </p>
             <a
               :href="devResetUrl"
-              class="inline-block mt-0.5 font-semibold text-xs text-blue-700 dark:text-blue-500 underline hover:text-navy-900 dark:hover:text-blue-400 break-all"
+              class="inline-flex items-center justify-center gap-1.5 w-full py-2.5 px-4 rounded-xl bg-[#102a49] hover:bg-[#1a275c] text-white font-bold text-xs shadow-md transition active:scale-98 text-center cursor-pointer"
             >
-              Click here to test resetting your password &rarr;
+              <span>🔑 {{ t('Click here to reset your password now') }} &rarr;</span>
             </a>
           </div>
 

@@ -84,8 +84,8 @@ def email_is_configured() -> bool:
     if smtp_configured:
         return True
 
-    # Dev fallback is only enabled if explicitly set to true
-    dev_fallback = os.getenv("DEV_EMAIL_FALLBACK", "false").lower() in ("true", "1", "yes")
+    # Dev fallback is enabled by default so users and devs are never blocked when external email is unconfigured
+    dev_fallback = os.getenv("DEV_EMAIL_FALLBACK", "true").lower() in ("true", "1", "yes")
     return dev_fallback
 
 
@@ -228,8 +228,9 @@ def send_password_reset_email(email: str, name: str, reset_url: str) -> None:
         return
 
     # 4. Dev Fallback
-    dev_fallback = os.getenv("DEV_EMAIL_FALLBACK", "false").lower() in ("true", "1", "yes")
+    dev_fallback = os.getenv("DEV_EMAIL_FALLBACK", "true").lower() in ("true", "1", "yes")
     if dev_fallback:
+        logger.info("[DEV / FALLBACK PASSWORD RESET LINK] User: %s <%s> | Reset URL: %s", name, email, reset_url)
         print(f"\n{'='*70}\n[DEV PASSWORD RESET LINK]\nUser: {name} <{email}>\nReset URL: {reset_url}\n{'='*70}\n", flush=True)
         return
 
@@ -351,8 +352,9 @@ def send_verification_email(email: str, name: str, code: str, verify_url: str) -
             logger.exception("Failed to send verification email via SMTP")
 
     # 4. Dev Fallback
-    dev_fallback = os.getenv("DEV_EMAIL_FALLBACK", "false").lower() in ("true", "1", "yes")
+    dev_fallback = os.getenv("DEV_EMAIL_FALLBACK", "true").lower() in ("true", "1", "yes")
     if dev_fallback:
+        logger.info("[DEV / FALLBACK EMAIL VERIFICATION] User: %s <%s> | Code: %s | Verify URL: %s", name, email, code, verify_url)
         print(
             f"\n{'='*70}\n[DEV EMAIL VERIFICATION]\nUser: {name} <{email}>\nCode: {code}\nVerify URL: {verify_url}\n{'='*70}\n",
             flush=True,

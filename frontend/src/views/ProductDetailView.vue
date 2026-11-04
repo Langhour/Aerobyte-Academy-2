@@ -33,11 +33,17 @@
         <div class="flex items-center gap-2">
           <button
             type="button"
-            @click="product && toggleFavorite(product.id)"
-            :title="isSaved ? t('Remove from Wishlist') : t('Save to Wishlist')"
-            class="h-9 w-9 rounded-full border border-slate-200 dark:border-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition cursor-pointer"
+            @click="isWishlistOpen = true"
+            :title="t('Favorites & Wishlist')"
+            class="relative h-9 w-9 rounded-full border border-slate-200 dark:border-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition cursor-pointer"
           >
-            <Heart class="w-4 h-4" :class="{ 'fill-red-500 text-red-500': isSaved }" />
+            <Heart class="w-4 h-4 text-slate-700 dark:text-slate-200" />
+            <span
+              v-if="favoritesCount > 0"
+              class="absolute -top-1 -right-1 h-4 min-w-[16px] px-1 rounded-full bg-rose-500 text-white text-[9px] font-extrabold flex items-center justify-center shadow-xs"
+            >
+              {{ favoritesCount }}
+            </span>
           </button>
 
           <button
@@ -810,6 +816,129 @@
       </div>
     </div>
 
+    <!-- Slide-Over Favorites / Wishlist Drawer (Matches User Screenshot!) -->
+    <div
+      v-if="isWishlistOpen"
+      class="fixed inset-0 z-50 overflow-hidden"
+    >
+      <div
+        class="absolute inset-0 bg-slate-950/50 backdrop-blur-xs transition-opacity"
+        @click="isWishlistOpen = false"
+      ></div>
+
+      <div class="fixed inset-y-0 right-0 max-w-full flex pl-10">
+        <div class="w-screen max-w-md bg-white dark:bg-slate-900 shadow-2xl flex flex-col justify-between border-l border-slate-200 dark:border-slate-800">
+          <!-- Drawer Header -->
+          <div class="p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <Heart class="w-5 h-5 text-rose-500 fill-rose-500" />
+              <div>
+                <h3 class="text-sm font-bold text-slate-900 dark:text-white">{{ t('Favorites & Wishlist') }}</h3>
+                <p class="text-[11px] text-slate-400">{{ favoritesList.length }} {{ t('saved item(s)') }}</p>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              @click="isWishlistOpen = false"
+              class="p-2 text-slate-400 hover:text-slate-700 dark:hover:text-white cursor-pointer"
+            >
+              <X class="w-5 h-5" />
+            </button>
+          </div>
+
+          <!-- Drawer Body: Empty or Items List -->
+          <div class="flex-1 overflow-y-auto p-5 space-y-4">
+            <div v-if="favoritesList.length === 0" class="text-center py-20">
+              <div class="w-16 h-16 rounded-full bg-rose-50 dark:bg-rose-950/40 text-rose-500 flex items-center justify-center mx-auto mb-3">
+                <Heart class="w-8 h-8" />
+              </div>
+              <h4 class="text-sm font-bold text-slate-900 dark:text-white">{{ t('Your Wishlist is Empty') }}</h4>
+              <p class="text-xs text-slate-400 mt-1 max-w-xs mx-auto">
+                {{ t('Explore our hardware catalog and click the heart icon on any product to save it here.') }}
+              </p>
+              <button
+                type="button"
+                @click="isWishlistOpen = false"
+                class="mt-4 px-4 py-2 rounded-full bg-slate-900 text-white dark:bg-white dark:text-slate-900 text-xs font-bold transition hover:opacity-90 cursor-pointer"
+              >
+                {{ t('Explore Products') }}
+              </button>
+            </div>
+
+            <div v-else class="space-y-3">
+              <div
+                v-for="item in favoritesList"
+                :key="item.id"
+                class="flex items-center gap-3 p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 hover:border-slate-200 dark:hover:border-slate-700 transition"
+              >
+                <div class="h-14 w-14 rounded-xl bg-white dark:bg-slate-800 flex items-center justify-center text-2xl shrink-0 border border-slate-200/60 dark:border-slate-700/60">
+                  {{ item.icon }}
+                </div>
+
+                <div class="flex-1 min-w-0">
+                  <div class="text-[10px] text-[#1a275c] dark:text-sky-400 font-semibold">{{ item.brand || item.category }}</div>
+                  <h4 class="text-xs font-bold text-slate-900 dark:text-white truncate">{{ item.name }}</h4>
+                  <div class="text-xs font-bold text-slate-900 dark:text-white mt-0.5">
+                    ${{ item.priceUsd.toFixed(2) }}
+                    <span class="text-[10px] font-normal text-slate-400 ml-1">
+                      (៛ {{ (item.priceUsd * 4100).toLocaleString() }})
+                    </span>
+                  </div>
+
+                  <div class="flex items-center gap-2 mt-2">
+                    <button
+                      type="button"
+                      @click="addToCart(item)"
+                      class="px-2.5 py-1 rounded-full bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 dark:text-slate-900 text-white text-[11px] font-bold flex items-center gap-1 transition cursor-pointer"
+                    >
+                      <ShoppingBag class="w-3 h-3" />
+                      <span>{{ t('Add to Bag') }}</span>
+                    </button>
+                    <RouterLink
+                      :to="`/store/${item.id}`"
+                      @click="isWishlistOpen = false"
+                      class="text-[11px] font-semibold text-slate-500 hover:text-slate-900 dark:hover:text-white"
+                    >
+                      {{ t('Details') }}
+                    </RouterLink>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  @click="toggleFavorite(item.id)"
+                  :title="t('Remove from Wishlist')"
+                  class="p-2 text-rose-500 hover:text-rose-700 hover:bg-rose-50 dark:hover:bg-rose-950/50 rounded-lg transition cursor-pointer shrink-0"
+                >
+                  <Trash2 class="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Drawer Footer -->
+          <div v-if="favoritesList.length > 0" class="p-5 border-t border-slate-100 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-850 space-y-2">
+            <button
+              type="button"
+              @click="addAllFavoritesToCart"
+              class="w-full rounded-full bg-[#102a49] hover:bg-[#1a275c] dark:bg-white dark:hover:bg-slate-100 dark:text-slate-900 text-white font-bold py-3 px-4 text-xs shadow-sm transition flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <ShoppingBag class="w-4 h-4" />
+              <span>{{ t('Add All to Bag') }}</span>
+            </button>
+            <button
+              type="button"
+              @click="clearFavorites"
+              class="w-full rounded-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-750 text-slate-600 dark:text-slate-300 font-bold py-2.5 px-4 text-xs transition cursor-pointer text-center"
+            >
+              {{ t('Clear All Favorites') }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- ==========================================
          CONTACT FELLOW MODAL (Matches user screenshot)
          ========================================== -->
@@ -1107,7 +1236,7 @@ import {
   Copy
 } from 'lucide-vue-next'
 import CustomSelect from '../components/common/CustomSelect.vue'
-import { getProductById, getRelatedProducts } from '../data/products'
+import { products, getProductById, getRelatedProducts } from '../data/products'
 import { useStoreCart } from '../composables/useStoreCart'
 
 const route = useRoute()
@@ -1118,6 +1247,7 @@ const { t } = useI18n()
 const {
   isCartOpen,
   cartItems,
+  favorites,
   addToCart,
   updateCartQuantity,
   removeFromCart,
@@ -1129,6 +1259,37 @@ const {
   toastMessage,
   showToast
 } = useStoreCart()
+
+const isWishlistOpen = ref(false)
+
+const favoritesList = computed(() => {
+  return products.filter(p => favorites.value && favorites.value.has(p.id))
+})
+
+const favoritesCount = computed(() => {
+  return favorites.value ? favorites.value.size : 0
+})
+
+function clearFavorites() {
+  if (favorites.value) {
+    favorites.value.clear()
+    favorites.value = new Set()
+  }
+  try {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('aerobyte_store_favs', JSON.stringify([]))
+    }
+  } catch {}
+  showToast(t('Cleared all favorites'))
+}
+
+function addAllFavoritesToCart() {
+  if (favoritesList.value.length === 0) return
+  favoritesList.value.forEach(item => {
+    addToCart(item)
+  })
+  showToast(`Added ${favoritesList.value.length} favorite item(s) to bag`)
+}
 
 // Fetch product by route param :id
 // Contact Fellow Modal State & Copy Helper

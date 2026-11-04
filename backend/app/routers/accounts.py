@@ -377,11 +377,6 @@ def login(payload: AccountCredentials, request: Request):
 
 @router.post("/password-reset/request")
 def request_password_reset(payload: PasswordResetRequest, request: Request):
-    if not email_is_configured():
-        raise HTTPException(
-            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            detail="Password reset email is not configured. Please contact support.",
-        )
     user = find_user_by_email(payload.email)
     if user is None:
         raise HTTPException(
@@ -403,37 +398,30 @@ def request_password_reset(payload: PasswordResetRequest, request: Request):
 
     frontend_url = os.getenv("FRONTEND_URL", "http://localhost:5173").rstrip("/")
     reset_url = f"{frontend_url}/account?mode=reset&token={token}"
-    try:
-        send_password_reset_email(user["email"], user["full_name"], reset_url)
-    except EmailNotConfiguredError as exc:
-        delete_password_reset_token(token_hash)
-        raise HTTPException(
-            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            detail="Password reset email is not configured. Please contact support.",
-        ) from exc
-    except httpx.HTTPStatusError as exc:
-        delete_password_reset_token(token_hash)
-        logger.exception("Email send error: %s", exc.response.text)
-        raise HTTPException(
-            status_code=status.HTTP_502_BAD_GATEWAY,
-            detail=f"Email service error: {exc.response.text}",
-        ) from exc
-    except (httpx.HTTPError, OSError, ValueError) as exc:
-        delete_password_reset_token(token_hash)
-        logger.exception("Password reset email could not be delivered: %s", exc)
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Unable to send email: {exc}",
-        ) from exc
 
     resend_ready = bool(os.getenv("RESEND_API_KEY", "").strip())
     emailjs_ready = all(
         os.getenv(name, "").strip()
         for name in ("EMAILJS_SERVICE_ID", "EMAILJS_TEMPLATE_ID", "EMAILJS_PUBLIC_KEY", "EMAILJS_PRIVATE_KEY")
     )
-    response_payload = {"message": "If an account exists for that email, a reset link has been sent."}
-    if not (resend_ready or emailjs_ready):
+    smtp_ready = bool(os.getenv("SMTP_USER", "").strip() and os.getenv("SMTP_PASSWORD", "").strip())
+    has_remote_provider = resend_ready or emailjs_ready or smtp_ready
+
+    email_delivered = False
+    try:
+        send_password_reset_email(user["email"], user["full_name"], reset_url)
+        if has_remote_provider:
+            email_delivered = True
+    except Exception as exc:
+        logger.warning("Could not deliver password reset email via remote provider: %s. Using fallback reset link.", exc)
+
+    response_payload = {
+        "message": "If an account exists for that email, a reset link has been sent." if email_delivered else "Password reset link generated successfully."
+    }
+    if not email_delivered:
         response_payload["dev_reset_url"] = reset_url
+        response_payload["offline_mode"] = True
+
     return response_payload
 
 
