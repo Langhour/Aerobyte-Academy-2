@@ -424,12 +424,12 @@
                   @click.stop
                   class="absolute top-full left-0 mt-2 z-50 w-72 sm:w-80 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl p-5 space-y-4"
                 >
-                  <!-- Purple Dual Slider -->
+                  <!-- AeroByte Dual Slider -->
                   <div class="space-y-2">
                     <div class="relative w-full h-8 flex items-center select-none my-1">
                       <div class="absolute left-0 right-0 h-1.5 rounded-full bg-slate-200 dark:bg-slate-700 pointer-events-none"></div>
                       <div
-                        class="absolute h-1.5 rounded-full bg-indigo-600 pointer-events-none"
+                        class="absolute h-1.5 rounded-full bg-navy-900 dark:bg-sky-500 pointer-events-none"
                         :style="{
                           left: `${(priceMin / 100) * 100}%`,
                           right: `${100 - (priceMax / 100) * 100}%`
@@ -457,7 +457,7 @@
 
                     <!-- Min & Max Input Boxes -->
                     <div class="flex items-center gap-3">
-                      <div class="flex-1 flex items-center justify-center rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/70 px-3 py-2 focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500">
+                      <div class="flex-1 flex items-center justify-center rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/70 px-3 py-2 focus-within:border-navy-800 focus-within:ring-1 focus-within:ring-navy-800 dark:focus-within:border-sky-400 dark:focus-within:ring-sky-400">
                         <span class="text-xs text-slate-400 mr-1">$</span>
                         <input
                           type="number"
@@ -469,7 +469,7 @@
                         />
                       </div>
                       <span class="text-slate-400 font-bold">—</span>
-                      <div class="flex-1 flex items-center justify-center rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/70 px-3 py-2 focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500">
+                      <div class="flex-1 flex items-center justify-center rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/70 px-3 py-2 focus-within:border-navy-800 focus-within:ring-1 focus-within:ring-navy-800 dark:focus-within:border-sky-400 dark:focus-within:ring-sky-400">
                         <span class="text-xs text-slate-400 mr-1">$</span>
                         <input
                           type="number"
@@ -686,7 +686,7 @@
                 <div class="relative w-full h-8 flex items-center select-none my-1">
                   <div class="absolute left-0 right-0 h-1.5 rounded-full bg-slate-200 dark:bg-slate-700"></div>
                   <div
-                    class="absolute h-1.5 rounded-full bg-indigo-600"
+                    class="absolute h-1.5 rounded-full bg-navy-900 dark:bg-sky-500"
                     :style="{
                       left: `${(priceMin / 100) * 100}%`,
                       right: `${100 - (priceMax / 100) * 100}%`
@@ -890,7 +890,7 @@
               :to="`/store/${item.id}`"
 
 
-              class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white line-clamp-1 hover:text-indigo-600 dark:hover:text-indigo-400 transition cursor-pointer block"
+              class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white line-clamp-1 hover:text-navy-600 dark:hover:text-sky-400 transition cursor-pointer block"
 
             >
 
@@ -3341,7 +3341,7 @@ const cartTelegramCheckoutLink = computed(() => {
   width: 18px;
   height: 18px;
   border-radius: 9999px;
-  background-color: #6366f1;
+  background-color: #102a49;
   border: 2px solid #ffffff;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
   cursor: pointer;
@@ -3355,7 +3355,7 @@ const cartTelegramCheckoutLink = computed(() => {
   width: 18px;
   height: 18px;
   border-radius: 9999px;
-  background-color: #6366f1;
+  background-color: #102a49;
   border: 2px solid #ffffff;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
   cursor: pointer;

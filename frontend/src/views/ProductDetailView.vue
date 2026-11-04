@@ -6,7 +6,7 @@
         <nav class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 truncate">
           <RouterLink
             to="/store"
-            class="inline-flex items-center gap-1.5 font-bold text-slate-700 dark:text-slate-200 hover:text-indigo-600 dark:hover:text-indigo-400 transition"
+            class="inline-flex items-center gap-1.5 font-bold text-slate-700 dark:text-slate-200 hover:text-navy-600 dark:hover:text-sky-400 transition"
           >
             <ChevronLeft class="w-4 h-4" />
             <span>{{ t('Back to Store') }}</span>
@@ -242,7 +242,7 @@
             <button
               type="button"
               @click="handleAddToCart"
-              class="w-full py-4 rounded-full bg-[#5046E5] hover:bg-[#4338CA] text-white font-extrabold text-sm tracking-wide shadow-lg hover:shadow-indigo-500/25 active:scale-[0.99] transition-all cursor-pointer flex items-center justify-center gap-2"
+              class="w-full py-4 rounded-full bg-navy-900 hover:bg-navy-800 text-white font-extrabold text-sm tracking-wide shadow-lg hover:shadow-navy-900/25 active:scale-[0.99] transition-all cursor-pointer flex items-center justify-center gap-2"
             >
               <ShoppingBag class="w-4 h-4" />
               <span>{{ t('Add to cart') }}</span>
@@ -713,7 +713,7 @@
           </div>
           <RouterLink
             to="/store"
-            class="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline"
+            class="text-xs font-bold text-navy-800 dark:text-sky-400 hover:underline"
           >
             {{ t('View all products →') }}
           </RouterLink>
@@ -733,7 +733,7 @@
             </div>
             <div class="mt-2.5 px-0.5 space-y-0.5">
               <div class="text-[10px] text-slate-400 font-medium truncate">{{ rel.brand }}</div>
-              <h4 class="text-xs font-bold text-slate-900 dark:text-white truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-400">
+              <h4 class="text-xs font-bold text-slate-900 dark:text-white truncate group-hover:text-navy-600 dark:group-hover:text-sky-400">
                 {{ rel.name }}
               </h4>
               <div class="text-xs font-black text-slate-900 dark:text-white">
