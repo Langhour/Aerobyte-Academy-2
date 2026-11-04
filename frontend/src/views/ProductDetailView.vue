@@ -1,7 +1,19 @@
 <template>
-  <div class="min-h-screen bg-white dark:bg-slate-950 transition-colors pb-24">
+  <div class="relative isolate min-h-screen bg-slate-50/70 dark:bg-slate-950 transition-colors pb-24">
+    <!-- Ambient Tech Hardware Background Grid & Glows -->
+    <div class="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+      <!-- Top subtle radial glow (AeroByte Navy & Sky) -->
+      <div class="absolute -top-32 left-1/2 -translate-x-1/2 w-[950px] h-[540px] rounded-full bg-gradient-to-b from-[#1a275c]/10 via-sky-500/5 to-transparent blur-3xl dark:from-sky-500/10 dark:via-[#1a275c]/15 dark:to-transparent"></div>
+      
+      <!-- Ambient soft side blooms -->
+      <div class="absolute top-96 -right-32 w-80 h-80 rounded-full bg-indigo-500/5 dark:bg-indigo-500/10 blur-3xl"></div>
+      <div class="absolute top-[850px] -left-32 w-80 h-80 rounded-full bg-sky-500/5 dark:bg-sky-500/10 blur-3xl"></div>
+      
+      <!-- Subtle Tech Dot/Grid Mesh (Hardware / Maker Lab aesthetic) -->
+      <div class="absolute inset-0 bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] dark:bg-[radial-gradient(#334155_1px,transparent_1px)] [background-size:24px_24px] opacity-40 dark:opacity-25 [mask-image:radial-gradient(ellipse_75%_50%_at_50%_0%,#000_60%,transparent_100%)]"></div>
+    </div>
     <!-- Top Breadcrumb & Back Bar -->
-    <div class="border-b border-slate-100 dark:border-slate-800/80 bg-white dark:bg-slate-950 sticky top-0 z-30 backdrop-blur-md bg-white/90 dark:bg-slate-950/90">
+    <div class="border-b border-slate-200/70 dark:border-slate-800/80 sticky top-0 z-30 backdrop-blur-md bg-white/80 dark:bg-slate-950/80">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
         <nav class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 truncate">
           <RouterLink
@@ -78,7 +90,7 @@
               :key="idx"
               type="button"
               @click="activeGalleryIdx = idx"
-              class="relative h-16 w-16 sm:h-20 sm:w-20 rounded-2xl bg-[#f5f5f7] dark:bg-slate-900 border-2 transition-all flex flex-col items-center justify-center text-2xl sm:text-3xl shrink-0 cursor-pointer overflow-hidden p-1 group"
+              class="relative h-16 w-16 sm:h-20 sm:w-20 rounded-2xl bg-white dark:bg-slate-900 border-2 transition-all flex flex-col items-center justify-center text-2xl sm:text-3xl shrink-0 cursor-pointer overflow-hidden p-1 group"
               :class="activeGalleryIdx === idx
                 ? 'border-indigo-600 dark:border-indigo-500 shadow-sm scale-102 ring-2 ring-indigo-500/20'
                 : 'border-slate-200/80 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 opacity-70 hover:opacity-100'"
@@ -91,7 +103,7 @@
           </div>
 
           <!-- Main Hero Image Showcase Box (Rounded-3xl, centered hero & Cosmopolitan style badge!) -->
-          <div class="relative flex-1 w-full rounded-[28px] sm:rounded-[36px] bg-[#f8f9fa] dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 p-8 sm:p-14 min-h-[400px] sm:min-h-[560px] flex items-center justify-center overflow-hidden order-1 sm:order-2 shadow-2xs select-none">
+          <div class="relative flex-1 w-full rounded-[28px] sm:rounded-[36px] bg-white/90 dark:bg-slate-900/90 backdrop-blur-xs border border-slate-200/80 dark:border-slate-800 p-8 sm:p-14 min-h-[400px] sm:min-h-[560px] flex items-center justify-center overflow-hidden order-1 sm:order-2 shadow-sm select-none">
 
             <!-- Authentic Award / Recognition Seal (Top Right - Exact match to Cosmopolitan badge in screenshot!) -->
             <div
@@ -358,7 +370,7 @@
               </button>
 
               <div v-show="accordionOpen.specs" class="mt-3">
-                <div class="rounded-2xl bg-slate-50 dark:bg-slate-900/60 p-3.5 border border-slate-100 dark:border-slate-800 divide-y divide-slate-200/60 dark:divide-slate-800 text-xs">
+                <div class="rounded-2xl bg-white dark:bg-slate-900/60 p-3.5 border border-slate-200/70 dark:border-slate-800 divide-y divide-slate-200/60 dark:divide-slate-800 text-xs">
                   <div
                     v-for="(val, key) in product.specs"
                     :key="key"
@@ -644,7 +656,7 @@
       <!-- ==========================================
            RELATED PRODUCTS SECTION
            ========================================== -->
-      <section class="mt-14 pt-10 border-t border-slate-100 dark:border-slate-800">
+      <section class="mt-14 pt-10 border-t border-slate-200/70 dark:border-slate-800">
         <div class="flex items-center justify-between mb-6">
           <div>
             <h3 class="text-lg sm:text-xl font-black text-slate-900 dark:text-white">

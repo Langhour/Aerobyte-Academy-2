@@ -1,6 +1,18 @@
 <template>
 
-  <div class="min-h-screen pb-24 bg-white dark:bg-slate-950 transition-colors">
+  <div class="relative isolate min-h-screen pb-24 bg-slate-50/70 dark:bg-slate-950 transition-colors">
+    <!-- Ambient Tech Hardware Background Grid & Glows -->
+    <div class="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+      <!-- Top subtle radial glow (AeroByte Navy & Sky) -->
+      <div class="absolute -top-40 left-1/2 -translate-x-1/2 w-[1100px] h-[580px] rounded-full bg-gradient-to-b from-[#1a275c]/10 via-sky-500/5 to-transparent blur-3xl dark:from-sky-500/10 dark:via-[#1a275c]/15 dark:to-transparent"></div>
+      
+      <!-- Ambient subtle side accent blooms -->
+      <div class="absolute top-[650px] -left-48 w-[450px] h-[450px] rounded-full bg-indigo-500/5 dark:bg-indigo-500/10 blur-3xl"></div>
+      <div class="absolute top-[1300px] -right-48 w-[500px] h-[500px] rounded-full bg-sky-500/5 dark:bg-sky-500/10 blur-3xl"></div>
+      
+      <!-- Subtle Tech Dot/Grid Mesh (Hardware / Maker Lab aesthetic) -->
+      <div class="absolute inset-0 bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] dark:bg-[radial-gradient(#334155_1px,transparent_1px)] [background-size:24px_24px] opacity-40 dark:opacity-25 [mask-image:radial-gradient(ellipse_80%_60%_at_50%_0%,#000_65%,transparent_100%)]"></div>
+    </div>
 
     <!-- 2. Auto-Rotating Commercial Hero Showcase Banner (Changes every 3s) -->
 
@@ -193,7 +205,7 @@
 
     <!-- Header & Brand Bar -->
 
-    <header id="catalog" class="border-b border-slate-100 dark:border-slate-800/80 pt-8 pb-6">
+    <header id="catalog" class="border-b border-slate-200/70 dark:border-slate-800/80 pt-8 pb-6">
 
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 
