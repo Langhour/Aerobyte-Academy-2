@@ -276,7 +276,7 @@
 
 
         <!-- Shop.com Quick Filters Row (Exact Match to Reference Screenshots) -->
-        <div class="mt-4 flex items-center justify-between gap-3 overflow-x-auto no-scrollbar py-1">
+        <div class="mt-5 flex flex-wrap items-center justify-between gap-3 relative z-30 overflow-visible py-1">
           <div class="flex items-center gap-2 sm:gap-2.5 shrink-0">
             <!-- 1. Circular Filter Icon Button (Opens Filters Modal - Image 1) -->
             <button
@@ -298,10 +298,10 @@
             </button>
 
             <!-- 2. Sort by Dropdown Pill (Image 2) -->
-            <div class="relative filter-dropdown-container">
+            <div class="relative filter-dropdown-container" :class="{ 'z-50': isSortDropdownOpen }">
               <button
                 type="button"
-                @click.stop="isSortDropdownOpen = !isSortDropdownOpen; isPriceDropdownOpen = false"
+                @click.stop="toggleSortDropdown"
                 class="h-9 sm:h-10 px-4 rounded-full text-xs sm:text-[13px] font-semibold flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap active:scale-95 select-none"
                 :class="sortBy !== 'featured' && sortBy !== 'best-selling'
                   ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm'
@@ -322,7 +322,7 @@
               >
                 <div
                   v-if="isSortDropdownOpen"
-                  class="absolute top-full left-0 mt-2 z-30 w-64 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl p-4 space-y-3"
+                  class="absolute top-full left-0 mt-2 z-50 w-72 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl p-4 space-y-3"
                 >
                   <div class="space-y-2.5">
                     <label
@@ -387,10 +387,10 @@
             </button>
 
             <!-- 4. Price Dropdown Pill (Image 3) -->
-            <div class="relative filter-dropdown-container">
+            <div class="relative filter-dropdown-container" :class="{ 'z-50': isPriceDropdownOpen }">
               <button
                 type="button"
-                @click.stop="isPriceDropdownOpen = !isPriceDropdownOpen; isSortDropdownOpen = false"
+                @click.stop="togglePriceDropdown"
                 class="h-9 sm:h-10 px-4 rounded-full text-xs sm:text-[13px] font-semibold flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap active:scale-95 select-none"
                 :class="priceMin > 0 || priceMax < 100
                   ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm font-bold'
@@ -411,7 +411,7 @@
               >
                 <div
                   v-if="isPriceDropdownOpen"
-                  class="absolute top-full left-0 mt-2 z-30 w-72 sm:w-80 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl p-5 space-y-4"
+                  class="absolute top-full left-0 mt-2 z-50 w-72 sm:w-80 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl p-5 space-y-4"
                 >
                   <!-- Purple Dual Slider -->
                   <div class="space-y-2">
@@ -523,7 +523,7 @@
     </header>
 
     <!-- Full Filters Modal (Matching Shop.com Reference Image 1) -->
-    <teleport to="body">
+    <Teleport to="body">
       <transition
         enter-active-class="transition ease-out duration-200"
         enter-from-class="opacity-0"
@@ -682,7 +682,7 @@
           </div>
         </div>
       </transition>
-    </teleport>
+    </Teleport>
 
 
 
