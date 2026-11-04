@@ -134,68 +134,13 @@
              ========================================== -->
         <div class="lg:col-span-5 space-y-6">
           
-          <!-- Vendor / Brand Header Row (Matches screenshot header with brand avatar, name, rating & menu) -->
-          <div class="flex items-center justify-between pb-1 border-b border-slate-100 dark:border-slate-800/80">
-            <div class="flex items-center gap-2.5">
-              <div class="h-9 w-9 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-lg border border-slate-200 dark:border-slate-700 shadow-2xs">
-                {{ product.brandLogo || '⚙️' }}
-              </div>
-              <div>
-                <h4 class="text-xs font-extrabold text-slate-900 dark:text-white leading-tight">
-                  {{ product.brand }}
-                </h4>
-                <div class="flex items-center gap-1 text-[11px] font-semibold text-slate-500 dark:text-slate-400">
-                  <span>{{ product.brandRating || '4.9 ★ (3.1K)' }}</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="relative">
-              <button
-                type="button"
-                @click="isMoreMenuOpen = !isMoreMenuOpen"
-                :title="t('More options')"
-                class="h-8 w-8 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white flex items-center justify-center transition cursor-pointer select-none active:scale-95"
-                :class="{ 'bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white': isMoreMenuOpen }"
-              >
-                <MoreHorizontal class="w-4 h-4" />
-              </button>
-
-              <!-- Transparent Backdrop to dismiss dropdown -->
-              <div
-                v-if="isMoreMenuOpen"
-                class="fixed inset-0 z-30 bg-transparent cursor-default"
-                @click="isMoreMenuOpen = false"
-              ></div>
-
-              <!-- 3-Dot Dropdown Card (Matches screenshot with speech bubble & Contact Fellow!) -->
-              <transition
-                enter-active-class="transition ease-out duration-150"
-                enter-from-class="transform opacity-0 scale-95"
-                enter-to-class="transform opacity-100 scale-100"
-                leave-active-class="transition ease-in duration-100"
-                leave-from-class="transform opacity-100 scale-100"
-                leave-to-class="transform opacity-0 scale-95"
-              >
-                <div
-                  v-if="isMoreMenuOpen"
-                  class="absolute right-0 top-full mt-2 z-40 w-48 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-2xl p-1.5 select-none"
-                >
-                  <button
-                    type="button"
-                    @click="openContactFellowModal"
-                    class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs sm:text-[13px] font-semibold text-slate-900 dark:text-white hover:bg-slate-100/80 dark:hover:bg-slate-800 transition cursor-pointer text-left"
-                  >
-                    <MessageCircle class="w-4 h-4 text-slate-900 dark:text-white stroke-[2.2]" />
-                    <span>{{ t('Contact Fellow') }}</span>
-                  </button>
-                </div>
-              </transition>
-            </div>
-          </div>
-
           <!-- Product Title & Rating -->
           <div class="space-y-1.5">
+            <div class="flex items-center gap-2 mb-1">
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/80">
+                {{ product.category }}
+              </span>
+            </div>
             <h1 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight leading-tight">
               {{ product.name }}
             </h1>
@@ -913,160 +858,6 @@
     <!-- ==========================================
          CONTACT FELLOW MODAL (Matches user screenshot)
          ========================================== -->
-    <Teleport to="body">
-      <transition
-        enter-active-class="transition ease-out duration-200"
-        enter-from-class="opacity-0"
-        enter-to-class="opacity-100"
-        leave-active-class="transition ease-in duration-150"
-        leave-from-class="opacity-100"
-        leave-to-class="opacity-0"
-      >
-        <div
-          v-if="isContactFellowModalOpen"
-          class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/45 backdrop-blur-[2px]"
-          @click.self="isContactFellowModalOpen = false"
-        >
-          <div
-            class="relative w-full max-w-[560px] rounded-[32px] bg-white dark:bg-slate-900 text-slate-900 dark:text-white p-7 sm:p-9 shadow-2xl border border-slate-100 dark:border-slate-800 select-none animate-in fade-in zoom-in-95 duration-200"
-          >
-            <!-- Header: Title & Circular Close Button -->
-            <div class="flex items-center justify-between pb-7 sm:pb-8">
-              <h3 class="text-xl sm:text-2xl font-black tracking-tight text-slate-900 dark:text-white">
-                {{ t('Contact Fellow') }}
-              </h3>
-              <button
-                type="button"
-                @click="isContactFellowModalOpen = false"
-                class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 flex items-center justify-center text-slate-700 dark:text-slate-300 transition active:scale-95 cursor-pointer"
-                aria-label="Close"
-              >
-                <X class="w-4 h-4 sm:w-4.5 sm:h-4.5 stroke-[2.5]" />
-              </button>
-            </div>
-
-            <!-- Content Grid: 2 Columns with 4 Platforms matching user request -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-5 gap-x-8 text-[13px] sm:text-sm font-semibold">
-              <!-- Left Column: YouTube & Telegram -->
-              <div class="space-y-5">
-                <!-- YouTube -->
-                <div class="flex items-center justify-between group">
-                  <div class="flex items-center gap-2.5 min-w-0">
-                    <img src="/youtube-icon.png" alt="YouTube" class="w-5 h-5 rounded-md object-contain shrink-0" />
-                    <a
-                      href="https://www.youtube.com/@aerobyte168"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="text-slate-900 dark:text-slate-100 hover:text-red-600 transition truncate"
-                    >
-                      @aerobyte168
-                    </a>
-                  </div>
-                  <button
-                    type="button"
-                    @click="copyToClipboard('https://www.youtube.com/@aerobyte168', 'youtube')"
-                    class="p-0.5 text-slate-400 hover:text-slate-900 dark:hover:text-white transition cursor-pointer shrink-0 ml-1.5"
-                    :title="copiedField === 'youtube' ? t('Copied!') : 'Copy link'"
-                  >
-                    <Check v-if="copiedField === 'youtube'" class="w-3.5 h-3.5 text-emerald-600 stroke-[2.5]" />
-                    <Copy v-else class="w-3.5 h-3.5 stroke-[2]" />
-                  </button>
-                </div>
-
-                <!-- Telegram -->
-                <div class="flex items-center justify-between group">
-                  <div class="flex items-center gap-2.5 min-w-0">
-                    <img src="/telegram-icon.png" alt="Telegram" class="w-5 h-5 rounded-full object-contain shrink-0" />
-                    <a
-                      href="https://t.me/aerobyte168"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="text-slate-900 dark:text-slate-100 hover:text-sky-500 transition truncate"
-                    >
-                      t.me/aerobyte168
-                    </a>
-                  </div>
-                  <button
-                    type="button"
-                    @click="copyToClipboard('https://t.me/aerobyte168', 'telegram')"
-                    class="p-0.5 text-slate-400 hover:text-slate-900 dark:hover:text-white transition cursor-pointer shrink-0 ml-1.5"
-                    :title="copiedField === 'telegram' ? t('Copied!') : 'Copy link'"
-                  >
-                    <Check v-if="copiedField === 'telegram'" class="w-3.5 h-3.5 text-emerald-600 stroke-[2.5]" />
-                    <Copy v-else class="w-3.5 h-3.5 stroke-[2]" />
-                  </button>
-                </div>
-              </div>
-
-              <!-- Right Column: Facebook & TikTok -->
-              <div class="space-y-5">
-                <!-- Facebook -->
-                <div class="flex items-center justify-between group">
-                  <div class="flex items-center gap-2.5 min-w-0">
-                    <img src="/facebook-icon.png" alt="Facebook" class="w-5 h-5 rounded-full object-contain shrink-0" />
-                    <a
-                      href="https://www.facebook.com/Robotxacademy168"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="text-slate-900 dark:text-slate-100 hover:text-blue-600 transition truncate"
-                    >
-                      AeroByte Academy
-                    </a>
-                  </div>
-                  <button
-                    type="button"
-                    @click="copyToClipboard('https://www.facebook.com/Robotxacademy168', 'facebook')"
-                    class="p-0.5 text-slate-400 hover:text-slate-900 dark:hover:text-white transition cursor-pointer shrink-0 ml-1.5"
-                    :title="copiedField === 'facebook' ? t('Copied!') : 'Copy link'"
-                  >
-                    <Check v-if="copiedField === 'facebook'" class="w-3.5 h-3.5 text-emerald-600 stroke-[2.5]" />
-                    <Copy v-else class="w-3.5 h-3.5 stroke-[2]" />
-                  </button>
-                </div>
-
-                <!-- TikTok -->
-                <div class="flex items-center justify-between group">
-                  <div class="flex items-center gap-2.5 min-w-0">
-                    <img src="/tiktok-icon.png" alt="TikTok" class="w-5 h-5 rounded-full object-contain shrink-0" />
-                    <a
-                      href="https://www.tiktok.com/@aero.byte.academy168"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="text-slate-900 dark:text-slate-100 hover:text-pink-600 transition truncate"
-                    >
-                      @aero.byte.academy168
-                    </a>
-                  </div>
-                  <button
-                    type="button"
-                    @click="copyToClipboard('https://www.tiktok.com/@aero.byte.academy168', 'tiktok')"
-                    class="p-0.5 text-slate-400 hover:text-slate-900 dark:hover:text-white transition cursor-pointer shrink-0 ml-1.5"
-                    :title="copiedField === 'tiktok' ? t('Copied!') : 'Copy link'"
-                  >
-                    <Check v-if="copiedField === 'tiktok'" class="w-3.5 h-3.5 text-emerald-600 stroke-[2.5]" />
-                    <Copy v-else class="w-3.5 h-3.5 stroke-[2]" />
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <!-- Bottom Address with Copy Icon (Matching user location) -->
-            <div class="mt-14 sm:mt-16 pt-2 flex items-center gap-2 text-xs sm:text-[13px] text-slate-500 dark:text-slate-400 font-normal">
-              <span class="break-words">{{ t('Phum Lekh Muoy, Sangkat Svay Rolum Ta Khmau, Kandal 08110701') }}</span>
-              <button
-                type="button"
-                @click="copyToClipboard(t('Phum Lekh Muoy, Sangkat Svay Rolum Ta Khmau, Kandal 08110701'), 'address')"
-                class="p-0.5 text-slate-500 hover:text-slate-900 dark:hover:text-white transition cursor-pointer shrink-0"
-                :title="copiedField === 'address' ? t('Copied!') : 'Copy address'"
-              >
-                <Check v-if="copiedField === 'address'" class="w-3.5 h-3.5 text-emerald-600 stroke-[2.5]" />
-                <Copy v-else class="w-3.5 h-3.5 stroke-[2]" />
-              </button>
-            </div>
-          </div>
-        </div>
-      </transition>
-    </Teleport>
 
     <!-- Toast Notification -->
     <div
@@ -1089,8 +880,6 @@ import {
   ChevronUp,
   Heart,
   ShoppingBag,
-  MoreHorizontal,
-  MessageCircle,
   Share2,
   Star,
   ThumbsUp,
@@ -1098,11 +887,7 @@ import {
   MessageSquare,
   Zap,
   Trash2,
-  X,
-  Mail,
-  Instagram,
-  Youtube,
-  Copy
+  X
 } from 'lucide-vue-next'
 import CustomSelect from '../components/common/CustomSelect.vue'
 import { getProductById, getRelatedProducts } from '../data/products'
@@ -1128,48 +913,6 @@ const {
 } = useStoreCart()
 
 // Fetch product by route param :id
-const isMoreMenuOpen = ref(false)
-// Contact Fellow Modal State & Copy Helper
-const isContactFellowModalOpen = ref(false)
-const copiedField = ref('')
-
-const openContactFellowModal = () => {
-  isMoreMenuOpen.value = false
-  isContactFellowModalOpen.value = true
-}
-
-const copyToClipboard = async (text, field) => {
-  try {
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      await navigator.clipboard.writeText(text)
-    } else {
-      const ta = document.createElement('textarea')
-      ta.value = text
-      ta.style.position = 'fixed'
-      ta.style.opacity = '0'
-      document.body.appendChild(ta)
-      ta.select()
-      document.execCommand('copy')
-      document.body.removeChild(ta)
-    }
-    copiedField.value = field
-    showToast(t('Copied!'))
-    setTimeout(() => {
-      if (copiedField.value === field) {
-        copiedField.value = ''
-      }
-    }, 2000)
-  } catch (e) {
-    console.error('Failed to copy', e)
-  }
-}
-
-const contactFellowLink = computed(() => {
-  const pName = product.value ? product.value.name : 'Hardware Kit'
-  const pPrice = product.value ? `$${product.value.priceUsd}` : ''
-  const msg = `Hello AeroByte Fellow! I have a question about ${pName} (${pPrice}).`
-  return `https://t.me/aerobyte_academy?text=${encodeURIComponent(msg)}`
-})
 const productId = computed(() => String(route.params.id || ''))
 const product = computed(() => getProductById(productId.value))
 
