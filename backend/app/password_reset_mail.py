@@ -71,7 +71,7 @@ def get_emailjs_verification_template_id() -> str:
     )
 
 
-def email_is_configured() -> bool:
+def has_remote_email_provider() -> bool:
     api_key, _ = get_resend_credentials()
     if api_key:
         return True
@@ -84,9 +84,12 @@ def email_is_configured() -> bool:
     if smtp_configured:
         return True
 
-    # Dev fallback is enabled by default so users and devs are never blocked when external email is unconfigured
-    dev_fallback = os.getenv("DEV_EMAIL_FALLBACK", "true").lower() in ("true", "1", "yes")
-    return dev_fallback
+    return False
+
+
+def email_is_configured() -> bool:
+    """Return True ONLY if a real third-party email provider is configured to send outbound emails."""
+    return has_remote_email_provider()
 
 
 def _send_with_resend(to_email: str, subject: str, text_content: str, html_content: str) -> None:

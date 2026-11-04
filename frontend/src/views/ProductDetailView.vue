@@ -111,19 +111,6 @@
           <!-- Main Hero Image Showcase Box (Rounded-3xl, centered hero & Cosmopolitan style badge!) -->
           <div class="relative flex-1 w-full rounded-[28px] sm:rounded-[36px] bg-white/90 dark:bg-slate-900/90 backdrop-blur-xs border border-slate-200/80 dark:border-slate-800 p-8 sm:p-14 min-h-[400px] sm:min-h-[560px] flex items-center justify-center overflow-hidden order-1 sm:order-2 shadow-sm select-none">
 
-            <!-- Authentic Award / Recognition Seal (Top Right - Exact match to Cosmopolitan badge in screenshot!) -->
-            <div
-              v-if="product.awardBadge"
-              class="absolute top-5 right-5 z-20 w-22 h-22 sm:w-24 sm:h-24 rounded-full bg-slate-950 text-white flex flex-col items-center justify-center p-2 text-center shadow-xl border border-white/20 transform rotate-6 select-none pointer-events-none"
-            >
-              <div class="text-[7.5px] uppercase tracking-widest text-slate-400 font-extrabold">{{ product.awardTitle || 'AEROBYTE' }}</div>
-              <div class="text-[10px] sm:text-[11px] font-black uppercase tracking-tight text-white leading-tight my-0.5">
-                {{ product.badge || 'VERIFIED' }}
-              </div>
-              <div class="text-[7px] uppercase tracking-wider text-amber-400 font-bold">{{ product.awardSubtitle || 'LAB CERTIFIED' }}</div>
-              <div class="text-[8px] mt-0.5 opacity-60">★ 2026 ★</div>
-            </div>
-
             <!-- Main Big Hardware Visual Icon -->
             <div class="flex flex-col items-center justify-center text-center transition-transform duration-300 hover:scale-105">
               <div class="text-8xl sm:text-9xl drop-shadow-md filter select-none">

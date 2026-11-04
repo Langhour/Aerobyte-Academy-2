@@ -219,7 +219,7 @@ def _start_user_session(request: Request, user: dict[str, str], method: str = "E
 
 
 def _issue_and_send_verification(user_id: str, email: str, full_name: str) -> tuple[str, str]:
-    code = f"{secrets.randbelow(900000) + 100000}"
+    code = "123456" if not email_is_configured() else f"{secrets.randbelow(900000) + 100000}"
     token = secrets.token_urlsafe(32)
     code_hash = hashlib.sha256(code.encode("utf-8")).hexdigest()
     token_hash = hashlib.sha256(token.encode("utf-8")).hexdigest()
@@ -295,9 +295,10 @@ def verify_email(payload: VerifyEmailCodeRequest, request: Request):
     # Universal bypass code for unconfigured email service or fallback testing
     if user is None:
         pending_user = find_user_by_email(payload.email)
-        if pending_user and (not email_is_configured() or payload.code.strip() in ("123456", "000000")):
-            mark_user_verified(pending_user["id"])
-            user = find_user_by_email(payload.email)
+        if pending_user:
+            if pending_user.get("is_verified", 1) == 1 or not email_is_configured() or payload.code.strip() in ("123456", "000000"):
+                mark_user_verified(pending_user["id"])
+                user = find_user_by_email(payload.email)
 
     if user is None:
         raise HTTPException(
@@ -331,12 +332,13 @@ def resend_verification(payload: ResendVerificationRequest):
             detail="No account found with this email. Please register first.",
         )
     if user.get("is_verified", 1) == 1:
-        return {"message": "This email is already verified. You can sign in now."}
+        return {"message": "This email is already verified. You can sign in now.", "already_verified": True}
 
     if not email_is_configured():
         return {
             "message": "Email service is in offline mode. Enter code 123456 to verify instantly.",
             "dev_code": "123456",
+            "offline_mode": True,
         }
 
     now = datetime.now(timezone.utc)
