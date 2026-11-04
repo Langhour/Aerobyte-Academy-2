@@ -275,15 +275,8 @@
 
 
 
-        <!-- Backdrop to close dropdowns when clicking outside (100% transparent, no blur) -->
-        <div
-          v-if="isSortDropdownOpen || isPriceDropdownOpen"
-          class="fixed inset-0 z-40 bg-transparent cursor-default"
-          @click="closeDropdowns"
-        ></div>
-
-        <!-- Shop.com Quick Filters Row (Exact Match to Reference Screenshots) -->
-        <div class="mt-5 flex flex-wrap items-center justify-between gap-3 relative z-30 overflow-visible py-1">
+                <!-- Shop.com Quick Filters Row (Exact Match to Reference Screenshots) -->
+        <div class="mt-5 flex flex-wrap items-center justify-between gap-3 relative overflow-visible py-1">
           <div class="flex items-center gap-2 sm:gap-2.5 shrink-0">
             <!-- 1. Circular Filter Icon Button (Opens Filters Modal - Image 1) -->
             <button
@@ -318,7 +311,14 @@
                 <ChevronDown class="w-3.5 h-3.5 transition-transform duration-200" :class="{ 'rotate-180': isSortDropdownOpen }" />
               </button>
 
-              <!-- Sort Dropdown Menu (Matching Shop.com Image 2) -->
+              <!-- Transparent Backdrop to dismiss dropdown -->
+              <div
+                v-if="isSortDropdownOpen"
+                class="fixed inset-0 z-40 bg-transparent cursor-default"
+                @click="isSortDropdownOpen = false"
+              ></div>
+
+              <!-- Sort Dropdown Menu Card (z-50) -->
               <transition
                 enter-active-class="transition ease-out duration-150"
                 enter-from-class="transform opacity-0 scale-95"
@@ -329,18 +329,21 @@
               >
                 <div
                   v-if="isSortDropdownOpen"
+                  @click.stop
                   class="absolute top-full left-0 mt-2 z-50 w-72 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl p-4 space-y-3"
                 >
-                  <div class="space-y-2.5">
-                    <label
+                  <div class="space-y-1.5">
+                    <button
                       v-for="opt in sortOptions"
                       :key="opt.value"
+                      type="button"
                       @click="sortBy = opt.value"
-                      class="flex items-center justify-between text-xs sm:text-[13px] font-medium text-slate-800 dark:text-slate-200 cursor-pointer select-none py-1 hover:text-slate-950 dark:hover:text-white"
+                      class="w-full flex items-center justify-between text-xs sm:text-[13px] font-medium text-slate-800 dark:text-slate-200 cursor-pointer select-none py-2 px-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition text-left"
+                      :class="{ 'bg-slate-100/90 dark:bg-slate-800 font-bold': sortBy === opt.value }"
                     >
                       <span>{{ opt.label }}</span>
                       <div
-                        class="h-4 w-4 rounded-full border flex items-center justify-center transition-all"
+                        class="h-4 w-4 rounded-full border flex items-center justify-center transition-all shrink-0"
                         :class="sortBy === opt.value
                           ? 'border-slate-900 dark:border-white'
                           : 'border-slate-300 dark:border-slate-600'"
@@ -350,14 +353,7 @@
                           class="h-2 w-2 rounded-full bg-slate-900 dark:bg-white"
                         ></div>
                       </div>
-                      <input
-                        type="radio"
-                        name="sort-option"
-                        :value="opt.value"
-                        v-model="sortBy"
-                        class="sr-only"
-                      />
-                    </label>
+                    </button>
                   </div>
 
                   <!-- Footer Buttons -->
@@ -365,14 +361,14 @@
                     <button
                       type="button"
                       @click="sortBy = 'best-selling'"
-                      class="flex-1 py-2 px-3 rounded-full text-xs font-bold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition cursor-pointer text-center"
+                      class="flex-1 py-2 px-3 rounded-full text-xs font-bold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition cursor-pointer text-center active:scale-95"
                     >
                       {{ t('Reset') }}
                     </button>
                     <button
                       type="button"
                       @click="isSortDropdownOpen = false"
-                      class="flex-1 py-2 px-3 rounded-full text-xs font-bold bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 transition cursor-pointer text-center"
+                      class="flex-1 py-2 px-3 rounded-full text-xs font-bold bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 transition cursor-pointer text-center active:scale-95"
                     >
                       {{ t('Done') }}
                     </button>
@@ -407,7 +403,14 @@
                 <ChevronDown class="w-3.5 h-3.5 transition-transform duration-200" :class="{ 'rotate-180': isPriceDropdownOpen }" />
               </button>
 
-              <!-- Price Dropdown Menu (Matching Shop.com Image 3) -->
+              <!-- Transparent Backdrop to dismiss dropdown -->
+              <div
+                v-if="isPriceDropdownOpen"
+                class="fixed inset-0 z-40 bg-transparent cursor-default"
+                @click="isPriceDropdownOpen = false"
+              ></div>
+
+              <!-- Price Dropdown Menu (Matching Shop.com Image 3 - z-50) -->
               <transition
                 enter-active-class="transition ease-out duration-150"
                 enter-from-class="transform opacity-0 scale-95"
@@ -418,14 +421,15 @@
               >
                 <div
                   v-if="isPriceDropdownOpen"
+                  @click.stop
                   class="absolute top-full left-0 mt-2 z-50 w-72 sm:w-80 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl p-5 space-y-4"
                 >
                   <!-- Purple Dual Slider -->
                   <div class="space-y-2">
                     <div class="relative w-full h-8 flex items-center select-none my-1">
-                      <div class="absolute left-0 right-0 h-1.5 rounded-full bg-slate-200 dark:bg-slate-700"></div>
+                      <div class="absolute left-0 right-0 h-1.5 rounded-full bg-slate-200 dark:bg-slate-700 pointer-events-none"></div>
                       <div
-                        class="absolute h-1.5 rounded-full bg-indigo-600"
+                        class="absolute h-1.5 rounded-full bg-indigo-600 pointer-events-none"
                         :style="{
                           left: `${(priceMin / 100) * 100}%`,
                           right: `${100 - (priceMax / 100) * 100}%`
@@ -453,24 +457,26 @@
 
                     <!-- Min & Max Input Boxes -->
                     <div class="flex items-center gap-3">
-                      <div class="flex-1 flex items-center justify-center rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 px-3 py-2">
+                      <div class="flex-1 flex items-center justify-center rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/70 px-3 py-2 focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500">
                         <span class="text-xs text-slate-400 mr-1">$</span>
                         <input
                           type="number"
                           min="0"
                           :max="priceMax"
                           v-model.number="priceMin"
+                          @input="handlePriceMinChange"
                           class="w-full text-center text-xs sm:text-sm font-semibold bg-transparent focus:outline-none text-slate-800 dark:text-slate-100"
                         />
                       </div>
                       <span class="text-slate-400 font-bold">—</span>
-                      <div class="flex-1 flex items-center justify-center rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 px-3 py-2">
+                      <div class="flex-1 flex items-center justify-center rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/70 px-3 py-2 focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500">
                         <span class="text-xs text-slate-400 mr-1">$</span>
                         <input
                           type="number"
                           :min="priceMin"
                           max="100"
                           v-model.number="priceMax"
+                          @input="handlePriceMaxChange"
                           class="w-full text-center text-xs sm:text-sm font-semibold bg-transparent focus:outline-none text-slate-800 dark:text-slate-100"
                         />
                         <span v-if="priceMax >= 100" class="text-xs font-bold text-slate-400 ml-0.5">+</span>
@@ -482,7 +488,7 @@
                       <button
                         type="button"
                         @click="priceMin = 0; priceMax = 25"
-                        class="flex-1 py-1 px-2 rounded-full text-[11px] font-semibold transition cursor-pointer text-center"
+                        class="flex-1 py-1.5 px-2 rounded-full text-[11px] font-semibold transition cursor-pointer text-center active:scale-95"
                         :class="priceMin === 0 && priceMax === 25 ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-bold shadow-xs' : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700'"
                       >
                         {{ t('Under $25') }}
@@ -490,7 +496,7 @@
                       <button
                         type="button"
                         @click="priceMin = 25; priceMax = 50"
-                        class="flex-1 py-1 px-2 rounded-full text-[11px] font-semibold transition cursor-pointer text-center"
+                        class="flex-1 py-1.5 px-2 rounded-full text-[11px] font-semibold transition cursor-pointer text-center active:scale-95"
                         :class="priceMin === 25 && priceMax === 50 ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-bold shadow-xs' : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700'"
                       >
                         $25 - $50
@@ -498,7 +504,7 @@
                       <button
                         type="button"
                         @click="priceMin = 50; priceMax = 100"
-                        class="flex-1 py-1 px-2 rounded-full text-[11px] font-semibold transition cursor-pointer text-center"
+                        class="flex-1 py-1.5 px-2 rounded-full text-[11px] font-semibold transition cursor-pointer text-center active:scale-95"
                         :class="priceMin === 50 && priceMax === 100 ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-bold shadow-xs' : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700'"
                       >
                         {{ t('Over $50') }}
@@ -511,14 +517,14 @@
                     <button
                       type="button"
                       @click="resetPriceFilter"
-                      class="flex-1 py-2 px-3 rounded-full text-xs font-bold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-750 text-slate-700 dark:text-slate-300 transition cursor-pointer text-center"
+                      class="flex-1 py-2 px-3 rounded-full text-xs font-bold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-750 text-slate-700 dark:text-slate-300 transition cursor-pointer text-center active:scale-95"
                     >
                       {{ t('Reset') }}
                     </button>
                     <button
                       type="button"
                       @click="isPriceDropdownOpen = false"
-                      class="flex-1 py-2 px-3 rounded-full text-xs font-bold bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 transition cursor-pointer text-center"
+                      class="flex-1 py-2 px-3 rounded-full text-xs font-bold bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 transition cursor-pointer text-center active:scale-95"
                     >
                       {{ t('Done') }}
                     </button>
