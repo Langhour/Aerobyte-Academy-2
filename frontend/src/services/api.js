@@ -86,6 +86,12 @@ export const accountService = {
   logout() {
     return apiClient.post('/accounts/logout')
   },
+  createStoreOrder(payload) {
+    return apiClient.post('/accounts/orders', payload)
+  },
+  getUserOrders() {
+    return apiClient.get('/accounts/orders')
+  },
 }
 
 export function getGoogleSignInUrl() {
@@ -184,6 +190,15 @@ export const adminService = {
   },
   deleteUser(id) {
     return apiClient.delete(`/admin/users/${encodeURIComponent(id)}`)
+  },
+  getAllOrders(params) {
+    return apiClient.get('/admin/orders', { params })
+  },
+  updateOrderStatus(orderId, status) {
+    return apiClient.put(`/admin/orders/${encodeURIComponent(orderId)}/status`, { status })
+  },
+  getDatabaseStats() {
+    return apiClient.get('/admin/database/stats')
   },
 }
 

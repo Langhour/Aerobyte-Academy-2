@@ -228,25 +228,20 @@
             </div>
           </div>
 
-          <!-- Variant 2: Size / Specification Pills (Matches screenshot!) -->
+          <!-- Variant 2: Version / Specification Selection (AeroByte CustomSelect) -->
           <div v-if="product.sizeOptions?.length" class="space-y-2 pt-1">
-            <div class="text-xs font-bold text-slate-900 dark:text-white">
+            <div class="text-xs font-bold text-slate-900 dark:text-white flex items-center justify-between">
               <span>{{ t('Version') }}: <span class="font-normal text-slate-500 dark:text-slate-400">{{ selectedSize }}</span></span>
             </div>
 
-            <div class="flex flex-wrap gap-2">
-              <button
-                v-for="size in product.sizeOptions"
-                :key="size"
-                type="button"
-                @click="selectedSize = size"
-                class="px-4 py-2 rounded-xl text-xs font-bold border transition cursor-pointer"
-                :class="selectedSize === size
-                  ? 'border-slate-900 dark:border-white bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-2xs'
-                  : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'"
-              >
-                {{ size }}
-              </button>
+            <div class="w-full">
+              <CustomSelect
+                v-model="selectedSize"
+                :options="product.sizeOptions"
+                size="sm"
+                trigger-class="!py-2.5 !px-3.5 rounded-xl border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs font-bold text-slate-800 dark:text-slate-200 shadow-2xs hover:border-slate-300 dark:hover:border-slate-700"
+                menu-class="shadow-xl border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800"
+              />
             </div>
           </div>
 
@@ -636,6 +631,7 @@ import {
   Trash2,
   X
 } from 'lucide-vue-next'
+import CustomSelect from '../components/common/CustomSelect.vue'
 import { getProductById, getRelatedProducts } from '../data/products'
 import { useStoreCart } from '../composables/useStoreCart'
 

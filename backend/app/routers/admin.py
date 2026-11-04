@@ -23,7 +23,7 @@ from app.content_store import (
     list_courses, list_enrollments, log_admin_activity, reorder_courses, save_course,
     save_coupon, save_uploaded_file, save_enrollment, save_site_settings,
     list_users, find_user_by_id, find_user_by_email, admin_update_user,
-    admin_set_user_password, admin_delete_user,
+    admin_set_user_password, admin_delete_user, list_all_store_orders, update_store_order_status, get_database_stats,
 )
 from app.models import BatchSchedule, Course, CourseModule, CourseReorderRequest, Coupon, HardwareSpec, PaymentStatusEvent, SiteSettings
 
@@ -645,3 +645,28 @@ def admin_delete_user_endpoint(user_id: str, request: Request):
     _log("Delete user", f"Deleted user account {user['email']} ({user_id})")
     return {"message": "User deleted successfully."}
 
+
+
+@router.get("/orders")
+def get_all_store_orders(request: Request, limit: int = 100):
+    _require_admin(request)
+    return list_all_store_orders(limit=limit)
+
+
+@router.put("/orders/{order_id}/status")
+def update_store_order_status_endpoint(order_id: str, payload: dict[str, str], request: Request):
+    _require_admin(request)
+    new_status = (payload.get("status") or "").strip()
+    if not new_status:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Missing status field.")
+    success = update_store_order_status(order_id, new_status)
+    if not success:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Order not found.")
+    _log("Update store order status", f"Order #{order_id} set to '{new_status}'")
+    return {"success": True, "order_id": order_id, "status": new_status}
+
+
+@router.get("/database/stats")
+def get_database_statistics(request: Request):
+    _require_admin(request)
+    return get_database_stats()

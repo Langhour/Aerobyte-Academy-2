@@ -33,10 +33,10 @@
 
     <div
       v-if="isOpen"
-      class="absolute left-0 right-0 z-50 overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-1.5 shadow-xl space-y-1"
+      class="absolute z-50 overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-1.5 shadow-xl space-y-1"
       :class="[
         shouldDropUp ? 'bottom-full mb-1.5' : 'top-full mt-1.5',
-        menuClass
+        menuClass ? menuClass : 'left-0 right-0'
       ]"
       role="listbox"
     >

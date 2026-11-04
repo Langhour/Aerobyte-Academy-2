@@ -353,23 +353,15 @@
 
 
 
-            <select
-
-              v-model="sortBy"
-
-              class="rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-2.5 py-1 text-xs font-semibold text-slate-800 dark:text-slate-200 focus:outline-none cursor-pointer"
-
-            >
-
-              <option value="featured">{{ t('Featured') }}</option>
-
-              <option value="price-low">{{ t('Price: Low to High') }}</option>
-
-              <option value="price-high">{{ t('Price: High to Low') }}</option>
-
-              <option value="rating">{{ t('Top Rated') }}</option>
-
-            </select>
+            <div class="w-44 sm:w-48">
+              <CustomSelect
+                v-model="sortBy"
+                size="sm"
+                :options="sortOptions"
+                trigger-class="!py-1.5 !px-3 rounded-full border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs font-semibold text-slate-800 dark:text-slate-200 shadow-2xs hover:border-slate-300 dark:hover:border-slate-700"
+                menu-class="w-48 right-0 left-auto"
+              />
+            </div>
 
           </div>
 
@@ -1547,6 +1539,7 @@ import {
 } from 'lucide-vue-next'
 
 import { useI18n } from '../i18n'
+import CustomSelect from '../components/common/CustomSelect.vue'
 
 
 
@@ -1813,6 +1806,13 @@ const selectedCategory = ref('All')
 const inStockOnly = ref(false)
 
 const sortBy = ref('featured')
+
+const sortOptions = computed(() => [
+  { value: 'featured', label: t('Featured') },
+  { value: 'price-low', label: t('Price: Low to High') },
+  { value: 'price-high', label: t('Price: High to Low') },
+  { value: 'rating', label: t('Top Rated') },
+])
 
 
 

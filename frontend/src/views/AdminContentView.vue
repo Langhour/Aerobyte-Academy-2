@@ -1152,26 +1152,32 @@
               <div class="flex flex-wrap items-center gap-2.5 w-full sm:w-auto justify-end">
                 <div class="flex items-center gap-1.5">
                   <span class="text-xs font-semibold text-slate-500 dark:text-slate-400">{{ t('Sign-in Method') }}:</span>
-                  <select
-                    v-model="userMethodFilter"
-                    class="px-2.5 py-1.5 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-medium focus:outline-none"
-                  >
-                    <option value="all">{{ t('All Methods') }}</option>
-                    <option value="email">{{ t('Email / Password') }}</option>
-                    <option value="google">{{ t('Google') }}</option>
-                  </select>
+                  <div class="w-36">
+                    <CustomSelect
+                      v-model="userMethodFilter"
+                      size="sm"
+                      :options="[
+                        { value: 'all', label: t('All Methods') },
+                        { value: 'email', label: t('Email / Password') },
+                        { value: 'google', label: t('Google') }
+                      ]"
+                    />
+                  </div>
                 </div>
 
                 <div class="flex items-center gap-1.5">
                   <span class="text-xs font-semibold text-slate-500 dark:text-slate-400">{{ t('Verification') }}:</span>
-                  <select
-                    v-model="userVerifiedFilter"
-                    class="px-2.5 py-1.5 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-medium focus:outline-none"
-                  >
-                    <option value="all">{{ t('All Statuses') }}</option>
-                    <option value="verified">{{ t('Verified') }}</option>
-                    <option value="unverified">{{ t('Unverified') }}</option>
-                  </select>
+                  <div class="w-36">
+                    <CustomSelect
+                      v-model="userVerifiedFilter"
+                      size="sm"
+                      :options="[
+                        { value: 'all', label: t('All Statuses') },
+                        { value: 'verified', label: t('Verified') },
+                        { value: 'unverified', label: t('Unverified') }
+                      ]"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -1383,16 +1389,19 @@
                     <input v-model.trim="userEditForm.location" type="text" maxlength="100" class="admin-input" :placeholder="t('e.g. Phnom Penh')" />
                   </label>
 
-                  <label class="block sm:col-span-2">
-                    <span class="admin-label dark:text-slate-100">{{ t('Highest Academic Qualification') }}</span>
-                    <select v-model="userEditForm.qualification" class="admin-input">
-                      <option value="">{{ t('Please specify your qualification') }}</option>
-                      <option value="High School">{{ t('High School') }}</option>
-                      <option value="Undergraduate / University">{{ t('Undergraduate / University') }}</option>
-                      <option value="Bachelor's Degree">{{ t("Bachelor's Degree") }}</option>
-                      <option value="Other">{{ t('Other') }}</option>
-                    </select>
-                  </label>
+                  <div class="block sm:col-span-2">
+                    <span class="admin-label dark:text-slate-100 block mb-1.5">{{ t('Highest Academic Qualification') }}</span>
+                    <CustomSelect
+                      v-model="userEditForm.qualification"
+                      :placeholder="t('Please specify your qualification')"
+                      :options="[
+                        { value: 'High School', label: t('High School') },
+                        { value: 'Undergraduate / University', label: t('Undergraduate / University') },
+                        { value: 'Bachelor\'s Degree', label: t('Bachelor\'s Degree') },
+                        { value: 'Other', label: t('Other') }
+                      ]"
+                    />
+                  </div>
 
                   <label class="block">
                     <span class="admin-label dark:text-slate-100">{{ t('Current Occupation') }}</span>
@@ -1712,14 +1721,17 @@
                 </div>
                 <div class="flex items-center gap-2 self-end sm:self-auto">
                   <span class="text-xs font-semibold text-slate-500 dark:text-slate-400">{{ t('Role') }}:</span>
-                  <select
-                    v-model="loginRoleFilter"
-                    class="px-2.5 py-1.5 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-medium focus:outline-none"
-                  >
-                    <option value="all">{{ t('All Roles') }}</option>
-                    <option value="user">{{ t('Users Only') }}</option>
-                    <option value="admin">{{ t('Admins Only') }}</option>
-                  </select>
+                  <div class="w-36">
+                    <CustomSelect
+                      v-model="loginRoleFilter"
+                      size="sm"
+                      :options="[
+                        { value: 'all', label: t('All Roles') },
+                        { value: 'user', label: t('Users Only') },
+                        { value: 'admin', label: t('Admins Only') }
+                      ]"
+                    />
+                  </div>
                 </div>
               </div>
 

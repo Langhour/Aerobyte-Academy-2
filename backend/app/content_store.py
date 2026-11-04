@@ -204,6 +204,23 @@ def initialize_content_store() -> None:
                 created_at TEXT NOT NULL,
                 expires_at TEXT NOT NULL
             );
+            CREATE TABLE IF NOT EXISTS store_orders (
+                id TEXT PRIMARY KEY,
+                user_id TEXT,
+                user_email TEXT NOT NULL COLLATE NOCASE,
+                customer_name TEXT NOT NULL,
+                phone TEXT NOT NULL,
+                telegram TEXT DEFAULT '',
+                address TEXT DEFAULT '',
+                fulfillment TEXT NOT NULL DEFAULT 'pickup',
+                items_json TEXT NOT NULL DEFAULT '[]',
+                subtotal REAL NOT NULL DEFAULT 0.0,
+                delivery_fee REAL NOT NULL DEFAULT 0.0,
+                discount REAL NOT NULL DEFAULT 0.0,
+                total REAL NOT NULL DEFAULT 0.0,
+                status TEXT NOT NULL DEFAULT 'confirmed',
+                created_at TEXT NOT NULL
+            );
             """
         )
         user_columns = {
@@ -217,6 +234,32 @@ def initialize_content_store() -> None:
             connection.execute("ALTER TABLE users ADD COLUMN profile_json TEXT DEFAULT '{}'")
         if "is_verified" not in user_columns:
             connection.execute("ALTER TABLE users ADD COLUMN is_verified INTEGER DEFAULT 1")
+        for col, col_type in [
+            ("phone", "TEXT DEFAULT ''"),
+            ("telegram", "TEXT DEFAULT ''"),
+            ("date_of_birth", "TEXT DEFAULT ''"),
+            ("gender", "TEXT DEFAULT ''"),
+            ("location", "TEXT DEFAULT ''"),
+            ("qualification", "TEXT DEFAULT ''"),
+            ("qualification_other", "TEXT DEFAULT ''"),
+            ("occupation", "TEXT DEFAULT ''"),
+            ("experience", "TEXT DEFAULT ''"),
+            ("role", "TEXT DEFAULT 'user'"),
+            ("updated_at", "TEXT DEFAULT ''"),
+            ("last_login_at", "TEXT DEFAULT ''"),
+        ]:
+            if col not in user_columns:
+                try:
+                    connection.execute(f"ALTER TABLE users ADD COLUMN {col} {col_type}")
+                except Exception:
+                    pass
+
+        try:
+            connection.execute("CREATE INDEX IF NOT EXISTS idx_store_orders_user_id ON store_orders(user_id)")
+            connection.execute("CREATE INDEX IF NOT EXISTS idx_store_orders_email ON store_orders(user_email)")
+            connection.execute("CREATE INDEX IF NOT EXISTS idx_store_orders_created ON store_orders(created_at DESC)")
+        except Exception:
+            pass
         connection.execute(
             "CREATE UNIQUE INDEX IF NOT EXISTS users_google_sub_unique "
             "ON users (google_sub) WHERE google_sub IS NOT NULL"
@@ -492,6 +535,22 @@ def admin_update_user(
         if profile_data is not None:
             updates.append("profile_json = ?")
             params.append(json.dumps(profile_data, ensure_ascii=False))
+            for col in [
+                "phone",
+                "telegram",
+                "date_of_birth",
+                "gender",
+                "location",
+                "qualification",
+                "qualification_other",
+                "occupation",
+                "experience",
+            ]:
+                if col in profile_data:
+                    updates.append(f"{col} = ?")
+                    params.append(str(profile_data[col] or "").strip())
+        updates.append("updated_at = ?")
+        params.append(datetime.now(timezone.utc).isoformat())
         params.append(user_id)
         connection.execute(
             f"UPDATE users SET {', '.join(updates)} WHERE id = ?",
@@ -1031,3 +1090,225 @@ def list_visit_logs(limit: int = 100) -> list[dict[str, Any]]:
         ).fetchall()
     return [dict(r) for r in rows]
 
+
+
+def create_store_order(
+    order_id: str,
+    user_id: Optional[str],
+    user_email: str,
+    customer_name: str,
+    phone: str,
+    telegram: str,
+    address: str,
+    fulfillment: str,
+    items: list[dict[str, Any]],
+    subtotal: float,
+    delivery_fee: float,
+    discount: float,
+    total: float,
+    status: str = "confirmed",
+    created_at: Optional[str] = None,
+) -> dict[str, Any]:
+    if not created_at:
+        created_at = datetime.now(timezone.utc).isoformat()
+    items_json = json.dumps(items, ensure_ascii=False)
+    with _connect() as connection:
+        connection.execute(
+            """
+            INSERT INTO store_orders (
+                id, user_id, user_email, customer_name, phone, telegram,
+                address, fulfillment, items_json, subtotal, delivery_fee,
+                discount, total, status, created_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ON CONFLICT(id) DO UPDATE SET
+                status = excluded.status,
+                items_json = excluded.items_json,
+                total = excluded.total
+            """,
+            (
+                order_id,
+                user_id,
+                user_email.strip().casefold() if user_email else "",
+                customer_name.strip(),
+                phone.strip(),
+                telegram.strip() if telegram else "",
+                address.strip() if address else "",
+                fulfillment.strip() if fulfillment else "pickup",
+                items_json,
+                float(subtotal),
+                float(delivery_fee),
+                float(discount),
+                float(total),
+                status,
+                created_at,
+            ),
+        )
+    return {
+        "id": order_id,
+        "user_id": user_id,
+        "user_email": user_email,
+        "name": customer_name,
+        "customer": {
+            "name": customer_name,
+            "phone": phone,
+            "telegram": telegram,
+            "address": address,
+        },
+        "phone": phone,
+        "telegram": telegram,
+        "address": address,
+        "fulfillment": fulfillment,
+        "items": items,
+        "subtotal": subtotal,
+        "delivery_fee": delivery_fee,
+        "discount": discount,
+        "total": total,
+        "status": status,
+        "date": created_at,
+        "created_at": created_at,
+    }
+
+
+def get_user_store_orders(
+    user_id: Optional[str] = None,
+    email: Optional[str] = None,
+) -> list[dict[str, Any]]:
+    with _connect() as connection:
+        if user_id and email:
+            rows = connection.execute(
+                """
+                SELECT * FROM store_orders
+                WHERE user_id = ? OR LOWER(user_email) = LOWER(?)
+                ORDER BY created_at DESC
+                """,
+                (user_id, email.strip()),
+            ).fetchall()
+        elif user_id:
+            rows = connection.execute(
+                "SELECT * FROM store_orders WHERE user_id = ? ORDER BY created_at DESC",
+                (user_id,),
+            ).fetchall()
+        elif email:
+            rows = connection.execute(
+                "SELECT * FROM store_orders WHERE LOWER(user_email) = LOWER(?) ORDER BY created_at DESC",
+                (email.strip(),),
+            ).fetchall()
+        else:
+            return []
+
+    result = []
+    for r in rows:
+        row_dict = dict(r)
+        try:
+            items = json.loads(row_dict.get("items_json") or "[]")
+        except Exception:
+            items = []
+        result.append({
+            "id": row_dict["id"],
+            "user_id": row_dict.get("user_id"),
+            "user_email": row_dict.get("user_email"),
+            "name": row_dict.get("customer_name"),
+            "customer": {
+                "name": row_dict.get("customer_name"),
+                "phone": row_dict.get("phone"),
+                "telegram": row_dict.get("telegram"),
+                "address": row_dict.get("address"),
+            },
+            "fulfillment": row_dict.get("fulfillment"),
+            "items": items,
+            "subtotal": row_dict.get("subtotal"),
+            "delivery_fee": row_dict.get("delivery_fee"),
+            "discount": row_dict.get("discount"),
+            "total": row_dict.get("total"),
+            "status": row_dict.get("status"),
+            "date": row_dict.get("created_at"),
+            "created_at": row_dict.get("created_at"),
+        })
+    return result
+
+
+def list_all_store_orders(limit: int = 100) -> list[dict[str, Any]]:
+    with _connect() as connection:
+        rows = connection.execute(
+            "SELECT * FROM store_orders ORDER BY created_at DESC LIMIT ?",
+            (limit,),
+        ).fetchall()
+    result = []
+    for r in rows:
+        row_dict = dict(r)
+        try:
+            items = json.loads(row_dict.get("items_json") or "[]")
+        except Exception:
+            items = []
+        result.append({
+            "id": row_dict["id"],
+            "user_id": row_dict.get("user_id"),
+            "user_email": row_dict.get("user_email"),
+            "customer_name": row_dict.get("customer_name"),
+            "phone": row_dict.get("phone"),
+            "telegram": row_dict.get("telegram"),
+            "address": row_dict.get("address"),
+            "fulfillment": row_dict.get("fulfillment"),
+            "items": items,
+            "subtotal": row_dict.get("subtotal"),
+            "delivery_fee": row_dict.get("delivery_fee"),
+            "discount": row_dict.get("discount"),
+            "total": row_dict.get("total"),
+            "status": row_dict.get("status"),
+            "date": row_dict.get("created_at"),
+            "created_at": row_dict.get("created_at"),
+        })
+    return result
+
+
+def update_store_order_status(order_id: str, new_status: str) -> bool:
+    with _connect() as connection:
+        cursor = connection.execute(
+            "UPDATE store_orders SET status = ? WHERE id = ?",
+            (new_status.strip(), order_id.strip()),
+        )
+        return cursor.rowcount > 0
+
+
+def record_user_login(user_id: str) -> None:
+    now = datetime.now(timezone.utc).isoformat()
+    try:
+        with _connect() as connection:
+            connection.execute("UPDATE users SET last_login_at = ? WHERE id = ?", (now, user_id))
+    except Exception:
+        pass
+
+
+def get_database_stats() -> dict[str, Any]:
+    with _connect() as connection:
+        tables = [
+            "users",
+            "store_orders",
+            "enrollments",
+            "courses",
+            "coupons",
+            "site_settings",
+            "admin_activity",
+            "login_logs",
+            "visit_logs",
+            "uploaded_files",
+            "password_reset_tokens",
+            "email_verification_tokens",
+        ]
+        stats = {}
+        for tbl in tables:
+            try:
+                row = connection.execute(f"SELECT COUNT(*) AS c FROM {tbl}").fetchone()
+                stats[tbl] = row["c"] if row else 0
+            except Exception:
+                stats[tbl] = 0
+        db_size_bytes = 0
+        if not _postgres_enabled() and DATABASE_PATH.exists():
+            db_size_bytes = DATABASE_PATH.stat().st_size
+    return {
+        "engine": "PostgreSQL" if _postgres_enabled() else "SQLite",
+        "file_path": str(DATABASE_PATH) if not _postgres_enabled() else "PostgreSQL Server",
+        "size_bytes": db_size_bytes,
+        "size_formatted": f"{db_size_bytes / (1024 * 1024):.2f} MB" if db_size_bytes else "N/A",
+        "tables": stats,
+    }

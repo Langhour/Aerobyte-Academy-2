@@ -15,6 +15,9 @@ from fastapi import APIRouter, File, HTTPException, Request, Response, UploadFil
 from pydantic import BaseModel, Field, field_validator
 
 from app.content_store import (
+    record_user_login,
+    create_store_order,
+    get_user_store_orders,
     log_login_event,
     create_user,
     mark_user_verified,
@@ -35,7 +38,7 @@ from app.content_store import (
     update_user_avatar,
     update_user_profile,
 )
-from app.models import EnrollmentRecord
+from app.models import EnrollmentRecord, StoreOrderCreate, StoreOrderRecord
 from app.password_reset_mail import (
     EmailNotConfiguredError,
     email_is_configured,
@@ -176,14 +179,19 @@ def _public_user(user: dict[str, Any]) -> dict[str, Any]:
         "name": user["full_name"],
         "email": user["email"],
         "avatar_url": user.get("avatar_url") or "",
-        "phone": profile_data.get("phone", ""),
-        "telegram": profile_data.get("telegram", ""),
-        "date_of_birth": profile_data.get("date_of_birth", ""),
-        "location": profile_data.get("location", ""),
-        "qualification": profile_data.get("qualification", ""),
-        "qualification_other": profile_data.get("qualification_other", ""),
-        "occupation": profile_data.get("occupation", ""),
-        "experience": profile_data.get("experience", ""),
+        "phone": user.get("phone") or profile_data.get("phone", ""),
+        "telegram": user.get("telegram") or profile_data.get("telegram", ""),
+        "date_of_birth": user.get("date_of_birth") or profile_data.get("date_of_birth", ""),
+        "gender": user.get("gender") or profile_data.get("gender", ""),
+        "location": user.get("location") or profile_data.get("location", ""),
+        "qualification": user.get("qualification") or profile_data.get("qualification", ""),
+        "qualification_other": user.get("qualification_other") or profile_data.get("qualification_other", ""),
+        "occupation": user.get("occupation") or profile_data.get("occupation", ""),
+        "experience": user.get("experience") or profile_data.get("experience", ""),
+        "role": user.get("role", "user"),
+        "created_at": user.get("created_at", ""),
+        "updated_at": user.get("updated_at", ""),
+        "last_login_at": user.get("last_login_at", ""),
     }
 
 
@@ -191,6 +199,7 @@ def _start_user_session(request: Request, user: dict[str, str], method: str = "E
     request.session.clear()
     request.session["role"] = "user"
     request.session["user_id"] = user["id"]
+    record_user_login(user["id"])
     try:
         forwarded = request.headers.get("x-forwarded-for")
         ip = forwarded.split(",")[0].strip() if forwarded else (request.client.host if request.client else "Unknown")
@@ -576,6 +585,55 @@ def get_account_enrollments(
     records.sort(key=lambda r: r.created_at or "", reverse=True)
     return records
 
+
+
+
+@router.post("/orders")
+def create_order_endpoint(payload: StoreOrderCreate, request: Request):
+    user_id = request.session.get("user_id") if request.session.get("role") == "user" else None
+    user_email = ""
+    if user_id:
+        user = find_user_by_id(user_id)
+        if user:
+            user_email = user.get("email", "")
+    if not user_email and payload.email:
+        user_email = payload.email.strip()
+
+    order_id = payload.id or ("AERO-" + str(secrets.randbelow(900000) + 100000))
+    items_dicts = [item.model_dump() for item in payload.items]
+
+    order = create_store_order(
+        order_id=order_id,
+        user_id=user_id,
+        user_email=user_email,
+        customer_name=payload.name,
+        phone=payload.phone,
+        telegram=payload.telegram or "",
+        address=payload.address or "",
+        fulfillment=payload.fulfillment,
+        items=items_dicts,
+        subtotal=payload.subtotal,
+        delivery_fee=payload.delivery_fee,
+        discount=payload.discount,
+        total=payload.total,
+        status="confirmed",
+    )
+    return {"success": True, "order": order}
+
+
+@router.get("/orders")
+def get_user_orders_endpoint(request: Request, email: Optional[str] = None):
+    user_id = request.session.get("user_id") if request.session.get("role") == "user" else None
+    user_email = ""
+    if user_id:
+        user = find_user_by_id(user_id)
+        if user:
+            user_email = user.get("email", "")
+    if not user_email and email:
+        user_email = email.strip()
+
+    orders = get_user_store_orders(user_id=user_id, email=user_email)
+    return orders
 
 @router.post("/logout", status_code=status.HTTP_204_NO_CONTENT)
 def logout(request: Request):
