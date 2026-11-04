@@ -896,6 +896,43 @@ import { useStoreCart } from '../composables/useStoreCart'
 const route = useRoute()
 const router = useRouter()
 const { t } = useI18n()
+
+// 3-Dot More Options Menu & Contact Fellow Modal
+const isMoreMenuOpen = ref(false)
+const isContactFellowModalOpen = ref(false)
+const copiedField = ref('')
+
+function openContactFellowModal() {
+  isMoreMenuOpen.value = false
+  isContactFellowModalOpen.value = true
+}
+
+async function copyToClipboard(text, field) {
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      await navigator.clipboard.writeText(text)
+    } else {
+      const ta = document.createElement('textarea')
+      ta.value = text
+      ta.style.position = 'fixed'
+      ta.style.opacity = '0'
+      document.body.appendChild(ta)
+      ta.select()
+      document.execCommand('copy')
+      document.body.removeChild(ta)
+    }
+    copiedField.value = field
+    showToast(t('Copied!'))
+    setTimeout(() => {
+      if (copiedField.value === field) {
+        copiedField.value = ''
+      }
+    }, 2000)
+  } catch (e) {
+    console.error('Failed to copy', e)
+  }
+}
+
 
 const {
   isCartOpen,

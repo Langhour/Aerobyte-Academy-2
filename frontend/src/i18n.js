@@ -1454,6 +1454,11 @@ export const khmerTranslations = {
   "AI & SMART ROVER KITS": "ឈុតរ៉ូបូតឆ្លាតវៃ AI & ROVER",
   "PRECISION LAB & PROTOTYPING": "ឧបករណ៍ពិសោធន៍កម្រិតខ្ពស់ & គំរូដើម",
 
+
+  "More options": "ជម្រើសបន្ថែម",
+  "Copy link": "ចម្លងតំណភ្ជាប់",
+  "Copy address": "ចម្លងអាសយដ្ឋាន",
+
 }
 
 export function getCourseLocalized(course, field) {
