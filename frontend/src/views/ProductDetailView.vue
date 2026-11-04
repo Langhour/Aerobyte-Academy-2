@@ -181,16 +181,14 @@
                   v-if="isMoreMenuOpen"
                   class="absolute right-0 top-full mt-2 z-40 w-48 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-2xl p-1.5 select-none"
                 >
-                  <a
-                    :href="contactFellowLink"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    @click="isMoreMenuOpen = false"
-                    class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs sm:text-[13px] font-semibold text-slate-900 dark:text-white hover:bg-slate-100/80 dark:hover:bg-slate-800 transition cursor-pointer"
+                  <button
+                    type="button"
+                    @click="openContactFellowModal"
+                    class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs sm:text-[13px] font-semibold text-slate-900 dark:text-white hover:bg-slate-100/80 dark:hover:bg-slate-800 transition cursor-pointer text-left"
                   >
                     <MessageCircle class="w-4 h-4 text-slate-900 dark:text-white stroke-[2.2]" />
                     <span>{{ t('Contact Fellow') }}</span>
-                  </a>
+                  </button>
                 </div>
               </transition>
             </div>
@@ -912,6 +910,140 @@
       </div>
     </div>
 
+    <!-- ==========================================
+         CONTACT FELLOW MODAL (Matches user screenshot)
+         ========================================== -->
+    <Teleport to="body">
+      <transition
+        enter-active-class="transition ease-out duration-200"
+        enter-from-class="opacity-0"
+        enter-to-class="opacity-100"
+        leave-active-class="transition ease-in duration-150"
+        leave-from-class="opacity-100"
+        leave-to-class="opacity-0"
+      >
+        <div
+          v-if="isContactFellowModalOpen"
+          class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/45 backdrop-blur-[2px]"
+          @click.self="isContactFellowModalOpen = false"
+        >
+          <div
+            class="relative w-full max-w-[560px] rounded-[32px] bg-white dark:bg-slate-900 text-slate-900 dark:text-white p-7 sm:p-9 shadow-2xl border border-slate-100 dark:border-slate-800 select-none animate-in fade-in zoom-in-95 duration-200"
+          >
+            <!-- Header: Title & Circular Close Button -->
+            <div class="flex items-center justify-between pb-7 sm:pb-8">
+              <h3 class="text-xl sm:text-2xl font-black tracking-tight text-slate-900 dark:text-white">
+                {{ t('Contact Fellow') }}
+              </h3>
+              <button
+                type="button"
+                @click="isContactFellowModalOpen = false"
+                class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 flex items-center justify-center text-slate-700 dark:text-slate-300 transition active:scale-95 cursor-pointer"
+                aria-label="Close"
+              >
+                <X class="w-4 h-4 sm:w-4.5 sm:h-4.5 stroke-[2.5]" />
+              </button>
+            </div>
+
+            <!-- Content Grid: 2 Columns matching screenshot -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-5 gap-x-8 text-[13px] sm:text-sm font-semibold">
+              <!-- Left Column: Zendesk & Email -->
+              <div class="space-y-5">
+                <!-- Zendesk URL -->
+                <div class="flex items-center gap-2.5">
+                  <svg class="w-5 h-5 shrink-0 text-slate-800 dark:text-slate-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect width="18" height="13" x="2" y="3" rx="2.5" />
+                    <path d="M5 6.5h.01M7.5 6.5h.01M10 6.5h.01" />
+                    <path d="m14 15 5.5 2.5-2 1-.8 2z" />
+                  </svg>
+                  <a
+                    href="https://fellowproducts.zendesk.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="text-slate-900 dark:text-slate-100 hover:underline transition"
+                  >
+                    fellowproducts.zendesk.com
+                  </a>
+                  <button
+                    type="button"
+                    @click="copyToClipboard('fellowproducts.zendesk.com', 'zendesk')"
+                    class="p-0.5 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition cursor-pointer"
+                    :title="copiedField === 'zendesk' ? t('Copied!') : 'Copy'"
+                  >
+                    <Check v-if="copiedField === 'zendesk'" class="w-3.5 h-3.5 text-emerald-600 stroke-[2.5]" />
+                    <Copy v-else class="w-3.5 h-3.5 stroke-[2]" />
+                  </button>
+                </div>
+
+                <!-- Email -->
+                <div class="flex items-center gap-2.5">
+                  <Mail class="w-5 h-5 shrink-0 text-slate-800 dark:text-slate-200 stroke-[1.8]" />
+                  <a
+                    href="mailto:hello@fellowproducts.com"
+                    class="text-slate-900 dark:text-slate-100 hover:underline transition"
+                  >
+                    hello@fellowproducts.com
+                  </a>
+                  <button
+                    type="button"
+                    @click="copyToClipboard('hello@fellowproducts.com', 'email')"
+                    class="p-0.5 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition cursor-pointer"
+                    :title="copiedField === 'email' ? t('Copied!') : 'Copy'"
+                  >
+                    <Check v-if="copiedField === 'email'" class="w-3.5 h-3.5 text-emerald-600 stroke-[2.5]" />
+                    <Copy v-else class="w-3.5 h-3.5 stroke-[2]" />
+                  </button>
+                </div>
+              </div>
+
+              <!-- Right Column: Instagram & YouTube -->
+              <div class="space-y-5">
+                <!-- Instagram -->
+                <div class="flex items-center gap-2.5">
+                  <Instagram class="w-5 h-5 shrink-0 text-slate-800 dark:text-slate-200 stroke-[1.8]" />
+                  <a
+                    href="https://www.instagram.com/fellowproducts"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="text-slate-900 dark:text-slate-100 hover:underline transition"
+                  >
+                    Instagram
+                  </a>
+                </div>
+
+                <!-- YouTube -->
+                <div class="flex items-center gap-2.5">
+                  <Youtube class="w-5 h-5 shrink-0 text-slate-800 dark:text-slate-200 stroke-[1.8]" />
+                  <a
+                    href="https://www.youtube.com/@fellowproducts"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="text-slate-900 dark:text-slate-100 hover:underline transition"
+                  >
+                    YouTube
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <!-- Bottom Address with Copy Icon (Matching screenshot) -->
+            <div class="mt-14 sm:mt-16 pt-2 flex items-center gap-2 text-xs sm:text-[13px] text-slate-500 dark:text-slate-400 font-normal">
+              <span>320 Florida St, San Francisco, California 94110, United States</span>
+              <button
+                type="button"
+                @click="copyToClipboard('320 Florida St, San Francisco, California 94110, United States', 'address')"
+                class="p-0.5 text-slate-500 hover:text-slate-900 dark:hover:text-white transition cursor-pointer"
+                :title="copiedField === 'address' ? t('Copied!') : 'Copy address'"
+              >
+                <Check v-if="copiedField === 'address'" class="w-3.5 h-3.5 text-emerald-600 stroke-[2.5]" />
+                <Copy v-else class="w-3.5 h-3.5 stroke-[2]" />
+              </button>
+            </div>
+          </div>
+        </div>
+      </transition>
+    </Teleport>
+
     <!-- Toast Notification -->
     <div
       v-if="toastMessage"
@@ -942,7 +1074,11 @@ import {
   MessageSquare,
   Zap,
   Trash2,
-  X
+  X,
+  Mail,
+  Instagram,
+  Youtube,
+  Copy
 } from 'lucide-vue-next'
 import CustomSelect from '../components/common/CustomSelect.vue'
 import { getProductById, getRelatedProducts } from '../data/products'
@@ -969,6 +1105,41 @@ const {
 
 // Fetch product by route param :id
 const isMoreMenuOpen = ref(false)
+// Contact Fellow Modal State & Copy Helper
+const isContactFellowModalOpen = ref(false)
+const copiedField = ref('')
+
+const openContactFellowModal = () => {
+  isMoreMenuOpen.value = false
+  isContactFellowModalOpen.value = true
+}
+
+const copyToClipboard = async (text, field) => {
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      await navigator.clipboard.writeText(text)
+    } else {
+      const ta = document.createElement('textarea')
+      ta.value = text
+      ta.style.position = 'fixed'
+      ta.style.opacity = '0'
+      document.body.appendChild(ta)
+      ta.select()
+      document.execCommand('copy')
+      document.body.removeChild(ta)
+    }
+    copiedField.value = field
+    showToast(t('Copied!'))
+    setTimeout(() => {
+      if (copiedField.value === field) {
+        copiedField.value = ''
+      }
+    }, 2000)
+  } catch (e) {
+    console.error('Failed to copy', e)
+  }
+}
+
 const contactFellowLink = computed(() => {
   const pName = product.value ? product.value.name : 'Hardware Kit'
   const pPrice = product.value ? `$${product.value.priceUsd}` : ''
