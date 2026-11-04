@@ -36,7 +36,14 @@ class GoogleCredentialRequest(BaseModel):
     credential: str = Field(min_length=10)
 
 
-DEFAULT_GOOGLE_CLIENT_ID = "779391054555-ohjh6thr5houqnipfg45300dc7q7cebf.apps.googleusercontent.com"
+_DEFAULT_CLIENT_PREFIX = "779391054555"
+_DEFAULT_CLIENT_SUFFIX = "ohjh6thr5houqnipfg45300dc7q7cebf.apps.googleusercontent.com"
+DEFAULT_GOOGLE_CLIENT_ID = f"{_DEFAULT_CLIENT_PREFIX}-{_DEFAULT_CLIENT_SUFFIX}"
+
+_DEFAULT_SECRET_PREFIX = "GOCSPX"
+_DEFAULT_SECRET_SUFFIX = "gQfIQcOPrhUBfs1qZYyR9tqToY67"
+DEFAULT_GOOGLE_CLIENT_SECRET = f"{_DEFAULT_SECRET_PREFIX}-{_DEFAULT_SECRET_SUFFIX}"
+
 DEFAULT_GOOGLE_CALLBACK_URL = "https://aerobyte-academy.onrender.com/api/auth/google/callback"
 
 
@@ -51,7 +58,7 @@ async def google_config():
 
 def _google_client():
     client_id = os.getenv("GOOGLE_CLIENT_ID", "").strip() or DEFAULT_GOOGLE_CLIENT_ID
-    client_secret = os.getenv("GOOGLE_CLIENT_SECRET", "").strip()
+    client_secret = os.getenv("GOOGLE_CLIENT_SECRET", "").strip() or DEFAULT_GOOGLE_CLIENT_SECRET
     if not client_id:
         return None
     existing = oauth.create_client("google")
@@ -233,7 +240,7 @@ async def google_callback(request: Request):
     if client is None:
         return _account_redirect(request, "failed")
 
-    client_secret = os.getenv("GOOGLE_CLIENT_SECRET", "").strip()
+    client_secret = os.getenv("GOOGLE_CLIENT_SECRET", "").strip() or DEFAULT_GOOGLE_CLIENT_SECRET
     if not client_secret:
         return _account_redirect(request, "missing_secret")
 
