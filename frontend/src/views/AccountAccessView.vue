@@ -480,7 +480,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { ArrowLeft, Check, Eye, EyeOff, Mail, Moon, Sun, X } from 'lucide-vue-next'
 import { useLanguage } from '../i18n'
 import { useTheme } from '../composables/useTheme'
-import { accountService, adminService, getGoogleSignInUrl } from '../services/api'
+import { apiClient, accountService, adminService, getGoogleSignInUrl } from '../services/api'
 
 const route = useRoute()
 const router = useRouter()
@@ -887,7 +887,8 @@ function startGoogleSignIn() {
     sessionStorage.setItem('aerobyte_enroll_redirect', route.query.redirect)
   }
   googleLoading.value = true
-  window.location.assign(getGoogleSignInUrl())
+  const origin = window.location.origin
+  window.location.assign(`${getGoogleSignInUrl()}?return_origin=${encodeURIComponent(origin)}`)
 }
 
 function goToForgotPassword() {
@@ -907,6 +908,28 @@ function goToSignIn() {
 }
 
 onMounted(async () => {
+  if (route.query.handoff_token) {
+    submitting.value = true
+    try {
+      const res = await apiClient.post('/auth/google/handoff', {
+        token: route.query.handoff_token,
+      })
+      window.dispatchEvent(new Event('aerobyte-auth-updated'))
+      const savedRedirect = sessionStorage.getItem('aerobyte_enroll_redirect')
+      sessionStorage.removeItem('aerobyte_enroll_redirect')
+      const targetDest = (typeof route.query.redirect === 'string' && route.query.redirect.startsWith('/'))
+        ? route.query.redirect
+        : (savedRedirect || route.query.dest || (res.data?.role === 'admin' ? '/admin' : '/profile'))
+      await router.replace(targetDest)
+      return
+    } catch (err) {
+      isError.value = true
+      message.value = err.response?.data?.detail || t('Google sign-in could not be completed. Please try again.')
+    } finally {
+      submitting.value = false
+    }
+  }
+
   if (route.query.google_error) {
     isError.value = true
     if (route.query.google_error === 'missing_secret') {

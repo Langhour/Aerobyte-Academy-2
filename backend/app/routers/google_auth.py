@@ -35,6 +35,39 @@ class GoogleDirectLoginRequest(BaseModel):
 class GoogleCredentialRequest(BaseModel):
     credential: str = Field(min_length=10)
 
+class GoogleHandoffRequest(BaseModel):
+    token: str = Field(min_length=10)
+
+
+def _create_handoff_token(payload: dict) -> str:
+    import hmac, hashlib, json, time, base64
+    payload_copy = dict(payload)
+    payload_copy["exp"] = int(time.time()) + 180
+    data_b64 = base64.urlsafe_b64encode(json.dumps(payload_copy).encode()).decode()
+    secret = (os.getenv("GOOGLE_CLIENT_SECRET", "").strip() or DEFAULT_GOOGLE_CLIENT_SECRET).encode()
+    sig = hmac.new(secret, data_b64.encode(), hashlib.sha256).hexdigest()
+    return f"{data_b64}.{sig}"
+
+
+def _verify_handoff_token(token: str) -> Optional[dict]:
+    import hmac, hashlib, json, time, base64
+    parts = token.split(".")
+    if len(parts) != 2:
+        return None
+    data_b64, sig = parts
+    secret = (os.getenv("GOOGLE_CLIENT_SECRET", "").strip() or DEFAULT_GOOGLE_CLIENT_SECRET).encode()
+    expected_sig = hmac.new(secret, data_b64.encode(), hashlib.sha256).hexdigest()
+    if not hmac.compare_digest(sig, expected_sig):
+        return None
+    try:
+        payload = json.loads(base64.urlsafe_b64decode(data_b64).decode())
+        if payload.get("exp", 0) < time.time():
+            return None
+        return payload
+    except Exception:
+        return None
+
+
 
 _DEFAULT_CLIENT_PREFIX = "779391054555"
 _DEFAULT_CLIENT_SUFFIX = "ohjh6thr5houqnipfg45300dc7q7cebf.apps.googleusercontent.com"
@@ -96,31 +129,6 @@ def _google_callback_url(request: Request) -> str:
     custom = os.getenv("GOOGLE_CALLBACK_URL", "").strip()
     if custom:
         return custom
-
-    # Detect if request came from local development
-    host = request.headers.get("host", "").casefold()
-    referer = request.headers.get("referer", "").casefold()
-    origin = request.headers.get("origin", "").casefold()
-
-    is_local = any(
-        target in val
-        for target in ("localhost", "127.0.0.1")
-        for val in (host, referer, origin)
-    )
-
-    if is_local:
-        if "5173" in referer or "5173" in origin or "5173" in host:
-            return "http://localhost:5173/api/auth/google/callback"
-        return "http://localhost:8000/api/auth/google/callback"
-
-    proto = request.headers.get("x-forwarded-proto", "").casefold()
-    if "onrender.com" in host or proto == "https":
-        return DEFAULT_GOOGLE_CALLBACK_URL
-
-    configured = os.getenv("FRONTEND_URL", "").strip().rstrip("/")
-    if configured:
-        return f"{configured}/api/auth/google/callback"
-
     return DEFAULT_GOOGLE_CALLBACK_URL
 
 
@@ -130,14 +138,24 @@ def _account_redirect(request: Request, error: str | None = None) -> RedirectRes
 
 
 @router.get("/google/start", name="google_login")
-async def google_login(request: Request):
+async def google_login(request: Request, return_origin: Optional[str] = None):
     client = _google_client()
     if client is None:
         return _account_redirect(request, "failed")
     nonce = secrets.token_urlsafe(24)
     request.session["google_nonce"] = nonce
+
+    detected_origin = return_origin or request.headers.get("origin") or ""
+    if not detected_origin:
+        referer = request.headers.get("referer", "")
+        if referer:
+            parsed = urlsplit(referer)
+            if parsed.scheme and parsed.netloc:
+                detected_origin = f"{parsed.scheme}://{parsed.netloc}"
+
+    state_val = f"orig_{detected_origin}" if detected_origin else secrets.token_urlsafe(16)
     callback_url = _google_callback_url(request)
-    return await client.authorize_redirect(request, callback_url, nonce=nonce)
+    return await client.authorize_redirect(request, callback_url, nonce=nonce, state=state_val)
 
 
 @router.post("/google/direct")
@@ -186,6 +204,93 @@ async def google_direct_login(payload: GoogleDirectLoginRequest, request: Reques
             created_at=datetime.now(timezone.utc).isoformat(),
         )
         user = find_user_by_id(user_id)
+
+    mark_user_verified(user["id"])
+    request.session["role"] = "user"
+    request.session["user_id"] = user["id"]
+    try:
+        forwarded = request.headers.get("x-forwarded-for")
+        ip = forwarded.split(",")[0].strip() if forwarded else (request.client.host if request.client else "Unknown")
+        ua = request.headers.get("user-agent", "Unknown")
+        log_login_event(
+            user_id=user["id"],
+            user_email=user["email"],
+            user_name=user["full_name"],
+            role="User",
+            login_method="Google Sign-In",
+            ip_address=ip,
+            user_agent=ua,
+            status="success",
+        )
+    except Exception:
+        pass
+
+    return {
+        "authenticated": True,
+        "role": "user",
+        "redirect": "/profile",
+        "user": {
+            "id": user["id"],
+            "name": user["full_name"],
+            "email": user["email"],
+        },
+    }
+
+
+@router.post("/google/handoff")
+async def google_handoff_login(payload: GoogleHandoffRequest, request: Request):
+    data = _verify_handoff_token(payload.token.strip())
+    if not data or not isinstance(data, dict):
+        raise HTTPException(status_code=400, detail="Invalid or expired Google sign-in session.")
+
+    email = str(data.get("email", "")).strip().casefold()
+    role = str(data.get("role", "user")).strip()
+    name = str(data.get("name", "")).strip() or email.partition("@")[0].title()
+    subject = str(data.get("sub", "")).strip()
+
+    request.session.clear()
+
+    admin_email = os.getenv("ADMIN_EMAIL", "aerobyte.academy@gmail.com").strip().casefold()
+    if role == "admin" or (admin_email and email == admin_email):
+        request.session["role"] = "admin"
+        request.session["csrf"] = secrets.token_urlsafe(24)
+        try:
+            forwarded = request.headers.get("x-forwarded-for")
+            ip = forwarded.split(",")[0].strip() if forwarded else (request.client.host if request.client else "Unknown")
+            ua = request.headers.get("user-agent", "Unknown")
+            log_login_event(
+                user_id="admin",
+                user_email=email,
+                user_name="Administrator",
+                role="Admin",
+                login_method="Google Sign-In",
+                ip_address=ip,
+                user_agent=ua,
+                status="success",
+            )
+        except Exception:
+            pass
+        return {"authenticated": True, "role": "admin", "redirect": "/admin"}
+
+    user = None
+    if subject:
+        user = find_user_by_google_sub(subject)
+    if user is None:
+        user = find_user_by_email(email)
+        if user is not None and subject:
+            link_google_user(user["id"], subject)
+        elif user is None:
+            user_id = str(uuid4())
+            sub = subject or f"google-{uuid4().hex[:16]}"
+            create_google_user(
+                user_id=user_id,
+                email=email,
+                full_name=name[:120],
+                password_hash=hash_user_password(secrets.token_urlsafe(48)),
+                google_sub=sub,
+                created_at=datetime.now(timezone.utc).isoformat(),
+            )
+            user = find_user_by_id(user_id)
 
     mark_user_verified(user["id"])
     request.session["role"] = "user"
@@ -279,6 +384,26 @@ async def google_callback(request: Request):
         return _account_redirect(request, "unverified")
 
     admin_email = os.getenv("ADMIN_EMAIL", "").strip().casefold()
+    is_admin = bool(admin_email and email == admin_email)
+    dest = "/admin" if is_admin else "/profile"
+
+    state_param = request.query_params.get("state", "")
+    return_origin = ""
+    if state_param.startswith("orig_"):
+        return_origin = state_param[5:].strip()
+
+    if return_origin and any(local_host in return_origin for local_host in ("localhost", "127.0.0.1")):
+        handoff_token = _create_handoff_token({
+            "email": email,
+            "role": "admin" if is_admin else "user",
+            "name": str(claims.get("name", "")).strip() or email.partition("@")[0].title(),
+            "sub": subject,
+        })
+        return RedirectResponse(
+            f"{return_origin}/account?handoff_token={handoff_token}&dest={dest}",
+            status_code=303,
+        )
+
     request.session.clear()
     if admin_email and email == admin_email:
         request.session["role"] = "admin"

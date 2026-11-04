@@ -4,7 +4,7 @@ const localApiHost = typeof window !== 'undefined' ? window.location.hostname : 
 const isLocalDev = typeof window !== 'undefined' && (window.location.port === '5173' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
 const fallbackBaseUrl = isLocalDev && window.location.port === '5173' ? `http://${localApiHost}:8000/api` : '/api'
 
-const apiClient = axios.create({
+export const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || fallbackBaseUrl,
   withCredentials: true,
   headers: {
@@ -110,6 +110,10 @@ export function getGoogleAuthConfig() {
 
 export function googleCredentialLogin(credential) {
   return apiClient.post('/auth/google/credential', { credential })
+}
+
+export function googleHandoffLogin(token) {
+  return apiClient.post('/auth/google/handoff', { token })
 }
 
 export function googleDirectLogin(payload) {
