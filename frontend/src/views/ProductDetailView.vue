@@ -12,21 +12,21 @@
       <!-- Subtle Tech Dot/Grid Mesh (Hardware / Maker Lab aesthetic) -->
       <div class="absolute inset-0 bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] dark:bg-[radial-gradient(#334155_1px,transparent_1px)] [background-size:24px_24px] opacity-40 dark:opacity-25 [mask-image:radial-gradient(ellipse_75%_50%_at_50%_0%,#000_60%,transparent_100%)]"></div>
     </div>
-    <!-- Top Breadcrumb & Back Bar -->
-    <div class="border-b border-slate-200/70 dark:border-slate-800/80 sticky top-0 z-30 backdrop-blur-md bg-white/80 dark:bg-slate-950/80">
-      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
+    <!-- Top Breadcrumb & Back Bar (No background, compact shorter height) -->
+    <div class="relative z-20 bg-transparent">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-1.5 sm:py-2 flex items-center justify-between">
         <nav class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 truncate">
           <RouterLink
             to="/store"
-            class="inline-flex items-center gap-1.5 font-bold text-slate-700 dark:text-slate-200 hover:text-[#1a275c] dark:hover:text-sky-400 transition"
+            class="inline-flex items-center gap-1 font-bold text-slate-700 dark:text-slate-200 hover:text-[#1a275c] dark:hover:text-sky-400 transition"
           >
-            <ChevronLeft class="w-4 h-4" />
+            <ChevronLeft class="w-3.5 h-3.5" />
             <span>{{ t('Back to Store') }}</span>
           </RouterLink>
           <span class="text-slate-300 dark:text-slate-700">/</span>
           <span class="text-slate-400 truncate hidden sm:inline">{{ product?.category }}</span>
           <span class="text-slate-300 dark:text-slate-700 hidden sm:inline">/</span>
-          <span class="text-slate-900 dark:text-white font-semibold truncate max-w-[200px] sm:max-w-xs">{{ product?.name }}</span>
+          <span class="text-slate-900 dark:text-white font-semibold truncate max-w-[180px] sm:max-w-xs">{{ product?.name }}</span>
         </nav>
 
         <!-- Right Tools: Wishlist & Bag Button -->
@@ -35,12 +35,12 @@
             type="button"
             @click="isWishlistOpen = true"
             :title="t('Favorites & Wishlist')"
-            class="relative h-9 w-9 rounded-full border border-slate-200 dark:border-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition cursor-pointer"
+            class="relative h-8 w-8 rounded-full border border-slate-200/80 dark:border-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-slate-100/70 dark:hover:bg-slate-800 transition cursor-pointer"
           >
-            <Heart class="w-4 h-4 text-slate-700 dark:text-slate-200" />
+            <Heart class="w-3.5 h-3.5 text-slate-700 dark:text-slate-200" />
             <span
               v-if="favoritesCount > 0"
-              class="absolute -top-1 -right-1 h-4 min-w-[16px] px-1 rounded-full bg-rose-500 text-white text-[9px] font-extrabold flex items-center justify-center shadow-xs"
+              class="absolute -top-1 -right-1 h-3.5 min-w-[14px] px-0.5 rounded-full bg-rose-500 text-white text-[8px] font-extrabold flex items-center justify-center shadow-xs"
             >
               {{ favoritesCount }}
             </span>
@@ -49,13 +49,13 @@
           <button
             type="button"
             @click="isCartOpen = true"
-            class="relative h-9 px-3.5 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-xs font-bold flex items-center gap-1.5 hover:opacity-90 transition cursor-pointer"
+            class="relative h-8 px-3 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-xs font-bold flex items-center gap-1.5 hover:opacity-90 transition cursor-pointer shadow-xs"
           >
             <ShoppingBag class="w-3.5 h-3.5" />
             <span>{{ t('Bag') }}</span>
             <span
               v-if="totalCartItemsCount > 0"
-              class="ml-0.5 px-1.5 py-0.2 rounded-full bg-indigo-500 text-white text-[10px] font-extrabold"
+              class="ml-0.5 px-1.5 py-0.2 rounded-full bg-indigo-500 text-white text-[9px] font-extrabold"
             >
               {{ totalCartItemsCount }}
             </span>
