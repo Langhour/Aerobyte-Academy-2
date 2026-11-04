@@ -275,13 +275,20 @@
 
 
 
+        <!-- Backdrop to close dropdowns when clicking outside -->
+        <div
+          v-if="isSortDropdownOpen || isPriceDropdownOpen"
+          class="fixed inset-0 z-40 bg-black/5 backdrop-blur-[0.5px] cursor-default"
+          @click="closeDropdowns"
+        ></div>
+
         <!-- Shop.com Quick Filters Row (Exact Match to Reference Screenshots) -->
         <div class="mt-5 flex flex-wrap items-center justify-between gap-3 relative z-30 overflow-visible py-1">
           <div class="flex items-center gap-2 sm:gap-2.5 shrink-0">
             <!-- 1. Circular Filter Icon Button (Opens Filters Modal - Image 1) -->
             <button
               type="button"
-              @click="isFiltersModalOpen = true"
+              @click="openFiltersModal"
               :title="t('Filters')"
               class="h-9 w-9 sm:h-10 sm:w-10 rounded-full flex items-center justify-center transition-all cursor-pointer relative shrink-0 active:scale-95"
               :class="activeFiltersCount > 0
@@ -468,6 +475,34 @@
                         />
                         <span v-if="priceMax >= 100" class="text-xs font-bold text-slate-400 ml-0.5">+</span>
                       </div>
+                    </div>
+
+                    <!-- Quick Price Presets -->
+                    <div class="flex items-center gap-1.5 pt-1">
+                      <button
+                        type="button"
+                        @click="priceMin = 0; priceMax = 25"
+                        class="flex-1 py-1 px-2 rounded-full text-[11px] font-semibold transition cursor-pointer text-center"
+                        :class="priceMin === 0 && priceMax === 25 ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-bold shadow-xs' : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700'"
+                      >
+                        {{ t('Under $25') }}
+                      </button>
+                      <button
+                        type="button"
+                        @click="priceMin = 25; priceMax = 50"
+                        class="flex-1 py-1 px-2 rounded-full text-[11px] font-semibold transition cursor-pointer text-center"
+                        :class="priceMin === 25 && priceMax === 50 ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-bold shadow-xs' : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700'"
+                      >
+                        $25 - $50
+                      </button>
+                      <button
+                        type="button"
+                        @click="priceMin = 50; priceMax = 100"
+                        class="flex-1 py-1 px-2 rounded-full text-[11px] font-semibold transition cursor-pointer text-center"
+                        :class="priceMin === 50 && priceMax === 100 ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-bold shadow-xs' : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700'"
+                      >
+                        {{ t('Over $50') }}
+                      </button>
                     </div>
                   </div>
 
@@ -2159,6 +2194,21 @@ function handlePriceMaxChange() {
 function resetPriceFilter() {
   priceMin.value = 0
   priceMax.value = 100
+}
+
+function toggleSortDropdown() {
+  isPriceDropdownOpen.value = false
+  isSortDropdownOpen.value = !isSortDropdownOpen.value
+}
+
+function togglePriceDropdown() {
+  isSortDropdownOpen.value = false
+  isPriceDropdownOpen.value = !isPriceDropdownOpen.value
+}
+
+function openFiltersModal() {
+  closeDropdowns()
+  isFiltersModalOpen.value = true
 }
 
 function closeDropdowns() {

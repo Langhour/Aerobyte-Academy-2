@@ -92,19 +92,6 @@
 
           <!-- Main Hero Image Showcase Box (Rounded-3xl, centered hero & Cosmopolitan style badge!) -->
           <div class="relative flex-1 w-full rounded-[28px] sm:rounded-[36px] bg-[#f8f9fa] dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 p-8 sm:p-14 min-h-[400px] sm:min-h-[560px] flex items-center justify-center overflow-hidden order-1 sm:order-2 shadow-2xs select-none">
-            
-            <!-- In-Stock / Pre-Order Badge (Top Left) -->
-            <div class="absolute top-5 left-5 z-20">
-              <span
-                class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold backdrop-blur-md shadow-2xs"
-                :class="product.inStock
-                  ? 'bg-emerald-50 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 border border-emerald-200/70 dark:border-emerald-800'
-                  : 'bg-amber-50 dark:bg-amber-950/80 text-amber-700 dark:text-amber-300 border border-amber-200/70 dark:border-amber-800'"
-              >
-                <span class="h-2 w-2 rounded-full" :class="product.inStock ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'"></span>
-                <span>{{ product.inStock ? `${product.stockCount} ${t('in stock')}` : t('Pre-Order') }}</span>
-              </span>
-            </div>
 
             <!-- Authentic Award / Recognition Seal (Top Right - Exact match to Cosmopolitan badge in screenshot!) -->
             <div
