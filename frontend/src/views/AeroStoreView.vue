@@ -429,7 +429,7 @@
                     <div class="relative w-full h-8 flex items-center select-none my-1">
                       <div class="absolute left-0 right-0 h-1.5 rounded-full bg-slate-200 dark:bg-slate-700 pointer-events-none"></div>
                       <div
-                        class="absolute h-1.5 rounded-full bg-navy-900 dark:bg-sky-500 pointer-events-none"
+                        class="absolute h-1.5 rounded-full bg-[#1a275c] dark:bg-sky-500 pointer-events-none"
                         :style="{
                           left: `${(priceMin / 100) * 100}%`,
                           right: `${100 - (priceMax / 100) * 100}%`
@@ -686,7 +686,7 @@
                 <div class="relative w-full h-8 flex items-center select-none my-1">
                   <div class="absolute left-0 right-0 h-1.5 rounded-full bg-slate-200 dark:bg-slate-700"></div>
                   <div
-                    class="absolute h-1.5 rounded-full bg-navy-900 dark:bg-sky-500"
+                    class="absolute h-1.5 rounded-full bg-[#1a275c] dark:bg-sky-500"
                     :style="{
                       left: `${(priceMin / 100) * 100}%`,
                       right: `${100 - (priceMax / 100) * 100}%`
@@ -850,7 +850,7 @@
                 type="button"
                 @click.stop.prevent="addToCart(item)"
                 :title="t('Add to Bag')"
-                class="h-7 w-7 sm:h-8 sm:w-8 rounded-full bg-slate-900 hover:bg-slate-800 text-white flex items-center justify-center shadow-md transition-all duration-200 cursor-pointer active:scale-90 transform translate-y-1 sm:translate-y-2 group-hover:translate-y-0 opacity-90 sm:opacity-0 sm:group-hover:opacity-100"
+                class="h-7 w-7 sm:h-8 sm:w-8 rounded-full bg-[#102a49] hover:bg-[#1a275c] text-white flex items-center justify-center shadow-md transition-all duration-200 cursor-pointer active:scale-90 transform translate-y-1 sm:translate-y-2 group-hover:translate-y-0 opacity-90 sm:opacity-0 sm:group-hover:opacity-100"
               >
                 <ShoppingCart class="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               </button>
@@ -874,14 +874,14 @@
 
           <div class="mt-2.5 sm:mt-3 px-0.5 space-y-1">
             <!-- Brand / Category Name (Uniform 1-line height) -->
-            <div class="text-[11px] sm:text-xs font-medium text-slate-400 dark:text-slate-500 truncate h-4 flex items-center">
+            <div class="text-[11px] sm:text-xs font-semibold text-[#1a275c] dark:text-sky-400 truncate h-4 flex items-center">
               {{ item.brand || item.category }}
             </div>
 
             <!-- Product Title (Consistent 2-line height so all cards align on the exact same line) -->
             <RouterLink
               :to="`/store/${item.id}`"
-              class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white line-clamp-2 leading-snug h-8 sm:h-10 hover:text-navy-600 dark:hover:text-sky-400 transition cursor-pointer flex items-start"
+              class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white line-clamp-2 leading-snug h-8 sm:h-10 hover:text-[#1a275c] group-hover:text-[#1a275c] dark:hover:text-sky-400 dark:group-hover:text-sky-400 transition cursor-pointer flex items-start"
             >
               {{ item.name }}
             </RouterLink>
@@ -3323,7 +3323,7 @@ const cartTelegramCheckoutLink = computed(() => {
   width: 18px;
   height: 18px;
   border-radius: 9999px;
-  background-color: #102a49;
+  background-color: #1a275c;
   border: 2px solid #ffffff;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
   cursor: pointer;
@@ -3337,7 +3337,7 @@ const cartTelegramCheckoutLink = computed(() => {
   width: 18px;
   height: 18px;
   border-radius: 9999px;
-  background-color: #102a49;
+  background-color: #1a275c;
   border: 2px solid #ffffff;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
   cursor: pointer;

@@ -6,7 +6,7 @@
         <nav class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 truncate">
           <RouterLink
             to="/store"
-            class="inline-flex items-center gap-1.5 font-bold text-slate-700 dark:text-slate-200 hover:text-navy-600 dark:hover:text-sky-400 transition"
+            class="inline-flex items-center gap-1.5 font-bold text-slate-700 dark:text-slate-200 hover:text-[#1a275c] dark:hover:text-sky-400 transition"
           >
             <ChevronLeft class="w-4 h-4" />
             <span>{{ t('Back to Store') }}</span>
@@ -286,7 +286,7 @@
             <button
               type="button"
               @click="handleAddToCart"
-              class="w-full py-4 rounded-full bg-navy-900 hover:bg-navy-800 text-white font-extrabold text-sm tracking-wide shadow-lg hover:shadow-navy-900/25 active:scale-[0.99] transition-all cursor-pointer flex items-center justify-center gap-2"
+              class="w-full py-4 rounded-full bg-[#102a49] hover:bg-[#1a275c] text-white font-extrabold text-sm tracking-wide shadow-lg hover:shadow-navy-900/25 active:scale-[0.99] transition-all cursor-pointer flex items-center justify-center gap-2"
             >
               <ShoppingBag class="w-4 h-4" />
               <span>{{ t('Add to cart') }}</span>
@@ -675,8 +675,8 @@
               </span>
             </div>
             <div class="mt-2.5 px-0.5 space-y-1">
-              <div class="text-[10px] text-slate-400 font-medium truncate h-4 flex items-center">{{ rel.brand || rel.category }}</div>
-              <h4 class="text-xs font-bold text-slate-900 dark:text-white line-clamp-2 leading-snug h-8 group-hover:text-navy-600 dark:group-hover:text-sky-400 flex items-start">
+              <div class="text-[10px] text-[#1a275c] dark:text-sky-400 font-semibold truncate h-4 flex items-center">{{ rel.brand || rel.category }}</div>
+              <h4 class="text-xs font-bold text-slate-900 dark:text-white line-clamp-2 leading-snug h-8 group-hover:text-[#1a275c] dark:group-hover:text-sky-400 flex items-start">
                 {{ rel.name }}
               </h4>
               <div class="text-xs font-black text-slate-900 dark:text-white">
