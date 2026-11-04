@@ -538,6 +538,18 @@
             >
               <span>{{ t('In-stock') }}</span>
             </button>
+
+            <!-- 6. Active Category Pill (If Selected) -->
+            <button
+              v-if="selectedCategory !== 'All'"
+              type="button"
+              @click="selectedCategory = 'All'"
+              class="h-9 sm:h-10 px-4 rounded-full text-xs sm:text-[13px] font-semibold flex items-center gap-2 transition-all cursor-pointer whitespace-nowrap active:scale-95 select-none bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm"
+              :title="t('Click to clear category')"
+            >
+              <span>{{ t(selectedCategory) }}</span>
+              <X class="w-3.5 h-3.5 opacity-70 hover:opacity-100" />
+            </button>
           </div>
 
           <!-- Active Filters Summary & Reset -->
@@ -616,6 +628,40 @@
                 >
                   {{ t('In-stock') }}
                 </button>
+              </div>
+
+              <!-- Categories Section -->
+              <div class="space-y-3">
+                <div class="flex items-center justify-between">
+                  <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider">{{ t('Categories') }}</h3>
+                  <span v-if="selectedCategory !== 'All'" class="text-[11px] font-semibold text-slate-400">
+                    {{ t(selectedCategory) }}
+                  </span>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    @click="selectedCategory = 'All'"
+                    class="h-9 px-3.5 rounded-full text-xs font-semibold transition active:scale-95 cursor-pointer whitespace-nowrap"
+                    :class="selectedCategory === 'All'
+                      ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-bold shadow-xs'
+                      : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-750 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700'"
+                  >
+                    {{ t('All') }} ({{ products.length }})
+                  </button>
+                  <button
+                    v-for="cat in categoryList"
+                    :key="cat"
+                    type="button"
+                    @click="selectedCategory = cat"
+                    class="h-9 px-3.5 rounded-full text-xs font-semibold transition active:scale-95 cursor-pointer whitespace-nowrap"
+                    :class="selectedCategory === cat
+                      ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-bold shadow-xs'
+                      : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-750 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700'"
+                  >
+                    {{ t(cat) }}
+                  </button>
+                </div>
               </div>
 
               <!-- 2. Sort by Pills -->
@@ -2151,6 +2197,7 @@ const priceMax = ref(100)
 
 const activeFiltersCount = computed(() => {
   let count = 0
+  if (selectedCategory.value !== 'All') count++
   if (inStockOnly.value) count++
   if (onSaleOnly.value) count++
   if (priceMin.value > 0 || priceMax.value < 100) count++
