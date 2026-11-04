@@ -45,7 +45,7 @@
         :key="String(option.value)"
         type="button"
         @click="selectOption(option.value)"
-        class="flex w-full items-center justify-between rounded-xl px-3 py-2 text-xs transition cursor-pointer text-left"
+        class="flex w-full items-center rounded-xl px-3 py-2 text-xs transition cursor-pointer text-left"
         :class="modelValue === option.value
           ? 'bg-navy-50 dark:bg-slate-700 text-navy-900 dark:text-white font-bold'
           : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700/60 hover:text-navy-900 dark:hover:text-white font-medium'"
@@ -53,10 +53,6 @@
         :aria-selected="modelValue === option.value"
       >
         <span class="truncate">{{ option.label }}</span>
-        <Check
-          v-if="modelValue === option.value"
-          class="w-4 h-4 text-navy-900 dark:text-white shrink-0 ml-2"
-        />
       </button>
     </div>
   </div>
@@ -64,7 +60,7 @@
 
 <script setup>
 import { computed, onMounted, onUnmounted, ref } from 'vue'
-import { Check, ChevronDown } from 'lucide-vue-next'
+import { ChevronDown } from 'lucide-vue-next'
 
 const props = defineProps({
   modelValue: {
