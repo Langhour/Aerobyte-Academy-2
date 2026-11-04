@@ -640,20 +640,10 @@
                 </div>
                 <div class="flex flex-wrap gap-2">
                   <button
-                    type="button"
-                    @click="selectedCategory = 'All'"
-                    class="h-9 px-3.5 rounded-full text-xs font-semibold transition active:scale-95 cursor-pointer whitespace-nowrap"
-                    :class="selectedCategory === 'All'
-                      ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-bold shadow-xs'
-                      : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-750 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700'"
-                  >
-                    {{ t('All') }} ({{ products.length }})
-                  </button>
-                  <button
                     v-for="cat in categoryList"
                     :key="cat"
                     type="button"
-                    @click="selectedCategory = cat"
+                    @click="selectedCategory = selectedCategory === cat ? 'All' : cat"
                     class="h-9 px-3.5 rounded-full text-xs font-semibold transition active:scale-95 cursor-pointer whitespace-nowrap"
                     :class="selectedCategory === cat
                       ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-bold shadow-xs'
