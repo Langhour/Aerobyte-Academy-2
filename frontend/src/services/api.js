@@ -1,9 +1,11 @@
 import axios from 'axios'
 
 const localApiHost = typeof window !== 'undefined' ? window.location.hostname : 'localhost'
+const isLocalDev = typeof window !== 'undefined' && (window.location.port === '5173' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+const fallbackBaseUrl = isLocalDev && window.location.port === '5173' ? `http://${localApiHost}:8000/api` : '/api'
 
 const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || `http://${localApiHost}:8000/api`,
+  baseURL: import.meta.env.VITE_API_BASE_URL || fallbackBaseUrl,
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
@@ -95,7 +97,11 @@ export const accountService = {
 }
 
 export function getGoogleSignInUrl() {
-  return `${apiClient.defaults.baseURL}/auth/google/start`
+  const base = apiClient.defaults.baseURL || '/api'
+  if (base.startsWith('http://') || base.startsWith('https://')) {
+    return `${base}/auth/google/start`
+  }
+  return `/api/auth/google/start`
 }
 
 export function getGoogleAuthConfig() {

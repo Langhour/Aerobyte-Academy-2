@@ -36,19 +36,22 @@ class GoogleCredentialRequest(BaseModel):
     credential: str = Field(min_length=10)
 
 
+DEFAULT_GOOGLE_CLIENT_ID = "779391054555-ohjh6thr5houqnipfg45300dc7q7cebf.apps.googleusercontent.com"
+
+
 @router.get("/google/config")
 async def google_config():
-    client_id = os.getenv("GOOGLE_CLIENT_ID", "").strip()
+    client_id = os.getenv("GOOGLE_CLIENT_ID", "").strip() or DEFAULT_GOOGLE_CLIENT_ID
     return {
-        "configured": bool(client_id and os.getenv("GOOGLE_CLIENT_SECRET", "").strip()),
+        "configured": bool(client_id),
         "client_id": client_id,
     }
 
 
 def _google_client():
-    client_id = os.getenv("GOOGLE_CLIENT_ID", "").strip()
+    client_id = os.getenv("GOOGLE_CLIENT_ID", "").strip() or DEFAULT_GOOGLE_CLIENT_ID
     client_secret = os.getenv("GOOGLE_CLIENT_SECRET", "").strip()
-    if not client_id or not client_secret:
+    if not client_id:
         return None
     existing = oauth.create_client("google")
     if existing is not None:
@@ -102,7 +105,7 @@ def _account_redirect(request: Request, error: str | None = None) -> RedirectRes
 async def google_login(request: Request):
     client = _google_client()
     if client is None:
-        return RedirectResponse(f"{_frontend_origin(request)}/account?mode=google", status_code=303)
+        return _account_redirect(request, "failed")
     nonce = secrets.token_urlsafe(24)
     request.session["google_nonce"] = nonce
     callback_url = _google_callback_url(request)

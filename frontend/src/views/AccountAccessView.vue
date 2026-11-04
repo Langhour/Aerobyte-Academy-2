@@ -67,10 +67,10 @@
         </RouterLink>
 
         <h1 class="text-2xl font-bold leading-tight tracking-tight text-slate-950 dark:text-white sm:text-[1.65rem]">
-          {{ isGoogle ? t('Sign in with Google') : isForgot ? t('Forgot your password?') : isReset ? t('Choose a new password') : isVerify ? t('Verify your email') : isRegister ? t('Create your account') : t('Welcome back') }}
+          {{ isForgot ? t('Forgot your password?') : isReset ? t('Choose a new password') : isVerify ? t('Verify your email') : isRegister ? t('Create your account') : t('Welcome back') }}
         </h1>
         <p class="mt-0.5 text-xs sm:text-[13px] leading-snug text-slate-700 dark:text-slate-300">
-          {{ isGoogle ? t('Enter your Google email to continue.') : isForgot ? t('Enter your email and we will send you a password reset link.') : isReset ? t('Choose a new password for your account.') : isVerify ? t('Enter the 6-digit verification code sent to your email.') : isRegister ? t('Register to keep your course information together.') : t('Nice to see you again! Please sign in to continue.') }}
+          {{ isForgot ? t('Enter your email and we will send you a password reset link.') : isReset ? t('Choose a new password for your account.') : isVerify ? t('Enter the 6-digit verification code sent to your email.') : isRegister ? t('Register to keep your course information together.') : t('Nice to see you again! Please sign in to continue.') }}
         </p>
 
         <!-- Informative notice when redirected from course enrollment -->
@@ -315,72 +315,6 @@
           </div>
         </form>
 
-        <!-- Google Direct Auto Sign-In Section -->
-        <div v-else-if="isGoogle" class="mt-2.5 sm:mt-3 space-y-3">
-          <div class="space-y-2">
-            <!-- Langhour Account -->
-            <button
-              type="button"
-              @click="performGoogleAutoLogin('lghr5002@gmail.com', 'Langhour')"
-              :disabled="submitting"
-              class="w-full flex items-center justify-between p-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/80 hover:bg-blue-50/60 dark:hover:bg-slate-750 hover:border-blue-400 dark:hover:border-blue-500 shadow-xs transition group cursor-pointer text-left"
-            >
-              <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-blue-600 text-white font-black flex items-center justify-center text-sm shadow-xs shrink-0">
-                  L
-                </div>
-                <div class="truncate">
-                  <div class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition truncate">
-                    Langhour
-                  </div>
-                  <div class="text-[11px] text-slate-500 dark:text-slate-400 truncate">
-                    lghr5002@gmail.com
-                  </div>
-                </div>
-              </div>
-              <span class="text-xs font-semibold text-blue-600 dark:text-blue-400 opacity-90 group-hover:opacity-100 flex items-center gap-1 shrink-0 ml-2">
-                {{ t('Auto Sign in') }} →
-              </span>
-            </button>
-
-            <!-- Admin Account -->
-            <button
-              type="button"
-              @click="performGoogleAutoLogin('aerobyte.academy@gmail.com', 'AeroByte Administrator')"
-              :disabled="submitting"
-              class="w-full flex items-center justify-between p-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/80 hover:bg-blue-50/60 dark:hover:bg-slate-750 hover:border-blue-400 dark:hover:border-blue-500 shadow-xs transition group cursor-pointer text-left"
-            >
-              <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-[#102a49] text-white font-black flex items-center justify-center text-sm shadow-xs shrink-0">
-                  <Shield class="w-5 h-5 text-amber-400" />
-                </div>
-                <div class="truncate">
-                  <div class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition flex items-center gap-1.5">
-                    <span class="truncate">AeroByte Academy</span>
-                    <span class="px-1.5 py-0.2 rounded text-[9px] font-bold bg-amber-100 dark:bg-amber-950/80 text-amber-700 dark:text-amber-300 shrink-0">Admin</span>
-                  </div>
-                  <div class="text-[11px] text-slate-500 dark:text-slate-400 truncate">
-                    aerobyte.academy@gmail.com
-                  </div>
-                </div>
-              </div>
-              <span class="text-xs font-semibold text-blue-600 dark:text-blue-400 opacity-90 group-hover:opacity-100 flex items-center gap-1 shrink-0 ml-2">
-                {{ t('Auto Sign in') }} →
-              </span>
-            </button>
-          </div>
-
-          <div class="pt-2 flex items-center justify-between gap-2">
-            <button
-              type="button"
-              class="text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-300 underline underline-offset-2 hover:text-navy-900 dark:hover:text-white cursor-pointer"
-              @click="goToSignIn"
-            >
-              {{ t('Back to sign in') }}
-            </button>
-          </div>
-        </div>
-
         <form v-else class="mt-2.5 sm:mt-3 space-y-2 sm:space-y-2.5" @submit.prevent="submitAccountForm">
           <label v-if="isRegister" class="block">
             <span class="mb-1 block text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-200">{{ t('Full name') }}</span>
@@ -549,165 +483,16 @@
 
       </div>
     </section>
-    <!-- Google 1-Tap Auto Sign-In Chooser Modal -->
-    <div
-      v-if="isGoogleModalOpen"
-      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs transition-opacity"
-      @click.self="isGoogleModalOpen = false"
-    >
-      <div class="relative w-full max-w-sm rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl p-6 space-y-4 animate-in fade-in zoom-in-95 duration-200">
-        <button
-          type="button"
-          @click="isGoogleModalOpen = false"
-          class="absolute top-4 right-4 p-1.5 rounded-full text-slate-400 hover:text-slate-600 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
-        >
-          <X class="w-4 h-4" />
-        </button>
-
-        <!-- Header -->
-        <div class="text-center space-y-1.5 pt-1">
-          <img src="/google-icon.png" alt="Google" class="w-9 h-9 mx-auto object-contain" />
-          <h3 class="text-base font-bold text-slate-900 dark:text-white">
-            {{ t('Sign in with Google') }}
-          </h3>
-          <p class="text-xs text-slate-500 dark:text-slate-400">
-            {{ t('Choose an account to continue to AeroByte Academy') }}
-          </p>
-        </div>
-
-        <!-- Account Options -->
-        <div class="space-y-2 pt-1">
-          <!-- Langhour Account -->
-          <button
-            type="button"
-            @click="performGoogleAutoLogin('lghr5002@gmail.com', 'Langhour')"
-            :disabled="submitting"
-            class="w-full flex items-center justify-between p-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/80 hover:bg-blue-50/60 dark:hover:bg-slate-750 hover:border-blue-400 dark:hover:border-blue-500 shadow-xs transition group cursor-pointer text-left"
-          >
-            <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-full bg-blue-600 text-white font-black flex items-center justify-center text-sm shadow-xs shrink-0">
-                L
-              </div>
-              <div class="truncate">
-                <div class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition truncate">
-                  Langhour
-                </div>
-                <div class="text-[11px] text-slate-500 dark:text-slate-400 truncate">
-                  lghr5002@gmail.com
-                </div>
-              </div>
-            </div>
-            <span class="text-xs font-semibold text-blue-600 dark:text-blue-400 opacity-90 group-hover:opacity-100 flex items-center gap-1 shrink-0 ml-2">
-              {{ t('Auto') }} →
-            </span>
-          </button>
-
-          <!-- Admin Account -->
-          <button
-            type="button"
-            @click="performGoogleAutoLogin('aerobyte.academy@gmail.com', 'AeroByte Administrator')"
-            :disabled="submitting"
-            class="w-full flex items-center justify-between p-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/80 hover:bg-blue-50/60 dark:hover:bg-slate-750 hover:border-blue-400 dark:hover:border-blue-500 shadow-xs transition group cursor-pointer text-left"
-          >
-            <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-full bg-[#102a49] text-white font-black flex items-center justify-center text-sm shadow-xs shrink-0">
-                <Shield class="w-5 h-5 text-amber-400" />
-              </div>
-              <div class="truncate">
-                <div class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition flex items-center gap-1.5">
-                  <span class="truncate">AeroByte Academy</span>
-                  <span class="px-1.5 py-0.2 rounded text-[9px] font-bold bg-amber-100 dark:bg-amber-950/80 text-amber-700 dark:text-amber-300 shrink-0">Admin</span>
-                </div>
-                <div class="text-[11px] text-slate-500 dark:text-slate-400 truncate">
-                  aerobyte.academy@gmail.com
-                </div>
-              </div>
-            </div>
-            <span class="text-xs font-semibold text-blue-600 dark:text-blue-400 opacity-90 group-hover:opacity-100 flex items-center gap-1 shrink-0 ml-2">
-              {{ t('Auto') }} →
-            </span>
-          </button>
-
-          <!-- Remembered custom account if exists -->
-          <button
-            v-if="rememberedGoogleAccount && rememberedGoogleAccount.email !== 'lghr5002@gmail.com' && rememberedGoogleAccount.email !== 'aerobyte.academy@gmail.com'"
-            type="button"
-            @click="performGoogleAutoLogin(rememberedGoogleAccount.email, rememberedGoogleAccount.name)"
-            :disabled="submitting"
-            class="w-full flex items-center justify-between p-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/80 hover:bg-blue-50/60 dark:hover:bg-slate-750 hover:border-blue-400 dark:hover:border-blue-500 shadow-xs transition group cursor-pointer text-left"
-          >
-            <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-full bg-emerald-600 text-white font-bold flex items-center justify-center text-sm shadow-xs shrink-0">
-                {{ (rememberedGoogleAccount.name || rememberedGoogleAccount.email)[0].toUpperCase() }}
-              </div>
-              <div class="truncate">
-                <div class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition truncate">
-                  {{ rememberedGoogleAccount.name || 'Google User' }}
-                </div>
-                <div class="text-[11px] text-slate-500 dark:text-slate-400 truncate">
-                  {{ rememberedGoogleAccount.email }}
-                </div>
-              </div>
-            </div>
-            <span class="text-xs font-semibold text-blue-600 dark:text-blue-400 opacity-90 group-hover:opacity-100 flex items-center gap-1 shrink-0 ml-2">
-              {{ t('Auto') }} →
-            </span>
-          </button>
-
-          <!-- Use another Google account -->
-          <div class="pt-1">
-            <button
-              v-if="!showCustomGoogleInput"
-              type="button"
-              @click="showCustomGoogleInput = true"
-              class="w-full py-2.5 px-3 rounded-xl border border-dashed border-slate-300 dark:border-slate-700 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 hover:border-blue-400 dark:hover:border-blue-500 flex items-center justify-center gap-2 transition cursor-pointer"
-            >
-              <UserPlus class="w-4 h-4" />
-              <span>{{ t('Use another Google account') }}</span>
-            </button>
-            <form v-else @submit.prevent="performGoogleAutoLogin(customGoogleEmail, customGoogleName)" class="space-y-2 p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
-              <input
-                v-model.trim="customGoogleEmail"
-                type="email"
-                required
-                placeholder="your.email@gmail.com"
-                class="account-input dark:!bg-slate-800 dark:!border-slate-700 dark:!text-white text-xs"
-              />
-              <div class="flex items-center gap-2">
-                <button
-                  type="submit"
-                  :disabled="submitting || !customGoogleEmail"
-                  class="flex-1 py-2 px-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition disabled:opacity-50 cursor-pointer"
-                >
-                  {{ submitting ? t('Signing in...') : t('Auto Sign In') }}
-                </button>
-                <button
-                  type="button"
-                  @click="showCustomGoogleInput = false"
-                  class="py-2 px-3 rounded-xl text-xs font-semibold text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-white"
-                >
-                  {{ t('Cancel') }}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-
-        <p class="text-[10px] text-slate-400 text-center leading-relaxed pt-1">
-          {{ t('To continue, Google will securely sign you into AeroByte Academy automatically.') }}
-        </p>
-      </div>
-    </div>
   </div>
 </template>
 
 <script setup>
 import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { ArrowLeft, Check, Eye, EyeOff, Mail, Moon, Shield, Sun, UserPlus, X } from 'lucide-vue-next'
+import { ArrowLeft, Check, Eye, EyeOff, Mail, Moon, Sun, X } from 'lucide-vue-next'
 import { useLanguage } from '../i18n'
 import { useTheme } from '../composables/useTheme'
-import { accountService, adminService, getGoogleSignInUrl, getGoogleAuthConfig, googleCredentialLogin, googleDirectLogin } from '../services/api'
+import { accountService, adminService, getGoogleSignInUrl, getGoogleAuthConfig, googleCredentialLogin } from '../services/api'
 
 const route = useRoute()
 const router = useRouter()
@@ -717,23 +502,8 @@ const isRegister = computed(() => route.query.mode === 'register')
 const isForgot = computed(() => route.query.mode === 'forgot')
 const isReset = computed(() => route.query.mode === 'reset')
 const isVerify = computed(() => route.query.mode === 'verify')
-const isGoogle = computed(() => route.query.mode === 'google')
-const isGoogleModalOpen = ref(false)
-const showCustomGoogleInput = ref(false)
-const customGoogleEmail = ref('')
-const customGoogleName = ref('')
 const googleLoading = ref(false)
 const googleClientId = ref('')
-const rememberedGoogleAccount = ref(null)
-
-try {
-  const saved = localStorage.getItem('aerobyte_last_google_account')
-  if (saved) {
-    rememberedGoogleAccount.value = JSON.parse(saved)
-  }
-} catch {
-  // ignore
-}
 const verifyEmail = ref(route.query.email || '')
 const otpDigits = ref(['', '', '', '', '', ''])
 const otpInputs = ref([])
@@ -1122,58 +892,12 @@ async function submitPasswordReset() {
   }
 }
 
-async function performGoogleAutoLogin(email, name = '') {
-  if (!email || !email.includes('@')) return
-  submitting.value = true
+function startGoogleSignIn() {
+  if (typeof route.query.redirect === 'string' && route.query.redirect.startsWith('/')) {
+    sessionStorage.setItem('aerobyte_enroll_redirect', route.query.redirect)
+  }
   googleLoading.value = true
-  message.value = ''
-  isError.value = false
-  try {
-    const res = await googleDirectLogin({
-      email: email.trim(),
-      name: name?.trim() || undefined,
-    })
-    const chosen = { email: email.trim(), name: name?.trim() || email.split('@')[0] }
-    try {
-      localStorage.setItem('aerobyte_last_google_account', JSON.stringify(chosen))
-      rememberedGoogleAccount.value = chosen
-    } catch {}
-
-    window.dispatchEvent(new Event('aerobyte-auth-updated'))
-    const redirectUrl = (typeof route.query.redirect === 'string' && route.query.redirect.startsWith('/'))
-      ? route.query.redirect
-      : (sessionStorage.getItem('aerobyte_enroll_redirect') || res.data?.redirect || '/profile')
-    sessionStorage.removeItem('aerobyte_enroll_redirect')
-    isGoogleModalOpen.value = false
-    await router.push(redirectUrl)
-  } catch (error) {
-    isError.value = true
-    message.value = error.response?.data?.detail || t('Unable to sign in with Google. Please try again.')
-  } finally {
-    submitting.value = false
-    googleLoading.value = false
-  }
-}
-
-async function startGoogleSignIn(overrideEmail = null, overrideName = null) {
-  // If user already typed an email into the input, auto sign-in directly!
-  const targetEmail = overrideEmail || (form.email && form.email.includes('@') ? form.email : null)
-  const targetName = overrideName || form.name
-
-  if (targetEmail) {
-    await performGoogleAutoLogin(targetEmail, targetName)
-    return
-  }
-
-  // Trigger Google GIS One Tap if available
-  if (window.google?.accounts?.id && googleClientId.value) {
-    try {
-      window.google.accounts.id.prompt()
-    } catch {}
-  }
-
-  // Open the fast 1-click Google auto sign-in chooser
-  isGoogleModalOpen.value = true
+  window.location.assign(getGoogleSignInUrl())
 }
 
 function goToForgotPassword() {
@@ -1193,8 +917,18 @@ function goToSignIn() {
 }
 
 onMounted(async () => {
+  if (route.query.google_error) {
+    isError.value = true
+    if (route.query.google_error === 'unverified') {
+      message.value = t('Your Google account email is not verified.')
+    } else {
+      message.value = t('Google sign-in could not be completed. Please try again.')
+    }
+  }
+
   if (route.query.mode === 'google') {
-    isGoogleModalOpen.value = true
+    startGoogleSignIn()
+    return
   }
 
   // Check for Google Auth configuration and enable Google One Tap if configured
