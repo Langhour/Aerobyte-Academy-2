@@ -213,3 +213,44 @@ class SiteSettings(BaseModel):
     merchant_qr_url: str = "/aba-qr.png"
     merchant_bank_info: str = "ABA Bank: VIDHCHETRA KHEMARAK"
     payment_session_minutes: int = Field(default=15, ge=1, le=1440)
+
+
+class StoreOrderItem(BaseModel):
+    id: Optional[str] = None
+    name: str
+    priceUsd: float
+    quantity: int = Field(default=1, ge=1)
+    icon: Optional[str] = "📦"
+
+
+class StoreOrderCreate(BaseModel):
+    id: Optional[str] = None
+    name: str = Field(min_length=1, max_length=100)
+    phone: str = Field(min_length=5, max_length=50)
+    telegram: Optional[str] = ""
+    address: Optional[str] = ""
+    email: Optional[str] = ""
+    fulfillment: str = "pickup"
+    items: List[StoreOrderItem] = Field(default_factory=list)
+    subtotal: float = 0.0
+    delivery_fee: float = 0.0
+    discount: float = 0.0
+    total: float = 0.0
+
+
+class StoreOrderRecord(BaseModel):
+    id: str
+    user_id: Optional[str] = None
+    user_email: str
+    customer_name: str
+    phone: str
+    telegram: Optional[str] = ""
+    address: Optional[str] = ""
+    fulfillment: str = "pickup"
+    items: List[StoreOrderItem] = Field(default_factory=list)
+    subtotal: float = 0.0
+    delivery_fee: float = 0.0
+    discount: float = 0.0
+    total: float = 0.0
+    status: str = "confirmed"
+    created_at: str
