@@ -37,6 +37,7 @@ class GoogleCredentialRequest(BaseModel):
 
 
 DEFAULT_GOOGLE_CLIENT_ID = "779391054555-ohjh6thr5houqnipfg45300dc7q7cebf.apps.googleusercontent.com"
+DEFAULT_GOOGLE_CALLBACK_URL = "https://aerobyte-academy.onrender.com/api/auth/google/callback"
 
 
 @router.get("/google/config")
@@ -85,15 +86,21 @@ def _frontend_origin(request: Request) -> str:
 
 
 def _google_callback_url(request: Request) -> str:
-    configured = os.getenv("FRONTEND_URL", "").strip().rstrip("/")
-    if configured:
-        return f"{configured}/api/auth/google/callback"
-    url = str(request.url_for("google_callback"))
+    custom = os.getenv("GOOGLE_CALLBACK_URL", "").strip()
+    if custom:
+        return custom
+
+    # If running on Render or request is over HTTPS
     proto = request.headers.get("x-forwarded-proto", "").casefold()
-    if proto == "https" or "onrender.com" in url:
-        if url.startswith("http://"):
-            url = "https://" + url[len("http://"):]
-    return url
+    host = request.headers.get("host", "").casefold()
+    if "onrender.com" in host or proto == "https":
+        return DEFAULT_GOOGLE_CALLBACK_URL
+
+    configured = os.getenv("FRONTEND_URL", "").strip().rstrip("/")
+    if configured and not ("localhost" in configured or "127.0.0.1" in configured):
+        return f"{configured}/api/auth/google/callback"
+
+    return DEFAULT_GOOGLE_CALLBACK_URL
 
 
 def _account_redirect(request: Request, error: str | None = None) -> RedirectResponse:
@@ -223,13 +230,15 @@ async def google_credential_login(payload: GoogleCredentialRequest, request: Req
 async def google_callback(request: Request):
     client = _google_client()
     nonce = request.session.pop("google_nonce", None)
-    if client is None or not nonce:
+    if client is None:
         return _account_redirect(request, "failed")
     try:
         token = await client.authorize_access_token(request)
         claims = token.get("userinfo")
-        if not claims:
+        if not claims and nonce:
             claims = await client.parse_id_token(request, token, nonce=nonce)
+        elif not claims:
+            claims = await client.parse_id_token(request, token)
     except Exception:
         return _account_redirect(request, "failed")
 
