@@ -931,14 +931,11 @@
 
 
     <!-- Slide-Over Shopping Bag Drawer -->
-
-    <div
-
-      v-if="isCartOpen"
-
-      class="fixed inset-0 z-50 overflow-hidden"
-
-    >
+    <Teleport to="body">
+      <div
+        v-if="isCartOpen"
+        class="fixed inset-0 z-[100] overflow-hidden"
+      >
 
       <div
 
@@ -1283,14 +1280,16 @@
       </div>
 
     </div>
+    </Teleport>
 
 
 
     <!-- Slide-Over Wishlist / Favorites Drawer -->
-    <div
-      v-if="isWishlistOpen"
-      class="fixed inset-0 z-50 overflow-hidden"
-    >
+    <Teleport to="body">
+      <div
+        v-if="isWishlistOpen"
+        class="fixed inset-0 z-[100] overflow-hidden"
+      >
       <div
         class="absolute inset-0 bg-slate-950/50 backdrop-blur-xs transition-opacity"
         @click="isWishlistOpen = false"
@@ -1408,18 +1407,15 @@
         </div>
       </div>
     </div>
+    </Teleport>
 
     <!-- PRODUCT QUICK VIEW MODAL -->
-
-    <div
-
-      v-if="quickViewProduct"
-
-      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs overflow-y-auto"
-
-      @click.self="quickViewProduct = null"
-
-    >
+    <Teleport to="body">
+      <div
+        v-if="quickViewProduct"
+        class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs overflow-y-auto"
+        @click.self="quickViewProduct = null"
+      >
 
       <div class="w-full max-w-xl rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 sm:p-8 shadow-2xl relative my-8">
 
@@ -1574,20 +1570,17 @@
       </div>
 
     </div>
+    </Teleport>
 
 
 
     <!-- QUICK CHECKOUT MODAL -->
-
-    <div
-
-      v-if="isCheckoutModalOpen"
-
-      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs overflow-y-auto"
-
-      @click.self="closeOrderModal"
-
-    >
+    <Teleport to="body">
+      <div
+        v-if="isCheckoutModalOpen"
+        class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs overflow-y-auto"
+        @click.self="closeOrderModal"
+      >
 
       <div class="w-full max-w-lg rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 sm:p-7 shadow-2xl relative my-8">
 
@@ -1804,6 +1797,7 @@
       </div>
 
     </div>
+    </Teleport>
 
 
 
