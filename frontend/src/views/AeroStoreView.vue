@@ -303,7 +303,7 @@
                 type="button"
                 @click.stop="toggleSortDropdown"
                 class="h-9 sm:h-10 px-4 rounded-full text-xs sm:text-[13px] font-semibold flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap active:scale-95 select-none"
-                :class="sortBy !== 'featured' && sortBy !== 'best-selling'
+                :class="sortBy !== 'featured'
                   ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm'
                   : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-750 text-slate-700 dark:text-slate-200 border border-slate-200/70 dark:border-slate-700/70'"
               >
@@ -337,7 +337,7 @@
                       v-for="opt in sortOptions"
                       :key="opt.value"
                       type="button"
-                      @click="sortBy = opt.value"
+                      @click="sortBy = sortBy === opt.value ? 'featured' : opt.value"
                       class="w-full flex items-center justify-between text-xs sm:text-[13px] font-medium text-slate-800 dark:text-slate-200 cursor-pointer select-none py-2 px-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition text-left"
                       :class="{ 'bg-slate-100/90 dark:bg-slate-800 font-bold': sortBy === opt.value }"
                     >
@@ -360,7 +360,7 @@
                   <div class="mt-3 flex items-center justify-between gap-2.5 pt-3 border-t border-slate-100 dark:border-slate-800">
                     <button
                       type="button"
-                      @click="sortBy = 'best-selling'"
+                      @click="sortBy = 'featured'"
                       class="flex-1 py-2 px-3 rounded-full text-xs font-bold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition cursor-pointer text-center active:scale-95"
                     >
                       {{ t('Reset') }}
@@ -668,7 +668,7 @@
                     v-for="opt in sortOptions"
                     :key="opt.value"
                     type="button"
-                    @click="sortBy = opt.value"
+                    @click="sortBy = sortBy === opt.value ? 'featured' : opt.value"
                     class="h-9 px-3.5 rounded-full text-xs font-semibold transition active:scale-95 cursor-pointer"
                     :class="sortBy === opt.value
                       ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-bold shadow-xs'
@@ -2197,7 +2197,7 @@ const activeFiltersCount = computed(() => {
   if (inStockOnly.value) count++
   if (onSaleOnly.value) count++
   if (priceMin.value > 0 || priceMax.value < 100) count++
-  if (sortBy.value !== 'featured' && sortBy.value !== 'best-selling') count++
+  if (sortBy.value !== 'featured') count++
   return count
 })
 
@@ -2934,7 +2934,7 @@ function resetFilters() {
   onSaleOnly.value = false
   priceMin.value = 0
   priceMax.value = 100
-  sortBy.value = 'best-selling'
+  sortBy.value = 'featured'
   showFavoritesOnly.value = false
   closeDropdowns()
 }
