@@ -51,6 +51,51 @@
     }
     a { color: inherit; text-decoration: none; }
 
+    
+    /* Dynamic Theme Support */
+    body.light-mode {
+      --bg: #f8fafc;
+      --bg-2: #ffffff;
+      --ink: #0c1e5b;
+      --muted: #475569;
+      --muted-2: #64748b;
+      --line: rgba(12, 30, 91, 0.12);
+      --line-strong: rgba(12, 30, 91, 0.22);
+      --accent: #0284c7;
+      --accent-2: #0369a1;
+      --accent-ink: #ffffff;
+      --glass: rgba(255, 255, 255, 0.78);
+      --glass-2: rgba(255, 255, 255, 0.92);
+      --shadow: 0 20px 50px -15px rgba(12, 30, 91, 0.12);
+    }
+    body.light-mode .hero {
+      background: radial-gradient(125% 62% at 50% -10%, rgba(248, 250, 252, .92) 0%, rgba(248, 250, 252, .5) 44%, transparent 68%);
+    }
+    body.light-mode .hero-title {
+      color: #0c1e5b;
+      text-shadow: none;
+    }
+    body.light-mode .hero-title em {
+      background: linear-gradient(180deg, #0284c7, #0f766e);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    body.light-mode .card {
+      box-shadow: 0 4px 20px -2px rgba(12, 30, 91, 0.06);
+    }
+    body.light-mode .dash-bars {
+      background: rgba(241, 245, 249, 0.9);
+      border-color: rgba(12, 30, 91, 0.1);
+    }
+    body.light-mode .dash-track {
+      background: rgba(12, 30, 91, 0.08);
+    }
+    body.light-mode .stat-value {
+      background: linear-gradient(180deg, #0c1e5b, #0284c7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
     /* Lenis smooth scroll */
     html.lenis, html.lenis body { height: auto; }
     .lenis.lenis-smooth { scroll-behavior: auto !important; }
@@ -629,9 +674,14 @@
           <a href="#events">Events</a>
           <a href="#store">Aero Store</a>
         </div>
-        <a href="https://t.me/aerobyteacademy" target="_blank" rel="noopener noreferrer" class="btn btn-ghost">
-          Join Telegram
-        </a>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <button type="button" id="theme-btn" class="btn btn-ghost" style="padding:9px 14px;border-radius:999px;cursor:pointer;" title="Toggle Light / Dark Mode">
+            🌙
+          </button>
+          <a href="https://t.me/aerobyteacademy" target="_blank" rel="noopener noreferrer" class="btn btn-orange">
+            Join Telegram
+          </a>
+        </div>
       </nav>
 
       <div class="hero-inner">
@@ -984,6 +1034,35 @@
     }
 
     // Scene & Canvas
+    
+    // Theme Switcher for Standalone Page
+    let isDark = localStorage.getItem('aero-theme') !== 'light';
+    const themeBtn = document.getElementById('theme-btn');
+    function updateTheme(dark) {
+      isDark = dark;
+      if (dark) {
+        document.body.classList.remove('light-mode');
+        if (themeBtn) themeBtn.textContent = '🌙';
+        localStorage.setItem('aero-theme', 'dark');
+        if (scene) scene.background.setHex(0x04060f);
+        if (ambientLight) ambientLight.intensity = 2.0;
+        if (dirLight) dirLight.intensity = 2.5;
+        if (starField) starField.visible = true;
+      } else {
+        document.body.classList.add('light-mode');
+        if (themeBtn) themeBtn.textContent = '☀️';
+        localStorage.setItem('aero-theme', 'light');
+        if (scene) scene.background.setHex(0xf8fafc);
+        if (ambientLight) ambientLight.intensity = 3.6;
+        if (dirLight) dirLight.intensity = 3.8;
+        if (starField) starField.visible = false;
+      }
+    }
+    if (themeBtn) {
+      themeBtn.addEventListener('click', () => updateTheme(!isDark));
+    }
+    if (!isDark) updateTheme(false);
+
     const canvas = document.getElementById('drone-canvas');
     let width = window.innerWidth;
     let height = window.innerHeight;

@@ -1,53 +1,67 @@
 <template>
-  <div class="aero-fly-root relative isolate min-h-screen text-[#f3f6ff] bg-[#04060f] overflow-x-hidden selection:bg-[#5df0a8]/20 selection:text-[#5df0a8]">
+  <div class="aero-fly-root relative isolate min-h-screen transition-colors duration-300 bg-[#f8fafc] dark:bg-[#04060f] text-slate-800 dark:text-[#f3f6ff] overflow-x-hidden selection:bg-orange-500/20 selection:text-orange-600 dark:selection:bg-[#5df0a8]/20 dark:selection:text-[#5df0a8]">
     <!-- Fixed WebGL 3D Real Drone Canvas Behind Everything -->
     <canvas ref="canvasRef" class="fixed inset-0 w-full h-full block z-0 pointer-events-none"></canvas>
 
     <!-- Loading Indicator overlay while real 3D drone GLB loads -->
     <div
       v-if="loadingProgress < 100"
-      class="fixed bottom-6 right-6 z-50 flex items-center gap-3 bg-[rgba(12,18,38,0.85)] border border-[rgba(150,175,230,0.2)] px-4 py-2.5 rounded-full backdrop-blur-md shadow-xl text-xs font-bold text-white transition-opacity duration-500"
+      class="fixed bottom-6 right-6 z-50 flex items-center gap-3 bg-white/90 dark:bg-[rgba(12,18,38,0.85)] border border-slate-200 dark:border-[rgba(150,175,230,0.2)] px-4 py-2.5 rounded-full backdrop-blur-md shadow-xl text-xs font-bold text-slate-800 dark:text-white transition-opacity duration-500"
       :class="loadingProgress >= 100 ? 'opacity-0 pointer-events-none' : 'opacity-100'"
     >
-      <div class="w-4 h-4 border-2 border-[#5df0a8] border-t-transparent rounded-full animate-spin"></div>
+      <div class="w-4 h-4 border-2 border-orange-500 dark:border-[#5df0a8] border-t-transparent rounded-full animate-spin"></div>
       <span>Loading Real DJI FPV 3D Drone... {{ loadingProgress }}%</span>
     </div>
 
     <!-- Page Content Floating Over Fixed 3D Drone -->
     <div class="relative z-10">
       <!-- Aero Fly Top Sub-Navigation Bar -->
-      <header class="sticky top-0 z-40 bg-[#04060f]/80 backdrop-blur-xl border-b border-[rgba(150,175,230,0.12)]">
+      <header class="sticky top-0 z-40 bg-white/80 dark:bg-[#04060f]/80 backdrop-blur-xl border-b border-slate-200/80 dark:border-[rgba(150,175,230,0.12)] transition-colors duration-300">
         <div class="mx-auto max-w-[1180px] px-4 sm:px-6 lg:px-8">
           <div class="flex items-center justify-between py-3.5 gap-4">
             <!-- Brand Mark -->
             <div class="flex items-center gap-2.5">
-              <span class="text-[#5df0a8] text-base font-extrabold select-none">▲</span>
-              <span class="text-lg font-black tracking-widest uppercase text-white">Aero Fly</span>
-              <span class="hidden sm:inline-block text-[10px] font-bold uppercase tracking-wider bg-[#5df0a8]/10 text-[#5df0a8] border border-[#5df0a8]/20 px-2 py-0.5 rounded-full ml-1">
-                Real FPV Quad Flight Lab
+              <span class="text-orange-500 dark:text-[#5df0a8] text-base font-extrabold select-none">▲</span>
+              <span class="text-lg font-black tracking-widest uppercase text-[#0c1e5b] dark:text-white">Aero Fly</span>
+              <span class="hidden sm:inline-block text-[10px] font-bold uppercase tracking-wider bg-sky-100 text-sky-700 dark:bg-[#5df0a8]/10 dark:text-[#5df0a8] border border-sky-200 dark:border-[#5df0a8]/20 px-2 py-0.5 rounded-full ml-1">
+                Real FPV Flight Collective
               </span>
             </div>
 
             <!-- Page Nav Links -->
-            <nav class="hidden md:flex items-center gap-6 text-xs sm:text-sm font-semibold text-[#9aa6c4]">
-              <a href="#features" class="hover:text-white transition">Features</a>
-              <a href="#telemetry" class="hover:text-white transition">Telemetry</a>
-              <a href="#events" class="hover:text-white transition">Events & Schedule</a>
-              <a href="#store" class="hover:text-white transition">Aero Store</a>
+            <nav class="hidden md:flex items-center gap-6 text-xs sm:text-sm font-semibold text-slate-600 dark:text-[#9aa6c4]">
+              <a href="#features" class="hover:text-[#0c1e5b] dark:hover:text-white transition">Features</a>
+              <a href="#telemetry" class="hover:text-[#0c1e5b] dark:hover:text-white transition">Telemetry</a>
+              <a href="#events" class="hover:text-[#0c1e5b] dark:hover:text-white transition">Events & Schedule</a>
+              <a href="#store" class="hover:text-[#0c1e5b] dark:hover:text-white transition">Aero Store</a>
             </nav>
 
-            <!-- Telegram CTA -->
-            <a
-              href="https://t.me/aerobyteacademy"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="inline-flex items-center gap-2 rounded-full bg-white/5 hover:bg-white/10 border border-[rgba(150,175,230,0.22)] px-4 py-2 text-xs sm:text-sm font-bold text-white transition active:scale-95"
-            >
-              <svg class="w-4 h-4 fill-[#5df0a8]" viewBox="0 0 24 24">
-                <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.121l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.458c.538-.196 1.006.128.832.943z"/>
-              </svg>
-              <span>Join Telegram</span>
-            </a>
+            <!-- Action Buttons: Theme Toggle & Telegram -->
+            <div class="flex items-center gap-3">
+              <!-- Quick Theme Toggle Pill Button -->
+              <button
+                type="button"
+                @click="toggleTheme"
+                class="inline-flex items-center justify-center p-2 rounded-full border border-slate-200 dark:border-[rgba(150,175,230,0.2)] bg-white/80 dark:bg-white/5 text-slate-700 dark:text-slate-200 hover:scale-105 active:scale-95 transition cursor-pointer shadow-xs"
+                :title="isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'"
+                aria-label="Toggle Theme"
+              >
+                <span v-if="isDark" class="text-sm">☀️</span>
+                <span v-else class="text-sm">🌙</span>
+              </button>
+
+              <a
+                href="https://t.me/aerobyteacademy"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-2 rounded-full bg-[#ff6b00] hover:bg-[#e05e00] text-white px-4 py-2 text-xs sm:text-sm font-bold transition shadow-sm active:scale-95 cursor-pointer"
+              >
+                <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                  <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.121l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.458c.538-.196 1.006.128.832.943z"/>
+                </svg>
+                <span>Join Telegram</span>
+              </a>
+            </div>
           </div>
         </div>
       </header>
@@ -55,17 +69,17 @@
       <!-- SECTION 1: HERO (Floating over the Real 3D Drone) -->
       <section class="min-h-[92vh] flex flex-col justify-center items-center text-center px-4 sm:px-6 pt-12 pb-20 relative">
         <div class="max-w-3xl mx-auto space-y-6">
-          <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#5df0a8]/10 border border-[#5df0a8]/20 text-[#5df0a8] text-xs font-bold tracking-widest uppercase">
-            <span class="w-2 h-2 rounded-full bg-[#5df0a8] animate-pulse"></span>
-            Cambodia's Real Drone Flight Community
+          <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-sky-50 dark:bg-[#5df0a8]/10 border border-sky-200 dark:border-[#5df0a8]/20 text-sky-700 dark:text-[#5df0a8] text-xs font-bold tracking-widest uppercase transition-colors">
+            <span class="w-2 h-2 rounded-full bg-sky-500 dark:bg-[#5df0a8] animate-pulse"></span>
+            Cambodia's Open Drone Flight Community
           </div>
 
-          <h1 class="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.05] text-white">
+          <h1 class="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.05] text-[#0c1e5b] dark:text-white transition-colors">
             Fly Smarter,<br>
-            Not <span class="bg-gradient-to-b from-[#5df0a8] to-[#2fd38a] bg-clip-text text-transparent">Harder</span>
+            Not <span class="bg-gradient-to-b from-sky-600 to-teal-500 dark:from-[#5df0a8] dark:to-[#2fd38a] bg-clip-text text-transparent">Harder</span>
           </h1>
 
-          <p class="text-base sm:text-xl text-[#9aa6c4] leading-relaxed max-w-2xl mx-auto">
+          <p class="text-base sm:text-xl text-slate-600 dark:text-[#9aa6c4] leading-relaxed max-w-2xl mx-auto transition-colors">
             Experience real FPV racing dynamics, connect with solo pilots across Cambodia, and configure custom quads with hands-on bench consulting.
           </p>
 
@@ -74,7 +88,7 @@
               href="https://t.me/aerobyteacademy"
               target="_blank"
               rel="noopener noreferrer"
-              class="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 rounded-full bg-gradient-to-b from-[#5df0a8] to-[#2fd38a] text-[#032018] px-8 py-3.5 text-base font-bold shadow-lg shadow-[#5df0a8]/25 hover:shadow-[#5df0a8]/40 hover:-translate-y-0.5 transition active:scale-95"
+              class="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 rounded-full bg-[#ff6b00] hover:bg-[#e05e00] text-white px-8 py-3.5 text-base font-bold shadow-lg shadow-orange-500/25 hover:shadow-orange-500/40 hover:-translate-y-0.5 transition active:scale-95 cursor-pointer"
             >
               <span>Start Flying Right Now</span>
               <svg class="w-4 h-4 stroke-current fill-none stroke-[2.5]" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
@@ -82,7 +96,7 @@
 
             <a
               href="#events"
-              class="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-full bg-white/5 hover:bg-white/10 border border-[rgba(150,175,230,0.22)] px-7 py-3.5 text-base font-bold text-white transition hover:-translate-y-0.5"
+              class="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-full bg-white dark:bg-white/5 hover:bg-slate-50 dark:hover:bg-white/10 border border-slate-300 dark:border-[rgba(150,175,230,0.22)] px-7 py-3.5 text-base font-bold text-[#0c1e5b] dark:text-white transition hover:-translate-y-0.5 shadow-xs"
             >
               <span>Weekend Flight Schedule</span>
             </a>
@@ -90,17 +104,17 @@
         </div>
 
         <!-- Trusted Logos Row -->
-        <div class="mt-20 pt-10 border-t border-[rgba(150,175,230,0.08)] w-full max-w-4xl mx-auto">
-          <p class="text-[11px] font-bold uppercase tracking-widest text-[#6b7796] mb-5">
+        <div class="mt-20 pt-10 border-t border-slate-200/80 dark:border-[rgba(150,175,230,0.08)] w-full max-w-4xl mx-auto transition-colors">
+          <p class="text-[11px] font-bold uppercase tracking-widest text-slate-500 dark:text-[#6b7796] mb-5">
             Supported hardware & open-source flight stacks
           </p>
-          <div class="flex flex-wrap items-center justify-center gap-6 sm:gap-12 text-sm sm:text-base font-bold text-[#6b7796]">
-            <span class="hover:text-white transition">DJI FPV</span>
-            <span class="hover:text-white transition">Betaflight</span>
-            <span class="hover:text-white transition">ExpressLRS</span>
-            <span class="hover:text-white transition">RadioMaster</span>
-            <span class="hover:text-white transition">Walksnail</span>
-            <span class="hover:text-white transition">ArduPilot</span>
+          <div class="flex flex-wrap items-center justify-center gap-6 sm:gap-12 text-sm sm:text-base font-bold text-slate-500 dark:text-[#6b7796]">
+            <span class="hover:text-[#0c1e5b] dark:hover:text-white transition">DJI FPV</span>
+            <span class="hover:text-[#0c1e5b] dark:hover:text-white transition">Betaflight</span>
+            <span class="hover:text-[#0c1e5b] dark:hover:text-white transition">ExpressLRS</span>
+            <span class="hover:text-[#0c1e5b] dark:hover:text-white transition">RadioMaster</span>
+            <span class="hover:text-[#0c1e5b] dark:hover:text-white transition">Walksnail</span>
+            <span class="hover:text-[#0c1e5b] dark:hover:text-white transition">ArduPilot</span>
           </div>
         </div>
       </section>
@@ -108,78 +122,78 @@
       <!-- SECTION 2: FEATURES (6 Glassmorphism Cards) -->
       <section id="features" class="py-24 sm:py-32 px-4 sm:px-6 lg:px-8 max-w-[1180px] mx-auto">
         <div class="text-center max-w-2xl mx-auto mb-16">
-          <span class="text-xs font-bold uppercase tracking-widest text-[#5df0a8]">Everything in Orbit</span>
-          <h2 class="text-3xl sm:text-5xl font-extrabold text-white mt-2 leading-tight">
+          <span class="text-xs font-bold uppercase tracking-widest text-sky-600 dark:text-[#5df0a8]">Everything in Orbit</span>
+          <h2 class="text-3xl sm:text-5xl font-extrabold text-[#0c1e5b] dark:text-white mt-2 leading-tight transition-colors">
             One collective to power the entire flight journey
           </h2>
-          <p class="mt-4 text-base sm:text-lg text-[#9aa6c4] leading-relaxed">
+          <p class="mt-4 text-base sm:text-lg text-slate-600 dark:text-[#9aa6c4] leading-relaxed transition-colors">
             Stop struggling with mismatched voltages and broken solder joints alone. Aero Fly unifies flight training, telemetry diagnostics, and physical maker spaces.
           </p>
         </div>
 
         <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
           <!-- Card 1 -->
-          <div class="p-7 rounded-[18px] bg-[rgba(12,18,38,0.55)] border border-[rgba(150,175,230,0.12)] backdrop-blur-md hover:border-[rgba(150,175,230,0.25)] hover:bg-[rgba(16,24,48,0.7)] hover:-translate-y-1 transition duration-200">
-            <div class="w-11 h-11 rounded-xl bg-[#5df0a8]/10 text-[#5df0a8] border border-[#5df0a8]/20 flex items-center justify-center text-xl mb-4">
+          <div class="p-7 rounded-[18px] bg-white/75 dark:bg-[rgba(12,18,38,0.55)] border border-slate-200/80 dark:border-[rgba(150,175,230,0.12)] backdrop-blur-md shadow-xs dark:shadow-none hover:border-sky-400 dark:hover:border-[rgba(150,175,230,0.25)] hover:bg-white dark:hover:bg-[rgba(16,24,48,0.7)] hover:-translate-y-1 transition duration-200">
+            <div class="w-11 h-11 rounded-xl bg-sky-50 dark:bg-[#5df0a8]/10 text-sky-600 dark:text-[#5df0a8] border border-sky-100 dark:border-[#5df0a8]/20 flex items-center justify-center text-xl mb-4">
               ⚡
             </div>
-            <h3 class="text-lg font-bold text-white mb-2">Clever Workflows</h3>
-            <p class="text-sm text-[#9aa6c4] leading-relaxed">
+            <h3 class="text-lg font-bold text-[#0c1e5b] dark:text-white mb-2 transition-colors">Clever Workflows</h3>
+            <p class="text-sm text-slate-600 dark:text-[#9aa6c4] leading-relaxed transition-colors">
               Automate radio bindings, failsafes, and PID profiles with step-by-step verified flight templates that protect your motors.
             </p>
           </div>
 
           <!-- Card 2 -->
-          <div class="p-7 rounded-[18px] bg-[rgba(12,18,38,0.55)] border border-[rgba(150,175,230,0.12)] backdrop-blur-md hover:border-[rgba(150,175,230,0.25)] hover:bg-[rgba(16,24,48,0.7)] hover:-translate-y-1 transition duration-200">
-            <div class="w-11 h-11 rounded-xl bg-[#5df0a8]/10 text-[#5df0a8] border border-[#5df0a8]/20 flex items-center justify-center text-xl mb-4">
+          <div class="p-7 rounded-[18px] bg-white/75 dark:bg-[rgba(12,18,38,0.55)] border border-slate-200/80 dark:border-[rgba(150,175,230,0.12)] backdrop-blur-md shadow-xs dark:shadow-none hover:border-sky-400 dark:hover:border-[rgba(150,175,230,0.25)] hover:bg-white dark:hover:bg-[rgba(16,24,48,0.7)] hover:-translate-y-1 transition duration-200">
+            <div class="w-11 h-11 rounded-xl bg-sky-50 dark:bg-[#5df0a8]/10 text-sky-600 dark:text-[#5df0a8] border border-sky-100 dark:border-[#5df0a8]/20 flex items-center justify-center text-xl mb-4">
               📊
             </div>
-            <h3 class="text-lg font-bold text-white mb-2">Live Telemetry</h3>
-            <p class="text-sm text-[#9aa6c4] leading-relaxed">
+            <h3 class="text-lg font-bold text-[#0c1e5b] dark:text-white mb-2 transition-colors">Live Telemetry</h3>
+            <p class="text-sm text-slate-600 dark:text-[#9aa6c4] leading-relaxed transition-colors">
               Real-time OSD blackbox logs and gyro frequency graphs pinpoint vibration noise and motor desyncs in milliseconds.
             </p>
           </div>
 
           <!-- Card 3 -->
-          <div class="p-7 rounded-[18px] bg-[rgba(12,18,38,0.55)] border border-[rgba(150,175,230,0.12)] backdrop-blur-md hover:border-[rgba(150,175,230,0.25)] hover:bg-[rgba(16,24,48,0.7)] hover:-translate-y-1 transition duration-200">
-            <div class="w-11 h-11 rounded-xl bg-[#5df0a8]/10 text-[#5df0a8] border border-[#5df0a8]/20 flex items-center justify-center text-xl mb-4">
+          <div class="p-7 rounded-[18px] bg-white/75 dark:bg-[rgba(12,18,38,0.55)] border border-slate-200/80 dark:border-[rgba(150,175,230,0.12)] backdrop-blur-md shadow-xs dark:shadow-none hover:border-sky-400 dark:hover:border-[rgba(150,175,230,0.25)] hover:bg-white dark:hover:bg-[rgba(16,24,48,0.7)] hover:-translate-y-1 transition duration-200">
+            <div class="w-11 h-11 rounded-xl bg-sky-50 dark:bg-[#5df0a8]/10 text-sky-600 dark:text-[#5df0a8] border border-sky-100 dark:border-[#5df0a8]/20 flex items-center justify-center text-xl mb-4">
               👥
             </div>
-            <h3 class="text-lg font-bold text-white mb-2">Seamless Pilot Wings</h3>
-            <p class="text-sm text-[#9aa6c4] leading-relaxed">
+            <h3 class="text-lg font-bold text-[#0c1e5b] dark:text-white mb-2 transition-colors">Seamless Pilot Wings</h3>
+            <p class="text-sm text-slate-600 dark:text-[#9aa6c4] leading-relaxed transition-colors">
               Never fly solo again. Connect with local spotters, co-pilots, and freestyle racers across Phnom Penh and Ta Khmau.
             </p>
           </div>
 
           <!-- Card 4 -->
-          <div class="p-7 rounded-[18px] bg-[rgba(12,18,38,0.55)] border border-[rgba(150,175,230,0.12)] backdrop-blur-md hover:border-[rgba(150,175,230,0.25)] hover:bg-[rgba(16,24,48,0.7)] hover:-translate-y-1 transition duration-200">
-            <div class="w-11 h-11 rounded-xl bg-[#5df0a8]/10 text-[#5df0a8] border border-[#5df0a8]/20 flex items-center justify-center text-xl mb-4">
+          <div class="p-7 rounded-[18px] bg-white/75 dark:bg-[rgba(12,18,38,0.55)] border border-slate-200/80 dark:border-[rgba(150,175,230,0.12)] backdrop-blur-md shadow-xs dark:shadow-none hover:border-sky-400 dark:hover:border-[rgba(150,175,230,0.25)] hover:bg-white dark:hover:bg-[rgba(16,24,48,0.7)] hover:-translate-y-1 transition duration-200">
+            <div class="w-11 h-11 rounded-xl bg-sky-50 dark:bg-[#5df0a8]/10 text-sky-600 dark:text-[#5df0a8] border border-sky-100 dark:border-[#5df0a8]/20 flex items-center justify-center text-xl mb-4">
               📡
             </div>
-            <h3 class="text-lg font-bold text-white mb-2">Instant ELRS Triggers</h3>
-            <p class="text-sm text-[#9aa6c4] leading-relaxed">
+            <h3 class="text-lg font-bold text-[#0c1e5b] dark:text-white mb-2 transition-colors">Instant ELRS Triggers</h3>
+            <p class="text-sm text-slate-600 dark:text-[#9aa6c4] leading-relaxed transition-colors">
               Sub-millisecond packet rates at 1000Hz. Ultra-low latency transmission that translates thumb twitches straight to motor RPM.
             </p>
           </div>
 
           <!-- Card 5 -->
-          <div class="p-7 rounded-[18px] bg-[rgba(12,18,38,0.55)] border border-[rgba(150,175,230,0.12)] backdrop-blur-md hover:border-[rgba(150,175,230,0.25)] hover:bg-[rgba(16,24,48,0.7)] hover:-translate-y-1 transition duration-200">
-            <div class="w-11 h-11 rounded-xl bg-[#5df0a8]/10 text-[#5df0a8] border border-[#5df0a8]/20 flex items-center justify-center text-xl mb-4">
+          <div class="p-7 rounded-[18px] bg-white/75 dark:bg-[rgba(12,18,38,0.55)] border border-slate-200/80 dark:border-[rgba(150,175,230,0.12)] backdrop-blur-md shadow-xs dark:shadow-none hover:border-sky-400 dark:hover:border-[rgba(150,175,230,0.25)] hover:bg-white dark:hover:bg-[rgba(16,24,48,0.7)] hover:-translate-y-1 transition duration-200">
+            <div class="w-11 h-11 rounded-xl bg-sky-50 dark:bg-[#5df0a8]/10 text-sky-600 dark:text-[#5df0a8] border border-sky-100 dark:border-[#5df0a8]/20 flex items-center justify-center text-xl mb-4">
               🛠️
             </div>
-            <h3 class="text-lg font-bold text-white mb-2">Ta Khmau Maker Hub</h3>
-            <p class="text-sm text-[#9aa6c4] leading-relaxed">
+            <h3 class="text-lg font-bold text-[#0c1e5b] dark:text-white mb-2 transition-colors">Ta Khmau Maker Hub</h3>
+            <p class="text-sm text-slate-600 dark:text-[#9aa6c4] leading-relaxed transition-colors">
               100% free physical workshop with soldering irons, smoke stoppers, and multimeters open daily for tuning and repairs.
             </p>
           </div>
 
           <!-- Card 6 -->
-          <div class="p-7 rounded-[18px] bg-[rgba(12,18,38,0.55)] border border-[rgba(150,175,230,0.12)] backdrop-blur-md hover:border-[rgba(150,175,230,0.25)] hover:bg-[rgba(16,24,48,0.7)] hover:-translate-y-1 transition duration-200">
-            <div class="w-11 h-11 rounded-xl bg-[#5df0a8]/10 text-[#5df0a8] border border-[#5df0a8]/20 flex items-center justify-center text-xl mb-4">
+          <div class="p-7 rounded-[18px] bg-white/75 dark:bg-[rgba(12,18,38,0.55)] border border-slate-200/80 dark:border-[rgba(150,175,230,0.12)] backdrop-blur-md shadow-xs dark:shadow-none hover:border-sky-400 dark:hover:border-[rgba(150,175,230,0.25)] hover:bg-white dark:hover:bg-[rgba(16,24,48,0.7)] hover:-translate-y-1 transition duration-200">
+            <div class="w-11 h-11 rounded-xl bg-sky-50 dark:bg-[#5df0a8]/10 text-sky-600 dark:text-[#5df0a8] border border-sky-100 dark:border-[#5df0a8]/20 flex items-center justify-center text-xl mb-4">
               🛸
             </div>
-            <h3 class="text-lg font-bold text-white mb-2">Custom Drone Sourcing</h3>
-            <p class="text-sm text-[#9aa6c4] leading-relaxed">
+            <h3 class="text-lg font-bold text-[#0c1e5b] dark:text-white mb-2 transition-colors">Custom Drone Sourcing</h3>
+            <p class="text-sm text-slate-600 dark:text-[#9aa6c4] leading-relaxed transition-colors">
               We don't just sell parts; we consult. Get genuine frames, stacks, and motors specifically matched to your flight goals.
             </p>
           </div>
@@ -191,11 +205,11 @@
         <div class="grid lg:grid-cols-12 gap-12 items-center">
           <!-- Left Text -->
           <div class="lg:col-span-5 space-y-5 text-left">
-            <span class="text-xs font-bold uppercase tracking-widest text-[#5df0a8]">Built for Momentum</span>
-            <h2 class="text-3xl sm:text-5xl font-extrabold text-white leading-tight">
+            <span class="text-xs font-bold uppercase tracking-widest text-sky-600 dark:text-[#5df0a8]">Built for Momentum</span>
+            <h2 class="text-3xl sm:text-5xl font-extrabold text-[#0c1e5b] dark:text-white leading-tight transition-colors">
               See the whole flight envelope move in real time
             </h2>
-            <p class="text-base text-[#9aa6c4] leading-relaxed">
+            <p class="text-base text-slate-600 dark:text-[#9aa6c4] leading-relaxed transition-colors">
               Every cell voltage, RSSI dBm level, motor temperature, and throttle response — rendered live. Aero Fly gives operators the altitude to fly with total confidence.
             </p>
             <div class="pt-2">
@@ -203,7 +217,7 @@
                 href="https://t.me/aerobyteacademy"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="inline-flex items-center gap-2 rounded-full bg-gradient-to-b from-[#5df0a8] to-[#2fd38a] text-[#032018] px-7 py-3 text-sm font-bold shadow-md hover:shadow-lg transition"
+                class="inline-flex items-center gap-2 rounded-full bg-[#ff6b00] hover:bg-[#e05e00] text-white px-7 py-3 text-sm font-bold shadow-md hover:shadow-lg transition cursor-pointer"
               >
                 <span>Explore Live Telemetry</span>
                 <span class="text-xs font-black">→</span>
@@ -213,58 +227,58 @@
 
           <!-- Right Dashboard Mockup -->
           <div class="lg:col-span-7">
-            <div class="p-6 sm:p-7 rounded-[26px] bg-[rgba(16,24,48,0.75)] border border-[rgba(150,175,230,0.22)] shadow-2xl backdrop-blur-xl space-y-6">
-              <div class="flex items-center justify-between border-b border-[rgba(150,175,230,0.12)] pb-4">
-                <span class="text-sm font-bold text-white">Flight Telemetry · Quads 6S</span>
-                <span class="inline-flex items-center gap-1.5 text-xs font-bold text-[#5df0a8] uppercase tracking-wider">
-                  <span class="w-2 h-2 rounded-full bg-[#5df0a8] animate-ping"></span>
+            <div class="p-6 sm:p-7 rounded-[26px] bg-white/85 dark:bg-[rgba(16,24,48,0.75)] border border-slate-200 dark:border-[rgba(150,175,230,0.22)] shadow-xl dark:shadow-2xl backdrop-blur-xl space-y-6 transition-colors">
+              <div class="flex items-center justify-between border-b border-slate-200 dark:border-[rgba(150,175,230,0.12)] pb-4">
+                <span class="text-sm font-bold text-[#0c1e5b] dark:text-white">Flight Telemetry · Quads 6S</span>
+                <span class="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-600 dark:text-[#5df0a8] uppercase tracking-wider">
+                  <span class="w-2 h-2 rounded-full bg-emerald-500 dark:bg-[#5df0a8] animate-ping"></span>
                   Live Link
                 </span>
               </div>
 
               <!-- Animated Bars -->
-              <div class="flex items-end gap-2.5 h-36 p-4 rounded-xl bg-black/30 border border-[rgba(150,175,230,0.12)]">
-                <div class="flex-1 bg-gradient-to-t from-[rgba(47,211,138,0.2)] to-[#5df0a8] rounded-t-md transition-all duration-700" style="height: 62%"></div>
-                <div class="flex-1 bg-gradient-to-t from-[rgba(47,211,138,0.2)] to-[#5df0a8] rounded-t-md transition-all duration-700" style="height: 88%"></div>
-                <div class="flex-1 bg-gradient-to-t from-[rgba(47,211,138,0.2)] to-[#5df0a8] rounded-t-md transition-all duration-700" style="height: 47%"></div>
-                <div class="flex-1 bg-gradient-to-t from-[rgba(47,211,138,0.2)] to-[#5df0a8] rounded-t-md transition-all duration-700" style="height: 95%"></div>
-                <div class="flex-1 bg-gradient-to-t from-[rgba(47,211,138,0.2)] to-[#5df0a8] rounded-t-md transition-all duration-700" style="height: 71%"></div>
-                <div class="flex-1 bg-gradient-to-t from-[rgba(47,211,138,0.2)] to-[#5df0a8] rounded-t-md transition-all duration-700" style="height: 80%"></div>
-                <div class="flex-1 bg-gradient-to-t from-[rgba(47,211,138,0.2)] to-[#5df0a8] rounded-t-md transition-all duration-700" style="height: 58%"></div>
+              <div class="flex items-end gap-2.5 h-36 p-4 rounded-xl bg-slate-100/80 dark:bg-black/30 border border-slate-200/80 dark:border-[rgba(150,175,230,0.12)] transition-colors">
+                <div class="flex-1 bg-gradient-to-t from-sky-400 to-sky-600 dark:from-[rgba(47,211,138,0.2)] dark:to-[#5df0a8] rounded-t-md transition-all duration-700" style="height: 62%"></div>
+                <div class="flex-1 bg-gradient-to-t from-sky-400 to-sky-600 dark:from-[rgba(47,211,138,0.2)] dark:to-[#5df0a8] rounded-t-md transition-all duration-700" style="height: 88%"></div>
+                <div class="flex-1 bg-gradient-to-t from-sky-400 to-sky-600 dark:from-[rgba(47,211,138,0.2)] dark:to-[#5df0a8] rounded-t-md transition-all duration-700" style="height: 47%"></div>
+                <div class="flex-1 bg-gradient-to-t from-sky-400 to-sky-600 dark:from-[rgba(47,211,138,0.2)] dark:to-[#5df0a8] rounded-t-md transition-all duration-700" style="height: 95%"></div>
+                <div class="flex-1 bg-gradient-to-t from-sky-400 to-sky-600 dark:from-[rgba(47,211,138,0.2)] dark:to-[#5df0a8] rounded-t-md transition-all duration-700" style="height: 71%"></div>
+                <div class="flex-1 bg-gradient-to-t from-sky-400 to-sky-600 dark:from-[rgba(47,211,138,0.2)] dark:to-[#5df0a8] rounded-t-md transition-all duration-700" style="height: 80%"></div>
+                <div class="flex-1 bg-gradient-to-t from-sky-400 to-sky-600 dark:from-[rgba(47,211,138,0.2)] dark:to-[#5df0a8] rounded-t-md transition-all duration-700" style="height: 58%"></div>
               </div>
 
               <!-- Telemetry Metrics Rows -->
-              <div class="space-y-3 text-xs font-semibold text-[#9aa6c4]">
+              <div class="space-y-3 text-xs font-semibold text-slate-600 dark:text-[#9aa6c4]">
                 <div class="flex items-center gap-4">
                   <span class="w-32 text-left">ELRS Signal Link</span>
-                  <div class="flex-1 h-2 rounded-full bg-white/5 overflow-hidden">
-                    <div class="h-full bg-gradient-to-r from-[#2fd38a] to-[#5df0a8] rounded-full" style="width: 90%"></div>
+                  <div class="flex-1 h-2 rounded-full bg-slate-200 dark:bg-white/5 overflow-hidden">
+                    <div class="h-full bg-gradient-to-r from-teal-500 to-emerald-500 dark:from-[#2fd38a] dark:to-[#5df0a8] rounded-full" style="width: 90%"></div>
                   </div>
-                  <span class="text-white w-10 text-right">90%</span>
+                  <span class="text-slate-800 dark:text-white w-10 text-right">90%</span>
                 </div>
 
                 <div class="flex items-center gap-4">
                   <span class="w-32 text-left">Battery 6S Pack</span>
-                  <div class="flex-1 h-2 rounded-full bg-white/5 overflow-hidden">
-                    <div class="h-full bg-gradient-to-r from-[#2fd38a] to-[#5df0a8] rounded-full" style="width: 72%"></div>
+                  <div class="flex-1 h-2 rounded-full bg-slate-200 dark:bg-white/5 overflow-hidden">
+                    <div class="h-full bg-gradient-to-r from-teal-500 to-emerald-500 dark:from-[#2fd38a] dark:to-[#5df0a8] rounded-full" style="width: 72%"></div>
                   </div>
-                  <span class="text-white w-10 text-right">72%</span>
+                  <span class="text-slate-800 dark:text-white w-10 text-right">72%</span>
                 </div>
 
                 <div class="flex items-center gap-4">
                   <span class="w-32 text-left">VTX Transmission</span>
-                  <div class="flex-1 h-2 rounded-full bg-white/5 overflow-hidden">
-                    <div class="h-full bg-gradient-to-r from-[#2fd38a] to-[#5df0a8] rounded-full" style="width: 48%"></div>
+                  <div class="flex-1 h-2 rounded-full bg-slate-200 dark:bg-white/5 overflow-hidden">
+                    <div class="h-full bg-gradient-to-r from-teal-500 to-emerald-500 dark:from-[#2fd38a] dark:to-[#5df0a8] rounded-full" style="width: 48%"></div>
                   </div>
-                  <span class="text-white w-10 text-right">48%</span>
+                  <span class="text-slate-800 dark:text-white w-10 text-right">48%</span>
                 </div>
 
                 <div class="flex items-center gap-4">
                   <span class="w-32 text-left">GPS Satellites</span>
-                  <div class="flex-1 h-2 rounded-full bg-white/5 overflow-hidden">
-                    <div class="h-full bg-gradient-to-r from-[#2fd38a] to-[#5df0a8] rounded-full" style="width: 34%"></div>
+                  <div class="flex-1 h-2 rounded-full bg-slate-200 dark:bg-white/5 overflow-hidden">
+                    <div class="h-full bg-gradient-to-r from-teal-500 to-emerald-500 dark:from-[#2fd38a] dark:to-[#5df0a8] rounded-full" style="width: 34%"></div>
                   </div>
-                  <span class="text-white w-10 text-right">18 Sats</span>
+                  <span class="text-slate-800 dark:text-white w-10 text-right">18 Sats</span>
                 </div>
               </div>
             </div>
@@ -273,50 +287,50 @@
 
         <!-- 4 Stats Cards -->
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-16">
-          <div class="p-6 rounded-[18px] bg-[rgba(12,18,38,0.55)] border border-[rgba(150,175,230,0.12)] text-center backdrop-blur-md">
-            <div class="text-3xl sm:text-4xl font-extrabold bg-gradient-to-b from-white to-[#5df0a8] bg-clip-text text-transparent">3.4×</div>
-            <p class="text-xs sm:text-sm text-[#9aa6c4] mt-2">Faster pilot skill progression</p>
+          <div class="p-6 rounded-[18px] bg-white/75 dark:bg-[rgba(12,18,38,0.55)] border border-slate-200/80 dark:border-[rgba(150,175,230,0.12)] text-center backdrop-blur-md shadow-xs dark:shadow-none transition-colors">
+            <div class="text-3xl sm:text-4xl font-extrabold bg-gradient-to-b from-[#0c1e5b] to-sky-600 dark:from-white dark:to-[#5df0a8] bg-clip-text text-transparent">3.4×</div>
+            <p class="text-xs sm:text-sm text-slate-600 dark:text-[#9aa6c4] mt-2">Faster pilot skill progression</p>
           </div>
-          <div class="p-6 rounded-[18px] bg-[rgba(12,18,38,0.55)] border border-[rgba(150,175,230,0.12)] text-center backdrop-blur-md">
-            <div class="text-3xl sm:text-4xl font-extrabold bg-gradient-to-b from-white to-[#5df0a8] bg-clip-text text-transparent">99.8%</div>
-            <p class="text-xs sm:text-sm text-[#9aa6c4] mt-2">Radio link reliability on ELRS</p>
+          <div class="p-6 rounded-[18px] bg-white/75 dark:bg-[rgba(12,18,38,0.55)] border border-slate-200/80 dark:border-[rgba(150,175,230,0.12)] text-center backdrop-blur-md shadow-xs dark:shadow-none transition-colors">
+            <div class="text-3xl sm:text-4xl font-extrabold bg-gradient-to-b from-[#0c1e5b] to-sky-600 dark:from-white dark:to-[#5df0a8] bg-clip-text text-transparent">99.8%</div>
+            <p class="text-xs sm:text-sm text-slate-600 dark:text-[#9aa6c4] mt-2">Radio link reliability on ELRS</p>
           </div>
-          <div class="p-6 rounded-[18px] bg-[rgba(12,18,38,0.55)] border border-[rgba(150,175,230,0.12)] text-center backdrop-blur-md">
-            <div class="text-3xl sm:text-4xl font-extrabold bg-gradient-to-b from-white to-[#5df0a8] bg-clip-text text-transparent">1,200+</div>
-            <p class="text-xs sm:text-sm text-[#9aa6c4] mt-2">Flights logged in Cambodia</p>
+          <div class="p-6 rounded-[18px] bg-white/75 dark:bg-[rgba(12,18,38,0.55)] border border-slate-200/80 dark:border-[rgba(150,175,230,0.12)] text-center backdrop-blur-md shadow-xs dark:shadow-none transition-colors">
+            <div class="text-3xl sm:text-4xl font-extrabold bg-gradient-to-b from-[#0c1e5b] to-sky-600 dark:from-white dark:to-[#5df0a8] bg-clip-text text-transparent">1,200+</div>
+            <p class="text-xs sm:text-sm text-slate-600 dark:text-[#9aa6c4] mt-2">Flights logged in Cambodia</p>
           </div>
-          <div class="p-6 rounded-[18px] bg-[rgba(12,18,38,0.55)] border border-[rgba(150,175,230,0.12)] text-center backdrop-blur-md">
-            <div class="text-3xl sm:text-4xl font-extrabold bg-gradient-to-b from-white to-[#5df0a8] bg-clip-text text-transparent">100%</div>
-            <p class="text-xs sm:text-sm text-[#9aa6c4] mt-2">Free Ta Khmau Hub access</p>
+          <div class="p-6 rounded-[18px] bg-white/75 dark:bg-[rgba(12,18,38,0.55)] border border-slate-200/80 dark:border-[rgba(150,175,230,0.12)] text-center backdrop-blur-md shadow-xs dark:shadow-none transition-colors">
+            <div class="text-3xl sm:text-4xl font-extrabold bg-gradient-to-b from-[#0c1e5b] to-sky-600 dark:from-white dark:to-[#5df0a8] bg-clip-text text-transparent">100%</div>
+            <p class="text-xs sm:text-sm text-slate-600 dark:text-[#9aa6c4] mt-2">Free Ta Khmau Hub access</p>
           </div>
         </div>
       </section>
 
       <!-- SECTION 4: EVENTS & TA KHMAU LOCATION -->
       <section id="events" class="py-20 px-4 sm:px-6 lg:px-8 max-w-[1180px] mx-auto">
-        <div class="p-8 sm:p-12 rounded-[26px] bg-gradient-to-b from-[rgba(16,24,48,0.85)] to-[rgba(12,18,38,0.9)] border border-[rgba(150,175,230,0.22)] shadow-2xl backdrop-blur-xl">
+        <div class="p-8 sm:p-12 rounded-[26px] bg-gradient-to-b from-white/95 to-slate-50/90 dark:from-[rgba(16,24,48,0.85)] dark:to-[rgba(12,18,38,0.9)] border border-slate-200 dark:border-[rgba(150,175,230,0.22)] shadow-xl dark:shadow-2xl backdrop-blur-xl transition-colors">
           <div class="max-w-2xl text-left space-y-4">
             <span class="text-xs font-bold uppercase tracking-widest text-[#ff6b00]">Events & Weekend Schedule</span>
-            <h2 class="text-3xl sm:text-5xl font-extrabold text-white">
+            <h2 class="text-3xl sm:text-5xl font-extrabold text-[#0c1e5b] dark:text-white transition-colors">
               Weekend Flying Gatherings & Ta Khmau Location
             </h2>
-            <p class="text-sm sm:text-base text-[#9aa6c4] leading-relaxed">
+            <p class="text-sm sm:text-base text-slate-600 dark:text-[#9aa6c4] leading-relaxed transition-colors">
               Outdoor flying sessions take place on <strong>Saturdays or Sundays</strong>, but please note that <strong>they do NOT happen every week</strong> due to weather conditions. Timetables are confirmed via Thursday polls on Telegram.
             </p>
           </div>
 
           <div class="grid md:grid-cols-2 gap-6 mt-8">
             <!-- Event Rules -->
-            <div class="p-6 rounded-2xl bg-white/5 border border-[rgba(150,175,230,0.12)] text-left space-y-3">
-              <h4 class="text-base font-bold text-[#5df0a8]">Weekend Flight Notice</h4>
-              <p class="text-xs sm:text-sm text-[#9aa6c4] leading-relaxed">
+            <div class="p-6 rounded-2xl bg-white/70 dark:bg-white/5 border border-slate-200 dark:border-[rgba(150,175,230,0.12)] text-left space-y-3 shadow-xs dark:shadow-none transition-colors">
+              <h4 class="text-base font-bold text-sky-700 dark:text-[#5df0a8]">Weekend Flight Notice</h4>
+              <p class="text-xs sm:text-sm text-slate-600 dark:text-[#9aa6c4] leading-relaxed transition-colors">
                 Weather (wind under 20km/h, zero rain) dictates when we fly. Join the group to reserve your VTX Raceband frequency and get the GPS coordinates for this weekend.
               </p>
               <a
                 href="https://t.me/aerobyteacademy"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="inline-flex items-center gap-2 text-xs font-bold text-[#ff6b00] hover:underline pt-2"
+                class="inline-flex items-center gap-2 text-xs font-bold text-[#ff6b00] hover:underline pt-2 cursor-pointer"
               >
                 <span>View This Week's Poll on Telegram</span>
                 <span>→</span>
@@ -324,16 +338,16 @@
             </div>
 
             <!-- Ta Khmau Hub Details -->
-            <div class="p-6 rounded-2xl bg-white/5 border border-[rgba(150,175,230,0.12)] text-left space-y-3">
-              <h4 class="text-base font-bold text-white">📍 Free Physical Ta Khmau Space</h4>
-              <p class="text-xs sm:text-sm text-[#9aa6c4] leading-relaxed">
+            <div class="p-6 rounded-2xl bg-white/70 dark:bg-white/5 border border-slate-200 dark:border-[rgba(150,175,230,0.12)] text-left space-y-3 shadow-xs dark:shadow-none transition-colors">
+              <h4 class="text-base font-bold text-[#0c1e5b] dark:text-white">📍 Free Physical Ta Khmau Space</h4>
+              <p class="text-xs sm:text-sm text-slate-600 dark:text-[#9aa6c4] leading-relaxed transition-colors">
                 Open Tuesday – Sunday (9 AM – 6 PM). Drop in anytime to solder parts, test ESC stacks, configure Betaflight, or talk with fellow drone makers.
               </p>
               <a
                 href="https://maps.google.com/?q=Ta+Khmau+Cambodia"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="inline-flex items-center gap-2 text-xs font-bold text-[#5df0a8] hover:underline pt-2"
+                class="inline-flex items-center gap-2 text-xs font-bold text-sky-600 dark:text-[#5df0a8] hover:underline pt-2 cursor-pointer"
               >
                 <span>Open Google Maps Directions</span>
                 <span>→</span>
@@ -345,12 +359,12 @@
 
       <!-- SECTION 5: AERO STORE & FINAL CTA -->
       <section id="store" class="py-20 px-4 sm:px-6 lg:px-8 max-w-[1180px] mx-auto text-center">
-        <div class="p-10 sm:p-16 rounded-[26px] bg-gradient-to-b from-[#5df0a8]/10 via-[rgba(16,24,48,0.7)] to-[rgba(12,18,38,0.85)] border border-[rgba(150,175,230,0.22)] shadow-2xl backdrop-blur-2xl max-w-3xl mx-auto space-y-6">
-          <span class="text-xs font-bold uppercase tracking-widest text-[#5df0a8]">Ready When You Are</span>
-          <h2 class="text-3xl sm:text-5xl font-extrabold text-white leading-tight">
+        <div class="p-10 sm:p-16 rounded-[26px] bg-gradient-to-b from-sky-50/80 via-white to-slate-50 dark:from-[#5df0a8]/10 dark:via-[rgba(16,24,48,0.7)] dark:to-[rgba(12,18,38,0.85)] border border-slate-200 dark:border-[rgba(150,175,230,0.22)] shadow-xl dark:shadow-2xl backdrop-blur-2xl max-w-3xl mx-auto space-y-6 transition-colors">
+          <span class="text-xs font-bold uppercase tracking-widest text-sky-600 dark:text-[#5df0a8]">Ready When You Are</span>
+          <h2 class="text-3xl sm:text-5xl font-extrabold text-[#0c1e5b] dark:text-white leading-tight transition-colors">
             Put your flight journey on a new trajectory
           </h2>
-          <p class="text-base text-[#9aa6c4] leading-relaxed">
+          <p class="text-base text-slate-600 dark:text-[#9aa6c4] leading-relaxed transition-colors">
             Need custom drone parts, a complete hand-soldered BNF quad, or pre-purchase hardware advice? We consult before you buy.
           </p>
 
@@ -359,7 +373,7 @@
               href="https://t.me/aerobyteacademy"
               target="_blank"
               rel="noopener noreferrer"
-              class="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 rounded-full bg-gradient-to-b from-[#5df0a8] to-[#2fd38a] text-[#032018] px-8 py-3.5 text-base font-bold shadow-lg shadow-[#5df0a8]/25 hover:shadow-[#5df0a8]/40 transition active:scale-95"
+              class="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 rounded-full bg-[#ff6b00] hover:bg-[#e05e00] text-white px-8 py-3.5 text-base font-bold shadow-lg shadow-orange-500/25 hover:shadow-orange-500/40 transition active:scale-95 cursor-pointer"
             >
               <span>Join Aero Fly Telegram</span>
               <svg class="w-4 h-4 stroke-current fill-none stroke-[2.5]" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
@@ -369,14 +383,14 @@
               href="https://t.me/aerobyteacademy"
               target="_blank"
               rel="noopener noreferrer"
-              class="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-full bg-white/5 hover:bg-white/10 border border-[rgba(150,175,230,0.22)] px-7 py-3.5 text-base font-bold text-white transition"
+              class="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-full bg-white dark:bg-white/5 hover:bg-slate-50 dark:hover:bg-white/10 border border-slate-300 dark:border-[rgba(150,175,230,0.22)] px-7 py-3.5 text-base font-bold text-[#0c1e5b] dark:text-white transition cursor-pointer shadow-xs"
             >
               <span>Request Custom Build Quote</span>
             </a>
           </div>
         </div>
 
-        <p class="mt-16 text-xs text-[#6b7796]">
+        <p class="mt-16 text-xs text-slate-500 dark:text-[#6b7796] transition-colors">
           © {{ currentYear }} Aero Fly — Built among the skies.
         </p>
       </section>
@@ -385,7 +399,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, watch, onMounted, onUnmounted } from 'vue'
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js'
@@ -393,6 +407,9 @@ import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js'
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js'
 import { GammaCorrectionShader } from 'three/examples/jsm/shaders/GammaCorrectionShader.js'
+import { useTheme } from '../composables/useTheme'
+
+const { isDark, toggleTheme } = useTheme()
 
 const canvasRef = ref(null)
 const loadingProgress = ref(0)
@@ -401,6 +418,44 @@ const currentYear = new Date().getFullYear()
 let animationFrameId = null
 let renderer = null
 let composer = null
+let scene = null
+let ambientLight = null
+let keyLight = null
+let fillLight = null
+let cyanRim = null
+let stars = null
+let hudRing = null
+let hudRing2 = null
+
+function applySceneTheme(dark) {
+  if (!scene || !ambientLight) return
+  if (dark) {
+    scene.background.setHex(0x04060f)
+    ambientLight.color.setHex(0xffffff)
+    ambientLight.intensity = 2.4
+    if (keyLight) keyLight.intensity = 3.2
+    if (fillLight) fillLight.intensity = 1.8
+    if (cyanRim) cyanRim.intensity = 4.0
+    if (stars) stars.visible = true
+    if (hudRing) hudRing.material.color.setHex(0x5df0a8)
+    if (hudRing2) hudRing2.material.color.setHex(0x3a6cff)
+  } else {
+    // Light Mode: Clean studio daylight lighting on the real drone
+    scene.background.setHex(0xf8fafc)
+    ambientLight.color.setHex(0xffffff)
+    ambientLight.intensity = 3.6
+    if (keyLight) keyLight.intensity = 3.8
+    if (fillLight) fillLight.intensity = 2.2
+    if (cyanRim) cyanRim.intensity = 2.0
+    if (stars) stars.visible = false
+    if (hudRing) hudRing.material.color.setHex(0x0284c7)
+    if (hudRing2) hudRing2.material.color.setHex(0x0c1e5b)
+  }
+}
+
+watch(isDark, (val) => {
+  applySceneTheme(val)
+})
 
 onMounted(() => {
   if (!canvasRef.value) return
@@ -418,27 +473,27 @@ onMounted(() => {
   renderer.shadowMap.enabled = true
   renderer.shadowMap.type = THREE.PCFSoftShadowMap
 
-  const scene = new THREE.Scene()
-  scene.background = new THREE.Color(0x04060f)
+  scene = new THREE.Scene()
+  scene.background = new THREE.Color(isDark.value ? 0x04060f : 0xf8fafc)
 
   const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 200)
   camera.position.set(0, 0, 8)
   scene.add(camera)
 
   // Lighting tuned for realistic carbon fiber and anodized metals
-  const ambientLight = new THREE.AmbientLight(0xffffff, 2.5)
+  ambientLight = new THREE.AmbientLight(0xffffff, isDark.value ? 2.4 : 3.6)
   scene.add(ambientLight)
 
-  const keyLight = new THREE.DirectionalLight(0xffffff, 3.2)
+  keyLight = new THREE.DirectionalLight(0xffffff, isDark.value ? 3.2 : 3.8)
   keyLight.position.set(4, 9, 6)
   keyLight.castShadow = true
   scene.add(keyLight)
 
-  const fillLight = new THREE.DirectionalLight(0x7da4ff, 1.8)
+  fillLight = new THREE.DirectionalLight(0x7da4ff, isDark.value ? 1.8 : 2.2)
   fillLight.position.set(-5, -2, 4)
   scene.add(fillLight)
 
-  const cyanRim = new THREE.PointLight(0x5df0a8, 4.0, 15)
+  cyanRim = new THREE.PointLight(0x5df0a8, isDark.value ? 4.0 : 2.0, 15)
   cyanRim.position.set(-3, 2, 3)
   scene.add(cyanRim)
 
@@ -501,14 +556,24 @@ onMounted(() => {
 
   // Holographic HUD Telemetry Rings
   const ringGeo = new THREE.RingGeometry(2.3, 2.35, 64)
-  const ringMat = new THREE.MeshBasicMaterial({ color: 0x5df0a8, transparent: true, opacity: 0.35, side: THREE.DoubleSide })
-  const hudRing = new THREE.Mesh(ringGeo, ringMat)
+  const ringMat = new THREE.MeshBasicMaterial({
+    color: isDark.value ? 0x5df0a8 : 0x0284c7,
+    transparent: true,
+    opacity: 0.35,
+    side: THREE.DoubleSide
+  })
+  hudRing = new THREE.Mesh(ringGeo, ringMat)
   hudRing.rotation.x = Math.PI / 2
   droneGroup.add(hudRing)
 
   const ring2Geo = new THREE.RingGeometry(2.65, 2.69, 48)
-  const ring2Mat = new THREE.MeshBasicMaterial({ color: 0x3a6cff, transparent: true, opacity: 0.22, side: THREE.DoubleSide })
-  const hudRing2 = new THREE.Mesh(ring2Geo, ring2Mat)
+  const ring2Mat = new THREE.MeshBasicMaterial({
+    color: isDark.value ? 0x3a6cff : 0x0c1e5b,
+    transparent: true,
+    opacity: 0.22,
+    side: THREE.DoubleSide
+  })
+  hudRing2 = new THREE.Mesh(ring2Geo, ring2Mat)
   hudRing2.rotation.x = Math.PI / 2
   droneGroup.add(hudRing2)
 
@@ -525,7 +590,8 @@ onMounted(() => {
   }
   starGeo.setAttribute('position', new THREE.Float32BufferAttribute(starPos, 3))
   const starMat = new THREE.PointsMaterial({ color: 0xcfe0ff, size: 1.6, transparent: true, opacity: 0.75 })
-  const stars = new THREE.Points(starGeo, starMat)
+  stars = new THREE.Points(starGeo, starMat)
+  stars.visible = isDark.value
   scene.add(stars)
 
   // Composers (Bloom & Gamma)
@@ -598,8 +664,8 @@ onMounted(() => {
     droneGroup.rotation.z = curRoll + hoverTilt
     droneGroup.rotation.y = (curP * Math.PI * 1.8) + (now * 0.0003)
 
-    hudRing.rotation.z += dt * 0.25
-    hudRing2.rotation.z -= dt * 0.18
+    if (hudRing) hudRing.rotation.z += dt * 0.25
+    if (hudRing2) hudRing2.rotation.z -= dt * 0.18
 
     composer.render()
   }
