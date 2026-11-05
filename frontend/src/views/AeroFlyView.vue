@@ -588,12 +588,13 @@ onMounted(() => {
         if (node.parent) node.parent.remove(node)
       })
 
-      // 2. Orient drone: Blender model has Z-up and -Y front (camera at -Y).
-      // Tilting X by -Math.PI / 2 brings top of drone facing +Y (UP) and camera facing +Z (towards viewer)
-      droneModel.rotation.x = -Math.PI / 2
+      // 2. Drone natural flight orientation:
+      // The model is already correctly oriented with +Y as UP and +Z as FRONT (camera facing viewer).
+      // We keep rotation at (0, 0, 0) so the 4 arms lie flat in the horizontal flight plane!
+      droneModel.rotation.set(0, 0, 0)
       droneModel.updateMatrixWorld(true)
 
-      // 3. Compute clean bounding box of the oriented real drone
+      // 3. Compute clean bounding box of the real drone
       const box = new THREE.Box3().setFromObject(droneModel)
       const size = box.getSize(new THREE.Vector3())
       const maxDim = Math.max(size.x, size.y, size.z)
@@ -643,7 +644,7 @@ onMounted(() => {
   )
 
   // Holographic HUD Telemetry Rings
-  const ringGeo = new THREE.RingGeometry(2.1, 2.15, 64)
+  const ringGeo = new THREE.RingGeometry(2.35, 2.4, 64)
   const ringMat = new THREE.MeshBasicMaterial({
     color: isDark.value ? 0x5df0a8 : 0x0284c7,
     transparent: true,
@@ -654,7 +655,7 @@ onMounted(() => {
   hudRing.rotation.x = Math.PI / 2
   droneGroup.add(hudRing)
 
-  const ring2Geo = new THREE.RingGeometry(2.45, 2.49, 48)
+  const ring2Geo = new THREE.RingGeometry(2.7, 2.74, 48)
   const ring2Mat = new THREE.MeshBasicMaterial({
     color: isDark.value ? 0x3a6cff : 0x0c1e5b,
     transparent: true,
@@ -690,12 +691,12 @@ onMounted(() => {
   composer.addPass(bloomPass)
   composer.addPass(new ShaderPass(GammaCorrectionShader))
 
-  // Scroll Choreography - tuned so drone is clearly in view on first load at p=0!
+  // Scroll Choreography - drone in horizontal flight with natural forward flight pitch
   const STOPS_X = [{ p: 0, v: 0 }, { p: 0.32, v: -2.4 }, { p: 0.64, v: 2.5 }, { p: 1, v: 0 }]
-  const STOPS_Y = [{ p: 0, v: -0.5 }, { p: 0.32, v: 0.2 }, { p: 0.64, v: 0.1 }, { p: 1, v: 0.2 }]
+  const STOPS_Y = [{ p: 0, v: -0.4 }, { p: 0.32, v: 0.2 }, { p: 0.64, v: 0.1 }, { p: 1, v: 0.2 }]
   const STOPS_S = [{ p: 0, v: 1.35 }, { p: 0.32, v: 1.05 }, { p: 0.64, v: 0.95 }, { p: 1, v: 1.15 }]
-  const STOPS_ROLL = [{ p: 0, v: -0.1 }, { p: 0.32, v: 0.26 }, { p: 0.64, v: -0.28 }, { p: 1, v: 0.05 }]
-  const STOPS_PITCH = [{ p: 0, v: 0.45 }, { p: 0.32, v: 0.30 }, { p: 0.64, v: 0.35 }, { p: 1, v: 0.45 }]
+  const STOPS_ROLL = [{ p: 0, v: -0.06 }, { p: 0.32, v: 0.16 }, { p: 0.64, v: -0.18 }, { p: 1, v: 0.04 }]
+  const STOPS_PITCH = [{ p: 0, v: 0.22 }, { p: 0.32, v: 0.16 }, { p: 0.64, v: 0.18 }, { p: 1, v: 0.24 }]
 
   function sample(stops, p) {
     if (p <= stops[0].p) return stops[0].v

@@ -1141,8 +1141,8 @@
           if (node.parent) node.parent.remove(node);
         });
 
-        // 2. Orient drone: Blender model has Z-up and -Y front (camera at -Y)
-        model.rotation.x = -Math.PI / 2;
+        // 2. Drone natural flight orientation: keep arms in horizontal flight plane
+        model.rotation.set(0, 0, 0);
         model.updateMatrixWorld(true);
 
         // 3. Compute clean bounding box of real drone
@@ -1410,10 +1410,10 @@
     // SCROLL STORYTELLING & FLIGHT CHOREOGRAPHY
     // ==============================================================
     const STOPS_X = [{ p: 0, v: 0 }, { p: 0.32, v: -2.4 }, { p: 0.64, v: 2.5 }, { p: 1, v: 0 }];
-    const STOPS_Y = [{ p: 0, v: -0.5 }, { p: 0.32, v: 0.2 }, { p: 0.64, v: 0.1 }, { p: 1, v: 0.2 }];
+    const STOPS_Y = [{ p: 0, v: -0.4 }, { p: 0.32, v: 0.2 }, { p: 0.64, v: 0.1 }, { p: 1, v: 0.2 }];
     const STOPS_S = [{ p: 0, v: 1.35 }, { p: 0.32, v: 1.05 }, { p: 0.64, v: 0.95 }, { p: 1, v: 1.15 }];
-    const STOPS_ROLL = [{ p: 0, v: -0.1 }, { p: 0.32, v: 0.26 }, { p: 0.64, v: -0.28 }, { p: 1, v: 0.05 }];
-    const STOPS_PITCH = [{ p: 0, v: 0.45 }, { p: 0.32, v: 0.30 }, { p: 0.64, v: 0.35 }, { p: 1, v: 0.45 }];
+    const STOPS_ROLL = [{ p: 0, v: -0.06 }, { p: 0.32, v: 0.16 }, { p: 0.64, v: -0.18 }, { p: 1, v: 0.04 }];
+    const STOPS_PITCH = [{ p: 0, v: 0.22 }, { p: 0.32, v: 0.16 }, { p: 0.64, v: 0.18 }, { p: 1, v: 0.24 }];
 
     let curP = 0;
     let curX = STOPS_X[0].v;
