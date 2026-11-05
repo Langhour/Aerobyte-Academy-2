@@ -1117,22 +1117,64 @@
       '/models/dji_fpv.glb',
       (gltf) => {
         const model = gltf.scene;
+
+        // 1. Remove rogue meshes defense
+        const toRemove = [];
+        model.traverse((child) => {
+          const name = (child.name || '').toLowerCase();
+          if (
+            name.includes('pneu') ||
+            name.includes('text') ||
+            name.includes('wheel') ||
+            name.includes('tire')
+          ) {
+            toRemove.push(child);
+          } else if (child.isMesh && child.geometry) {
+            if (!child.geometry.boundingBox) child.geometry.computeBoundingBox();
+            const b = child.geometry.boundingBox;
+            if (b && (Math.abs(b.min.x) > 30 || Math.abs(b.max.x) > 30 || Math.abs(b.min.y) > 30 || Math.abs(b.max.y) > 30)) {
+              toRemove.push(child);
+            }
+          }
+        });
+        toRemove.forEach((node) => {
+          if (node.parent) node.parent.remove(node);
+        });
+
+        // 2. Orient drone: Blender model has Z-up and -Y front (camera at -Y)
+        model.rotation.x = -Math.PI / 2;
+        model.updateMatrixWorld(true);
+
+        // 3. Compute clean bounding box of real drone
         const box = new THREE.Box3().setFromObject(model);
         const size = box.getSize(new THREE.Vector3());
-        const center = box.getCenter(new THREE.Vector3());
+        const maxDim = Math.max(size.x, size.y, size.z);
+
+        // Prominent scale: 3.5 units wide
+        const targetScale = 3.5 / (maxDim || 1);
+        model.scale.setScalar(targetScale);
+        model.updateMatrixWorld(true);
+
+        // 4. Center the scaled drone precisely at (0, 0, 0)
+        const scaledBox = new THREE.Box3().setFromObject(model);
+        const center = scaledBox.getCenter(new THREE.Vector3());
         model.position.x = -center.x;
         model.position.y = -center.y;
         model.position.z = -center.z;
-        const maxDim = Math.max(size.x, size.y, size.z);
-        const scale = 3.6 / maxDim;
-        model.scale.setScalar(scale);
+
         model.traverse((child) => {
           if (child.isMesh) {
             child.castShadow = true;
             child.receiveShadow = true;
             if (child.material) {
-              child.material.roughness = Math.min(child.material.roughness, 0.45);
-              child.material.metalness = Math.max(child.material.metalness, 0.5);
+              child.material.roughness = Math.min(Math.max(child.material.roughness ?? 0.5, 0.35), 0.75);
+              child.material.metalness = Math.min(child.material.metalness ?? 0.5, 0.35);
+              if (child.material.color) {
+                if (child.material.color.r < 0.08 && child.material.color.g < 0.08 && child.material.color.b < 0.08) {
+                  child.material.color.setRGB(0.18, 0.20, 0.24);
+                }
+              }
+              child.material.needsUpdate = true;
             }
           }
         });
@@ -1367,11 +1409,11 @@
     // ==============================================================
     // SCROLL STORYTELLING & FLIGHT CHOREOGRAPHY
     // ==============================================================
-    const STOPS_X = [{ p: 0, v: 0 }, { p: 0.32, v: -2.8 }, { p: 0.64, v: 2.9 }, { p: 1, v: 0 }];
-    const STOPS_Y = [{ p: 0, v: -3.8 }, { p: 0.32, v: 0.4 }, { p: 0.64, v: 0.3 }, { p: 1, v: 0.15 }];
-    const STOPS_S = [{ p: 0, v: 2.1 }, { p: 0.32, v: 1.05 }, { p: 0.64, v: 0.95 }, { p: 1, v: 1.15 }];
-    const STOPS_ROLL = [{ p: 0, v: -0.15 }, { p: 0.32, v: 0.28 }, { p: 0.64, v: -0.32 }, { p: 1, v: 0.05 }];
-    const STOPS_PITCH = [{ p: 0, v: 0.65 }, { p: 0.32, v: 0.35 }, { p: 0.64, v: 0.42 }, { p: 1, v: 0.55 }];
+    const STOPS_X = [{ p: 0, v: 0 }, { p: 0.32, v: -2.4 }, { p: 0.64, v: 2.5 }, { p: 1, v: 0 }];
+    const STOPS_Y = [{ p: 0, v: -0.5 }, { p: 0.32, v: 0.2 }, { p: 0.64, v: 0.1 }, { p: 1, v: 0.2 }];
+    const STOPS_S = [{ p: 0, v: 1.35 }, { p: 0.32, v: 1.05 }, { p: 0.64, v: 0.95 }, { p: 1, v: 1.15 }];
+    const STOPS_ROLL = [{ p: 0, v: -0.1 }, { p: 0.32, v: 0.26 }, { p: 0.64, v: -0.28 }, { p: 1, v: 0.05 }];
+    const STOPS_PITCH = [{ p: 0, v: 0.45 }, { p: 0.32, v: 0.30 }, { p: 0.64, v: 0.35 }, { p: 1, v: 0.45 }];
 
     let curP = 0;
     let curX = STOPS_X[0].v;
@@ -1381,8 +1423,8 @@
     let curPitch = STOPS_PITCH[0].v;
 
     // One-time float-up entrance
-    const ENTRY_DUR = 1.9;
-    const ENTRY_START_Y = -6.5;
+    const ENTRY_DUR = 1.2;
+    const ENTRY_START_Y = -0.5;
     let entryProgress = 0;
     const startTime = performance.now();
 

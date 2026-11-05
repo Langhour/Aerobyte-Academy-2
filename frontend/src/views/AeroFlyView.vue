@@ -6,24 +6,24 @@
     <!-- Loading Indicator overlay while real 3D drone GLB loads -->
     <div
       v-if="loadingProgress < 100"
-      class="fixed bottom-6 right-6 z-50 flex items-center gap-3 bg-white/90 dark:bg-[rgba(12,18,38,0.85)] border border-slate-200 dark:border-[rgba(150,175,230,0.2)] px-4 py-2.5 rounded-full backdrop-blur-md shadow-xl text-xs font-bold text-slate-800 dark:text-white transition-opacity duration-500"
+      class="fixed bottom-6 right-6 z-50 flex items-center gap-3 bg-white/95 dark:bg-[rgba(12,18,38,0.9)] border border-slate-300 dark:border-[rgba(150,175,230,0.2)] px-4 py-2.5 rounded-full backdrop-blur-md shadow-xl text-xs font-bold text-slate-800 dark:text-white transition-opacity duration-500"
       :class="loadingProgress >= 100 ? 'opacity-0 pointer-events-none' : 'opacity-100'"
     >
       <div class="w-4 h-4 border-2 border-orange-500 dark:border-[#5df0a8] border-t-transparent rounded-full animate-spin"></div>
-      <span>Loading Real DJI FPV 3D Drone... {{ loadingProgress }}%</span>
+      <span>Loading 3D DJI FPV Drone... {{ loadingProgress }}%</span>
     </div>
 
     <!-- Page Content Floating Over Fixed 3D Drone -->
     <div class="relative z-10">
       <!-- Aero Fly Top Sub-Navigation Bar -->
-      <header class="sticky top-0 z-40 bg-white/80 dark:bg-[#04060f]/80 backdrop-blur-xl border-b border-slate-200/80 dark:border-[rgba(150,175,230,0.12)] transition-colors duration-300">
+      <header class="sticky top-0 z-40 bg-white/85 dark:bg-[#04060f]/85 backdrop-blur-xl border-b border-slate-200 dark:border-[rgba(150,175,230,0.12)] transition-colors duration-300 shadow-2xs">
         <div class="mx-auto max-w-[1180px] px-4 sm:px-6 lg:px-8">
           <div class="flex items-center justify-between py-3.5 gap-4">
             <!-- Brand Mark -->
             <div class="flex items-center gap-2.5">
               <span class="text-orange-500 dark:text-[#5df0a8] text-base font-extrabold select-none">▲</span>
               <span class="text-lg font-black tracking-widest uppercase text-[#0c1e5b] dark:text-white">Aero Fly</span>
-              <span class="hidden sm:inline-block text-[10px] font-bold uppercase tracking-wider bg-sky-100 text-sky-700 dark:bg-[#5df0a8]/10 dark:text-[#5df0a8] border border-sky-200 dark:border-[#5df0a8]/20 px-2 py-0.5 rounded-full ml-1">
+              <span class="hidden sm:inline-block text-[10px] font-bold uppercase tracking-wider bg-sky-100 text-sky-700 dark:bg-[#5df0a8]/10 dark:text-[#5df0a8] border border-sky-200 dark:border-[#5df0a8]/20 px-2.5 py-0.5 rounded-full ml-1">
                 Real FPV Flight Collective
               </span>
             </div>
@@ -42,7 +42,7 @@
               <button
                 type="button"
                 @click="toggleTheme"
-                class="inline-flex items-center justify-center p-2 rounded-full border border-slate-200 dark:border-[rgba(150,175,230,0.2)] bg-white/80 dark:bg-white/5 text-slate-700 dark:text-slate-200 hover:scale-105 active:scale-95 transition cursor-pointer shadow-xs"
+                class="inline-flex items-center justify-center p-2 rounded-full border border-slate-300 dark:border-[rgba(150,175,230,0.2)] bg-white/90 dark:bg-white/5 text-slate-800 dark:text-slate-200 hover:scale-105 active:scale-95 transition cursor-pointer shadow-xs"
                 :title="isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'"
                 aria-label="Toggle Theme"
               >
@@ -66,9 +66,9 @@
         </div>
       </header>
 
-      <!-- SECTION 1: HERO (Floating over the Real 3D Drone) -->
-      <section class="min-h-[92vh] flex flex-col justify-center items-center text-center px-4 sm:px-6 pt-12 pb-20 relative">
-        <div class="max-w-3xl mx-auto space-y-6">
+      <!-- SECTION 1: HERO (The 3D Drone is centered right below the content) -->
+      <section class="min-h-[92vh] flex flex-col justify-between items-center text-center px-4 sm:px-6 pt-12 pb-16 relative">
+        <div class="max-w-3xl mx-auto space-y-5">
           <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-sky-50 dark:bg-[#5df0a8]/10 border border-sky-200 dark:border-[#5df0a8]/20 text-sky-700 dark:text-[#5df0a8] text-xs font-bold tracking-widest uppercase transition-colors">
             <span class="w-2 h-2 rounded-full bg-sky-500 dark:bg-[#5df0a8] animate-pulse"></span>
             Cambodia's Open Drone Flight Community
@@ -83,7 +83,7 @@
             Experience real FPV racing dynamics, connect with solo pilots across Cambodia, and configure custom quads with hands-on bench consulting.
           </p>
 
-          <div class="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
+          <div class="pt-3 flex flex-col sm:flex-row items-center justify-center gap-4">
             <a
               href="https://t.me/aerobyteacademy"
               target="_blank"
@@ -103,12 +103,15 @@
           </div>
         </div>
 
+        <!-- Spacer area allowing the 3D drone to hover in full view -->
+        <div class="h-32 sm:h-44 pointer-events-none"></div>
+
         <!-- Trusted Logos Row -->
-        <div class="mt-20 pt-10 border-t border-slate-200/80 dark:border-[rgba(150,175,230,0.08)] w-full max-w-4xl mx-auto transition-colors">
-          <p class="text-[11px] font-bold uppercase tracking-widest text-slate-500 dark:text-[#6b7796] mb-5">
+        <div class="pt-8 border-t border-slate-200/80 dark:border-[rgba(150,175,230,0.08)] w-full max-w-4xl mx-auto transition-colors">
+          <p class="text-[11px] font-bold uppercase tracking-widest text-slate-500 dark:text-[#6b7796] mb-4">
             Supported hardware & open-source flight stacks
           </p>
-          <div class="flex flex-wrap items-center justify-center gap-6 sm:gap-12 text-sm sm:text-base font-bold text-slate-500 dark:text-[#6b7796]">
+          <div class="flex flex-wrap items-center justify-center gap-6 sm:gap-12 text-sm sm:text-base font-bold text-slate-600 dark:text-[#6b7796]">
             <span class="hover:text-[#0c1e5b] dark:hover:text-white transition">DJI FPV</span>
             <span class="hover:text-[#0c1e5b] dark:hover:text-white transition">Betaflight</span>
             <span class="hover:text-[#0c1e5b] dark:hover:text-white transition">ExpressLRS</span>
@@ -133,7 +136,7 @@
 
         <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
           <!-- Card 1 -->
-          <div class="p-7 rounded-[18px] bg-white/75 dark:bg-[rgba(12,18,38,0.55)] border border-slate-200/80 dark:border-[rgba(150,175,230,0.12)] backdrop-blur-md shadow-xs dark:shadow-none hover:border-sky-400 dark:hover:border-[rgba(150,175,230,0.25)] hover:bg-white dark:hover:bg-[rgba(16,24,48,0.7)] hover:-translate-y-1 transition duration-200">
+          <div class="p-7 rounded-[18px] bg-white/80 dark:bg-[rgba(12,18,38,0.55)] border border-slate-200 dark:border-[rgba(150,175,230,0.12)] backdrop-blur-md shadow-sm dark:shadow-none hover:border-sky-400 dark:hover:border-[rgba(150,175,230,0.25)] hover:bg-white dark:hover:bg-[rgba(16,24,48,0.7)] hover:-translate-y-1 transition duration-200">
             <div class="w-11 h-11 rounded-xl bg-sky-50 dark:bg-[#5df0a8]/10 text-sky-600 dark:text-[#5df0a8] border border-sky-100 dark:border-[#5df0a8]/20 flex items-center justify-center text-xl mb-4">
               ⚡
             </div>
@@ -144,7 +147,7 @@
           </div>
 
           <!-- Card 2 -->
-          <div class="p-7 rounded-[18px] bg-white/75 dark:bg-[rgba(12,18,38,0.55)] border border-slate-200/80 dark:border-[rgba(150,175,230,0.12)] backdrop-blur-md shadow-xs dark:shadow-none hover:border-sky-400 dark:hover:border-[rgba(150,175,230,0.25)] hover:bg-white dark:hover:bg-[rgba(16,24,48,0.7)] hover:-translate-y-1 transition duration-200">
+          <div class="p-7 rounded-[18px] bg-white/80 dark:bg-[rgba(12,18,38,0.55)] border border-slate-200 dark:border-[rgba(150,175,230,0.12)] backdrop-blur-md shadow-sm dark:shadow-none hover:border-sky-400 dark:hover:border-[rgba(150,175,230,0.25)] hover:bg-white dark:hover:bg-[rgba(16,24,48,0.7)] hover:-translate-y-1 transition duration-200">
             <div class="w-11 h-11 rounded-xl bg-sky-50 dark:bg-[#5df0a8]/10 text-sky-600 dark:text-[#5df0a8] border border-sky-100 dark:border-[#5df0a8]/20 flex items-center justify-center text-xl mb-4">
               📊
             </div>
@@ -155,7 +158,7 @@
           </div>
 
           <!-- Card 3 -->
-          <div class="p-7 rounded-[18px] bg-white/75 dark:bg-[rgba(12,18,38,0.55)] border border-slate-200/80 dark:border-[rgba(150,175,230,0.12)] backdrop-blur-md shadow-xs dark:shadow-none hover:border-sky-400 dark:hover:border-[rgba(150,175,230,0.25)] hover:bg-white dark:hover:bg-[rgba(16,24,48,0.7)] hover:-translate-y-1 transition duration-200">
+          <div class="p-7 rounded-[18px] bg-white/80 dark:bg-[rgba(12,18,38,0.55)] border border-slate-200 dark:border-[rgba(150,175,230,0.12)] backdrop-blur-md shadow-sm dark:shadow-none hover:border-sky-400 dark:hover:border-[rgba(150,175,230,0.25)] hover:bg-white dark:hover:bg-[rgba(16,24,48,0.7)] hover:-translate-y-1 transition duration-200">
             <div class="w-11 h-11 rounded-xl bg-sky-50 dark:bg-[#5df0a8]/10 text-sky-600 dark:text-[#5df0a8] border border-sky-100 dark:border-[#5df0a8]/20 flex items-center justify-center text-xl mb-4">
               👥
             </div>
@@ -166,7 +169,7 @@
           </div>
 
           <!-- Card 4 -->
-          <div class="p-7 rounded-[18px] bg-white/75 dark:bg-[rgba(12,18,38,0.55)] border border-slate-200/80 dark:border-[rgba(150,175,230,0.12)] backdrop-blur-md shadow-xs dark:shadow-none hover:border-sky-400 dark:hover:border-[rgba(150,175,230,0.25)] hover:bg-white dark:hover:bg-[rgba(16,24,48,0.7)] hover:-translate-y-1 transition duration-200">
+          <div class="p-7 rounded-[18px] bg-white/80 dark:bg-[rgba(12,18,38,0.55)] border border-slate-200 dark:border-[rgba(150,175,230,0.12)] backdrop-blur-md shadow-sm dark:shadow-none hover:border-sky-400 dark:hover:border-[rgba(150,175,230,0.25)] hover:bg-white dark:hover:bg-[rgba(16,24,48,0.7)] hover:-translate-y-1 transition duration-200">
             <div class="w-11 h-11 rounded-xl bg-sky-50 dark:bg-[#5df0a8]/10 text-sky-600 dark:text-[#5df0a8] border border-sky-100 dark:border-[#5df0a8]/20 flex items-center justify-center text-xl mb-4">
               📡
             </div>
@@ -177,7 +180,7 @@
           </div>
 
           <!-- Card 5 -->
-          <div class="p-7 rounded-[18px] bg-white/75 dark:bg-[rgba(12,18,38,0.55)] border border-slate-200/80 dark:border-[rgba(150,175,230,0.12)] backdrop-blur-md shadow-xs dark:shadow-none hover:border-sky-400 dark:hover:border-[rgba(150,175,230,0.25)] hover:bg-white dark:hover:bg-[rgba(16,24,48,0.7)] hover:-translate-y-1 transition duration-200">
+          <div class="p-7 rounded-[18px] bg-white/80 dark:bg-[rgba(12,18,38,0.55)] border border-slate-200 dark:border-[rgba(150,175,230,0.12)] backdrop-blur-md shadow-sm dark:shadow-none hover:border-sky-400 dark:hover:border-[rgba(150,175,230,0.25)] hover:bg-white dark:hover:bg-[rgba(16,24,48,0.7)] hover:-translate-y-1 transition duration-200">
             <div class="w-11 h-11 rounded-xl bg-sky-50 dark:bg-[#5df0a8]/10 text-sky-600 dark:text-[#5df0a8] border border-sky-100 dark:border-[#5df0a8]/20 flex items-center justify-center text-xl mb-4">
               🛠️
             </div>
@@ -188,7 +191,7 @@
           </div>
 
           <!-- Card 6 -->
-          <div class="p-7 rounded-[18px] bg-white/75 dark:bg-[rgba(12,18,38,0.55)] border border-slate-200/80 dark:border-[rgba(150,175,230,0.12)] backdrop-blur-md shadow-xs dark:shadow-none hover:border-sky-400 dark:hover:border-[rgba(150,175,230,0.25)] hover:bg-white dark:hover:bg-[rgba(16,24,48,0.7)] hover:-translate-y-1 transition duration-200">
+          <div class="p-7 rounded-[18px] bg-white/80 dark:bg-[rgba(12,18,38,0.55)] border border-slate-200 dark:border-[rgba(150,175,230,0.12)] backdrop-blur-md shadow-sm dark:shadow-none hover:border-sky-400 dark:hover:border-[rgba(150,175,230,0.25)] hover:bg-white dark:hover:bg-[rgba(16,24,48,0.7)] hover:-translate-y-1 transition duration-200">
             <div class="w-11 h-11 rounded-xl bg-sky-50 dark:bg-[#5df0a8]/10 text-sky-600 dark:text-[#5df0a8] border border-sky-100 dark:border-[#5df0a8]/20 flex items-center justify-center text-xl mb-4">
               🛸
             </div>
@@ -227,7 +230,7 @@
 
           <!-- Right Dashboard Mockup -->
           <div class="lg:col-span-7">
-            <div class="p-6 sm:p-7 rounded-[26px] bg-white/85 dark:bg-[rgba(16,24,48,0.75)] border border-slate-200 dark:border-[rgba(150,175,230,0.22)] shadow-xl dark:shadow-2xl backdrop-blur-xl space-y-6 transition-colors">
+            <div class="p-6 sm:p-7 rounded-[26px] bg-white/90 dark:bg-[rgba(16,24,48,0.75)] border border-slate-200 dark:border-[rgba(150,175,230,0.22)] shadow-xl dark:shadow-2xl backdrop-blur-xl space-y-6 transition-colors">
               <div class="flex items-center justify-between border-b border-slate-200 dark:border-[rgba(150,175,230,0.12)] pb-4">
                 <span class="text-sm font-bold text-[#0c1e5b] dark:text-white">Flight Telemetry · Quads 6S</span>
                 <span class="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-600 dark:text-[#5df0a8] uppercase tracking-wider">
@@ -237,7 +240,7 @@
               </div>
 
               <!-- Animated Bars -->
-              <div class="flex items-end gap-2.5 h-36 p-4 rounded-xl bg-slate-100/80 dark:bg-black/30 border border-slate-200/80 dark:border-[rgba(150,175,230,0.12)] transition-colors">
+              <div class="flex items-end gap-2.5 h-36 p-4 rounded-xl bg-slate-100/90 dark:bg-black/30 border border-slate-200 dark:border-[rgba(150,175,230,0.12)] transition-colors">
                 <div class="flex-1 bg-gradient-to-t from-sky-400 to-sky-600 dark:from-[rgba(47,211,138,0.2)] dark:to-[#5df0a8] rounded-t-md transition-all duration-700" style="height: 62%"></div>
                 <div class="flex-1 bg-gradient-to-t from-sky-400 to-sky-600 dark:from-[rgba(47,211,138,0.2)] dark:to-[#5df0a8] rounded-t-md transition-all duration-700" style="height: 88%"></div>
                 <div class="flex-1 bg-gradient-to-t from-sky-400 to-sky-600 dark:from-[rgba(47,211,138,0.2)] dark:to-[#5df0a8] rounded-t-md transition-all duration-700" style="height: 47%"></div>
@@ -287,19 +290,19 @@
 
         <!-- 4 Stats Cards -->
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-16">
-          <div class="p-6 rounded-[18px] bg-white/75 dark:bg-[rgba(12,18,38,0.55)] border border-slate-200/80 dark:border-[rgba(150,175,230,0.12)] text-center backdrop-blur-md shadow-xs dark:shadow-none transition-colors">
+          <div class="p-6 rounded-[18px] bg-white/80 dark:bg-[rgba(12,18,38,0.55)] border border-slate-200 dark:border-[rgba(150,175,230,0.12)] text-center backdrop-blur-md shadow-xs dark:shadow-none transition-colors">
             <div class="text-3xl sm:text-4xl font-extrabold bg-gradient-to-b from-[#0c1e5b] to-sky-600 dark:from-white dark:to-[#5df0a8] bg-clip-text text-transparent">3.4×</div>
             <p class="text-xs sm:text-sm text-slate-600 dark:text-[#9aa6c4] mt-2">Faster pilot skill progression</p>
           </div>
-          <div class="p-6 rounded-[18px] bg-white/75 dark:bg-[rgba(12,18,38,0.55)] border border-slate-200/80 dark:border-[rgba(150,175,230,0.12)] text-center backdrop-blur-md shadow-xs dark:shadow-none transition-colors">
+          <div class="p-6 rounded-[18px] bg-white/80 dark:bg-[rgba(12,18,38,0.55)] border border-slate-200 dark:border-[rgba(150,175,230,0.12)] text-center backdrop-blur-md shadow-xs dark:shadow-none transition-colors">
             <div class="text-3xl sm:text-4xl font-extrabold bg-gradient-to-b from-[#0c1e5b] to-sky-600 dark:from-white dark:to-[#5df0a8] bg-clip-text text-transparent">99.8%</div>
             <p class="text-xs sm:text-sm text-slate-600 dark:text-[#9aa6c4] mt-2">Radio link reliability on ELRS</p>
           </div>
-          <div class="p-6 rounded-[18px] bg-white/75 dark:bg-[rgba(12,18,38,0.55)] border border-slate-200/80 dark:border-[rgba(150,175,230,0.12)] text-center backdrop-blur-md shadow-xs dark:shadow-none transition-colors">
+          <div class="p-6 rounded-[18px] bg-white/80 dark:bg-[rgba(12,18,38,0.55)] border border-slate-200 dark:border-[rgba(150,175,230,0.12)] text-center backdrop-blur-md shadow-xs dark:shadow-none transition-colors">
             <div class="text-3xl sm:text-4xl font-extrabold bg-gradient-to-b from-[#0c1e5b] to-sky-600 dark:from-white dark:to-[#5df0a8] bg-clip-text text-transparent">1,200+</div>
             <p class="text-xs sm:text-sm text-slate-600 dark:text-[#9aa6c4] mt-2">Flights logged in Cambodia</p>
           </div>
-          <div class="p-6 rounded-[18px] bg-white/75 dark:bg-[rgba(12,18,38,0.55)] border border-slate-200/80 dark:border-[rgba(150,175,230,0.12)] text-center backdrop-blur-md shadow-xs dark:shadow-none transition-colors">
+          <div class="p-6 rounded-[18px] bg-white/80 dark:bg-[rgba(12,18,38,0.55)] border border-slate-200 dark:border-[rgba(150,175,230,0.12)] text-center backdrop-blur-md shadow-xs dark:shadow-none transition-colors">
             <div class="text-3xl sm:text-4xl font-extrabold bg-gradient-to-b from-[#0c1e5b] to-sky-600 dark:from-white dark:to-[#5df0a8] bg-clip-text text-transparent">100%</div>
             <p class="text-xs sm:text-sm text-slate-600 dark:text-[#9aa6c4] mt-2">Free Ta Khmau Hub access</p>
           </div>
@@ -321,7 +324,7 @@
 
           <div class="grid md:grid-cols-2 gap-6 mt-8">
             <!-- Event Rules -->
-            <div class="p-6 rounded-2xl bg-white/70 dark:bg-white/5 border border-slate-200 dark:border-[rgba(150,175,230,0.12)] text-left space-y-3 shadow-xs dark:shadow-none transition-colors">
+            <div class="p-6 rounded-2xl bg-white/80 dark:bg-white/5 border border-slate-200 dark:border-[rgba(150,175,230,0.12)] text-left space-y-3 shadow-xs dark:shadow-none transition-colors">
               <h4 class="text-base font-bold text-sky-700 dark:text-[#5df0a8]">Weekend Flight Notice</h4>
               <p class="text-xs sm:text-sm text-slate-600 dark:text-[#9aa6c4] leading-relaxed transition-colors">
                 Weather (wind under 20km/h, zero rain) dictates when we fly. Join the group to reserve your VTX Raceband frequency and get the GPS coordinates for this weekend.
@@ -338,7 +341,7 @@
             </div>
 
             <!-- Ta Khmau Hub Details -->
-            <div class="p-6 rounded-2xl bg-white/70 dark:bg-white/5 border border-slate-200 dark:border-[rgba(150,175,230,0.12)] text-left space-y-3 shadow-xs dark:shadow-none transition-colors">
+            <div class="p-6 rounded-2xl bg-white/80 dark:bg-white/5 border border-slate-200 dark:border-[rgba(150,175,230,0.12)] text-left space-y-3 shadow-xs dark:shadow-none transition-colors">
               <h4 class="text-base font-bold text-[#0c1e5b] dark:text-white">📍 Free Physical Ta Khmau Space</h4>
               <p class="text-xs sm:text-sm text-slate-600 dark:text-[#9aa6c4] leading-relaxed transition-colors">
                 Open Tuesday – Sunday (9 AM – 6 PM). Drop in anytime to solder parts, test ESC stacks, configure Betaflight, or talk with fellow drone makers.
@@ -359,7 +362,7 @@
 
       <!-- SECTION 5: AERO STORE & FINAL CTA -->
       <section id="store" class="py-20 px-4 sm:px-6 lg:px-8 max-w-[1180px] mx-auto text-center">
-        <div class="p-10 sm:p-16 rounded-[26px] bg-gradient-to-b from-sky-50/80 via-white to-slate-50 dark:from-[#5df0a8]/10 dark:via-[rgba(16,24,48,0.7)] dark:to-[rgba(12,18,38,0.85)] border border-slate-200 dark:border-[rgba(150,175,230,0.22)] shadow-xl dark:shadow-2xl backdrop-blur-2xl max-w-3xl mx-auto space-y-6 transition-colors">
+        <div class="p-10 sm:p-16 rounded-[26px] bg-gradient-to-b from-sky-50 via-white to-slate-50 dark:from-[#5df0a8]/10 dark:via-[rgba(16,24,48,0.7)] dark:to-[rgba(12,18,38,0.85)] border border-slate-200 dark:border-[rgba(150,175,230,0.22)] shadow-xl dark:shadow-2xl backdrop-blur-2xl max-w-3xl mx-auto space-y-6 transition-colors">
           <span class="text-xs font-bold uppercase tracking-widest text-sky-600 dark:text-[#5df0a8]">Ready When You Are</span>
           <h2 class="text-3xl sm:text-5xl font-extrabold text-[#0c1e5b] dark:text-white leading-tight transition-colors">
             Put your flight journey on a new trajectory
@@ -419,37 +422,81 @@ let animationFrameId = null
 let renderer = null
 let composer = null
 let scene = null
+let camera = null
+let bloomPass = null
 let ambientLight = null
+let hemiLight = null
 let keyLight = null
 let fillLight = null
 let cyanRim = null
+let orangeRim = null
 let stars = null
 let hudRing = null
 let hudRing2 = null
+let droneModel = null
 
 function applySceneTheme(dark) {
   if (!scene || !ambientLight) return
+
   if (dark) {
-    scene.background.setHex(0x04060f)
+    // DARK MODE: Space environment with neon HUD, starfield, and glowing bloom
+    renderer.setClearColor(0x04060f, 1)
     ambientLight.color.setHex(0xffffff)
     ambientLight.intensity = 2.4
-    if (keyLight) keyLight.intensity = 3.2
+    if (hemiLight) hemiLight.intensity = 0.8
+    if (keyLight) {
+      keyLight.intensity = 3.2
+      keyLight.color.setHex(0xffffff)
+    }
     if (fillLight) fillLight.intensity = 1.8
     if (cyanRim) cyanRim.intensity = 4.0
+    if (orangeRim) orangeRim.intensity = 3.0
     if (stars) stars.visible = true
-    if (hudRing) hudRing.material.color.setHex(0x5df0a8)
-    if (hudRing2) hudRing2.material.color.setHex(0x3a6cff)
+    if (hudRing) {
+      hudRing.material.color.setHex(0x5df0a8)
+      hudRing.material.opacity = 0.35
+    }
+    if (hudRing2) {
+      hudRing2.material.color.setHex(0x3a6cff)
+      hudRing2.material.opacity = 0.22
+    }
+    if (bloomPass) {
+      bloomPass.enabled = true
+      bloomPass.strength = 0.35
+    }
   } else {
-    // Light Mode: Clean studio daylight lighting on the real drone
-    scene.background.setHex(0xf8fafc)
+    // LIGHT MODE: Crisp daylight studio lighting, clean alpha transparent background, sharp contrast
+    renderer.setClearColor(0x000000, 0)
     ambientLight.color.setHex(0xffffff)
-    ambientLight.intensity = 3.6
-    if (keyLight) keyLight.intensity = 3.8
-    if (fillLight) fillLight.intensity = 2.2
-    if (cyanRim) cyanRim.intensity = 2.0
+    ambientLight.intensity = 2.2
+    if (hemiLight) {
+      hemiLight.color.setHex(0xffffff)
+      hemiLight.groundColor.setHex(0xb0bec5)
+      hemiLight.intensity = 2.0
+    }
+    if (keyLight) {
+      keyLight.intensity = 3.2
+      keyLight.color.setHex(0xffffff)
+    }
+    if (fillLight) {
+      fillLight.intensity = 1.8
+      fillLight.color.setHex(0xdbeafe)
+    }
+    if (cyanRim) cyanRim.intensity = 2.2
+    if (orangeRim) orangeRim.intensity = 2.2
     if (stars) stars.visible = false
-    if (hudRing) hudRing.material.color.setHex(0x0284c7)
-    if (hudRing2) hudRing2.material.color.setHex(0x0c1e5b)
+    if (hudRing) {
+      hudRing.material.color.setHex(0x0284c7)
+      hudRing.material.opacity = 0.65
+    }
+    if (hudRing2) {
+      hudRing2.material.color.setHex(0x0c1e5b)
+      hudRing2.material.opacity = 0.45
+    }
+    // Disable bloom pass completely in light mode to prevent white wash out
+    if (bloomPass) {
+      bloomPass.enabled = false
+    }
   }
 }
 
@@ -474,30 +521,33 @@ onMounted(() => {
   renderer.shadowMap.type = THREE.PCFSoftShadowMap
 
   scene = new THREE.Scene()
-  scene.background = new THREE.Color(isDark.value ? 0x04060f : 0xf8fafc)
+  scene.background = null // Transparent background handled by CSS
 
-  const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 200)
+  camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 200)
   camera.position.set(0, 0, 8)
   scene.add(camera)
 
-  // Lighting tuned for realistic carbon fiber and anodized metals
-  ambientLight = new THREE.AmbientLight(0xffffff, isDark.value ? 2.4 : 3.6)
+  // Lighting setup
+  ambientLight = new THREE.AmbientLight(0xffffff, isDark.value ? 2.4 : 2.2)
   scene.add(ambientLight)
 
-  keyLight = new THREE.DirectionalLight(0xffffff, isDark.value ? 3.2 : 3.8)
+  hemiLight = new THREE.HemisphereLight(0xffffff, 0xb0bec5, isDark.value ? 0.8 : 2.0)
+  scene.add(hemiLight)
+
+  keyLight = new THREE.DirectionalLight(0xffffff, isDark.value ? 3.2 : 3.2)
   keyLight.position.set(4, 9, 6)
   keyLight.castShadow = true
   scene.add(keyLight)
 
-  fillLight = new THREE.DirectionalLight(0x7da4ff, isDark.value ? 1.8 : 2.2)
+  fillLight = new THREE.DirectionalLight(isDark.value ? 0x7da4ff : 0xdbeafe, isDark.value ? 1.8 : 1.8)
   fillLight.position.set(-5, -2, 4)
   scene.add(fillLight)
 
-  cyanRim = new THREE.PointLight(0x5df0a8, isDark.value ? 4.0 : 2.0, 15)
+  cyanRim = new THREE.PointLight(isDark.value ? 0x5df0a8 : 0x0284c7, isDark.value ? 4.0 : 2.2, 18)
   cyanRim.position.set(-3, 2, 3)
   scene.add(cyanRim)
 
-  const orangeRim = new THREE.PointLight(0xff6b00, 3.0, 12)
+  orangeRim = new THREE.PointLight(0xff6b00, isDark.value ? 3.0 : 2.2, 15)
   orangeRim.position.set(3, -2, -2)
   scene.add(orangeRim)
 
@@ -513,34 +563,72 @@ onMounted(() => {
   gltfLoader.load(
     '/models/dji_fpv.glb',
     (gltf) => {
-      const model = gltf.scene
+      droneModel = gltf.scene
 
-      // Compute bounding box and center precisely
-      const box = new THREE.Box3().setFromObject(model)
+      // 1. Remove rogue meshes defense
+      const toRemove = []
+      droneModel.traverse((child) => {
+        const name = (child.name || '').toLowerCase()
+        if (
+          name.includes('pneu') ||
+          name.includes('text') ||
+          name.includes('wheel') ||
+          name.includes('tire')
+        ) {
+          toRemove.push(child)
+        } else if (child.isMesh && child.geometry) {
+          if (!child.geometry.boundingBox) child.geometry.computeBoundingBox()
+          const b = child.geometry.boundingBox
+          if (b && (Math.abs(b.min.x) > 30 || Math.abs(b.max.x) > 30 || Math.abs(b.min.y) > 30 || Math.abs(b.max.y) > 30)) {
+            toRemove.push(child)
+          }
+        }
+      })
+      toRemove.forEach((node) => {
+        if (node.parent) node.parent.remove(node)
+      })
+
+      // 2. Orient drone: Blender model has Z-up and -Y front (camera at -Y).
+      // Tilting X by -Math.PI / 2 brings top of drone facing +Y (UP) and camera facing +Z (towards viewer)
+      droneModel.rotation.x = -Math.PI / 2
+      droneModel.updateMatrixWorld(true)
+
+      // 3. Compute clean bounding box of the oriented real drone
+      const box = new THREE.Box3().setFromObject(droneModel)
       const size = box.getSize(new THREE.Vector3())
-      const center = box.getCenter(new THREE.Vector3())
-
-      model.position.x = -center.x
-      model.position.y = -center.y
-      model.position.z = -center.z
-
-      // Normalize scale (max dimension ~ 3.6 units)
       const maxDim = Math.max(size.x, size.y, size.z)
-      const scale = 3.6 / maxDim
-      model.scale.setScalar(scale)
 
-      model.traverse((child) => {
+      // Prominent scale: 3.5 units wide
+      const targetScale = 3.5 / (maxDim || 1)
+      droneModel.scale.setScalar(targetScale)
+      droneModel.updateMatrixWorld(true)
+
+      // 4. Center the scaled drone precisely at (0, 0, 0)
+      const scaledBox = new THREE.Box3().setFromObject(droneModel)
+      const center = scaledBox.getCenter(new THREE.Vector3())
+      droneModel.position.x = -center.x
+      droneModel.position.y = -center.y
+      droneModel.position.z = -center.z
+
+      // 5. Enhance materials for crisp, high-contrast visibility in BOTH light and dark modes
+      droneModel.traverse((child) => {
         if (child.isMesh) {
           child.castShadow = true
           child.receiveShadow = true
           if (child.material) {
-            child.material.envMapIntensity = 1.3
-            child.material.roughness = Math.min(child.material.roughness, 0.4)
+            child.material.roughness = Math.min(Math.max(child.material.roughness ?? 0.5, 0.35), 0.75)
+            child.material.metalness = Math.min(child.material.metalness ?? 0.5, 0.35)
+            if (child.material.color) {
+              if (child.material.color.r < 0.08 && child.material.color.g < 0.08 && child.material.color.b < 0.08) {
+                child.material.color.setRGB(0.18, 0.20, 0.24)
+              }
+            }
+            child.material.needsUpdate = true
           }
         }
       })
 
-      droneGroup.add(model)
+      droneGroup.add(droneModel)
       loadingProgress.value = 100
     },
     (xhr) => {
@@ -555,22 +643,22 @@ onMounted(() => {
   )
 
   // Holographic HUD Telemetry Rings
-  const ringGeo = new THREE.RingGeometry(2.3, 2.35, 64)
+  const ringGeo = new THREE.RingGeometry(2.1, 2.15, 64)
   const ringMat = new THREE.MeshBasicMaterial({
     color: isDark.value ? 0x5df0a8 : 0x0284c7,
     transparent: true,
-    opacity: 0.35,
+    opacity: isDark.value ? 0.35 : 0.65,
     side: THREE.DoubleSide
   })
   hudRing = new THREE.Mesh(ringGeo, ringMat)
   hudRing.rotation.x = Math.PI / 2
   droneGroup.add(hudRing)
 
-  const ring2Geo = new THREE.RingGeometry(2.65, 2.69, 48)
+  const ring2Geo = new THREE.RingGeometry(2.45, 2.49, 48)
   const ring2Mat = new THREE.MeshBasicMaterial({
     color: isDark.value ? 0x3a6cff : 0x0c1e5b,
     transparent: true,
-    opacity: 0.22,
+    opacity: isDark.value ? 0.22 : 0.45,
     side: THREE.DoubleSide
   })
   hudRing2 = new THREE.Mesh(ring2Geo, ring2Mat)
@@ -594,18 +682,20 @@ onMounted(() => {
   stars.visible = isDark.value
   scene.add(stars)
 
-  // Composers (Bloom & Gamma)
+  // Postprocessing: RenderPass, BloomPass, GammaCorrection
   composer = new EffectComposer(renderer)
   composer.addPass(new RenderPass(scene, camera))
-  composer.addPass(new UnrealBloomPass(new THREE.Vector2(width, height), 0.35, 0.4, 0.1))
+  bloomPass = new UnrealBloomPass(new THREE.Vector2(width, height), 0.35, 0.4, 0.1)
+  bloomPass.enabled = isDark.value
+  composer.addPass(bloomPass)
   composer.addPass(new ShaderPass(GammaCorrectionShader))
 
-  // Scroll Choreography
-  const STOPS_X = [{ p: 0, v: 0 }, { p: 0.32, v: -2.7 }, { p: 0.64, v: 2.8 }, { p: 1, v: 0 }]
-  const STOPS_Y = [{ p: 0, v: -3.6 }, { p: 0.32, v: 0.4 }, { p: 0.64, v: 0.3 }, { p: 1, v: 0.15 }]
-  const STOPS_S = [{ p: 0, v: 2.05 }, { p: 0.32, v: 1.05 }, { p: 0.64, v: 0.95 }, { p: 1, v: 1.15 }]
-  const STOPS_ROLL = [{ p: 0, v: -0.15 }, { p: 0.32, v: 0.28 }, { p: 0.64, v: -0.32 }, { p: 1, v: 0.05 }]
-  const STOPS_PITCH = [{ p: 0, v: 0.65 }, { p: 0.32, v: 0.35 }, { p: 0.64, v: 0.42 }, { p: 1, v: 0.55 }]
+  // Scroll Choreography - tuned so drone is clearly in view on first load at p=0!
+  const STOPS_X = [{ p: 0, v: 0 }, { p: 0.32, v: -2.4 }, { p: 0.64, v: 2.5 }, { p: 1, v: 0 }]
+  const STOPS_Y = [{ p: 0, v: -0.5 }, { p: 0.32, v: 0.2 }, { p: 0.64, v: 0.1 }, { p: 1, v: 0.2 }]
+  const STOPS_S = [{ p: 0, v: 1.35 }, { p: 0.32, v: 1.05 }, { p: 0.64, v: 0.95 }, { p: 1, v: 1.15 }]
+  const STOPS_ROLL = [{ p: 0, v: -0.1 }, { p: 0.32, v: 0.26 }, { p: 0.64, v: -0.28 }, { p: 1, v: 0.05 }]
+  const STOPS_PITCH = [{ p: 0, v: 0.45 }, { p: 0.32, v: 0.30 }, { p: 0.64, v: 0.35 }, { p: 1, v: 0.45 }]
 
   function sample(stops, p) {
     if (p <= stops[0].p) return stops[0].v
@@ -627,6 +717,9 @@ onMounted(() => {
   let curRoll = STOPS_ROLL[0].v
   let curPitch = STOPS_PITCH[0].v
   let lastTime = performance.now()
+
+  // Apply initial theme state
+  applySceneTheme(isDark.value)
 
   function animate() {
     animationFrameId = requestAnimationFrame(animate)
@@ -657,8 +750,8 @@ onMounted(() => {
     worldGroup.position.set(curX, curY, 0)
     worldGroup.scale.setScalar(curS)
 
-    const hoverWobble = Math.sin(now * 0.003) * 0.06
-    const hoverTilt = Math.cos(now * 0.0025) * 0.04
+    const hoverWobble = Math.sin(now * 0.003) * 0.05
+    const hoverTilt = Math.cos(now * 0.0025) * 0.03
 
     droneGroup.rotation.x = curPitch + hoverWobble
     droneGroup.rotation.z = curRoll + hoverTilt
@@ -667,7 +760,12 @@ onMounted(() => {
     if (hudRing) hudRing.rotation.z += dt * 0.25
     if (hudRing2) hudRing2.rotation.z -= dt * 0.18
 
-    composer.render()
+    // If bloom is disabled in light mode, direct renderer.render produces pristine output without buffer artifacts
+    if (!isDark.value) {
+      renderer.render(scene, camera)
+    } else {
+      composer.render()
+    }
   }
 
   animate()
