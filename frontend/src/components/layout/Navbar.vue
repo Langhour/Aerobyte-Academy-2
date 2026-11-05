@@ -62,7 +62,7 @@
 
 
 
-      <!-- Desktop Center Navigation Links (Courses, Print, Fly, Store, Question, About) -->
+      <!-- Desktop Center Navigation Links (Courses, Fly, Print, Question, About) -->
 
       <div class="hidden items-center justify-center gap-1 xl:gap-2.5 lg:flex">
 
@@ -92,30 +92,6 @@
 
         <RouterLink
 
-          to="/print"
-
-          class="text-xs xl:text-[13px] font-bold tracking-tight transition-all duration-150 py-1.5 px-2.5 xl:px-3 rounded-lg flex items-center gap-1.5"
-
-          :class="route.path === '/print'
-
-            ? 'text-navy-900 dark:text-white font-extrabold bg-slate-100 dark:bg-slate-800 shadow-xs'
-
-            : 'text-slate-600 dark:text-slate-300 hover:text-navy-900 dark:hover:text-white hover:bg-slate-100/70 dark:hover:bg-slate-800/60'"
-
-        >
-
-          <span class="u267-sw" :class="getSwClass(1)" :style="getSwStyle(1)">
-
-            <span>{{ t('Print') }}</span>
-
-          </span>
-
-        </RouterLink>
-
-
-
-        <RouterLink
-
           to="/fly"
 
           class="text-xs xl:text-[13px] font-bold tracking-tight transition-all duration-150 py-1.5 px-2.5 xl:px-3 rounded-lg flex items-center gap-1.5"
@@ -128,7 +104,7 @@
 
         >
 
-          <span class="u267-sw" :class="getSwClass(2)" :style="getSwStyle(2)">
+          <span class="u267-sw" :class="getSwClass(1)" :style="getSwStyle(1)">
 
             <span>{{ t('Fly') }}</span>
 
@@ -136,15 +112,13 @@
 
         </RouterLink>
 
-
-
         <RouterLink
 
-          to="/store"
+          to="/print"
 
           class="text-xs xl:text-[13px] font-bold tracking-tight transition-all duration-150 py-1.5 px-2.5 xl:px-3 rounded-lg flex items-center gap-1.5"
 
-          :class="route.path === '/store'
+          :class="route.path === '/print'
 
             ? 'text-navy-900 dark:text-white font-extrabold bg-slate-100 dark:bg-slate-800 shadow-xs'
 
@@ -152,9 +126,9 @@
 
         >
 
-          <span class="u267-sw" :class="getSwClass(3)" :style="getSwStyle(3)">
+          <span class="u267-sw" :class="getSwClass(2)" :style="getSwStyle(2)">
 
-            <span>{{ t('Store') }}</span>
+            <span>{{ t('Print') }}</span>
 
           </span>
 
@@ -709,7 +683,31 @@
 
 
 
-            <!-- 2. Print -->
+            <!-- 2. Fly -->
+
+            <RouterLink
+
+              to="/fly"
+
+              class="flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-bold transition hover:bg-slate-100 dark:hover:bg-slate-800"
+
+              :class="route.path === '/fly'
+
+                ? 'bg-navy-50 dark:bg-slate-800 text-navy-900 dark:text-indigo-300 font-extrabold'
+
+                : 'text-slate-700 dark:text-slate-200 hover:text-navy-900 dark:hover:text-white'"
+
+              @click="mobileDrawerOpen = false"
+
+            >
+
+              <Plane class="h-5 w-5 text-slate-500 dark:text-slate-400 shrink-0" />
+
+              <span>{{ t('Fly') }}</span>
+
+            </RouterLink>
+
+            <!-- 3. Print -->
 
             <RouterLink
 
@@ -735,59 +733,7 @@
 
 
 
-            <!-- 3. Fly -->
-
-            <RouterLink
-
-              to="/fly"
-
-              class="flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-bold transition hover:bg-slate-100 dark:hover:bg-slate-800"
-
-              :class="route.path === '/fly'
-
-                ? 'bg-navy-50 dark:bg-slate-800 text-navy-900 dark:text-indigo-300 font-extrabold'
-
-                : 'text-slate-700 dark:text-slate-200 hover:text-navy-900 dark:hover:text-white'"
-
-              @click="mobileDrawerOpen = false"
-
-            >
-
-              <Plane class="h-5 w-5 text-slate-500 dark:text-slate-400 shrink-0" />
-
-              <span>{{ t('Fly') }}</span>
-
-            </RouterLink>
-
-
-
-            <!-- 4. Store -->
-
-            <RouterLink
-
-              to="/store"
-
-              class="flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-bold transition hover:bg-slate-100 dark:hover:bg-slate-800"
-
-              :class="route.path === '/store'
-
-                ? 'bg-navy-50 dark:bg-slate-800 text-navy-900 dark:text-indigo-300 font-extrabold'
-
-                : 'text-slate-700 dark:text-slate-200 hover:text-navy-900 dark:hover:text-white'"
-
-              @click="mobileDrawerOpen = false"
-
-            >
-
-              <ShoppingBag class="h-5 w-5 text-slate-500 dark:text-slate-400 shrink-0" />
-
-              <span>{{ t('Store') }}</span>
-
-            </RouterLink>
-
-
-
-            <!-- 5. Question -->
+            <!-- 4. Question -->
 
             <RouterLink
 
@@ -813,7 +759,7 @@
 
 
 
-            <!-- 6. About -->
+            <!-- 5. About -->
 
             <RouterLink
 

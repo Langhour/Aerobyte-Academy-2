@@ -28,7 +28,7 @@ const router = createRouter({
     { path: '/courses', name: 'courses', component: ExploreCoursesView },
     { path: '/print', name: 'print', component: AeroPrintView },
     { path: '/fly', name: 'fly', component: AeroFlyView },
-    { path: '/store', name: 'store', component: AeroStoreView },
+    { path: '/store', redirect: { path: '/fly', query: { tab: 'store' } } },
     { path: '/store/:id', name: 'ProductDetail', component: ProductDetailView, props: true, alias: ['/product/:id'] },
     { path: '/account', name: 'account', component: AccountAccessView },
     { path: '/register', redirect: { path: '/account', query: { mode: 'register' } } },
