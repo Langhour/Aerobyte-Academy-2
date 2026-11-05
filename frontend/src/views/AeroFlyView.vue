@@ -431,9 +431,10 @@ let fillLight = null
 let cyanRim = null
 let orangeRim = null
 let stars = null
-let hudRing = null
-let hudRing2 = null
 let droneModel = null
+const propellers = []
+let lastScrollPos = 0
+let scrollSpeed = 0
 
 function applySceneTheme(dark) {
   if (!scene || !ambientLight) return
@@ -452,14 +453,6 @@ function applySceneTheme(dark) {
     if (cyanRim) cyanRim.intensity = 4.0
     if (orangeRim) orangeRim.intensity = 3.0
     if (stars) stars.visible = true
-    if (hudRing) {
-      hudRing.material.color.setHex(0x5df0a8)
-      hudRing.material.opacity = 0.35
-    }
-    if (hudRing2) {
-      hudRing2.material.color.setHex(0x3a6cff)
-      hudRing2.material.opacity = 0.22
-    }
     if (bloomPass) {
       bloomPass.enabled = true
       bloomPass.strength = 0.35
@@ -485,14 +478,6 @@ function applySceneTheme(dark) {
     if (cyanRim) cyanRim.intensity = 2.2
     if (orangeRim) orangeRim.intensity = 2.2
     if (stars) stars.visible = false
-    if (hudRing) {
-      hudRing.material.color.setHex(0x0284c7)
-      hudRing.material.opacity = 0.65
-    }
-    if (hudRing2) {
-      hudRing2.material.color.setHex(0x0c1e5b)
-      hudRing2.material.opacity = 0.45
-    }
     // Disable bloom pass completely in light mode to prevent white wash out
     if (bloomPass) {
       bloomPass.enabled = false
@@ -629,6 +614,42 @@ onMounted(() => {
         }
       })
 
+      // Hide static combined non-rotating blade meshes in the raw model
+      droneModel.traverse((child) => {
+        const name = child.name || ''
+        if (
+          name.includes('Cube178_3') ||
+          name.includes('Cube183_8') ||
+          name === 'Object_16' ||
+          name === 'Object_17' ||
+          name === 'Object_18' ||
+          name === 'Object_19' ||
+          name === 'Object_20' ||
+          name === 'Object_44' ||
+          name === 'Object_45' ||
+          name === 'Object_46' ||
+          name === 'Object_47'
+        ) {
+          child.visible = false
+        }
+      })
+
+      // Mount 4 dynamic animated tri-blade propellers at the 4 motor shafts
+      const propPositions = [
+        { x: -1.19, y: -0.28, z: 0.56, dir: 1 },
+        { x: 1.20, y: -0.28, z: 0.56, dir: -1 },
+        { x: -1.05, y: -0.05, z: -1.01, dir: -1 },
+        { x: 1.07, y: -0.05, z: -1.01, dir: 1 }
+      ]
+
+      propellers.length = 0
+      propPositions.forEach((p) => {
+        const prop = createPropellerGroup()
+        prop.position.set(p.x, p.y + 0.02, p.z)
+        droneGroup.add(prop)
+        propellers.push({ mesh: prop, dir: p.dir })
+      })
+
       droneGroup.add(droneModel)
       loadingProgress.value = 100
     },
@@ -643,28 +664,57 @@ onMounted(() => {
     }
   )
 
-  // Holographic HUD Telemetry Rings
-  const ringGeo = new THREE.RingGeometry(2.35, 2.4, 64)
-  const ringMat = new THREE.MeshBasicMaterial({
-    color: isDark.value ? 0x5df0a8 : 0x0284c7,
-    transparent: true,
-    opacity: isDark.value ? 0.35 : 0.65,
-    side: THREE.DoubleSide
-  })
-  hudRing = new THREE.Mesh(ringGeo, ringMat)
-  hudRing.rotation.x = Math.PI / 2
-  droneGroup.add(hudRing)
+  function createPropellerGroup() {
+    const propGroup = new THREE.Group()
 
-  const ring2Geo = new THREE.RingGeometry(2.7, 2.74, 48)
-  const ring2Mat = new THREE.MeshBasicMaterial({
-    color: isDark.value ? 0x3a6cff : 0x0c1e5b,
-    transparent: true,
-    opacity: isDark.value ? 0.22 : 0.45,
-    side: THREE.DoubleSide
-  })
-  hudRing2 = new THREE.Mesh(ring2Geo, ring2Mat)
-  hudRing2.rotation.x = Math.PI / 2
-  droneGroup.add(hudRing2)
+    // Central anodized motor hub
+    const hubGeo = new THREE.CylinderGeometry(0.08, 0.10, 0.07, 16)
+    const hubMat = new THREE.MeshStandardMaterial({
+      color: 0x1e293b,
+      metalness: 0.85,
+      roughness: 0.25
+    })
+    const hub = new THREE.Mesh(hubGeo, hubMat)
+    propGroup.add(hub)
+
+    // Aerodynamic tri-blades (120 deg apart) with purple tips matching DJI FPV
+    const bladeMat = new THREE.MeshStandardMaterial({
+      color: 0x111827,
+      roughness: 0.4,
+      metalness: 0.25
+    })
+    const tipMat = new THREE.MeshStandardMaterial({
+      color: 0x9333ea,
+      roughness: 0.35,
+      metalness: 0.15
+    })
+
+    const bladeRadius = 0.58
+
+    for (let i = 0; i < 3; i++) {
+      const angle = (i * Math.PI * 2) / 3
+      const bladeArm = new THREE.Group()
+      bladeArm.rotation.y = angle
+
+      // Carbon blade
+      const bladeGeo = new THREE.BoxGeometry(0.09, 0.012, bladeRadius * 0.75)
+      bladeGeo.translate(0, 0, (bladeRadius * 0.75) / 2 + 0.06)
+      const blade = new THREE.Mesh(bladeGeo, bladeMat)
+      blade.rotation.x = 0.12
+      bladeArm.add(blade)
+
+      // Purple tip
+      const tipGeo = new THREE.BoxGeometry(0.085, 0.012, bladeRadius * 0.25)
+      tipGeo.translate(0, 0, bladeRadius * 0.75 + (bladeRadius * 0.25) / 2 + 0.06)
+      const tip = new THREE.Mesh(tipGeo, tipMat)
+      tip.rotation.x = 0.12
+      bladeArm.add(tip)
+
+      propGroup.add(bladeArm)
+    }
+
+    return propGroup
+  }
 
   // Starfield
   const starGeo = new THREE.BufferGeometry()
@@ -722,6 +772,20 @@ onMounted(() => {
   // Apply initial theme state
   applySceneTheme(isDark.value)
 
+  // Track scroll velocity: faster scroll = faster propeller spin, slow scroll = slow, no scroll = 0 spin
+  lastScrollPos = window.pageYOffset || document.documentElement.scrollTop
+  scrollSpeed = 0
+
+  function onScroll() {
+    const curScroll = window.pageYOffset || document.documentElement.scrollTop
+    const delta = Math.abs(curScroll - lastScrollPos)
+    lastScrollPos = curScroll
+    // Velocity directly proportional to scroll distance
+    scrollSpeed = Math.max(scrollSpeed, Math.min(delta * 0.95, 55.0))
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true })
+
   function animate() {
     animationFrameId = requestAnimationFrame(animate)
     const now = performance.now()
@@ -751,15 +815,22 @@ onMounted(() => {
     worldGroup.position.set(curX, curY, 0)
     worldGroup.scale.setScalar(curS)
 
-    const hoverWobble = Math.sin(now * 0.003) * 0.05
-    const hoverTilt = Math.cos(now * 0.0025) * 0.03
+    // Smooth decay of scroll speed towards 0
+    scrollSpeed *= Math.pow(0.04, dt)
+    if (scrollSpeed < 0.04) scrollSpeed = 0
 
-    droneGroup.rotation.x = curPitch + hoverWobble
-    droneGroup.rotation.z = curRoll + hoverTilt
-    droneGroup.rotation.y = (curP * Math.PI * 1.8) + (now * 0.0003)
+    // Spin propellers strictly according to scroll speed:
+    // If not scrolling, scrollSpeed is 0 -> propellers do NOT move!
+    if (scrollSpeed > 0) {
+      propellers.forEach((p) => {
+        p.mesh.rotation.y += scrollSpeed * dt * p.dir * 2.2
+      })
+    }
 
-    if (hudRing) hudRing.rotation.z += dt * 0.25
-    if (hudRing2) hudRing2.rotation.z -= dt * 0.18
+    // Drone orientation: locked strictly to scroll position, NO continuous auto-rotation around!
+    droneGroup.rotation.x = curPitch
+    droneGroup.rotation.z = curRoll
+    droneGroup.rotation.y = curP * Math.PI * 1.5
 
     // If bloom is disabled in light mode, direct renderer.render produces pristine output without buffer artifacts
     if (!isDark.value) {
@@ -781,10 +852,12 @@ onMounted(() => {
   }
 
   window.addEventListener('resize', handleResize)
-})
 
-onUnmounted(() => {
-  if (animationFrameId) cancelAnimationFrame(animationFrameId)
-  if (renderer) renderer.dispose()
+  onUnmounted(() => {
+    window.removeEventListener('scroll', onScroll)
+    window.removeEventListener('resize', handleResize)
+    if (animationFrameId) cancelAnimationFrame(animationFrameId)
+    if (renderer) renderer.dispose()
+  })
 })
 </script>

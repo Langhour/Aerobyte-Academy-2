@@ -1178,35 +1178,77 @@
             }
           }
         });
+                model.traverse((child) => {
+          const name = child.name || '';
+          if (
+            name.includes('Cube178_3') ||
+            name.includes('Cube183_8') ||
+            name === 'Object_16' ||
+            name === 'Object_17' ||
+            name === 'Object_18' ||
+            name === 'Object_19' ||
+            name === 'Object_20' ||
+            name === 'Object_44' ||
+            name === 'Object_45' ||
+            name === 'Object_46' ||
+            name === 'Object_47'
+          ) {
+            child.visible = false;
+          }
+        });
         droneGroup.add(model);
       },
       undefined,
       (err) => console.warn('Real drone load notice:', err)
     );
 
-    // 3. Holographic HUD / Telemetry Rings
-    const ringGeo = new THREE.RingGeometry(2.1, 2.15, 64);
-    const ringMat = new THREE.MeshBasicMaterial({
-      color: 0x5df0a8,
-      transparent: true,
-      opacity: 0.35,
-      side: THREE.DoubleSide
-    });
-    const hudRing = new THREE.Mesh(ringGeo, ringMat);
-    hudRing.rotation.x = Math.PI / 2;
-    hudRing.layers.enable(LAYERS.BLOOM_SCENE);
-    droneGroup.add(hudRing);
+    // Dynamic Animated Tri-Blade FPV Drone Propellers
+    function createPropellerGroup() {
+      const propGroup = new THREE.Group();
+      const hubGeo = new THREE.CylinderGeometry(0.08, 0.10, 0.07, 16);
+      const hubMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.85, roughness: 0.25 });
+      propGroup.add(new THREE.Mesh(hubGeo, hubMat));
 
-    const ring2Geo = new THREE.RingGeometry(2.4, 2.44, 48);
-    const ring2Mat = new THREE.MeshBasicMaterial({
-      color: 0x3a6cff,
-      transparent: true,
-      opacity: 0.2,
-      side: THREE.DoubleSide
+      const bladeMat = new THREE.MeshStandardMaterial({ color: 0x111827, roughness: 0.4, metalness: 0.25 });
+      const tipMat = new THREE.MeshStandardMaterial({ color: 0x9333ea, roughness: 0.35, metalness: 0.15 });
+      const bladeRadius = 0.58;
+
+      for (let i = 0; i < 3; i++) {
+        const angle = (i * Math.PI * 2) / 3;
+        const bladeArm = new THREE.Group();
+        bladeArm.rotation.y = angle;
+
+        const bladeGeo = new THREE.BoxGeometry(0.09, 0.012, bladeRadius * 0.75);
+        bladeGeo.translate(0, 0, (bladeRadius * 0.75) / 2 + 0.06);
+        const blade = new THREE.Mesh(bladeGeo, bladeMat);
+        blade.rotation.x = 0.12;
+        bladeArm.add(blade);
+
+        const tipGeo = new THREE.BoxGeometry(0.085, 0.012, bladeRadius * 0.25);
+        tipGeo.translate(0, 0, bladeRadius * 0.75 + (bladeRadius * 0.25) / 2 + 0.06);
+        const tip = new THREE.Mesh(tipGeo, tipMat);
+        tip.rotation.x = 0.12;
+        bladeArm.add(tip);
+
+        propGroup.add(bladeArm);
+      }
+      return propGroup;
+    }
+
+    const propPositions = [
+      { x: -1.19, y: -0.28, z: 0.56, dir: 1 },
+      { x: 1.20, y: -0.28, z: 0.56, dir: -1 },
+      { x: -1.05, y: -0.05, z: -1.01, dir: -1 },
+      { x: 1.07, y: -0.05, z: -1.01, dir: 1 }
+    ];
+
+    const propellers = [];
+    propPositions.forEach((p) => {
+      const prop = createPropellerGroup();
+      prop.position.set(p.x, p.y + 0.02, p.z);
+      droneGroup.add(prop);
+      propellers.push({ mesh: prop, dir: p.dir });
     });
-    const hudRing2 = new THREE.Mesh(ring2Geo, ring2Mat);
-    hudRing2.rotation.x = Math.PI / 2;
-    droneGroup.add(hudRing2);
 
     // Atmosphere Halo Glow (billboard plane)
     const glowMat = new THREE.ShaderMaterial({
@@ -1433,6 +1475,14 @@
 
     // Animation Loop
     let lastTime = performance.now();
+    let lastScrollPos = window.pageYOffset || document.documentElement.scrollTop;
+    let scrollSpeed = 0;
+    window.addEventListener('scroll', () => {
+      const curScroll = window.pageYOffset || document.documentElement.scrollTop;
+      const delta = Math.abs(curScroll - lastScrollPos);
+      lastScrollPos = curScroll;
+      scrollSpeed = Math.max(scrollSpeed, Math.min(delta * 0.95, 55.0));
+    }, { passive: true });
     let starTime = 0;
 
     function animate() {
@@ -1478,16 +1528,21 @@
       const hoverWobble = Math.sin(now * 0.003) * 0.06;
       const hoverTilt = Math.cos(now * 0.0025) * 0.04;
 
-      droneGroup.rotation.x = curPitch + hoverWobble;
-      droneGroup.rotation.z = curRoll + hoverTilt;
-      droneGroup.rotation.y = (curP * Math.PI * 1.8) + (now * 0.0003);
+      // Smooth decay of scroll speed towards 0
+      scrollSpeed *= Math.pow(0.04, dt);
+      if (scrollSpeed < 0.04) scrollSpeed = 0;
 
-      // Spin propellers at high velocity
-      // Real drone loaded
+      // Spin propellers strictly according to scroll speed:
+      if (scrollSpeed > 0) {
+        propellers.forEach((p) => {
+          p.mesh.rotation.y += scrollSpeed * dt * p.dir * 2.2;
+        });
+      }
 
-      // HUD Ring slow rotation
-      hudRing.rotation.z += dt * 0.25;
-      hudRing2.rotation.z -= dt * 0.18;
+      // Drone orientation strictly locked to scroll, no idle wandering
+      droneGroup.rotation.x = curPitch;
+      droneGroup.rotation.z = curRoll;
+      droneGroup.rotation.y = curP * Math.PI * 1.5;
 
       // Starfield & Motes update
       starTime += dt;
