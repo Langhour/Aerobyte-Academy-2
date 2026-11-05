@@ -1202,53 +1202,78 @@
       (err) => console.warn('Real drone load notice:', err)
     );
 
-    // Dynamic Animated Tri-Blade FPV Drone Propellers
-    function createPropellerGroup() {
-      const propGroup = new THREE.Group();
-      const hubGeo = new THREE.CylinderGeometry(0.08, 0.10, 0.07, 16);
-      const hubMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.85, roughness: 0.25 });
-      propGroup.add(new THREE.Mesh(hubGeo, hubMat));
+      // Extract the 4 authentic original 3D propellers directly from the model
+      function buildWorldPropeller(parentNode, sign) {
+        if (!parentNode) return null;
+        const box = new THREE.Box3();
+        const v = new THREE.Vector3();
+        const meshesData = [];
 
-      const bladeMat = new THREE.MeshStandardMaterial({ color: 0x111827, roughness: 0.4, metalness: 0.25 });
-      const tipMat = new THREE.MeshStandardMaterial({ color: 0x9333ea, roughness: 0.35, metalness: 0.15 });
-      const bladeRadius = 0.58;
+        parentNode.traverse((c) => {
+          if (c.isMesh && c.geometry) {
+            const geom = c.geometry;
+            const pos = geom.attributes.position;
+            const index = geom.index;
+            const keptIndices = [];
+            if (index) {
+              for (let i = 0; i < index.count; i += 3) {
+                const a = index.getX(i);
+                const b = index.getX(i + 1);
+                const c_idx = index.getX(i + 2);
+                const avgX = (pos.getX(a) + pos.getX(b) + pos.getX(c_idx)) / 3;
+                if (sign < 0 ? avgX < 0 : avgX > 0) {
+                  keptIndices.push(a, b, c_idx);
+                  v.fromBufferAttribute(pos, a); c.localToWorld(v); box.expandByPoint(v);
+                  v.fromBufferAttribute(pos, b); c.localToWorld(v); box.expandByPoint(v);
+                  v.fromBufferAttribute(pos, c_idx); c.localToWorld(v); box.expandByPoint(v);
+                }
+              }
+            }
+            if (keptIndices.length > 0) {
+              meshesData.push({ mesh: c, keptIndices });
+            }
+          }
+        });
 
-      for (let i = 0; i < 3; i++) {
-        const angle = (i * Math.PI * 2) / 3;
-        const bladeArm = new THREE.Group();
-        bladeArm.rotation.y = angle;
+        const worldCenter = box.getCenter(new THREE.Vector3());
+        const group = new THREE.Group();
+        group.position.copy(worldCenter);
 
-        const bladeGeo = new THREE.BoxGeometry(0.09, 0.012, bladeRadius * 0.75);
-        bladeGeo.translate(0, 0, (bladeRadius * 0.75) / 2 + 0.06);
-        const blade = new THREE.Mesh(bladeGeo, bladeMat);
-        blade.rotation.x = 0.12;
-        bladeArm.add(blade);
+        meshesData.forEach(({ mesh, keptIndices }) => {
+          const geom = mesh.geometry.clone();
+          geom.setIndex(keptIndices);
+          geom.applyMatrix4(mesh.matrixWorld);
+          geom.translate(-worldCenter.x, -worldCenter.y, -worldCenter.z);
+          const newMesh = new THREE.Mesh(geom, mesh.material);
+          newMesh.castShadow = true;
+          newMesh.receiveShadow = true;
+          group.add(newMesh);
+        });
 
-        const tipGeo = new THREE.BoxGeometry(0.085, 0.012, bladeRadius * 0.25);
-        tipGeo.translate(0, 0, bladeRadius * 0.75 + (bladeRadius * 0.25) / 2 + 0.06);
-        const tip = new THREE.Mesh(tipGeo, tipMat);
-        tip.rotation.x = 0.12;
-        bladeArm.add(tip);
-
-        propGroup.add(bladeArm);
+        return group;
       }
-      return propGroup;
-    }
 
-    const propPositions = [
-      { x: -1.19, y: -0.28, z: 0.56, dir: 1 },
-      { x: 1.20, y: -0.28, z: 0.56, dir: -1 },
-      { x: -1.05, y: -0.05, z: -1.01, dir: -1 },
-      { x: 1.07, y: -0.05, z: -1.01, dir: 1 }
-    ];
+      let node178 = null, node183 = null;
+      model.traverse((c) => {
+        if (c.name.includes('178')) node178 = c;
+        if (c.name.includes('183')) node183 = c;
+      });
 
-    const propellers = [];
-    propPositions.forEach((p) => {
-      const prop = createPropellerGroup();
-      prop.position.set(p.x, p.y + 0.02, p.z);
-      droneGroup.add(prop);
-      propellers.push({ mesh: prop, dir: p.dir });
-    });
+      const propellers = [];
+      if (node178 && node183) {
+        const propFL = buildWorldPropeller(node178, -1);
+        const propFR = buildWorldPropeller(node178, 1);
+        const propRL = buildWorldPropeller(node183, -1);
+        const propRR = buildWorldPropeller(node183, 1);
+
+        node178.visible = false;
+        node183.visible = false;
+
+        if (propFL) { droneGroup.add(propFL); propellers.push({ mesh: propFL, dir: 1 }); }
+        if (propFR) { droneGroup.add(propFR); propellers.push({ mesh: propFR, dir: -1 }); }
+        if (propRL) { droneGroup.add(propRL); propellers.push({ mesh: propRL, dir: -1 }); }
+        if (propRR) { droneGroup.add(propRR); propellers.push({ mesh: propRR, dir: 1 }); }
+      }
 
     // Atmosphere Halo Glow (billboard plane)
     const glowMat = new THREE.ShaderMaterial({

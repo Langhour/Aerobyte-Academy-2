@@ -614,41 +614,82 @@ onMounted(() => {
         }
       })
 
-      // Hide static combined non-rotating blade meshes in the raw model
-      droneModel.traverse((child) => {
-        const name = child.name || ''
-        if (
-          name.includes('Cube178_3') ||
-          name.includes('Cube183_8') ||
-          name === 'Object_16' ||
-          name === 'Object_17' ||
-          name === 'Object_18' ||
-          name === 'Object_19' ||
-          name === 'Object_20' ||
-          name === 'Object_44' ||
-          name === 'Object_45' ||
-          name === 'Object_46' ||
-          name === 'Object_47'
-        ) {
-          child.visible = false
-        }
-      })
+      // Extract the 4 authentic original 3D propellers directly from the model
+      function buildWorldPropeller(parentNode, sign) {
+        if (!parentNode) return null
+        const box = new THREE.Box3()
+        const v = new THREE.Vector3()
+        const meshesData = []
 
-      // Mount 4 dynamic animated tri-blade propellers at the 4 motor shafts
-      const propPositions = [
-        { x: -1.19, y: -0.28, z: 0.56, dir: 1 },
-        { x: 1.20, y: -0.28, z: 0.56, dir: -1 },
-        { x: -1.05, y: -0.05, z: -1.01, dir: -1 },
-        { x: 1.07, y: -0.05, z: -1.01, dir: 1 }
-      ]
+        parentNode.traverse((c) => {
+          if (c.isMesh && c.geometry) {
+            const geom = c.geometry
+            const pos = geom.attributes.position
+            const index = geom.index
+            const keptIndices = []
+            if (index) {
+              for (let i = 0; i < index.count; i += 3) {
+                const a = index.getX(i)
+                const b = index.getX(i + 1)
+                const c_idx = index.getX(i + 2)
+                const avgX = (pos.getX(a) + pos.getX(b) + pos.getX(c_idx)) / 3
+                if (sign < 0 ? avgX < 0 : avgX > 0) {
+                  keptIndices.push(a, b, c_idx)
+                  v.fromBufferAttribute(pos, a); c.localToWorld(v); box.expandByPoint(v)
+                  v.fromBufferAttribute(pos, b); c.localToWorld(v); box.expandByPoint(v)
+                  v.fromBufferAttribute(pos, c_idx); c.localToWorld(v); box.expandByPoint(v)
+                }
+              }
+            }
+            if (keptIndices.length > 0) {
+              meshesData.push({ mesh: c, keptIndices })
+            }
+          }
+        })
+
+        const worldCenter = box.getCenter(new THREE.Vector3())
+        const group = new THREE.Group()
+        group.position.copy(worldCenter)
+
+        meshesData.forEach(({ mesh, keptIndices }) => {
+          const geom = mesh.geometry.clone()
+          geom.setIndex(keptIndices)
+          geom.applyMatrix4(mesh.matrixWorld)
+          geom.translate(-worldCenter.x, -worldCenter.y, -worldCenter.z)
+          const newMesh = new THREE.Mesh(geom, mesh.material)
+          newMesh.castShadow = true
+          newMesh.receiveShadow = true
+          group.add(newMesh)
+        })
+
+        return group
+      }
+
+      let node178 = null
+      let node183 = null
+      droneModel.traverse((c) => {
+        if (c.name.includes('178')) node178 = c
+        if (c.name.includes('183')) node183 = c
+      })
 
       propellers.length = 0
-      propPositions.forEach((p) => {
-        const prop = createPropellerGroup()
-        prop.position.set(p.x, p.y + 0.02, p.z)
-        droneGroup.add(prop)
-        propellers.push({ mesh: prop, dir: p.dir })
-      })
+
+      if (node178 && node183) {
+        // Build 4 separate rotating groups from the authentic model propellers
+        const propFL = buildWorldPropeller(node178, -1)
+        const propFR = buildWorldPropeller(node178, 1)
+        const propRL = buildWorldPropeller(node183, -1)
+        const propRR = buildWorldPropeller(node183, 1)
+
+        // Hide static original combined meshes
+        node178.visible = false
+        node183.visible = false
+
+        if (propFL) { droneGroup.add(propFL); propellers.push({ mesh: propFL, dir: 1 }) }
+        if (propFR) { droneGroup.add(propFR); propellers.push({ mesh: propFR, dir: -1 }) }
+        if (propRL) { droneGroup.add(propRL); propellers.push({ mesh: propRL, dir: -1 }) }
+        if (propRR) { droneGroup.add(propRR); propellers.push({ mesh: propRR, dir: 1 }) }
+      }
 
       droneGroup.add(droneModel)
       loadingProgress.value = 100
@@ -663,58 +704,6 @@ onMounted(() => {
       loadingProgress.value = 100
     }
   )
-
-  function createPropellerGroup() {
-    const propGroup = new THREE.Group()
-
-    // Central anodized motor hub
-    const hubGeo = new THREE.CylinderGeometry(0.08, 0.10, 0.07, 16)
-    const hubMat = new THREE.MeshStandardMaterial({
-      color: 0x1e293b,
-      metalness: 0.85,
-      roughness: 0.25
-    })
-    const hub = new THREE.Mesh(hubGeo, hubMat)
-    propGroup.add(hub)
-
-    // Aerodynamic tri-blades (120 deg apart) with purple tips matching DJI FPV
-    const bladeMat = new THREE.MeshStandardMaterial({
-      color: 0x111827,
-      roughness: 0.4,
-      metalness: 0.25
-    })
-    const tipMat = new THREE.MeshStandardMaterial({
-      color: 0x9333ea,
-      roughness: 0.35,
-      metalness: 0.15
-    })
-
-    const bladeRadius = 0.58
-
-    for (let i = 0; i < 3; i++) {
-      const angle = (i * Math.PI * 2) / 3
-      const bladeArm = new THREE.Group()
-      bladeArm.rotation.y = angle
-
-      // Carbon blade
-      const bladeGeo = new THREE.BoxGeometry(0.09, 0.012, bladeRadius * 0.75)
-      bladeGeo.translate(0, 0, (bladeRadius * 0.75) / 2 + 0.06)
-      const blade = new THREE.Mesh(bladeGeo, bladeMat)
-      blade.rotation.x = 0.12
-      bladeArm.add(blade)
-
-      // Purple tip
-      const tipGeo = new THREE.BoxGeometry(0.085, 0.012, bladeRadius * 0.25)
-      tipGeo.translate(0, 0, bladeRadius * 0.75 + (bladeRadius * 0.25) / 2 + 0.06)
-      const tip = new THREE.Mesh(tipGeo, tipMat)
-      tip.rotation.x = 0.12
-      bladeArm.add(tip)
-
-      propGroup.add(bladeArm)
-    }
-
-    return propGroup
-  }
 
   // Starfield
   const starGeo = new THREE.BufferGeometry()
