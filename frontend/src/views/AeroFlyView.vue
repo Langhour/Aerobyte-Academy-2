@@ -624,33 +624,74 @@ onMounted(() => {
       propellers.length = 0
 
       if (spineNode && spineNode.parent) {
-        // 4 Propeller coordinates in SpineB local space
+        // True 4 Propeller coordinates & motor normal spin axis in SpineB local space
         const propConfigs = [
           {
             name: 'Rear-Left',
-            center: new THREE.Vector3(-2.1202, 1.1972, -1.9029),
-            axis: new THREE.Vector3(0.98904, -0.14764, 0).normalize(),
+            center: new THREE.Vector3(-1.9057, -2.1202, 1.1972),
+            axis: new THREE.Vector3(0, 0.94604, 0.32404).normalize(),
             dir: -1
           },
           {
             name: 'Front-Left',
-            center: new THREE.Vector3(-0.6963, -0.8024, -1.6811),
-            axis: new THREE.Vector3(0.98445, -0.17568, 0).normalize(),
+            center: new THREE.Vector3(-1.6792, -0.6965, -0.8018),
+            axis: new THREE.Vector3(0, 0.94604, 0.32404).normalize(),
+            dir: 1
+          },
+          {
+            name: 'Rear-Right',
+            center: new THREE.Vector3(1.7483, -2.1202, 1.1972),
+            axis: new THREE.Vector3(0, 0.94604, 0.32404).normalize(),
             dir: 1
           },
           {
             name: 'Front-Right',
-            center: new THREE.Vector3(-0.6965, -0.8018, 1.5458),
-            axis: new THREE.Vector3(0.98235, -0.18708, 0).normalize(),
+            center: new THREE.Vector3(1.5432, -0.6965, -0.8018),
+            axis: new THREE.Vector3(0, 0.94604, 0.32404).normalize(),
             dir: -1
-          },
-          {
-            name: 'Rear-Right',
-            center: new THREE.Vector3(-2.1202, 1.1972, 1.7457),
-            axis: new THREE.Vector3(0.98616, -0.16582, 0).normalize(),
-            dir: 1
           }
         ]
+
+        function extractSubGeometry(geom, indices, center) {
+          const pos = geom.attributes.position
+          const norm = geom.attributes.normal
+          const uv = geom.attributes.uv
+          const oldToNew = new Map()
+          const newPositions = []
+          const newNormals = norm ? [] : null
+          const newUvs = uv ? [] : null
+          const newIndices = []
+
+          for (let i = 0; i < indices.length; i++) {
+            const oldIdx = indices[i]
+            let newIdx = oldToNew.get(oldIdx)
+            if (newIdx === undefined) {
+              newIdx = newPositions.length / 3
+              oldToNew.set(oldIdx, newIdx)
+              newPositions.push(
+                pos.getX(oldIdx) - center.x,
+                pos.getY(oldIdx) - center.y,
+                pos.getZ(oldIdx) - center.z
+              )
+              if (norm) {
+                newNormals.push(norm.getX(oldIdx), norm.getY(oldIdx), norm.getZ(oldIdx))
+              }
+              if (uv) {
+                newUvs.push(uv.getX(oldIdx), uv.getY(oldIdx))
+              }
+            }
+            newIndices.push(newIdx)
+          }
+
+          const subGeom = new THREE.BufferGeometry()
+          subGeom.setAttribute('position', new THREE.Float32BufferAttribute(newPositions, 3))
+          if (norm) subGeom.setAttribute('normal', new THREE.Float32BufferAttribute(newNormals, 3))
+          if (uv) subGeom.setAttribute('uv', new THREE.Float32BufferAttribute(newUvs, 2))
+          subGeom.setIndex(newIndices)
+          subGeom.computeBoundingBox()
+          subGeom.computeBoundingSphere()
+          return subGeom
+        }
 
         const propGroups = propConfigs.map((cfg) => {
           const grp = new THREE.Group()
@@ -692,10 +733,8 @@ onMounted(() => {
 
               for (let k = 0; k < 4; k++) {
                 if (kept[k].length > 0) {
-                  const newGeom = geom.clone()
-                  newGeom.setIndex(kept[k])
-                  newGeom.translate(-propConfigs[k].center.x, -propConfigs[k].center.y, -propConfigs[k].center.z)
-                  const newMesh = new THREE.Mesh(newGeom, c.material)
+                  const subGeom = extractSubGeometry(geom, kept[k], propConfigs[k].center)
+                  const newMesh = new THREE.Mesh(subGeom, c.material)
                   newMesh.castShadow = true
                   newMesh.receiveShadow = true
                   propGroups[k].add(newMesh)
@@ -705,7 +744,7 @@ onMounted(() => {
           }
         })
 
-        // Add the 4 isolated rotating propeller groups to the model hierarchy
+        // Add the 4 isolated rotating propeller groups to the model hierarchy so they stay 100% attached to the drone
         propConfigs.forEach((cfg, k) => {
           spineNode.parent.add(propGroups[k])
           propellers.push({
