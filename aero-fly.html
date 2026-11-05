@@ -905,6 +905,7 @@
     import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
     import { GammaCorrectionShader } from 'three/examples/jsm/shaders/GammaCorrectionShader.js';
     import { CopyShader } from 'three/examples/jsm/shaders/CopyShader.js';
+    import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
     import Lenis from 'https://unpkg.com/lenis@1.3.23/dist/lenis.mjs';
 
     // 1. Footer Year
@@ -1031,130 +1032,36 @@
     const droneGroup = new THREE.Group();
     worldGroup.add(droneGroup);
 
-    // BUILD HIGH-FIDELITY 3D QUADCOPTER DRONE
-    const carbonMat = new THREE.MeshStandardMaterial({
-      color: 0x141824,
-      metalness: 0.85,
-      roughness: 0.28,
-    });
-    const matteFrameMat = new THREE.MeshStandardMaterial({
-      color: 0x0a0d17,
-      metalness: 0.9,
-      roughness: 0.2,
-    });
-    const metalMat = new THREE.MeshStandardMaterial({
-      color: 0x6e7f9e,
-      metalness: 0.95,
-      roughness: 0.15,
-    });
-    const cyanLedMat = new THREE.MeshBasicMaterial({
-      color: 0x5df0a8,
-    });
-    const orangeLedMat = new THREE.MeshBasicMaterial({
-      color: 0xff6b00,
-    });
-    const propMat = new THREE.MeshPhysicalMaterial({
-      color: 0xaefce0,
-      transparent: true,
-      opacity: 0.65,
-      roughness: 0.1,
-      transmission: 0.7,
-      thickness: 0.2,
-    });
-
-    // 1. Central Unibody Fuselage
-    const fuselageGeo = new THREE.BoxGeometry(0.85, 0.22, 1.4);
-    const fuselage = new THREE.Mesh(fuselageGeo, carbonMat);
-    droneGroup.add(fuselage);
-
-    // Top battery pack
-    const battGeo = new THREE.BoxGeometry(0.55, 0.35, 0.95);
-    const batt = new THREE.Mesh(battGeo, matteFrameMat);
-    batt.position.set(0, 0.26, 0.05);
-    droneGroup.add(batt);
-
-    // FPV Camera Gimbal Pod
-    const camPodGeo = new THREE.CylinderGeometry(0.14, 0.14, 0.25, 24);
-    camPodGeo.rotateX(Math.PI / 2);
-    const camPod = new THREE.Mesh(camPodGeo, metalMat);
-    camPod.position.set(0, 0.02, 0.76);
-    droneGroup.add(camPod);
-
-    const lensGeo = new THREE.SphereGeometry(0.1, 16, 16);
-    const lensMat = new THREE.MeshStandardMaterial({ color: 0x0284c7, roughness: 0.1, metalness: 0.9 });
-    const lens = new THREE.Mesh(lensGeo, lensMat);
-    lens.position.set(0, 0.02, 0.88);
-    droneGroup.add(lens);
-
-    // VTX Lollipop Antenna (rear top)
-    const antPoleGeo = new THREE.CylinderGeometry(0.02, 0.02, 0.55, 12);
-    const antPole = new THREE.Mesh(antPoleGeo, metalMat);
-    antPole.position.set(0, 0.5, -0.6);
-    antPole.rotation.x = -0.25;
-    droneGroup.add(antPole);
-
-    const antTipGeo = new THREE.SphereGeometry(0.09, 16, 16);
-    const antTip = new THREE.Mesh(antTipGeo, orangeLedMat);
-    antTip.position.set(0, 0.76, -0.68);
-    droneGroup.add(antTip);
-
-    // 2. Diagonal Carbon Arms & Motors
-    const armPositions = [
-      { x: 1.15, z: 0.95, isFront: true },   // Front Right
-      { x: -1.15, z: 0.95, isFront: true },  // Front Left
-      { x: 1.15, z: -0.95, isFront: false }, // Rear Right
-      { x: -1.15, z: -0.95, isFront: false } // Rear Left
-    ];
-
-    const propellers = [];
-
-    armPositions.forEach((pos, idx) => {
-      // Carbon arm tube connecting fuselage to motor
-      const armGeo = new THREE.CylinderGeometry(0.045, 0.05, 1.45, 16);
-      const arm = new THREE.Mesh(armGeo, carbonMat);
-      arm.position.set(pos.x * 0.5, -0.02, pos.z * 0.5);
-      arm.lookAt(pos.x, -0.02, pos.z);
-      arm.rotateX(Math.PI / 2);
-      droneGroup.add(arm);
-
-      // Motor base & bell
-      const motorBase = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.19, 0.22, 24), metalMat);
-      motorBase.position.set(pos.x, 0.04, pos.z);
-      droneGroup.add(motorBase);
-
-      // Motor Bell cap
-      const motorCap = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.16, 0.12, 24), matteFrameMat);
-      motorCap.position.set(pos.x, 0.18, pos.z);
-      droneGroup.add(motorCap);
-
-      // Navigation LED under each arm
-      const ledMat = pos.isFront ? cyanLedMat : orangeLedMat;
-      const led = new THREE.Mesh(new THREE.SphereGeometry(0.05, 12, 12), ledMat);
-      led.position.set(pos.x, -0.08, pos.z);
-      led.layers.enable(LAYERS.BLOOM_SCENE);
-      droneGroup.add(led);
-
-      // Spinning Propeller Assembly (3 aerofoil blades)
-      const propGroup = new THREE.Group();
-      propGroup.position.set(pos.x, 0.24, pos.z);
-
-      for (let b = 0; b < 3; b++) {
-        const bladeGeo = new THREE.BoxGeometry(0.85, 0.015, 0.12);
-        const blade = new THREE.Mesh(bladeGeo, propMat);
-        blade.rotation.y = (b * Math.PI * 2) / 3;
-        blade.rotation.z = (idx % 2 === 0 ? 0.08 : -0.08); // pitch
-        blade.position.x = Math.cos((b * Math.PI * 2) / 3) * 0.38;
-        blade.position.z = Math.sin((b * Math.PI * 2) / 3) * 0.38;
-        propGroup.add(blade);
-      }
-
-      // Prop Nut
-      const nut = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.06, 12), metalMat);
-      propGroup.add(nut);
-
-      droneGroup.add(propGroup);
-      propellers.push({ group: propGroup, dir: idx % 2 === 0 ? 1 : -1 });
-    });
+    // LOAD REAL DJI FPV 3D DRONE GLB MODEL
+    const gltfLoader = new GLTFLoader();
+    gltfLoader.load(
+      '/models/dji_fpv.glb',
+      (gltf) => {
+        const model = gltf.scene;
+        const box = new THREE.Box3().setFromObject(model);
+        const size = box.getSize(new THREE.Vector3());
+        const center = box.getCenter(new THREE.Vector3());
+        model.position.x = -center.x;
+        model.position.y = -center.y;
+        model.position.z = -center.z;
+        const maxDim = Math.max(size.x, size.y, size.z);
+        const scale = 3.6 / maxDim;
+        model.scale.setScalar(scale);
+        model.traverse((child) => {
+          if (child.isMesh) {
+            child.castShadow = true;
+            child.receiveShadow = true;
+            if (child.material) {
+              child.material.roughness = Math.min(child.material.roughness, 0.45);
+              child.material.metalness = Math.max(child.material.metalness, 0.5);
+            }
+          }
+        });
+        droneGroup.add(model);
+      },
+      undefined,
+      (err) => console.warn('Real drone load notice:', err)
+    );
 
     // 3. Holographic HUD / Telemetry Rings
     const ringGeo = new THREE.RingGeometry(2.1, 2.15, 64);
@@ -1455,9 +1362,7 @@
       droneGroup.rotation.y = (curP * Math.PI * 1.8) + (now * 0.0003);
 
       // Spin propellers at high velocity
-      propellers.forEach(p => {
-        p.group.rotation.y += dt * CONFIG.spinSpeed * p.dir;
-      });
+      // Real drone loaded
 
       // HUD Ring slow rotation
       hudRing.rotation.z += dt * 0.25;

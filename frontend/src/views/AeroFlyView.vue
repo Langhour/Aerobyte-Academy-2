@@ -1,7 +1,17 @@
 <template>
   <div class="aero-fly-root relative isolate min-h-screen text-[#f3f6ff] bg-[#04060f] overflow-x-hidden selection:bg-[#5df0a8]/20 selection:text-[#5df0a8]">
-    <!-- Fixed WebGL 3D Drone Canvas Behind Everything -->
+    <!-- Fixed WebGL 3D Real Drone Canvas Behind Everything -->
     <canvas ref="canvasRef" class="fixed inset-0 w-full h-full block z-0 pointer-events-none"></canvas>
+
+    <!-- Loading Indicator overlay while real 3D drone GLB loads -->
+    <div
+      v-if="loadingProgress < 100"
+      class="fixed bottom-6 right-6 z-50 flex items-center gap-3 bg-[rgba(12,18,38,0.85)] border border-[rgba(150,175,230,0.2)] px-4 py-2.5 rounded-full backdrop-blur-md shadow-xl text-xs font-bold text-white transition-opacity duration-500"
+      :class="loadingProgress >= 100 ? 'opacity-0 pointer-events-none' : 'opacity-100'"
+    >
+      <div class="w-4 h-4 border-2 border-[#5df0a8] border-t-transparent rounded-full animate-spin"></div>
+      <span>Loading Real DJI FPV 3D Drone... {{ loadingProgress }}%</span>
+    </div>
 
     <!-- Page Content Floating Over Fixed 3D Drone -->
     <div class="relative z-10">
@@ -14,7 +24,7 @@
               <span class="text-[#5df0a8] text-base font-extrabold select-none">▲</span>
               <span class="text-lg font-black tracking-widest uppercase text-white">Aero Fly</span>
               <span class="hidden sm:inline-block text-[10px] font-bold uppercase tracking-wider bg-[#5df0a8]/10 text-[#5df0a8] border border-[#5df0a8]/20 px-2 py-0.5 rounded-full ml-1">
-                Drone Flight Lab
+                Real FPV Quad Flight Lab
               </span>
             </div>
 
@@ -42,12 +52,12 @@
         </div>
       </header>
 
-      <!-- SECTION 1: HERO (Floating over the 3D Drone) -->
+      <!-- SECTION 1: HERO (Floating over the Real 3D Drone) -->
       <section class="min-h-[92vh] flex flex-col justify-center items-center text-center px-4 sm:px-6 pt-12 pb-20 relative">
         <div class="max-w-3xl mx-auto space-y-6">
           <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#5df0a8]/10 border border-[#5df0a8]/20 text-[#5df0a8] text-xs font-bold tracking-widest uppercase">
             <span class="w-2 h-2 rounded-full bg-[#5df0a8] animate-pulse"></span>
-            Cambodia's Open Drone Flight Collective
+            Cambodia's Real Drone Flight Community
           </div>
 
           <h1 class="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.05] text-white">
@@ -56,7 +66,7 @@
           </h1>
 
           <p class="text-base sm:text-xl text-[#9aa6c4] leading-relaxed max-w-2xl mx-auto">
-            Master high-speed FPV pilot dynamics, connect with solo flyers, and configure custom autonomous quads — all in one unified flight collective.
+            Experience real FPV racing dynamics, connect with solo pilots across Cambodia, and configure custom quads with hands-on bench consulting.
           </p>
 
           <div class="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -74,7 +84,7 @@
               href="#events"
               class="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-full bg-white/5 hover:bg-white/10 border border-[rgba(150,175,230,0.22)] px-7 py-3.5 text-base font-bold text-white transition hover:-translate-y-0.5"
             >
-              <span>Explore Flying Events</span>
+              <span>Weekend Flight Schedule</span>
             </a>
           </div>
         </div>
@@ -82,13 +92,13 @@
         <!-- Trusted Logos Row -->
         <div class="mt-20 pt-10 border-t border-[rgba(150,175,230,0.08)] w-full max-w-4xl mx-auto">
           <p class="text-[11px] font-bold uppercase tracking-widest text-[#6b7796] mb-5">
-            Compatible with modern flight protocols & hardware
+            Supported hardware & open-source flight stacks
           </p>
           <div class="flex flex-wrap items-center justify-center gap-6 sm:gap-12 text-sm sm:text-base font-bold text-[#6b7796]">
+            <span class="hover:text-white transition">DJI FPV</span>
             <span class="hover:text-white transition">Betaflight</span>
             <span class="hover:text-white transition">ExpressLRS</span>
             <span class="hover:text-white transition">RadioMaster</span>
-            <span class="hover:text-white transition">DJI O3</span>
             <span class="hover:text-white transition">Walksnail</span>
             <span class="hover:text-white transition">ArduPilot</span>
           </div>
@@ -103,7 +113,7 @@
             One collective to power the entire flight journey
           </h2>
           <p class="mt-4 text-base sm:text-lg text-[#9aa6c4] leading-relaxed">
-            Stop struggling with mismatched voltages and broken solder joints alone. Aero Fly unifies flight training, telemetry diagnostics, and physical maker spaces into one community.
+            Stop struggling with mismatched voltages and broken solder joints alone. Aero Fly unifies flight training, telemetry diagnostics, and physical maker spaces.
           </p>
         </div>
 
@@ -377,14 +387,15 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
 import * as THREE from 'three'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js'
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js'
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js'
 import { GammaCorrectionShader } from 'three/examples/jsm/shaders/GammaCorrectionShader.js'
-import { CopyShader } from 'three/examples/jsm/shaders/CopyShader.js'
 
 const canvasRef = ref(null)
+const loadingProgress = ref(0)
 const currentYear = new Date().getFullYear()
 
 let animationFrameId = null
@@ -405,6 +416,7 @@ onMounted(() => {
     renderer.outputColorSpace = THREE.SRGBColorSpace
   }
   renderer.shadowMap.enabled = true
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap
 
   const scene = new THREE.Scene()
   scene.background = new THREE.Color(0x04060f)
@@ -413,152 +425,119 @@ onMounted(() => {
   camera.position.set(0, 0, 8)
   scene.add(camera)
 
-  // Lighting
-  const ambientLight = new THREE.AmbientLight(0xffffff, 2.2)
+  // Lighting tuned for realistic carbon fiber and anodized metals
+  const ambientLight = new THREE.AmbientLight(0xffffff, 2.5)
   scene.add(ambientLight)
 
-  const dirLight = new THREE.DirectionalLight(0xffffff, 2.5)
-  dirLight.position.set(3, 8, 5)
-  scene.add(dirLight)
+  const keyLight = new THREE.DirectionalLight(0xffffff, 3.2)
+  keyLight.position.set(4, 9, 6)
+  keyLight.castShadow = true
+  scene.add(keyLight)
 
-  const cyanPoint = new THREE.PointLight(0x5df0a8, 3.5, 12)
-  cyanPoint.position.set(-2, 1, 3)
-  scene.add(cyanPoint)
+  const fillLight = new THREE.DirectionalLight(0x7da4ff, 1.8)
+  fillLight.position.set(-5, -2, 4)
+  scene.add(fillLight)
 
-  // Drone Assembly
+  const cyanRim = new THREE.PointLight(0x5df0a8, 4.0, 15)
+  cyanRim.position.set(-3, 2, 3)
+  scene.add(cyanRim)
+
+  const orangeRim = new THREE.PointLight(0xff6b00, 3.0, 12)
+  orangeRim.position.set(3, -2, -2)
+  scene.add(orangeRim)
+
+  // World & Drone Hierarchy
   const worldGroup = new THREE.Group()
   scene.add(worldGroup)
 
   const droneGroup = new THREE.Group()
   worldGroup.add(droneGroup)
 
-  const carbonMat = new THREE.MeshStandardMaterial({ color: 0x141824, metalness: 0.85, roughness: 0.28 })
-  const matteMat = new THREE.MeshStandardMaterial({ color: 0x0a0d17, metalness: 0.9, roughness: 0.2 })
-  const metalMat = new THREE.MeshStandardMaterial({ color: 0x6e7f9e, metalness: 0.95, roughness: 0.15 })
-  const cyanLedMat = new THREE.MeshBasicMaterial({ color: 0x5df0a8 })
-  const orangeLedMat = new THREE.MeshBasicMaterial({ color: 0xff6b00 })
-  const propMat = new THREE.MeshPhysicalMaterial({
-    color: 0xaefce0,
-    transparent: true,
-    opacity: 0.65,
-    roughness: 0.1,
-    transmission: 0.7,
-    thickness: 0.2,
-  })
+  // LOAD REAL DJI FPV 3D DRONE GLB MODEL
+  const gltfLoader = new GLTFLoader()
+  gltfLoader.load(
+    '/models/dji_fpv.glb',
+    (gltf) => {
+      const model = gltf.scene
 
-  // Fuselage & Battery
-  const fuselage = new THREE.Mesh(new THREE.BoxGeometry(0.85, 0.22, 1.4), carbonMat)
-  droneGroup.add(fuselage)
+      // Compute bounding box and center precisely
+      const box = new THREE.Box3().setFromObject(model)
+      const size = box.getSize(new THREE.Vector3())
+      const center = box.getCenter(new THREE.Vector3())
 
-  const batt = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.35, 0.95), matteMat)
-  batt.position.set(0, 0.26, 0.05)
-  droneGroup.add(batt)
+      model.position.x = -center.x
+      model.position.y = -center.y
+      model.position.z = -center.z
 
-  // Camera Pod
-  const camPod = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.14, 0.25, 24), metalMat)
-  camPod.rotation.x = Math.PI / 2
-  camPod.position.set(0, 0.02, 0.76)
-  droneGroup.add(camPod)
+      // Normalize scale (max dimension ~ 3.6 units)
+      const maxDim = Math.max(size.x, size.y, size.z)
+      const scale = 3.6 / maxDim
+      model.scale.setScalar(scale)
 
-  const lens = new THREE.Mesh(new THREE.SphereGeometry(0.1, 16, 16), new THREE.MeshStandardMaterial({ color: 0x0284c7, roughness: 0.1, metalness: 0.9 }))
-  lens.position.set(0, 0.02, 0.88)
-  droneGroup.add(lens)
+      model.traverse((child) => {
+        if (child.isMesh) {
+          child.castShadow = true
+          child.receiveShadow = true
+          if (child.material) {
+            child.material.envMapIntensity = 1.3
+            child.material.roughness = Math.min(child.material.roughness, 0.4)
+          }
+        }
+      })
 
-  // VTX Antenna
-  const antPole = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 0.55, 12), metalMat)
-  antPole.position.set(0, 0.5, -0.6)
-  antPole.rotation.x = -0.25
-  droneGroup.add(antPole)
-
-  const antTip = new THREE.Mesh(new THREE.SphereGeometry(0.09, 16, 16), orangeLedMat)
-  antTip.position.set(0, 0.76, -0.68)
-  droneGroup.add(antTip)
-
-  // 4 Arms & Spinning Propellers
-  const armPositions = [
-    { x: 1.15, z: 0.95, isFront: true },
-    { x: -1.15, z: 0.95, isFront: true },
-    { x: 1.15, z: -0.95, isFront: false },
-    { x: -1.15, z: -0.95, isFront: false }
-  ]
-  const propellers = []
-
-  armPositions.forEach((pos, idx) => {
-    const arm = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.05, 1.45, 16), carbonMat)
-    arm.position.set(pos.x * 0.5, -0.02, pos.z * 0.5)
-    arm.lookAt(pos.x, -0.02, pos.z)
-    arm.rotateX(Math.PI / 2)
-    droneGroup.add(arm)
-
-    const motorBase = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.19, 0.22, 24), metalMat)
-    motorBase.position.set(pos.x, 0.04, pos.z)
-    droneGroup.add(motorBase)
-
-    const motorCap = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.16, 0.12, 24), matteMat)
-    motorCap.position.set(pos.x, 0.18, pos.z)
-    droneGroup.add(motorCap)
-
-    const led = new THREE.Mesh(new THREE.SphereGeometry(0.05, 12, 12), pos.isFront ? cyanLedMat : orangeLedMat)
-    led.position.set(pos.x, -0.08, pos.z)
-    droneGroup.add(led)
-
-    const propGroup = new THREE.Group()
-    propGroup.position.set(pos.x, 0.24, pos.z)
-    for (let b = 0; b < 3; b++) {
-      const blade = new THREE.Mesh(new THREE.BoxGeometry(0.85, 0.015, 0.12), propMat)
-      blade.rotation.y = (b * Math.PI * 2) / 3
-      blade.rotation.z = (idx % 2 === 0 ? 0.08 : -0.08)
-      blade.position.x = Math.cos((b * Math.PI * 2) / 3) * 0.38
-      blade.position.z = Math.sin((b * Math.PI * 2) / 3) * 0.38
-      propGroup.add(blade)
+      droneGroup.add(model)
+      loadingProgress.value = 100
+    },
+    (xhr) => {
+      if (xhr.total > 0) {
+        loadingProgress.value = Math.min(99, Math.round((xhr.loaded / xhr.total) * 100))
+      }
+    },
+    (err) => {
+      console.warn('Real drone model load notice:', err)
+      loadingProgress.value = 100
     }
-    const nut = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.06, 12), metalMat)
-    propGroup.add(nut)
-    droneGroup.add(propGroup)
-    propellers.push({ group: propGroup, dir: idx % 2 === 0 ? 1 : -1 })
-  })
-
-  // HUD Rings
-  const hudRing = new THREE.Mesh(
-    new THREE.RingGeometry(2.1, 2.15, 64),
-    new THREE.MeshBasicMaterial({ color: 0x5df0a8, transparent: true, opacity: 0.35, side: THREE.DoubleSide })
   )
+
+  // Holographic HUD Telemetry Rings
+  const ringGeo = new THREE.RingGeometry(2.3, 2.35, 64)
+  const ringMat = new THREE.MeshBasicMaterial({ color: 0x5df0a8, transparent: true, opacity: 0.35, side: THREE.DoubleSide })
+  const hudRing = new THREE.Mesh(ringGeo, ringMat)
   hudRing.rotation.x = Math.PI / 2
   droneGroup.add(hudRing)
 
-  const hudRing2 = new THREE.Mesh(
-    new THREE.RingGeometry(2.4, 2.44, 48),
-    new THREE.MeshBasicMaterial({ color: 0x3a6cff, transparent: true, opacity: 0.2, side: THREE.DoubleSide })
-  )
+  const ring2Geo = new THREE.RingGeometry(2.65, 2.69, 48)
+  const ring2Mat = new THREE.MeshBasicMaterial({ color: 0x3a6cff, transparent: true, opacity: 0.22, side: THREE.DoubleSide })
+  const hudRing2 = new THREE.Mesh(ring2Geo, ring2Mat)
   hudRing2.rotation.x = Math.PI / 2
   droneGroup.add(hudRing2)
 
   // Starfield
   const starGeo = new THREE.BufferGeometry()
   const starPos = []
-  for (let i = 0; i < 1200; i++) {
+  for (let i = 0; i < 1400; i++) {
     const u = Math.random()
     const v = Math.random()
     const theta = u * 2.0 * Math.PI
     const phi = Math.acos(2.0 * v - 1.0)
-    const r = 80.0
+    const r = 85.0
     starPos.push(r * Math.sin(phi) * Math.cos(theta), r * Math.sin(phi) * Math.sin(theta), r * Math.cos(phi))
   }
   starGeo.setAttribute('position', new THREE.Float32BufferAttribute(starPos, 3))
-  const starMat = new THREE.PointsMaterial({ color: 0xcfe0ff, size: 1.5, transparent: true, opacity: 0.7 })
+  const starMat = new THREE.PointsMaterial({ color: 0xcfe0ff, size: 1.6, transparent: true, opacity: 0.75 })
   const stars = new THREE.Points(starGeo, starMat)
   scene.add(stars)
 
   // Composers (Bloom & Gamma)
   composer = new EffectComposer(renderer)
   composer.addPass(new RenderPass(scene, camera))
-  composer.addPass(new UnrealBloomPass(new THREE.Vector2(width, height), 0.38, 0.4, 0.1))
+  composer.addPass(new UnrealBloomPass(new THREE.Vector2(width, height), 0.35, 0.4, 0.1))
   composer.addPass(new ShaderPass(GammaCorrectionShader))
 
   // Scroll Choreography
-  const STOPS_X = [{ p: 0, v: 0 }, { p: 0.32, v: -2.8 }, { p: 0.64, v: 2.9 }, { p: 1, v: 0 }]
-  const STOPS_Y = [{ p: 0, v: -3.8 }, { p: 0.32, v: 0.4 }, { p: 0.64, v: 0.3 }, { p: 1, v: 0.15 }]
-  const STOPS_S = [{ p: 0, v: 2.1 }, { p: 0.32, v: 1.05 }, { p: 0.64, v: 0.95 }, { p: 1, v: 1.15 }]
+  const STOPS_X = [{ p: 0, v: 0 }, { p: 0.32, v: -2.7 }, { p: 0.64, v: 2.8 }, { p: 1, v: 0 }]
+  const STOPS_Y = [{ p: 0, v: -3.6 }, { p: 0.32, v: 0.4 }, { p: 0.64, v: 0.3 }, { p: 1, v: 0.15 }]
+  const STOPS_S = [{ p: 0, v: 2.05 }, { p: 0.32, v: 1.05 }, { p: 0.64, v: 0.95 }, { p: 1, v: 1.15 }]
   const STOPS_ROLL = [{ p: 0, v: -0.15 }, { p: 0.32, v: 0.28 }, { p: 0.64, v: -0.32 }, { p: 1, v: 0.05 }]
   const STOPS_PITCH = [{ p: 0, v: 0.65 }, { p: 0.32, v: 0.35 }, { p: 0.64, v: 0.42 }, { p: 1, v: 0.55 }]
 
@@ -619,9 +598,6 @@ onMounted(() => {
     droneGroup.rotation.z = curRoll + hoverTilt
     droneGroup.rotation.y = (curP * Math.PI * 1.8) + (now * 0.0003)
 
-    propellers.forEach(p => {
-      p.group.rotation.y += dt * 25.0 * p.dir
-    })
     hudRing.rotation.z += dt * 0.25
     hudRing2.rotation.z -= dt * 0.18
 
