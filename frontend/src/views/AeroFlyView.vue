@@ -614,81 +614,109 @@ onMounted(() => {
         }
       })
 
-      // Extract the 4 authentic original 3D propellers directly from the model
-      function buildWorldPropeller(parentNode, sign) {
-        if (!parentNode) return null
-        const box = new THREE.Box3()
-        const v = new THREE.Vector3()
-        const meshesData = []
-
-        parentNode.traverse((c) => {
-          if (c.isMesh && c.geometry) {
-            const geom = c.geometry
-            const pos = geom.attributes.position
-            const index = geom.index
-            const keptIndices = []
-            if (index) {
-              for (let i = 0; i < index.count; i += 3) {
-                const a = index.getX(i)
-                const b = index.getX(i + 1)
-                const c_idx = index.getX(i + 2)
-                const avgX = (pos.getX(a) + pos.getX(b) + pos.getX(c_idx)) / 3
-                if (sign < 0 ? avgX < 0 : avgX > 0) {
-                  keptIndices.push(a, b, c_idx)
-                  v.fromBufferAttribute(pos, a); c.localToWorld(v); box.expandByPoint(v)
-                  v.fromBufferAttribute(pos, b); c.localToWorld(v); box.expandByPoint(v)
-                  v.fromBufferAttribute(pos, c_idx); c.localToWorld(v); box.expandByPoint(v)
-                }
-              }
-            }
-            if (keptIndices.length > 0) {
-              meshesData.push({ mesh: c, keptIndices })
-            }
-          }
-        })
-
-        const worldCenter = box.getCenter(new THREE.Vector3())
-        const group = new THREE.Group()
-        group.position.copy(worldCenter)
-
-        meshesData.forEach(({ mesh, keptIndices }) => {
-          const geom = mesh.geometry.clone()
-          geom.setIndex(keptIndices)
-          geom.applyMatrix4(mesh.matrixWorld)
-          geom.translate(-worldCenter.x, -worldCenter.y, -worldCenter.z)
-          const newMesh = new THREE.Mesh(geom, mesh.material)
-          newMesh.castShadow = true
-          newMesh.receiveShadow = true
-          group.add(newMesh)
-        })
-
-        return group
-      }
-
-      let node178 = null
-      let node183 = null
+      // 6. Extract the 4 authentic real propellers from SpineB (the rotor assembly containing the carbon tri-blades, purple tips, and center nuts)
+      // IMPORTANT: Drone arms and frame (Cube.178, Cube.183, Object_16..20, Object_44..47) remain 100% STATIC and untouched!
+      let spineNode = null
       droneModel.traverse((c) => {
-        if (c.name.includes('178')) node178 = c
-        if (c.name.includes('183')) node183 = c
+        if (c.name && c.name.includes('SpineB')) spineNode = c
       })
 
       propellers.length = 0
 
-      if (node178 && node183) {
-        // Build 4 separate rotating groups from the authentic model propellers
-        const propFL = buildWorldPropeller(node178, -1)
-        const propFR = buildWorldPropeller(node178, 1)
-        const propRL = buildWorldPropeller(node183, -1)
-        const propRR = buildWorldPropeller(node183, 1)
+      if (spineNode && spineNode.parent) {
+        // 4 Propeller coordinates in SpineB local space
+        const propConfigs = [
+          {
+            name: 'Rear-Left',
+            center: new THREE.Vector3(-2.1202, 1.1972, -1.9029),
+            axis: new THREE.Vector3(0.98904, -0.14764, 0).normalize(),
+            dir: -1
+          },
+          {
+            name: 'Front-Left',
+            center: new THREE.Vector3(-0.6963, -0.8024, -1.6811),
+            axis: new THREE.Vector3(0.98445, -0.17568, 0).normalize(),
+            dir: 1
+          },
+          {
+            name: 'Front-Right',
+            center: new THREE.Vector3(-0.6965, -0.8018, 1.5458),
+            axis: new THREE.Vector3(0.98235, -0.18708, 0).normalize(),
+            dir: -1
+          },
+          {
+            name: 'Rear-Right',
+            center: new THREE.Vector3(-2.1202, 1.1972, 1.7457),
+            axis: new THREE.Vector3(0.98616, -0.16582, 0).normalize(),
+            dir: 1
+          }
+        ]
 
-        // Hide static original combined meshes
-        node178.visible = false
-        node183.visible = false
+        const propGroups = propConfigs.map((cfg) => {
+          const grp = new THREE.Group()
+          grp.position.copy(cfg.center)
+          return grp
+        })
 
-        if (propFL) { droneGroup.add(propFL); propellers.push({ mesh: propFL, dir: 1 }) }
-        if (propFR) { droneGroup.add(propFR); propellers.push({ mesh: propFR, dir: -1 }) }
-        if (propRL) { droneGroup.add(propRL); propellers.push({ mesh: propRL, dir: -1 }) }
-        if (propRR) { droneGroup.add(propRR); propellers.push({ mesh: propRR, dir: 1 }) }
+        spineNode.traverse((c) => {
+          if (c.isMesh && c.geometry) {
+            const geom = c.geometry
+            const pos = geom.attributes.position
+            const idx = geom.index
+            if (idx && pos) {
+              const kept = [[], [], [], []]
+              for (let i = 0; i < idx.count; i += 3) {
+                const a = idx.getX(i)
+                const b = idx.getX(i + 1)
+                const c_idx = idx.getX(i + 2)
+
+                const avgX = (pos.getX(a) + pos.getX(b) + pos.getX(c_idx)) / 3
+                const avgY = (pos.getY(a) + pos.getY(b) + pos.getY(c_idx)) / 3
+                const avgZ = (pos.getZ(a) + pos.getZ(b) + pos.getZ(c_idx)) / 3
+
+                let bestK = 0
+                let bestD = Infinity
+                for (let k = 0; k < 4; k++) {
+                  const cfg = propConfigs[k]
+                  const dx = avgX - cfg.center.x
+                  const dy = avgY - cfg.center.y
+                  const dz = avgZ - cfg.center.z
+                  const d = dx * dx + dy * dy + dz * dz
+                  if (d < bestD) {
+                    bestD = d
+                    bestK = k
+                  }
+                }
+                kept[bestK].push(a, b, c_idx)
+              }
+
+              for (let k = 0; k < 4; k++) {
+                if (kept[k].length > 0) {
+                  const newGeom = geom.clone()
+                  newGeom.setIndex(kept[k])
+                  newGeom.translate(-propConfigs[k].center.x, -propConfigs[k].center.y, -propConfigs[k].center.z)
+                  const newMesh = new THREE.Mesh(newGeom, c.material)
+                  newMesh.castShadow = true
+                  newMesh.receiveShadow = true
+                  propGroups[k].add(newMesh)
+                }
+              }
+            }
+          }
+        })
+
+        // Add the 4 isolated rotating propeller groups to the model hierarchy
+        propConfigs.forEach((cfg, k) => {
+          spineNode.parent.add(propGroups[k])
+          propellers.push({
+            group: propGroups[k],
+            axis: cfg.axis,
+            dir: cfg.dir
+          })
+        })
+
+        // Hide static original combined blade meshes
+        spineNode.visible = false
       }
 
       droneGroup.add(droneModel)
@@ -812,7 +840,7 @@ onMounted(() => {
     // If not scrolling, scrollSpeed is 0 -> propellers do NOT move!
     if (scrollSpeed > 0) {
       propellers.forEach((p) => {
-        p.mesh.rotation.y += scrollSpeed * dt * p.dir * 2.2
+        p.group.rotateOnAxis(p.axis, scrollSpeed * dt * p.dir * 2.5)
       })
     }
 
