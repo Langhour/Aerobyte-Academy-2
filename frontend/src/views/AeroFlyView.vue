@@ -699,63 +699,69 @@ onMounted(() => {
           return grp
         })
 
+        const origMeshes = []
         spineNode.traverse((c) => {
-          if (c.isMesh && c.geometry) {
-            const geom = c.geometry
-            const pos = geom.attributes.position
-            const idx = geom.index
-            if (idx && pos) {
-              const kept = [[], [], [], []]
-              for (let i = 0; i < idx.count; i += 3) {
-                const a = idx.getX(i)
-                const b = idx.getX(i + 1)
-                const c_idx = idx.getX(i + 2)
+          if (c.isMesh && c.geometry) origMeshes.push(c)
+        })
 
-                const avgX = (pos.getX(a) + pos.getX(b) + pos.getX(c_idx)) / 3
-                const avgY = (pos.getY(a) + pos.getY(b) + pos.getY(c_idx)) / 3
-                const avgZ = (pos.getZ(a) + pos.getZ(b) + pos.getZ(c_idx)) / 3
+        origMeshes.forEach((c) => {
+          const geom = c.geometry
+          const pos = geom.attributes.position
+          const idx = geom.index
+          if (idx && pos) {
+            const kept = [[], [], [], []]
+            for (let i = 0; i < idx.count; i += 3) {
+              const a = idx.getX(i)
+              const b = idx.getX(i + 1)
+              const c_idx = idx.getX(i + 2)
 
-                let bestK = 0
-                let bestD = Infinity
-                for (let k = 0; k < 4; k++) {
-                  const cfg = propConfigs[k]
-                  const dx = avgX - cfg.center.x
-                  const dy = avgY - cfg.center.y
-                  const dz = avgZ - cfg.center.z
-                  const d = dx * dx + dy * dy + dz * dz
-                  if (d < bestD) {
-                    bestD = d
-                    bestK = k
-                  }
-                }
-                kept[bestK].push(a, b, c_idx)
-              }
+              const avgX = (pos.getX(a) + pos.getX(b) + pos.getX(c_idx)) / 3
+              const avgY = (pos.getY(a) + pos.getY(b) + pos.getY(c_idx)) / 3
+              const avgZ = (pos.getZ(a) + pos.getZ(b) + pos.getZ(c_idx)) / 3
 
+              let bestK = 0
+              let bestD = Infinity
               for (let k = 0; k < 4; k++) {
-                if (kept[k].length > 0) {
-                  const subGeom = extractSubGeometry(geom, kept[k], propConfigs[k].center)
-                  const newMesh = new THREE.Mesh(subGeom, c.material)
-                  newMesh.castShadow = true
-                  newMesh.receiveShadow = true
-                  propGroups[k].add(newMesh)
+                const cfg = propConfigs[k]
+                const dx = avgX - cfg.center.x
+                const dy = avgY - cfg.center.y
+                const dz = avgZ - cfg.center.z
+                const d = dx * dx + dy * dy + dz * dz
+                if (d < bestD) {
+                  bestD = d
+                  bestK = k
                 }
+              }
+              kept[bestK].push(a, b, c_idx)
+            }
+
+            for (let k = 0; k < 4; k++) {
+              if (kept[k].length > 0) {
+                const subGeom = extractSubGeometry(geom, kept[k], propConfigs[k].center)
+                const newMesh = new THREE.Mesh(subGeom, c.material)
+                newMesh.castShadow = true
+                newMesh.receiveShadow = true
+                propGroups[k].add(newMesh)
               }
             }
           }
         })
 
-        // Add the 4 isolated rotating propeller groups to the model hierarchy so they stay 100% attached to the drone
+        // Hide the original un-split meshes inside spineNode
+        origMeshes.forEach((m) => {
+          m.visible = false
+        })
+
+        // Add the 4 isolated rotating propeller groups directly inside spineNode
+        // so they inherit spineNode's exact position, scale, and orientation on the drone arms
         propConfigs.forEach((cfg, k) => {
-          spineNode.parent.add(propGroups[k])
+          spineNode.add(propGroups[k])
           propellers.push({
             group: propGroups[k],
             axis: cfg.axis,
             dir: cfg.dir
           })
         })
-
-        // Hide static original combined blade meshes
-        spineNode.visible = false
       }
 
       droneGroup.add(droneModel)
