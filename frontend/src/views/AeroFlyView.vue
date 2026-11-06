@@ -1096,91 +1096,60 @@ onMounted(() => {
   composer.addPass(bloomPass)
   composer.addPass(new ShaderPass(GammaCorrectionShader))
 
-  const YAW_90_RIGHT = 1.85  // ~106°: perfectly perpendicular 90° side profile relative to camera ray, pointing directly right at text cards
-  const YAW_90_LEFT  = -1.85 // ~-106°: perfectly perpendicular 90° side profile relative to camera ray, pointing directly left at perks cards
+  const DEG90 = Math.PI * 0.5
 
-  // 5-STAGE HARMONIC FLIGHT PATH:
-  // Stage 1 (Hero): Center (Drone below AERO FLY title)
-  // Stage 2 (Sessions): Left (Drone elevated opposite cards, locked at true 90° pointing right)
-  // Stage 3 (Middle): Center (Drone elevated in upper center, FLY AS ONE text below)
-  // Stage 4 (Benefits): Right (Drone elevated opposite cards, locked at true -90° pointing left)
-  // Stage 5 (Radar): Center (Drone in upper center, Radar noticeboard below)
+  // ORIGINAL HARMONIC FLIGHT S-CURVE MOTION (RESTORED):
+  // 1. Top Hero: Center
+  // 2. Weekend Flights: Drone smoothly glides to Left, Text on Right
+  // 3. Middle Anthem: Drone smoothly glides to Center above FLY AS ONE text
+  // 4. Membership Perks: Drone smoothly glides to Right, Text on Left
+  // 5. Bottom Hub: Drone smoothly glides to Center above Radar
   const STOPS_X = [
-    { p: 0.00, v: 0.0 },   // Hero: Center
-    { p: 0.06, v: 0.0 },   // Hero hold
-    { p: 0.12, v: -2.8 },  // Sweep smoothly to Left
-    { p: 0.25, v: -2.8 },  // Section 2 Plateau: LOCKED ON LEFT opposite cards
-    { p: 0.33, v: 0.0 },   // Rotates & sweeps smoothly to Center right after Kirirom card!
-    { p: 0.52, v: 0.0 },   // Middle Stop Plateau: LOCKED IN CENTER
-    { p: 0.60, v: 2.8 },   // Sweep smoothly to Right
-    { p: 0.78, v: 2.8 },   // Section 4 Plateau: LOCKED ON RIGHT opposite perks
-    { p: 0.86, v: 0.0 },   // Sweep smoothly to Center
-    { p: 1.00, v: 0.0 }    // Bottom Plateau: LOCKED IN CENTER
+    { p: 0.00, v: 0.0 },   // 1. Hero: Center
+    { p: 0.25, v: -3.0 },  // 2. Weekend Flights: Drone on Left
+    { p: 0.50, v: 0.0 },   // 3. Middle Stop: Center
+    { p: 0.75, v: 3.0 },   // 4. Perks: Drone on Right
+    { p: 1.00, v: 0.0 }    // 5. Bottom Hub: Center
   ]
 
   const STOPS_Y = [
-    { p: 0.00, v: -0.40 }, // Hero: Below top text lines
-    { p: 0.06, v: -0.40 }, // Hero hold
-    { p: 0.12, v: 0.15 },  // Section 2: Elevated opposite cards
-    { p: 0.25, v: 0.15 },  // Section 2 hold
-    { p: 0.33, v: 0.55 },  // Rise into upper center
-    { p: 0.52, v: 0.55 },  // Middle Stop Plateau: High above FLY AS ONE text
-    { p: 0.60, v: 0.15 },  // Section 4: Elevated opposite perks
-    { p: 0.78, v: 0.15 },  // Section 4 hold
-    { p: 0.86, v: 0.35 },  // Bottom: Upper center
-    { p: 1.00, v: 0.35 }   // Bottom hold
+    { p: 0.00, v: -0.40 }, // 1. Hero: sits below top text
+    { p: 0.25, v: 0.00 },  // 2. Weekend Flights: vertically centered
+    { p: 0.50, v: 0.60 },  // 3. Middle Stop: sits high in upper center above text
+    { p: 0.75, v: 0.00 },  // 4. Perks: vertically centered
+    { p: 1.00, v: 0.35 }   // 5. Bottom Hub: sits in upper center
   ]
 
   const STOPS_S = [
     { p: 0.00, v: 1.35 },  // Hero
-    { p: 0.06, v: 1.35 },
-    { p: 0.12, v: 1.10 },  // Left: Compact
-    { p: 0.25, v: 1.10 },
-    { p: 0.33, v: 1.25 },  // Middle Stop: Prominent
-    { p: 0.52, v: 1.25 },
-    { p: 0.60, v: 1.10 },  // Right: Compact
-    { p: 0.78, v: 1.10 },
-    { p: 0.86, v: 1.15 },  // Bottom: Balanced
-    { p: 1.00, v: 1.15 }
+    { p: 0.25, v: 1.10 },  // Left
+    { p: 0.50, v: 1.30 },  // Middle Stop
+    { p: 0.75, v: 1.10 },  // Right
+    { p: 1.00, v: 1.15 }   // Bottom
   ]
 
   const STOPS_ROLL = [
     { p: 0.00, v: 0.0 },
-    { p: 0.06, v: 0.0 },
-    { p: 0.12, v: 0.0 },
     { p: 0.25, v: 0.0 },
-    { p: 0.33, v: 0.0 },
-    { p: 0.52, v: 0.0 },
-    { p: 0.60, v: 0.0 },
-    { p: 0.78, v: 0.0 },
-    { p: 0.86, v: 0.0 },
+    { p: 0.50, v: 0.0 },
+    { p: 0.75, v: 0.0 },
     { p: 1.00, v: 0.0 }
   ]
 
   const STOPS_PITCH = [
-    { p: 0.00, v: 0.22 },   // Natural forward flight tilt facing user
-    { p: 0.06, v: 0.22 },
-    { p: 0.12, v: 0.00 },   // True level horizontal hover pointed directly sideways at text
-    { p: 0.25, v: 0.00 },
-    { p: 0.33, v: 0.22 },   // Natural forward flight tilt in middle stop
-    { p: 0.52, v: 0.22 },
-    { p: 0.60, v: 0.00 },   // True level horizontal hover pointed directly sideways at perks
-    { p: 0.78, v: 0.00 },
-    { p: 0.86, v: 0.20 },
+    { p: 0.00, v: 0.22 },  // Natural forward flight tilt
+    { p: 0.25, v: 0.10 },  // Slight hover tilt pointing at text
+    { p: 0.50, v: 0.22 },  // Forward flight tilt facing user
+    { p: 0.75, v: 0.10 },  // Slight hover tilt pointing at text
     { p: 1.00, v: 0.20 }
   ]
 
   const STOPS_YAW = [
-    { p: 0.00, v: 0.0 },            // 1. Hero: Facing forward
-    { p: 0.06, v: 0.0 },            // Hero hold
-    { p: 0.12, v: YAW_90_RIGHT },   // Rotates FULL 90° right to point directly at text
-    { p: 0.25, v: YAW_90_RIGHT },   // Section 2 Plateau: FIRMLY LOCKED AT 90° opposite cards
-    { p: 0.33, v: 0.0 },            // Rotates to 0° facing forward in center right after cards!
-    { p: 0.52, v: 0.0 },            // Middle Stop Plateau: FIRMLY LOCKED AT 0° facing forward
-    { p: 0.60, v: YAW_90_LEFT },    // Rotates FULL 90° left to point directly at perks
-    { p: 0.78, v: YAW_90_LEFT },    // Section 4 Plateau: FIRMLY LOCKED AT 90° opposite perks
-    { p: 0.86, v: 0.0 },            // Rotates to 0° facing forward in center
-    { p: 1.00, v: 0.0 }             // Bottom hold: Facing forward
+    { p: 0.00, v: 0.0 },     // 1. Hero: Facing forward
+    { p: 0.25, v: DEG90 },   // 2. Left: Rotates 90° right to point directly at text
+    { p: 0.50, v: 0.0 },     // 3. Middle Stop: Facing forward in Center
+    { p: 0.75, v: -DEG90 },  // 4. Right: Rotates 90° left to point directly at text
+    { p: 1.00, v: 0.0 }      // 5. Bottom: Facing forward in Center
   ]
 
   function sample(stops, p) {
@@ -1228,20 +1197,28 @@ onMounted(() => {
     const maxScroll = Math.max(document.documentElement.scrollHeight - window.innerHeight, 1)
     const scrollY = window.pageYOffset || document.documentElement.scrollTop
     const pTarget = Math.max(0, Math.min(1, scrollY / maxScroll))
-    curP += (pTarget - curP) * Math.min(1, dt * 5.0)
+    curP += (pTarget - curP) * Math.min(1, dt * 4.5)
 
     const sideScale = Math.max(0.5, Math.min(1, window.innerWidth / 1200))
-    curX = sample(STOPS_X, curP) * sideScale
-    curY = sample(STOPS_Y, curP)
-    curS = sample(STOPS_S, curP)
-    curRoll = sample(STOPS_ROLL, curP)
-    curPitch = sample(STOPS_PITCH, curP)
-    curYaw = sample(STOPS_YAW, curP)
+    const targetX = sample(STOPS_X, curP) * sideScale
+    const targetY = sample(STOPS_Y, curP)
+    const targetS = sample(STOPS_S, curP)
+    const targetRoll = sample(STOPS_ROLL, curP)
+    const targetPitch = sample(STOPS_PITCH, curP)
+    const targetYaw = sample(STOPS_YAW, curP)
 
-    // Middle section sliding reveal: triggers smoothly when arriving from Section 2 (right after cards)
-    if (curP < 0.26) {
+    const k = Math.min(1, dt * 3.2)
+    curX += (targetX - curX) * k
+    curY += (targetY - curY) * k
+    curS += (targetS - curS) * k
+    curRoll += (targetRoll - curRoll) * k
+    curPitch += (targetPitch - curPitch) * k
+    curYaw += (targetYaw - curYaw) * k
+
+    // Middle text sliding reveal: smoothly shows when approaching middle stop
+    if (curP < 0.38) {
       middleTextState.value = 'before'
-    } else if (curP > 0.55) {
+    } else if (curP > 0.62) {
       middleTextState.value = 'after'
     } else {
       middleTextState.value = 'active'
