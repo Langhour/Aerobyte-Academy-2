@@ -810,6 +810,7 @@ onMounted(() => {
   scene.add(worldGroup)
 
   const droneGroup = new THREE.Group()
+  droneGroup.rotation.order = 'YXZ'
   worldGroup.add(droneGroup)
 
   const gltfLoader = new GLTFLoader()
@@ -1062,13 +1063,15 @@ onMounted(() => {
   composer.addPass(bloomPass)
   composer.addPass(new ShaderPass(GammaCorrectionShader))
 
+  const DEG90 = Math.PI * 0.5 // Exactly 90 degrees
+
   const STOPS_X = [
     { p: 0.00, v: 0.0 },   // Top Hero: Center
-    { p: 0.22, v: -2.8 },  // Section 1 (Gatherings): Drone on Left, Text on Right
-    { p: 0.48, v: 2.8 },   // Section 2 (Spectrum): Drone on Right, Text on Left
-    { p: 0.72, v: -2.8 },  // Section 3 (Radar): Drone on Left, Text on Right
-    { p: 0.95, v: 2.8 },   // Section 4 (Connect): Drone on Right, Text on Left
-    { p: 1.00, v: 2.8 }
+    { p: 0.22, v: -3.0 },  // Section 1 (Gatherings): Drone on Left, Text on Right
+    { p: 0.48, v: 3.0 },   // Section 2 (Spectrum): Drone on Right, Text on Left
+    { p: 0.72, v: -3.0 },  // Section 3 (Radar): Drone on Left, Text on Right
+    { p: 0.95, v: 3.0 },   // Section 4 (Connect): Drone on Right, Text on Left
+    { p: 1.00, v: 3.0 }
   ]
   const STOPS_Y = [
     { p: 0.00, v: -0.4 },  // Hero: slightly low so it sits below top text
@@ -1080,35 +1083,35 @@ onMounted(() => {
   ]
   const STOPS_S = [
     { p: 0.00, v: 1.35 },
-    { p: 0.22, v: 1.15 },
-    { p: 0.48, v: 1.15 },
-    { p: 0.72, v: 1.15 },
-    { p: 0.95, v: 1.15 },
-    { p: 1.00, v: 1.15 }
+    { p: 0.22, v: 1.10 },
+    { p: 0.48, v: 1.10 },
+    { p: 0.72, v: 1.10 },
+    { p: 0.95, v: 1.10 },
+    { p: 1.00, v: 1.10 }
   ]
   const STOPS_ROLL = [
     { p: 0.00, v: 0.0 },
-    { p: 0.22, v: 0.22 },   // Bank into left turn
-    { p: 0.48, v: -0.22 },  // Bank into right turn
-    { p: 0.72, v: 0.22 },   // Bank into left turn
-    { p: 0.95, v: -0.22 },  // Bank into right turn
+    { p: 0.22, v: 0.0 },
+    { p: 0.48, v: 0.0 },
+    { p: 0.72, v: 0.0 },
+    { p: 0.95, v: 0.0 },
     { p: 1.00, v: 0.0 }
   ]
   const STOPS_PITCH = [
-    { p: 0.00, v: 0.22 },   // Natural forward flight pitch
-    { p: 0.22, v: 0.18 },
-    { p: 0.48, v: 0.18 },
-    { p: 0.72, v: 0.18 },
-    { p: 0.95, v: 0.18 },
-    { p: 1.00, v: 0.20 }
+    { p: 0.00, v: 0.22 },   // Natural forward flight pitch in hero
+    { p: 0.22, v: 0.12 },   // Slight forward hover tilt towards text
+    { p: 0.48, v: 0.12 },   // Slight forward hover tilt towards text
+    { p: 0.72, v: 0.12 },   // Slight forward hover tilt towards text
+    { p: 0.95, v: 0.12 },   // Slight forward hover tilt towards text
+    { p: 1.00, v: 0.15 }
   ]
   const STOPS_YAW = [
-    { p: 0.00, v: 0.0 },
-    { p: 0.22, v: -0.25 },  // Point nose slightly toward left
-    { p: 0.48, v: 0.25 },   // Point nose slightly toward right
-    { p: 0.72, v: -0.25 },  // Point nose slightly toward left
-    { p: 0.95, v: 0.25 },   // Point nose slightly toward right
-    { p: 1.00, v: 0.0 }
+    { p: 0.00, v: 0.0 },     // Top Hero: Facing forward
+    { p: 0.22, v: DEG90 },   // Section 1: Drone on Left -> Rotates 90° to point directly at text on Right
+    { p: 0.48, v: -DEG90 },  // Section 2: Drone on Right -> Rotates 90° to point directly at text on Left
+    { p: 0.72, v: DEG90 },   // Section 3: Drone on Left -> Rotates 90° to point directly at text on Right
+    { p: 0.95, v: -DEG90 },  // Section 4: Drone on Right -> Rotates 90° to point directly at text on Left
+    { p: 1.00, v: -DEG90 }
   ]
 
   function sample(stops, p) {
@@ -1174,21 +1177,22 @@ onMounted(() => {
     curPitch += (targetPitch - curPitch) * k
     curYaw += (targetYaw - curYaw) * k
 
-    worldGroup.position.set(curX, curY, 0)
+    const hoverBob = Math.sin(now * 0.0018) * 0.05
+    worldGroup.position.set(curX, curY + hoverBob, 0)
     worldGroup.scale.setScalar(curS)
 
     scrollSpeed *= Math.pow(0.04, dt)
     if (scrollSpeed < 0.04) scrollSpeed = 0
 
-    if (scrollSpeed > 0) {
-      propellers.forEach((p) => {
-        p.group.rotateOnAxis(p.axis, scrollSpeed * dt * p.dir * 2.5)
-      })
-    }
+    // Smooth idle propeller spin, revving faster while actively scrolling
+    const propSpinSpeed = 10.0 + scrollSpeed * 2.5
+    propellers.forEach((p) => {
+      p.group.rotateOnAxis(p.axis, propSpinSpeed * dt * p.dir)
+    })
 
+    droneGroup.rotation.y = curYaw
     droneGroup.rotation.x = curPitch
     droneGroup.rotation.z = curRoll
-    droneGroup.rotation.y = curYaw
 
     if (!isDark.value) {
       renderer.render(scene, camera)
