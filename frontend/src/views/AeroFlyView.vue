@@ -34,70 +34,61 @@
     <!-- Page Content Floating Over Fixed 3D Drone -->
     <div class="relative z-10">
 
-      <!-- SECTION 1: HERO (Neuralink-Inspired Minimalist Typography & Specs) -->
-      <section class="min-h-[90vh] flex flex-col justify-between items-center text-center px-4 sm:px-6 pt-16 pb-12 relative">
-        <div class="max-w-3xl mx-auto space-y-6">
-          <!-- Monospace Minimal Index Eyebrow -->
-          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-[11px] font-mono tracking-widest uppercase text-slate-600 dark:text-slate-300 backdrop-blur-md">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span>AERO FLY // CAMBODIA FLIGHT NETWORK</span>
-          </div>
-
-          <!-- Bold, Minimal Headline -->
-          <h1 class="text-5xl sm:text-7xl lg:text-8xl font-black tracking-tight leading-[1.02] text-[#0c1e5b] dark:text-white transition-colors">
-            Fly Together.<br>
-            <span class="text-slate-400 dark:text-slate-500">In Sync.</span>
+      <!-- SECTION 1: HERO (Pure 2-Line Cinematic Layout matching Neuralink example) -->
+      <section class="h-[calc(100vh-64px)] min-h-[580px] flex flex-col items-center justify-center text-center px-4 sm:px-6 relative select-none">
+        <div class="max-w-4xl mx-auto space-y-3 sm:space-y-4">
+          <!-- LINE 1: BOLD GEOMETRIC TITLE -->
+          <h1 class="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-black tracking-[0.14em] sm:tracking-[0.18em] uppercase text-[#0c1e5b] dark:text-white drop-shadow-sm font-sans transition-colors">
+            AERO FLY
           </h1>
 
-          <!-- Concise 1-line Mission Statement -->
-          <p class="text-base sm:text-lg text-slate-600 dark:text-[#9aa6c4] max-w-xl mx-auto font-normal leading-relaxed">
-            Cambodia’s open drone flight collective. Coordinate weekend sessions, synchronize VTX channels, and fly with local pilots.
-          </p>
-
-          <!-- Minimal Pill Action Buttons -->
-          <div class="pt-2 flex flex-wrap items-center justify-center gap-3">
-            <a
-              href="https://t.me/aerobyteacademy"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="inline-flex items-center justify-center gap-2 rounded-full bg-[#0c1e5b] dark:bg-white text-white dark:text-[#0c1e5b] hover:bg-sky-900 dark:hover:bg-slate-200 px-6 py-3 text-xs sm:text-sm font-bold tracking-wide transition shadow-sm active:scale-95 cursor-pointer"
-            >
-              <span>Join Pilot Telegram</span>
-              <span class="text-xs">↗</span>
-            </a>
-
-            <a
-              href="#sessions"
-              class="inline-flex items-center justify-center gap-2 rounded-full bg-white/80 dark:bg-white/5 hover:bg-slate-100 dark:hover:bg-white/10 border border-slate-300 dark:border-white/10 px-6 py-3 text-xs sm:text-sm font-bold text-slate-800 dark:text-white transition shadow-2xs backdrop-blur-md"
-            >
-              <span>Weekend Schedule</span>
-              <span>↓</span>
-            </a>
+          <!-- LINE 2: UPPERCASE SUBTITLE WITH SUBTLE RED DOT ACCENTS -->
+          <div class="relative inline-block">
+            <p class="text-xs sm:text-sm md:text-base font-bold tracking-[0.24em] sm:tracking-[0.32em] uppercase text-slate-700 dark:text-white/90">
+              THE OPEN DRONE FLIGHT COMMUNITY FOR CAMBODIA.
+            </p>
+            <!-- Minimal Red Dot Accents from reference image -->
+            <div class="mt-2.5 flex items-center justify-center gap-1.5 opacity-80">
+              <span class="w-1 h-1 rounded-full bg-red-500"></span>
+              <span class="w-1 h-1 rounded-full bg-red-500"></span>
+              <span class="w-1 h-1 rounded-full bg-red-500"></span>
+              <span class="w-1 h-1 rounded-full bg-red-500"></span>
+              <span class="w-1 h-1 rounded-full bg-red-500"></span>
+              <span class="w-1 h-1 rounded-full bg-red-500"></span>
+              <span class="w-1 h-1 rounded-full bg-red-500"></span>
+              <span class="w-1 h-1 rounded-full bg-red-500"></span>
+            </div>
           </div>
         </div>
 
-        <!-- 3D Drone Hover Window (Spacious breathing room) -->
-        <div class="h-32 sm:h-44 pointer-events-none"></div>
+        <!-- Scroll Indicator -->
+        <a
+          href="#sessions"
+          class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1.5 opacity-40 hover:opacity-100 transition-opacity text-[10px] font-mono tracking-widest uppercase text-slate-400 dark:text-slate-500 cursor-pointer"
+        >
+          <span>SCROLL</span>
+          <span class="animate-bounce">↓</span>
+        </a>
+      </section>
 
-        <!-- Neuralink-Style Minimal Specs Bar -->
-        <div class="w-full max-w-4xl mx-auto pt-8 border-t border-slate-200 dark:border-white/10">
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-            <div>
-              <div class="text-3xl sm:text-4xl font-black tracking-tight text-[#0c1e5b] dark:text-white font-mono">140+</div>
-              <div class="text-[10px] font-mono tracking-widest uppercase text-slate-400 dark:text-slate-500 mt-1">Active Pilots</div>
-            </div>
-            <div>
-              <div class="text-3xl sm:text-4xl font-black tracking-tight text-[#0c1e5b] dark:text-white font-mono">5.8 GHz</div>
-              <div class="text-[10px] font-mono tracking-widest uppercase text-slate-400 dark:text-slate-500 mt-1">VTX RaceBand</div>
-            </div>
-            <div>
-              <div class="text-3xl sm:text-4xl font-black tracking-tight text-[#0c1e5b] dark:text-white font-mono">Weekly</div>
-              <div class="text-[10px] font-mono tracking-widest uppercase text-slate-400 dark:text-slate-500 mt-1">Field Gatherings</div>
-            </div>
-            <div>
-              <div class="text-3xl sm:text-4xl font-black tracking-tight text-[#0c1e5b] dark:text-white font-mono">Open</div>
-              <div class="text-[10px] font-mono tracking-widest uppercase text-slate-400 dark:text-slate-500 mt-1">Ta Khmau Bench</div>
-            </div>
+      <!-- Minimal Specs Bar (Placed right as user scrolls into the content) -->
+      <section class="py-12 px-4 sm:px-6 max-w-[1100px] mx-auto border-t border-b border-slate-200 dark:border-white/10">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+          <div>
+            <div class="text-3xl sm:text-4xl font-black tracking-tight text-[#0c1e5b] dark:text-white font-mono">140+</div>
+            <div class="text-[10px] font-mono tracking-widest uppercase text-slate-400 dark:text-slate-500 mt-1">Active Pilots</div>
+          </div>
+          <div>
+            <div class="text-3xl sm:text-4xl font-black tracking-tight text-[#0c1e5b] dark:text-white font-mono">5.8 GHz</div>
+            <div class="text-[10px] font-mono tracking-widest uppercase text-slate-400 dark:text-slate-500 mt-1">VTX RaceBand</div>
+          </div>
+          <div>
+            <div class="text-3xl sm:text-4xl font-black tracking-tight text-[#0c1e5b] dark:text-white font-mono">Weekly</div>
+            <div class="text-[10px] font-mono tracking-widest uppercase text-slate-400 dark:text-slate-500 mt-1">Field Gatherings</div>
+          </div>
+          <div>
+            <div class="text-3xl sm:text-4xl font-black tracking-tight text-[#0c1e5b] dark:text-white font-mono">Open</div>
+            <div class="text-[10px] font-mono tracking-widest uppercase text-slate-400 dark:text-slate-500 mt-1">Ta Khmau Bench</div>
           </div>
         </div>
       </section>
