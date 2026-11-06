@@ -635,32 +635,32 @@ function showToast(msg) {
 const flightSessions = ref([
   {
     id: 1,
-    title: 'Sunrise Freestyle & Proximity',
+    title: 'Sunrise Freestyle & Proximity Run',
     category: 'WEEKEND FLY-IN',
-    time: 'Sun · 6:00 AM',
-    location: 'Chroy Changvar Field, PP',
-    description: 'Open grass runway with low wind. Freestyle gaps and co-pilot spotting.',
+    time: 'Sun · 6:30 AM',
+    location: 'AeroByte Flight Zone, Ta Khmau',
+    description: 'Open grass runway with low morning wind. Freestyle gaps, proximity practice, and active spotters.',
     attendees: ['Vuthy', 'Dara', 'Alex', 'Samnang', 'Chhay', 'Sreypov'],
     isJoined: false
   },
   {
     id: 2,
-    title: 'Bench Tuning & Maiden Flights',
-    category: 'MAKER LAB',
-    time: 'Sat · 1:30 PM',
-    location: 'AeroByte Lab, Ta Khmau',
-    description: 'Soldering bench, Betaflight 4.5 tuning, and new quad hardware checks.',
+    title: 'Bench Tuning & Maiden Diagnostics',
+    category: 'TECH WORKSHOP',
+    time: 'Sat · 2:00 PM',
+    location: 'AeroByte Maker Lab, Ta Khmau',
+    description: 'Free open soldering bench, Betaflight 4.5 tuning, smoke-stopper tests, and motor telemetry checks.',
     attendees: ['Rithy', 'Bona', 'Sophea', 'Sovann', 'Alex'],
     isJoined: true
   },
   {
     id: 3,
-    title: 'Kirirom Mountain Expedition',
-    category: 'EXPEDITION',
-    time: 'Next Sun · 7:00 AM',
-    location: 'Kirirom Ridge, Kampong Speu',
-    description: 'Long-range cruising over pine forests with GPS rescue safety teams.',
-    attendees: ['Samnang', 'Dara', 'Alex'],
+    title: 'Beginner Clinic & Simulator Coaching',
+    category: 'COMMUNITY CLINIC',
+    time: 'Sat & Sun · 4:30 PM',
+    location: 'Ta Khmau Lab & Testing Field',
+    description: 'Zero gear required. First-timer goggles spectating, simulator practice, and flight buddy pairing.',
+    attendees: ['Samnang', 'Dara', 'Alex', 'Kosal'],
     isJoined: false
   }
 ])
