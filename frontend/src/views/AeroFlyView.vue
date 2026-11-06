@@ -142,33 +142,58 @@
         </div>
       </section>
 
-      <!-- SECTION: THE MIDDLE STOP (Drone stops in the MIDDLE, Two Text Lines) -->
-      <section id="middle" class="py-32 sm:py-44 lg:py-52 px-4 sm:px-6 min-h-[110vh] flex flex-col items-center justify-end text-center relative select-none">
-        <!-- Generous space above so the 3D drone hovers freely in the center -->
-        <div class="flex-1 min-h-[35vh] pointer-events-none"></div>
+      <!-- SECTION: THE MIDDLE STOP (Drone in Middle, Text Under Drone with Jitter Sliding Reveal) -->
+      <section id="middle" class="py-24 sm:py-32 px-4 sm:px-6 min-h-[120vh] flex flex-col items-center justify-end text-center relative select-none">
+        <!-- Generous space above so the 3D drone hovers freely in the upper half of the viewport -->
+        <div class="flex-1 min-h-[45vh] pointer-events-none"></div>
 
-        <!-- TWO TEXT LINES UNDER THE CENTERED DRONE -->
-        <div class="max-w-4xl mx-auto space-y-3 sm:space-y-4 pb-12 sm:pb-20 relative z-10">
-          <!-- LINE 1: BOLD GEOMETRIC TITLE -->
-          <h2 class="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-[0.14em] sm:tracking-[0.18em] uppercase text-[#0c1e5b] dark:text-white drop-shadow-sm font-sans transition-colors">
-            FLY AS ONE
-          </h2>
+        <!-- TWO TEXT LINES UNDER THE CENTERED DRONE WITH JITTER SLIDING REVEAL -->
+        <div class="max-w-4xl mx-auto space-y-3 sm:space-y-4 pb-20 sm:pb-28 lg:pb-32 relative z-10 pointer-events-none">
+          <!-- LINE 1: BOLD GEOMETRIC TITLE (Masked Sliding Reveal) -->
+          <div class="overflow-hidden py-2 inline-block">
+            <h2
+              class="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-[0.14em] sm:tracking-[0.18em] uppercase text-[#0c1e5b] dark:text-white drop-shadow-sm font-sans transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] transform"
+              :class="{
+                'translate-y-0 opacity-100': middleTextState === 'active',
+                'translate-y-[120%] opacity-0': middleTextState === 'before',
+                '-translate-y-[120%] opacity-0': middleTextState === 'after'
+              }"
+            >
+              FLY AS ONE
+            </h2>
+          </div>
 
-          <!-- LINE 2: UPPERCASE SUBTITLE WITH MINIMAL RED DOT ACCENTS -->
-          <div class="relative inline-block">
-            <p class="text-xs sm:text-sm md:text-base font-bold tracking-[0.24em] sm:tracking-[0.32em] uppercase text-slate-700 dark:text-white/90">
-              FROM FIRST HOVER TO PRO FREESTYLE &amp; CINEMATIC MISSIONS.
-            </p>
-            <!-- Minimal Red Dot Accents from reference image -->
-            <div class="mt-2.5 flex items-center justify-center gap-1.5 opacity-80">
-              <span class="w-1 h-1 rounded-full bg-red-500"></span>
-              <span class="w-1 h-1 rounded-full bg-red-500"></span>
-              <span class="w-1 h-1 rounded-full bg-red-500"></span>
-              <span class="w-1 h-1 rounded-full bg-red-500"></span>
-              <span class="w-1 h-1 rounded-full bg-red-500"></span>
-              <span class="w-1 h-1 rounded-full bg-red-500"></span>
-              <span class="w-1 h-1 rounded-full bg-red-500"></span>
-              <span class="w-1 h-1 rounded-full bg-red-500"></span>
+          <!-- LINE 2: UPPERCASE SUBTITLE (Masked Sliding Reveal with Stagger) -->
+          <div class="block">
+            <div class="overflow-hidden py-1 inline-block">
+              <p
+                class="text-xs sm:text-sm md:text-base font-bold tracking-[0.24em] sm:tracking-[0.32em] uppercase text-slate-700 dark:text-white/90 transition-all duration-700 delay-100 ease-[cubic-bezier(0.16,1,0.3,1)] transform"
+                :class="{
+                  'translate-y-0 opacity-100': middleTextState === 'active',
+                  'translate-y-[120%] opacity-0': middleTextState === 'before',
+                  '-translate-y-[120%] opacity-0': middleTextState === 'after'
+                }"
+              >
+                FROM FIRST HOVER TO PRO FREESTYLE &amp; CINEMATIC MISSIONS.
+              </p>
+            </div>
+
+            <!-- Minimal Red Dot Accents (Fades/Scales in with delay) -->
+            <div
+              class="mt-3 flex items-center justify-center gap-1.5 transition-all duration-500 delay-200 ease-out transform"
+              :class="{
+                'opacity-80 scale-100 translate-y-0': middleTextState === 'active',
+                'opacity-0 scale-75 translate-y-2': middleTextState !== 'active'
+              }"
+            >
+              <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+              <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+              <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+              <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+              <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+              <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+              <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+              <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
             </div>
           </div>
         </div>
@@ -552,6 +577,7 @@ const canvasRef = ref(null)
 const loadingProgress = ref(0)
 const currentYear = new Date().getFullYear()
 const toastMessage = ref('')
+const middleTextState = ref('before') // 'before' | 'active' | 'after'
 
 function showToast(msg) {
   toastMessage.value = msg
@@ -1086,7 +1112,7 @@ onMounted(() => {
   const STOPS_Y = [
     { p: 0.00, v: -0.40 }, // 1. Hero: sits below top text
     { p: 0.25, v: 0.00 },  // 2. Weekend Flights: vertically centered
-    { p: 0.50, v: 0.35 },  // 3. Middle Stop: sits in upper center above 2 text lines
+    { p: 0.50, v: 0.95 },  // 3. Middle Stop: drone hovers HIGH in upper half, comfortably ABOVE the text
     { p: 0.75, v: 0.00 },  // 4. Perks: vertically centered
     { p: 1.00, v: 0.35 }   // 5. Bottom Hub: sits in upper center above content
   ]
@@ -1181,6 +1207,16 @@ onMounted(() => {
     curRoll += (targetRoll - curRoll) * k
     curPitch += (targetPitch - curPitch) * k
     curYaw += (targetYaw - curYaw) * k
+
+    // Middle section sliding reveal: triggers when drone is in middle stop (around p = 0.50)
+    // Slides into view when arriving, and disappears when drone goes down (curP > 0.56) or back up (curP < 0.44)
+    if (curP < 0.43) {
+      middleTextState.value = 'before'
+    } else if (curP > 0.57) {
+      middleTextState.value = 'after'
+    } else {
+      middleTextState.value = 'active'
+    }
 
     const hoverBob = Math.sin(now * 0.0018) * 0.05
     worldGroup.position.set(curX, curY + hoverBob, 0)
