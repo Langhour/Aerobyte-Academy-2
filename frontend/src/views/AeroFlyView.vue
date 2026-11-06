@@ -142,58 +142,60 @@
         </div>
       </section>
 
-      <!-- SECTION: THE MIDDLE STOP (Drone in Middle, Text Under Drone with Jitter Sliding Reveal) -->
-      <section id="middle" class="py-24 sm:py-32 px-4 sm:px-6 min-h-[120vh] flex flex-col items-center justify-end text-center relative select-none">
-        <!-- Generous space above so the 3D drone hovers freely in the upper half of the viewport -->
-        <div class="flex-1 min-h-[45vh] pointer-events-none"></div>
+      <!-- SECTION: THE MIDDLE STOP (Drone in Middle, Text Pinned Under Drone with Jitter Sliding Reveal) -->
+      <section id="middle" class="h-[180vh] relative">
+        <div class="sticky top-0 h-screen w-full flex flex-col items-center justify-between px-4 pt-20 pb-16 sm:pb-24 overflow-hidden pointer-events-none select-none">
+          <!-- Top area where the 3D drone hovers (STOPS_Y: v = 0.65) with zero overlap -->
+          <div class="flex-1 w-full pointer-events-none"></div>
 
-        <!-- TWO TEXT LINES UNDER THE CENTERED DRONE WITH JITTER SLIDING REVEAL -->
-        <div class="max-w-4xl mx-auto space-y-3 sm:space-y-4 pb-20 sm:pb-28 lg:pb-32 relative z-10 pointer-events-none">
-          <!-- LINE 1: BOLD GEOMETRIC TITLE (Masked Sliding Reveal) -->
-          <div class="overflow-hidden py-2 inline-block">
-            <h2
-              class="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-[0.14em] sm:tracking-[0.18em] uppercase text-[#0c1e5b] dark:text-white drop-shadow-sm font-sans transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] transform"
-              :class="{
-                'translate-y-0 opacity-100': middleTextState === 'active',
-                'translate-y-[120%] opacity-0': middleTextState === 'before',
-                '-translate-y-[120%] opacity-0': middleTextState === 'after'
-              }"
-            >
-              FLY AS ONE
-            </h2>
-          </div>
-
-          <!-- LINE 2: UPPERCASE SUBTITLE (Masked Sliding Reveal with Stagger) -->
-          <div class="block">
-            <div class="overflow-hidden py-1 inline-block">
-              <p
-                class="text-xs sm:text-sm md:text-base font-bold tracking-[0.24em] sm:tracking-[0.32em] uppercase text-slate-700 dark:text-white/90 transition-all duration-700 delay-100 ease-[cubic-bezier(0.16,1,0.3,1)] transform"
+          <!-- TWO TEXT LINES ALWAYS PINNED UNDER THE CENTERED DRONE WITH JITTER SLIDING REVEAL -->
+          <div class="max-w-4xl mx-auto space-y-3 sm:space-y-4 pb-8 sm:pb-14 relative z-10 pointer-events-auto">
+            <!-- LINE 1: BOLD GEOMETRIC TITLE (Masked Sliding Reveal) -->
+            <div class="overflow-hidden py-2 inline-block">
+              <h2
+                class="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-[0.14em] sm:tracking-[0.18em] uppercase text-[#0c1e5b] dark:text-white drop-shadow-sm font-sans transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] transform"
                 :class="{
                   'translate-y-0 opacity-100': middleTextState === 'active',
                   'translate-y-[120%] opacity-0': middleTextState === 'before',
                   '-translate-y-[120%] opacity-0': middleTextState === 'after'
                 }"
               >
-                FROM FIRST HOVER TO PRO FREESTYLE &amp; CINEMATIC MISSIONS.
-              </p>
+                FLY AS ONE
+              </h2>
             </div>
 
-            <!-- Minimal Red Dot Accents (Fades/Scales in with delay) -->
-            <div
-              class="mt-3 flex items-center justify-center gap-1.5 transition-all duration-500 delay-200 ease-out transform"
-              :class="{
-                'opacity-80 scale-100 translate-y-0': middleTextState === 'active',
-                'opacity-0 scale-75 translate-y-2': middleTextState !== 'active'
-              }"
-            >
-              <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
-              <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
-              <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
-              <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
-              <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
-              <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
-              <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
-              <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+            <!-- LINE 2: UPPERCASE SUBTITLE (Masked Sliding Reveal with Stagger) -->
+            <div class="block">
+              <div class="overflow-hidden py-1 inline-block">
+                <p
+                  class="text-xs sm:text-sm md:text-base font-bold tracking-[0.24em] sm:tracking-[0.32em] uppercase text-slate-700 dark:text-white/90 transition-all duration-700 delay-100 ease-[cubic-bezier(0.16,1,0.3,1)] transform"
+                  :class="{
+                    'translate-y-0 opacity-100': middleTextState === 'active',
+                    'translate-y-[120%] opacity-0': middleTextState === 'before',
+                    '-translate-y-[120%] opacity-0': middleTextState === 'after'
+                  }"
+                >
+                  FROM FIRST HOVER TO PRO FREESTYLE &amp; CINEMATIC MISSIONS.
+                </p>
+              </div>
+
+              <!-- Minimal Red Dot Accents (Fades/Scales in with delay) -->
+              <div
+                class="mt-3 flex items-center justify-center gap-1.5 transition-all duration-500 delay-200 ease-out transform"
+                :class="{
+                  'opacity-80 scale-100 translate-y-0': middleTextState === 'active',
+                  'opacity-0 scale-75 translate-y-2': middleTextState !== 'active'
+                }"
+              >
+                <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+              </div>
             </div>
           </div>
         </div>
@@ -1094,55 +1096,90 @@ onMounted(() => {
   composer.addPass(bloomPass)
   composer.addPass(new ShaderPass(GammaCorrectionShader))
 
-  const DEG90 = Math.PI * 0.5 // Exactly 90 degrees
+  const DEG90 = Math.PI * 0.5 // Exactly 90.0 degrees
 
-  // 5-STAGE FLIGHT S-CURVE MATCHING THE 5 CIRCLE PATH:
-  // Circle 1: Center (Hero, Text top)
-  // Circle 2: Left (Sessions, Text right)
-  // Circle 3: Middle Center (Middle Anthem, Two Text Lines below drone)
-  // Circle 4: Right (Benefits, Text left)
-  // Circle 5: Bottom Center (Radar & Workshop, Text below drone)
+  // 5-STAGE FLIGHT S-CURVE WITH EXTENDED FULL 90° ROTATION PLATEAUS:
+  // Section 1: Hero (Center, facing forward)
+  // Section 2: Weekend Flights (Drone on Left, LOCKED at FULL 90° pointing at text throughout and after end of text)
+  // Section 3: Middle Anthem Stop (Drone in Upper Center, 2 text lines pinned underneath)
+  // Section 4: Membership Perks (Drone on Right, LOCKED at FULL -90° pointing at text)
+  // Section 5: Bottom Hub (Drone in Upper Center, Radar & Workshop below)
   const STOPS_X = [
-    { p: 0.00, v: 0.0 },   // 1. Top Hero: Center
-    { p: 0.25, v: -3.0 },  // 2. Weekend Flights: Drone on Left, Text on Right
-    { p: 0.50, v: 0.0 },   // 3. Middle Stop: Drone stops in the Middle
-    { p: 0.75, v: 3.0 },   // 4. Perks/Benefits: Drone on Right, Text on Left
-    { p: 1.00, v: 0.0 }    // 5. Bottom Hub: Drone stops in the Center
+    { p: 0.00, v: 0.0 },   // Hero: Center
+    { p: 0.05, v: 0.0 },   // Hero hold
+    { p: 0.10, v: -3.0 },  // Smooth fast sweep to Left
+    { p: 0.40, v: -3.0 },  // Section 2 Plateau: LOCKED ON LEFT throughout & after end of text
+    { p: 0.45, v: 0.0 },   // Smooth sweep to Center
+    { p: 0.60, v: 0.0 },   // Middle Stop Plateau: LOCKED IN CENTER
+    { p: 0.65, v: 3.0 },   // Smooth sweep to Right
+    { p: 0.86, v: 3.0 },   // Section 4 Plateau: LOCKED ON RIGHT
+    { p: 0.92, v: 0.0 },   // Smooth sweep to Center
+    { p: 1.00, v: 0.0 }    // Bottom Plateau: LOCKED IN CENTER
   ]
+
   const STOPS_Y = [
-    { p: 0.00, v: -0.40 }, // 1. Hero: sits below top text
-    { p: 0.25, v: 0.00 },  // 2. Weekend Flights: vertically centered
-    { p: 0.50, v: 0.95 },  // 3. Middle Stop: drone hovers HIGH in upper half, comfortably ABOVE the text
-    { p: 0.75, v: 0.00 },  // 4. Perks: vertically centered
-    { p: 1.00, v: 0.35 }   // 5. Bottom Hub: sits in upper center above content
+    { p: 0.00, v: -0.40 }, // Hero: Below top text lines
+    { p: 0.05, v: -0.40 }, // Hero hold
+    { p: 0.10, v: 0.00 },  // Section 2: Centered vertically
+    { p: 0.40, v: 0.00 },  // Section 2 hold
+    { p: 0.45, v: 0.65 },  // Rise into upper center
+    { p: 0.60, v: 0.65 },  // Middle Stop Plateau: High in upper center ABOVE text!
+    { p: 0.65, v: 0.00 },  // Section 4: Centered vertically
+    { p: 0.86, v: 0.00 },  // Section 4 hold
+    { p: 0.92, v: 0.35 },  // Bottom: Upper center above content
+    { p: 1.00, v: 0.35 }   // Bottom hold
   ]
+
   const STOPS_S = [
-    { p: 0.00, v: 1.35 },  // Hero: Heroic
-    { p: 0.25, v: 1.10 },  // Side: Compact
-    { p: 0.50, v: 1.30 },  // Middle Stop: Prominent showcase
-    { p: 0.75, v: 1.10 },  // Side: Compact
-    { p: 1.00, v: 1.15 }   // Bottom: Balanced
+    { p: 0.00, v: 1.35 },  // Hero
+    { p: 0.05, v: 1.35 },
+    { p: 0.10, v: 1.10 },  // Left: Compact
+    { p: 0.40, v: 1.10 },
+    { p: 0.45, v: 1.25 },  // Middle Stop: Prominent
+    { p: 0.60, v: 1.25 },
+    { p: 0.65, v: 1.10 },  // Right: Compact
+    { p: 0.86, v: 1.10 },
+    { p: 0.92, v: 1.15 },  // Bottom: Balanced
+    { p: 1.00, v: 1.15 }
   ]
+
   const STOPS_ROLL = [
     { p: 0.00, v: 0.0 },
-    { p: 0.25, v: 0.0 },
-    { p: 0.50, v: 0.0 },
-    { p: 0.75, v: 0.0 },
+    { p: 0.05, v: 0.0 },
+    { p: 0.10, v: 0.0 },
+    { p: 0.40, v: 0.0 },
+    { p: 0.45, v: 0.0 },
+    { p: 0.60, v: 0.0 },
+    { p: 0.65, v: 0.0 },
+    { p: 0.86, v: 0.0 },
+    { p: 0.92, v: 0.0 },
     { p: 1.00, v: 0.0 }
   ]
+
   const STOPS_PITCH = [
-    { p: 0.00, v: 0.22 },  // Natural forward flight pitch in hero
-    { p: 0.25, v: 0.12 },  // Forward hover tilt towards text on right
-    { p: 0.50, v: 0.22 },  // Natural forward flight tilt facing user
-    { p: 0.75, v: 0.12 },  // Forward hover tilt towards text on left
-    { p: 1.00, v: 0.20 }   // Natural forward flight tilt
+    { p: 0.00, v: 0.22 },   // Natural forward flight tilt facing user
+    { p: 0.05, v: 0.22 },
+    { p: 0.10, v: 0.00 },   // Pure level hover pointed directly sideways at text
+    { p: 0.40, v: 0.00 },   // Hold level hover through & after end of text
+    { p: 0.45, v: 0.22 },   // Forward flight tilt in middle stop
+    { p: 0.60, v: 0.22 },
+    { p: 0.65, v: 0.00 },   // Pure level hover pointed directly sideways at text
+    { p: 0.86, v: 0.00 },
+    { p: 0.92, v: 0.20 },
+    { p: 1.00, v: 0.20 }
   ]
+
   const STOPS_YAW = [
     { p: 0.00, v: 0.0 },     // 1. Hero: Facing forward
-    { p: 0.25, v: DEG90 },   // 2. Left: Rotates 90° right to point directly at text
-    { p: 0.50, v: 0.0 },     // 3. Middle Stop: Facing forward in Center
-    { p: 0.75, v: -DEG90 },  // 4. Right: Rotates 90° left to point directly at text
-    { p: 1.00, v: 0.0 }      // 5. Bottom: Facing forward in Center
+    { p: 0.05, v: 0.0 },     // Hero hold
+    { p: 0.10, v: DEG90 },   // Rotates FULL 90° right to point directly at text
+    { p: 0.40, v: DEG90 },   // Section 2 Plateau: FIRMLY LOCKED AT FULL 90° throughout & after end of text!
+    { p: 0.45, v: 0.0 },     // Rotates back to 0° facing forward in center
+    { p: 0.60, v: 0.0 },     // Middle Stop Plateau: FIRMLY LOCKED AT 0°!
+    { p: 0.65, v: -DEG90 },  // Rotates FULL -90° left to point directly at text
+    { p: 0.86, v: -DEG90 },  // Section 4 Plateau: FIRMLY LOCKED AT FULL -90°!
+    { p: 0.92, v: 0.0 },     // Rotates back to 0° facing forward in center
+    { p: 1.00, v: 0.0 }      // Bottom hold: Facing forward
   ]
 
   function sample(stops, p) {
@@ -1210,9 +1247,9 @@ onMounted(() => {
 
     // Middle section sliding reveal: triggers when drone is in middle stop (around p = 0.50)
     // Slides into view when arriving, and disappears when drone goes down (curP > 0.56) or back up (curP < 0.44)
-    if (curP < 0.38) {
+    if (curP < 0.42) {
       middleTextState.value = 'before'
-    } else if (curP > 0.60) {
+    } else if (curP > 0.62) {
       middleTextState.value = 'after'
     } else {
       middleTextState.value = 'active'
