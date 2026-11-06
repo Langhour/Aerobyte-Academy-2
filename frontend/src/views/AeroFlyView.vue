@@ -76,7 +76,7 @@
       </section>
 
       <!-- SECTION 2: GATHERINGS (Drone flies to LEFT, Text on RIGHT) -->
-      <section id="sessions" class="py-20 sm:py-28 px-4 sm:px-6 lg:px-8 max-w-[1240px] mx-auto min-h-[85vh] flex items-center">
+      <section id="sessions" class="pt-8 sm:pt-12 pb-16 px-4 sm:px-6 lg:px-8 max-w-[1240px] mx-auto">
         <div class="w-full grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           <!-- Left 5 cols: Completely clear open air for 3D drone flying on the left -->
           <div class="hidden lg:block lg:col-span-5 pointer-events-none"></div>
@@ -143,10 +143,13 @@
       </section>
 
       <!-- SECTION: THE MIDDLE STOP (Drone in Middle, Text Pinned Under Drone with Jitter Sliding Reveal) -->
-      <section id="middle" class="h-[125vh] relative">
-        <div class="sticky top-0 h-screen w-full flex flex-col items-center justify-between px-4 pt-10 sm:pt-14 pb-8 overflow-hidden pointer-events-none select-none">
-          <!-- UPPER UX/UI FRAME: TEXT LINES PLACED HIGH AND CLEAN WITH JITTER SLIDING REVEAL -->
-          <div class="max-w-4xl mx-auto text-center space-y-2.5 sm:space-y-3.5 pt-2 sm:pt-4 relative z-10 pointer-events-auto">
+      <section id="middle" class="h-[120vh] relative">
+        <div class="sticky top-0 h-screen w-full flex flex-col items-center justify-between px-4 pt-12 pb-12 sm:pb-16 overflow-hidden pointer-events-none select-none">
+          <!-- TOP 55%: Open air where the 3D drone hovers high in the sky (STOPS_Y: v = 0.65) -->
+          <div class="flex-1 w-full pointer-events-none"></div>
+
+          <!-- BOTTOM 45%: TWO TEXT LINES CLEANLY UNDER THE DRONE (Brought upper so not too down below) -->
+          <div class="max-w-4xl mx-auto text-center space-y-2 sm:space-y-3 pb-6 sm:pb-10 relative z-10 pointer-events-auto">
             <!-- LINE 1: BOLD GEOMETRIC TITLE (Masked Sliding Reveal) -->
             <div class="overflow-hidden py-1.5 inline-block">
               <h2
@@ -176,9 +179,9 @@
                 </p>
               </div>
 
-              <!-- Minimal Red Dot Accents (Fades/Scales in with delay) -->
+              <!-- Minimal Red Dot Accents -->
               <div
-                class="mt-2.5 flex items-center justify-center gap-1.5 transition-all duration-500 delay-200 ease-out transform"
+                class="mt-2 flex items-center justify-center gap-1.5 transition-all duration-500 delay-200 ease-out transform"
                 :class="{
                   'opacity-80 scale-100 translate-y-0': middleTextState === 'active',
                   'opacity-0 scale-75 translate-y-2': middleTextState !== 'active'
@@ -195,13 +198,10 @@
               </div>
             </div>
           </div>
-
-          <!-- LOWER AREA: Open air where the 3D drone hovers cleanly under the text -->
-          <div class="flex-1 w-full pointer-events-none"></div>
         </div>
       </section>
 
-      <section id="benefits" class="py-20 sm:py-28 px-4 sm:px-6 lg:px-8 max-w-[1240px] mx-auto min-h-[85vh] flex items-center">
+      <section id="benefits" class="pt-8 sm:pt-12 pb-16 px-4 sm:px-6 lg:px-8 max-w-[1240px] mx-auto">
         <div class="w-full grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           <!-- Left 7 cols: Content & Text on the left -->
           <div class="lg:col-span-7 space-y-5">
@@ -323,7 +323,7 @@
       </section>
 
       <!-- SECTION 5: PILOT RADAR & WORKSHOP HUB (Drone stops in the MIDDLE, Text Below) -->
-      <section id="buddy-board" class="py-20 sm:py-28 px-4 sm:px-6 lg:px-8 max-w-[1240px] mx-auto min-h-[85vh] flex flex-col justify-end">
+      <section id="buddy-board" class="pt-8 sm:pt-12 pb-16 px-4 sm:px-6 lg:px-8 max-w-[1240px] mx-auto">
         <!-- Generous space above so the 3D drone hovers freely in the center -->
         <div class="flex-1 min-h-[30vh] pointer-events-none"></div>
 
@@ -1099,30 +1099,30 @@ onMounted(() => {
 
   // HARMONIC FLUID FLIGHT PATH:
   // Stage 1 (Hero): Center hover under AERO FLY title
-  // Stage 2 (Weekend Flights): Left hover facing cards
-  // Stage 3 (Middle Anthem): Drone sweeps FASTER into center as cards end, hovering cleanly UNDER FLY AS ONE
-  // Stage 4 (Perks): Right hover facing perks
+  // Stage 2 (Weekend Flights): Left hover facing elevated cards
+  // Stage 3 (Middle Anthem): Drone sweeps FASTER into center, hovering high (y = 0.65) ABOVE FLY AS ONE text
+  // Stage 4 (Perks): Right hover facing elevated perks
   // Stage 5 (Radar): Center hover above noticeboard
   const STOPS_X = [
     { p: 0.00, v: 0.0 },   // Hero: Center
     { p: 0.14, v: -2.8 },  // Section 2: Drone on Left opposite cards
-    { p: 0.20, v: -2.8 },  // Section 2 hold: cards view
+    { p: 0.20, v: -2.8 },  // Section 2 hold
     { p: 0.30, v: 0.0 },   // Rotates & sweeps FASTER into Center right as cards end!
-    { p: 0.44, v: 0.0 },   // Middle Stop: Center hold under text
-    { p: 0.58, v: 2.8 },   // Section 4: Drone sweeps to Right
-    { p: 0.74, v: 2.8 },   // Section 4 hold: perks view
+    { p: 0.44, v: 0.0 },   // Middle Stop: Center hold above text
+    { p: 0.58, v: 2.8 },   // Section 4: Drone sweeps to Right opposite perks
+    { p: 0.74, v: 2.8 },   // Section 4 hold
     { p: 0.88, v: 0.0 },   // Section 5: Drone sweeps to Center
     { p: 1.00, v: 0.0 }    // Bottom hold: Center
   ]
 
   const STOPS_Y = [
     { p: 0.00, v: -0.40 }, // Hero: comfortably below top text
-    { p: 0.14, v: 0.05 },  // Section 2: level with cards
-    { p: 0.20, v: 0.05 },
-    { p: 0.30, v: -0.32 }, // Middle Stop: hovers cleanly UNDER FLY AS ONE text!
-    { p: 0.44, v: -0.32 }, // Middle Stop hold under text
-    { p: 0.58, v: 0.05 },  // Section 4: level with perks
-    { p: 0.74, v: 0.05 },
+    { p: 0.14, v: 0.15 },  // Section 2: level with upper cards
+    { p: 0.20, v: 0.15 },
+    { p: 0.30, v: 0.65 },  // Middle Stop: HIGH in upper center, drone hovers ABOVE text!
+    { p: 0.44, v: 0.65 },  // Middle Stop hold: text sits cleanly UNDER the drone!
+    { p: 0.58, v: 0.15 },  // Section 4: level with upper perks cards
+    { p: 0.74, v: 0.15 },
     { p: 0.88, v: 0.35 },  // Bottom: Upper center
     { p: 1.00, v: 0.35 }
   ]
@@ -1155,7 +1155,7 @@ onMounted(() => {
     { p: 0.00, v: 0.22 },  // Natural forward flight tilt facing user
     { p: 0.14, v: 0.08 },  // Slight hover tilt pointing at text
     { p: 0.20, v: 0.08 },
-    { p: 0.30, v: 0.22 },  // Natural forward flight tilt facing user under text
+    { p: 0.30, v: 0.22 },  // Forward flight tilt facing user above text
     { p: 0.44, v: 0.22 },
     { p: 0.58, v: 0.08 },  // Slight hover tilt pointing at perks
     { p: 0.74, v: 0.08 },
