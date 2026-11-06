@@ -76,7 +76,7 @@
       </section>
 
       <!-- SECTION 2: GATHERINGS (Drone flies to LEFT, Text on RIGHT) -->
-      <section id="sessions" class="py-32 sm:py-44 lg:py-52 px-4 sm:px-6 lg:px-8 max-w-[1240px] mx-auto min-h-[110vh] flex items-center">
+      <section id="sessions" class="py-20 sm:py-28 px-4 sm:px-6 lg:px-8 max-w-[1240px] mx-auto min-h-[85vh] flex items-center">
         <div class="w-full grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           <!-- Left 5 cols: Completely clear open air for 3D drone flying on the left -->
           <div class="hidden lg:block lg:col-span-5 pointer-events-none"></div>
@@ -143,7 +143,7 @@
       </section>
 
       <!-- SECTION: THE MIDDLE STOP (Drone in Middle, Text Pinned Under Drone with Jitter Sliding Reveal) -->
-      <section id="middle" class="h-[180vh] relative">
+      <section id="middle" class="h-[135vh] relative">
         <div class="sticky top-0 h-screen w-full flex flex-col items-center justify-between px-4 pt-20 pb-16 sm:pb-24 overflow-hidden pointer-events-none select-none">
           <!-- Top area where the 3D drone hovers (STOPS_Y: v = 0.65) with zero overlap -->
           <div class="flex-1 w-full pointer-events-none"></div>
@@ -202,7 +202,7 @@
       </section>
 
       <!-- SECTION 3: COMMUNITY BENEFITS (Drone flies to RIGHT, Text on LEFT) -->
-      <section id="benefits" class="py-32 sm:py-44 lg:py-52 px-4 sm:px-6 lg:px-8 max-w-[1240px] mx-auto min-h-[110vh] flex items-center">
+      <section id="benefits" class="py-20 sm:py-28 px-4 sm:px-6 lg:px-8 max-w-[1240px] mx-auto min-h-[85vh] flex items-center">
         <div class="w-full grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           <!-- Left 7 cols: Content & Text on the left -->
           <div class="lg:col-span-7 space-y-5">
@@ -324,7 +324,7 @@
       </section>
 
       <!-- SECTION 5: PILOT RADAR & WORKSHOP HUB (Drone stops in the MIDDLE, Text Below) -->
-      <section id="buddy-board" class="py-32 sm:py-44 lg:py-52 px-4 sm:px-6 lg:px-8 max-w-[1240px] mx-auto min-h-[110vh] flex flex-col justify-end">
+      <section id="buddy-board" class="py-20 sm:py-28 px-4 sm:px-6 lg:px-8 max-w-[1240px] mx-auto min-h-[85vh] flex flex-col justify-end">
         <!-- Generous space above so the 3D drone hovers freely in the center -->
         <div class="flex-1 min-h-[30vh] pointer-events-none"></div>
 
@@ -1096,90 +1096,91 @@ onMounted(() => {
   composer.addPass(bloomPass)
   composer.addPass(new ShaderPass(GammaCorrectionShader))
 
-  const DEG90 = Math.PI * 0.5 // Exactly 90.0 degrees
+  const YAW_90_RIGHT = 1.85  // ~106°: perfectly perpendicular 90° side profile relative to camera ray, pointing directly right at text cards
+  const YAW_90_LEFT  = -1.85 // ~-106°: perfectly perpendicular 90° side profile relative to camera ray, pointing directly left at perks cards
 
-  // 5-STAGE FLIGHT S-CURVE WITH EXTENDED FULL 90° ROTATION PLATEAUS:
-  // Section 1: Hero (Center, facing forward)
-  // Section 2: Weekend Flights (Drone on Left, LOCKED at FULL 90° pointing at text throughout and after end of text)
-  // Section 3: Middle Anthem Stop (Drone in Upper Center, 2 text lines pinned underneath)
-  // Section 4: Membership Perks (Drone on Right, LOCKED at FULL -90° pointing at text)
-  // Section 5: Bottom Hub (Drone in Upper Center, Radar & Workshop below)
+  // 5-STAGE HARMONIC FLIGHT PATH:
+  // Stage 1 (Hero): Center (Drone below AERO FLY title)
+  // Stage 2 (Sessions): Left (Drone elevated opposite cards, locked at true 90° pointing right)
+  // Stage 3 (Middle): Center (Drone elevated in upper center, FLY AS ONE text below)
+  // Stage 4 (Benefits): Right (Drone elevated opposite cards, locked at true -90° pointing left)
+  // Stage 5 (Radar): Center (Drone in upper center, Radar noticeboard below)
   const STOPS_X = [
     { p: 0.00, v: 0.0 },   // Hero: Center
-    { p: 0.05, v: 0.0 },   // Hero hold
-    { p: 0.10, v: -3.0 },  // Smooth fast sweep to Left
-    { p: 0.40, v: -3.0 },  // Section 2 Plateau: LOCKED ON LEFT throughout & after end of text
-    { p: 0.45, v: 0.0 },   // Smooth sweep to Center
-    { p: 0.60, v: 0.0 },   // Middle Stop Plateau: LOCKED IN CENTER
-    { p: 0.65, v: 3.0 },   // Smooth sweep to Right
-    { p: 0.86, v: 3.0 },   // Section 4 Plateau: LOCKED ON RIGHT
-    { p: 0.92, v: 0.0 },   // Smooth sweep to Center
+    { p: 0.08, v: 0.0 },   // Hero hold
+    { p: 0.16, v: -2.8 },  // Sweep smoothly to Left
+    { p: 0.38, v: -2.8 },  // Section 2 Plateau: LOCKED ON LEFT opposite cards
+    { p: 0.46, v: 0.0 },   // Sweep smoothly to Center
+    { p: 0.62, v: 0.0 },   // Middle Stop Plateau: LOCKED IN CENTER
+    { p: 0.70, v: 2.8 },   // Sweep smoothly to Right
+    { p: 0.88, v: 2.8 },   // Section 4 Plateau: LOCKED ON RIGHT opposite perks
+    { p: 0.94, v: 0.0 },   // Sweep smoothly to Center
     { p: 1.00, v: 0.0 }    // Bottom Plateau: LOCKED IN CENTER
   ]
 
   const STOPS_Y = [
     { p: 0.00, v: -0.40 }, // Hero: Below top text lines
-    { p: 0.05, v: -0.40 }, // Hero hold
-    { p: 0.10, v: 0.00 },  // Section 2: Centered vertically
-    { p: 0.40, v: 0.00 },  // Section 2 hold
-    { p: 0.45, v: 0.65 },  // Rise into upper center
-    { p: 0.60, v: 0.65 },  // Middle Stop Plateau: High in upper center ABOVE text!
-    { p: 0.65, v: 0.00 },  // Section 4: Centered vertically
-    { p: 0.86, v: 0.00 },  // Section 4 hold
-    { p: 0.92, v: 0.35 },  // Bottom: Upper center above content
+    { p: 0.08, v: -0.40 }, // Hero hold
+    { p: 0.16, v: 0.15 },  // Section 2: Elevated opposite cards
+    { p: 0.38, v: 0.15 },  // Section 2 hold
+    { p: 0.46, v: 0.55 },  // Rise into upper center
+    { p: 0.62, v: 0.55 },  // Middle Stop Plateau: High above FLY AS ONE text
+    { p: 0.70, v: 0.15 },  // Section 4: Elevated opposite perks
+    { p: 0.88, v: 0.15 },  // Section 4 hold
+    { p: 0.94, v: 0.35 },  // Bottom: Upper center
     { p: 1.00, v: 0.35 }   // Bottom hold
   ]
 
   const STOPS_S = [
     { p: 0.00, v: 1.35 },  // Hero
-    { p: 0.05, v: 1.35 },
-    { p: 0.10, v: 1.10 },  // Left: Compact
-    { p: 0.40, v: 1.10 },
-    { p: 0.45, v: 1.25 },  // Middle Stop: Prominent
-    { p: 0.60, v: 1.25 },
-    { p: 0.65, v: 1.10 },  // Right: Compact
-    { p: 0.86, v: 1.10 },
-    { p: 0.92, v: 1.15 },  // Bottom: Balanced
+    { p: 0.08, v: 1.35 },
+    { p: 0.16, v: 1.10 },  // Left: Compact
+    { p: 0.38, v: 1.10 },
+    { p: 0.46, v: 1.25 },  // Middle Stop: Prominent
+    { p: 0.62, v: 1.25 },
+    { p: 0.70, v: 1.10 },  // Right: Compact
+    { p: 0.88, v: 1.10 },
+    { p: 0.94, v: 1.15 },  // Bottom: Balanced
     { p: 1.00, v: 1.15 }
   ]
 
   const STOPS_ROLL = [
     { p: 0.00, v: 0.0 },
-    { p: 0.05, v: 0.0 },
-    { p: 0.10, v: 0.0 },
-    { p: 0.40, v: 0.0 },
-    { p: 0.45, v: 0.0 },
-    { p: 0.60, v: 0.0 },
-    { p: 0.65, v: 0.0 },
-    { p: 0.86, v: 0.0 },
-    { p: 0.92, v: 0.0 },
+    { p: 0.08, v: 0.0 },
+    { p: 0.16, v: 0.0 },
+    { p: 0.38, v: 0.0 },
+    { p: 0.46, v: 0.0 },
+    { p: 0.62, v: 0.0 },
+    { p: 0.70, v: 0.0 },
+    { p: 0.88, v: 0.0 },
+    { p: 0.94, v: 0.0 },
     { p: 1.00, v: 0.0 }
   ]
 
   const STOPS_PITCH = [
     { p: 0.00, v: 0.22 },   // Natural forward flight tilt facing user
-    { p: 0.05, v: 0.22 },
-    { p: 0.10, v: 0.00 },   // Pure level hover pointed directly sideways at text
-    { p: 0.40, v: 0.00 },   // Hold level hover through & after end of text
-    { p: 0.45, v: 0.22 },   // Forward flight tilt in middle stop
-    { p: 0.60, v: 0.22 },
-    { p: 0.65, v: 0.00 },   // Pure level hover pointed directly sideways at text
-    { p: 0.86, v: 0.00 },
-    { p: 0.92, v: 0.20 },
+    { p: 0.08, v: 0.22 },
+    { p: 0.16, v: 0.00 },   // True level horizontal hover pointed directly sideways at text
+    { p: 0.38, v: 0.00 },
+    { p: 0.46, v: 0.22 },   // Natural forward flight tilt in middle stop
+    { p: 0.62, v: 0.22 },
+    { p: 0.70, v: 0.00 },   // True level horizontal hover pointed directly sideways at perks
+    { p: 0.88, v: 0.00 },
+    { p: 0.94, v: 0.20 },
     { p: 1.00, v: 0.20 }
   ]
 
   const STOPS_YAW = [
-    { p: 0.00, v: 0.0 },     // 1. Hero: Facing forward
-    { p: 0.05, v: 0.0 },     // Hero hold
-    { p: 0.10, v: DEG90 },   // Rotates FULL 90° right to point directly at text
-    { p: 0.40, v: DEG90 },   // Section 2 Plateau: FIRMLY LOCKED AT FULL 90° throughout & after end of text!
-    { p: 0.45, v: 0.0 },     // Rotates back to 0° facing forward in center
-    { p: 0.60, v: 0.0 },     // Middle Stop Plateau: FIRMLY LOCKED AT 0°!
-    { p: 0.65, v: -DEG90 },  // Rotates FULL -90° left to point directly at text
-    { p: 0.86, v: -DEG90 },  // Section 4 Plateau: FIRMLY LOCKED AT FULL -90°!
-    { p: 0.92, v: 0.0 },     // Rotates back to 0° facing forward in center
-    { p: 1.00, v: 0.0 }      // Bottom hold: Facing forward
+    { p: 0.00, v: 0.0 },            // 1. Hero: Facing forward
+    { p: 0.08, v: 0.0 },            // Hero hold
+    { p: 0.16, v: YAW_90_RIGHT },   // Rotates FULL 90° right to point directly at text
+    { p: 0.38, v: YAW_90_RIGHT },   // Section 2 Plateau: FIRMLY LOCKED AT 90° opposite cards
+    { p: 0.46, v: 0.0 },            // Rotates to 0° facing forward in center
+    { p: 0.62, v: 0.0 },            // Middle Stop Plateau: FIRMLY LOCKED AT 0° facing forward
+    { p: 0.70, v: YAW_90_LEFT },    // Rotates FULL 90° left to point directly at perks
+    { p: 0.88, v: YAW_90_LEFT },    // Section 4 Plateau: FIRMLY LOCKED AT 90° opposite perks
+    { p: 0.94, v: 0.0 },            // Rotates to 0° facing forward in center
+    { p: 1.00, v: 0.0 }             // Bottom hold: Facing forward
   ]
 
   function sample(stops, p) {
@@ -1227,29 +1228,20 @@ onMounted(() => {
     const maxScroll = Math.max(document.documentElement.scrollHeight - window.innerHeight, 1)
     const scrollY = window.pageYOffset || document.documentElement.scrollTop
     const pTarget = Math.max(0, Math.min(1, scrollY / maxScroll))
-    curP += (pTarget - curP) * Math.min(1, dt * 4.5)
+    curP += (pTarget - curP) * Math.min(1, dt * 5.0)
 
     const sideScale = Math.max(0.5, Math.min(1, window.innerWidth / 1200))
-    const targetX = sample(STOPS_X, curP) * sideScale
-    const targetY = sample(STOPS_Y, curP)
-    const targetS = sample(STOPS_S, curP)
-    const targetRoll = sample(STOPS_ROLL, curP)
-    const targetPitch = sample(STOPS_PITCH, curP)
-    const targetYaw = sample(STOPS_YAW, curP)
+    curX = sample(STOPS_X, curP) * sideScale
+    curY = sample(STOPS_Y, curP)
+    curS = sample(STOPS_S, curP)
+    curRoll = sample(STOPS_ROLL, curP)
+    curPitch = sample(STOPS_PITCH, curP)
+    curYaw = sample(STOPS_YAW, curP)
 
-    const k = Math.min(1, dt * 3.2)
-    curX += (targetX - curX) * k
-    curY += (targetY - curY) * k
-    curS += (targetS - curS) * k
-    curRoll += (targetRoll - curRoll) * k
-    curPitch += (targetPitch - curPitch) * k
-    curYaw += (targetYaw - curYaw) * k
-
-    // Middle section sliding reveal: triggers when drone is in middle stop (around p = 0.50)
-    // Slides into view when arriving, and disappears when drone goes down (curP > 0.56) or back up (curP < 0.44)
-    if (curP < 0.42) {
+    // Middle section sliding reveal: triggers smoothly when arriving from Section 2
+    if (curP < 0.36) {
       middleTextState.value = 'before'
-    } else if (curP > 0.62) {
+    } else if (curP > 0.66) {
       middleTextState.value = 'after'
     } else {
       middleTextState.value = 'active'
