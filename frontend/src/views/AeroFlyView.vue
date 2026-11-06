@@ -75,243 +75,269 @@
         </a>
       </section>
 
-      <!-- Minimal Specs Bar (Placed right as user scrolls into the content) -->
-      <section class="py-12 px-4 sm:px-6 max-w-[1100px] mx-auto border-t border-b border-slate-200 dark:border-white/10">
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-          <div>
-            <div class="text-3xl sm:text-4xl font-black tracking-tight text-[#0c1e5b] dark:text-white font-mono">140+</div>
-            <div class="text-[10px] font-mono tracking-widest uppercase text-slate-400 dark:text-slate-500 mt-1">Active Pilots</div>
-          </div>
-          <div>
-            <div class="text-3xl sm:text-4xl font-black tracking-tight text-[#0c1e5b] dark:text-white font-mono">5.8 GHz</div>
-            <div class="text-[10px] font-mono tracking-widest uppercase text-slate-400 dark:text-slate-500 mt-1">VTX RaceBand</div>
-          </div>
-          <div>
-            <div class="text-3xl sm:text-4xl font-black tracking-tight text-[#0c1e5b] dark:text-white font-mono">Weekly</div>
-            <div class="text-[10px] font-mono tracking-widest uppercase text-slate-400 dark:text-slate-500 mt-1">Field Gatherings</div>
-          </div>
-          <div>
-            <div class="text-3xl sm:text-4xl font-black tracking-tight text-[#0c1e5b] dark:text-white font-mono">Open</div>
-            <div class="text-[10px] font-mono tracking-widest uppercase text-slate-400 dark:text-slate-500 mt-1">Ta Khmau Bench</div>
+      <!-- SECTION 2: GATHERINGS (Drone flies to LEFT, Text on RIGHT) -->
+      <section id="sessions" class="py-24 sm:py-32 px-4 sm:px-6 lg:px-8 max-w-[1240px] mx-auto min-h-[85vh] flex items-center">
+        <div class="w-full grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+          <!-- Left 5 cols: Completely clear open air for 3D drone flying on the left -->
+          <div class="hidden lg:block lg:col-span-5 pointer-events-none"></div>
+
+          <!-- Right 7 cols: Content & Text on the right -->
+          <div class="lg:col-span-7 space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3 pb-4 border-b border-slate-200 dark:border-white/10">
+              <div>
+                <div class="text-[11px] font-mono tracking-widest uppercase text-slate-400 dark:text-slate-500 mb-1">01 // GATHERINGS</div>
+                <h2 class="text-2xl sm:text-4xl font-black text-[#0c1e5b] dark:text-white">Weekend Flight Sessions</h2>
+              </div>
+              <div class="inline-flex items-center gap-2 text-xs font-mono text-emerald-600 dark:text-[#5df0a8]">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+                <span>SKY: OPTIMAL · WIND 8 KM/H</span>
+              </div>
+            </div>
+
+            <!-- Quick Specs Badges -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center py-2 border-b border-slate-100 dark:border-white/5">
+              <div class="p-2">
+                <div class="text-xl font-black font-mono text-[#0c1e5b] dark:text-white">140+</div>
+                <div class="text-[9px] font-mono uppercase text-slate-400">Pilots</div>
+              </div>
+              <div class="p-2">
+                <div class="text-xl font-black font-mono text-[#0c1e5b] dark:text-white">5.8 GHz</div>
+                <div class="text-[9px] font-mono uppercase text-slate-400">VTX Spectrum</div>
+              </div>
+              <div class="p-2">
+                <div class="text-xl font-black font-mono text-[#0c1e5b] dark:text-white">Weekly</div>
+                <div class="text-[9px] font-mono uppercase text-slate-400">Gatherings</div>
+              </div>
+              <div class="p-2">
+                <div class="text-xl font-black font-mono text-[#0c1e5b] dark:text-white">Free</div>
+                <div class="text-[9px] font-mono uppercase text-slate-400">Bench Lab</div>
+              </div>
+            </div>
+
+            <!-- Sessions Stack -->
+            <div class="space-y-3.5">
+              <div
+                v-for="session in flightSessions"
+                :key="session.id"
+                class="p-5 rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 backdrop-blur-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-slate-400 dark:hover:border-white/25 transition duration-200"
+              >
+                <div class="space-y-1">
+                  <div class="flex items-center gap-2 text-[10px] font-mono text-slate-400 dark:text-slate-500">
+                    <span class="px-2 py-0.5 rounded-full bg-slate-100 dark:bg-white/5 font-semibold">{{ session.category }}</span>
+                    <span>{{ session.time }}</span>
+                  </div>
+                  <h3 class="text-base font-bold text-[#0c1e5b] dark:text-white">
+                    {{ session.title }}
+                  </h3>
+                  <p class="text-xs text-slate-600 dark:text-[#9aa6c4]">
+                    📍 {{ session.location }} · {{ session.description }}
+                  </p>
+                </div>
+
+                <div class="flex items-center sm:flex-col items-end gap-2 shrink-0">
+                  <span class="text-[11px] font-mono text-slate-400 dark:text-slate-500">
+                    {{ session.attendees.length }} attending
+                  </span>
+                  <button
+                    type="button"
+                    @click="toggleRSVP(session)"
+                    class="px-4 py-1.5 rounded-full text-xs font-bold transition cursor-pointer"
+                    :class="session.isJoined
+                      ? 'bg-emerald-500 text-white'
+                      : 'bg-slate-100 dark:bg-white/10 hover:bg-slate-200 dark:hover:bg-white/20 text-[#0c1e5b] dark:text-white'"
+                  >
+                    {{ session.isJoined ? '✓ Joined' : 'RSVP' }}
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      <!-- SECTION 2: GATHERINGS (Concise Meetup Cards) -->
-      <section id="sessions" class="py-20 px-4 sm:px-6 lg:px-8 max-w-[1100px] mx-auto">
-        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10 pb-4 border-b border-slate-200 dark:border-white/10">
-          <div>
-            <div class="text-[11px] font-mono tracking-widest uppercase text-slate-400 dark:text-slate-500 mb-1">01 // GATHERINGS</div>
-            <h2 class="text-2xl sm:text-4xl font-black text-[#0c1e5b] dark:text-white">Weekend Flight Sessions</h2>
-          </div>
-          <div class="inline-flex items-center gap-2 text-xs font-mono text-emerald-600 dark:text-[#5df0a8]">
-            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
-            <span>SKY: OPTIMAL · WIND 8 KM/H</span>
-          </div>
-        </div>
-
-        <div class="grid md:grid-cols-3 gap-5">
-          <div
-            v-for="session in flightSessions"
-            :key="session.id"
-            class="p-6 rounded-2xl bg-white/75 dark:bg-white/[0.03] border border-slate-200 dark:border-white/10 backdrop-blur-xl flex flex-col justify-between hover:border-slate-400 dark:hover:border-white/25 transition duration-200"
-          >
-            <div>
-              <div class="flex items-center justify-between text-[11px] font-mono text-slate-400 dark:text-slate-500 mb-3">
-                <span>{{ session.category }}</span>
-                <span>{{ session.time }}</span>
-              </div>
-
-              <h3 class="text-lg font-bold text-[#0c1e5b] dark:text-white mb-2">
-                {{ session.title }}
-              </h3>
-
-              <div class="text-xs text-slate-500 dark:text-slate-400 mb-4">
-                📍 {{ session.location }}
-              </div>
-
-              <p class="text-xs text-slate-600 dark:text-[#9aa6c4] leading-relaxed mb-6">
-                {{ session.description }}
-              </p>
+      <!-- SECTION 3: VTX SPECTRUM MATRIX (Drone flies to RIGHT, Text on LEFT) -->
+      <section class="py-24 sm:py-32 px-4 sm:px-6 lg:px-8 max-w-[1240px] mx-auto min-h-[85vh] flex items-center">
+        <div class="w-full grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+          <!-- Left 7 cols: Content & Text on the left -->
+          <div class="lg:col-span-7 space-y-6">
+            <div class="pb-4 border-b border-slate-200 dark:border-white/10">
+              <div class="text-[11px] font-mono tracking-widest uppercase text-slate-400 dark:text-slate-500 mb-1">02 // SPECTRUM</div>
+              <h2 class="text-2xl sm:text-4xl font-black text-[#0c1e5b] dark:text-white">VTX Frequency Board</h2>
+              <p class="text-xs text-slate-500 dark:text-[#9aa6c4] mt-1">Reserve your 5.8GHz Raceband channel before powering on in the field.</p>
             </div>
 
-            <div class="pt-4 border-t border-slate-100 dark:border-white/5 flex items-center justify-between gap-3">
-              <span class="text-xs font-mono text-slate-500 dark:text-slate-400">
-                {{ session.attendees.length }} attending
-              </span>
+            <!-- 4x2 Grid for R1-R8 Channels -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div
+                v-for="ch in vtxChannels"
+                :key="ch.channel"
+                class="p-3.5 rounded-xl border text-center transition flex flex-col justify-between"
+                :class="ch.pilot
+                  ? 'bg-slate-100/80 dark:bg-white/[0.04] border-slate-300 dark:border-white/20'
+                  : 'bg-white/80 dark:bg-white/[0.02] border-slate-200 dark:border-white/5 hover:border-emerald-400/50 cursor-pointer'"
+                @click="!ch.pilot && openClaimChannel(ch)"
+              >
+                <div>
+                  <div class="text-[10px] font-mono text-slate-400 dark:text-slate-500">{{ ch.mhz }} MHz</div>
+                  <div class="text-base font-black my-1 text-[#0c1e5b] dark:text-white font-mono">{{ ch.channel }}</div>
+                </div>
+
+                <div class="mt-2 pt-2 border-t border-slate-200/60 dark:border-white/5">
+                  <span v-if="ch.pilot" class="text-[11px] font-medium text-slate-700 dark:text-slate-200 truncate block">
+                    {{ ch.pilot }}
+                  </span>
+                  <span v-else class="text-[11px] font-bold text-emerald-600 dark:text-[#5df0a8] block">
+                    + Free
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right 5 cols: Completely clear open air for 3D drone flying on the right -->
+          <div class="hidden lg:block lg:col-span-5 pointer-events-none"></div>
+        </div>
+      </section>
+
+      <!-- SECTION 4: PILOT RADAR NOTICEBOARD (Drone flies to LEFT, Text on RIGHT) -->
+      <section id="buddy-board" class="py-24 sm:py-32 px-4 sm:px-6 lg:px-8 max-w-[1240px] mx-auto min-h-[85vh] flex items-center">
+        <div class="w-full grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+          <!-- Left 5 cols: Completely clear open air for 3D drone flying on the left -->
+          <div class="hidden lg:block lg:col-span-5 pointer-events-none"></div>
+
+          <!-- Right 7 cols: Content & Text on the right -->
+          <div class="lg:col-span-7 space-y-5">
+            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-4 border-b border-slate-200 dark:border-white/10">
+              <div>
+                <div class="text-[11px] font-mono tracking-widest uppercase text-slate-400 dark:text-slate-500 mb-1">03 // PILOT RADAR</div>
+                <h2 class="text-2xl sm:text-4xl font-black text-[#0c1e5b] dark:text-white">Flight Spotter & Buddy Board</h2>
+              </div>
               <button
                 type="button"
-                @click="toggleRSVP(session)"
-                class="px-4 py-2 rounded-full text-xs font-bold transition cursor-pointer"
-                :class="session.isJoined
-                  ? 'bg-emerald-500 text-white'
-                  : 'bg-slate-100 dark:bg-white/10 hover:bg-slate-200 dark:hover:bg-white/20 text-[#0c1e5b] dark:text-white'"
+                @click="showCalloutModal = true"
+                class="px-4 py-2 rounded-full text-xs font-bold bg-[#0c1e5b] dark:bg-white text-white dark:text-[#0c1e5b] hover:opacity-90 transition cursor-pointer self-start sm:self-auto"
               >
-                {{ session.isJoined ? '✓ Joined' : 'RSVP' }}
+                + Post Notice
               </button>
             </div>
-          </div>
-        </div>
-      </section>
 
-      <!-- SECTION 3: VTX SPECTRUM MATRIX (Ultra-Clean Frequency Slots) -->
-      <section class="py-20 px-4 sm:px-6 lg:px-8 max-w-[1100px] mx-auto">
-        <div class="mb-8 pb-4 border-b border-slate-200 dark:border-white/10">
-          <div class="text-[11px] font-mono tracking-widest uppercase text-slate-400 dark:text-slate-500 mb-1">02 // SPECTRUM</div>
-          <h2 class="text-2xl sm:text-4xl font-black text-[#0c1e5b] dark:text-white">VTX Frequency Board</h2>
-          <p class="text-xs text-slate-500 dark:text-[#9aa6c4] mt-1">Reserve your 5.8GHz Raceband channel before powering on in the field.</p>
-        </div>
-
-        <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
-          <div
-            v-for="ch in vtxChannels"
-            :key="ch.channel"
-            class="p-3.5 rounded-xl border text-center transition flex flex-col justify-between"
-            :class="ch.pilot
-              ? 'bg-slate-100/80 dark:bg-white/[0.04] border-slate-300 dark:border-white/20'
-              : 'bg-white/60 dark:bg-white/[0.02] border-slate-200 dark:border-white/5 hover:border-emerald-400/50 cursor-pointer'"
-            @click="!ch.pilot && openClaimChannel(ch)"
-          >
-            <div>
-              <div class="text-[10px] font-mono text-slate-400 dark:text-slate-500">{{ ch.mhz }} MHz</div>
-              <div class="text-base font-black my-1 text-[#0c1e5b] dark:text-white font-mono">{{ ch.channel }}</div>
-            </div>
-
-            <div class="mt-2 pt-2 border-t border-slate-200/60 dark:border-white/5">
-              <span v-if="ch.pilot" class="text-[11px] font-medium text-slate-700 dark:text-slate-200 truncate block">
-                {{ ch.pilot }}
-              </span>
-              <span v-else class="text-[11px] font-bold text-emerald-600 dark:text-[#5df0a8] block">
-                + Free
-              </span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- SECTION 4: PILOT RADAR NOTICEBOARD (Clean & Concise Callouts) -->
-      <section id="buddy-board" class="py-20 px-4 sm:px-6 lg:px-8 max-w-[1100px] mx-auto">
-        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8 pb-4 border-b border-slate-200 dark:border-white/10">
-          <div>
-            <div class="text-[11px] font-mono tracking-widest uppercase text-slate-400 dark:text-slate-500 mb-1">03 // PILOT RADAR</div>
-            <h2 class="text-2xl sm:text-4xl font-black text-[#0c1e5b] dark:text-white">Flight Spotter & Buddy Board</h2>
-          </div>
-          <button
-            type="button"
-            @click="showCalloutModal = true"
-            class="px-5 py-2.5 rounded-full text-xs font-bold bg-[#0c1e5b] dark:bg-white text-white dark:text-[#0c1e5b] hover:opacity-90 transition cursor-pointer self-start sm:self-auto"
-          >
-            + Post Notice
-          </button>
-        </div>
-
-        <!-- Minimal Category Filter Pills -->
-        <div class="flex flex-wrap items-center gap-2 mb-6">
-          <button
-            v-for="filter in ['All Callouts', 'Looking for Spotter', 'Beginners Welcome', 'Freestyle & Gaps', 'Ta Khmau Lab']"
-            :key="filter"
-            type="button"
-            @click="activeFilter = filter"
-            class="px-3.5 py-1.5 rounded-full text-xs font-medium transition cursor-pointer"
-            :class="activeFilter === filter
-              ? 'bg-[#0c1e5b] dark:bg-white text-white dark:text-[#0c1e5b]'
-              : 'bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-white/10'"
-          >
-            {{ filter }}
-          </button>
-        </div>
-
-        <!-- 2-Column Minimal Callouts Grid -->
-        <div class="grid md:grid-cols-2 gap-4">
-          <div
-            v-for="post in filteredPosts"
-            :key="post.id"
-            class="p-5 rounded-2xl bg-white/75 dark:bg-white/[0.03] border border-slate-200 dark:border-white/10 backdrop-blur-xl flex flex-col justify-between"
-          >
-            <div>
-              <div class="flex items-center justify-between text-xs mb-2">
-                <span class="font-bold text-[#0c1e5b] dark:text-white">{{ post.author }}</span>
-                <span class="text-[10px] font-mono text-slate-400 dark:text-slate-500">{{ post.dateTime }}</span>
-              </div>
-              <div class="text-[11px] font-mono text-slate-500 dark:text-slate-400 mb-2">
-                📍 {{ post.spot }} · {{ post.droneSetup }}
-              </div>
-              <p class="text-xs text-slate-600 dark:text-[#a0afcf] leading-relaxed">
-                "{{ post.message }}"
-              </p>
-            </div>
-
-            <div class="pt-3 mt-3 border-t border-slate-100 dark:border-white/5 flex items-center justify-between text-[11px]">
-              <span class="text-slate-400 dark:text-slate-500">{{ post.category }}</span>
-              <a
-                :href="post.telegramLink || 'https://t.me/aerobyteacademy'"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="font-bold text-sky-600 dark:text-cyan-400 hover:underline"
+            <!-- Filter pills -->
+            <div class="flex flex-wrap items-center gap-1.5">
+              <button
+                v-for="filter in ['All Callouts', 'Looking for Spotter', 'Beginners Welcome', 'Freestyle & Gaps', 'Ta Khmau Lab']"
+                :key="filter"
+                type="button"
+                @click="activeFilter = filter"
+                class="px-3 py-1 rounded-full text-xs font-medium transition cursor-pointer"
+                :class="activeFilter === filter
+                  ? 'bg-[#0c1e5b] dark:bg-white text-white dark:text-[#0c1e5b]'
+                  : 'bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-white/10'"
               >
-                Connect on Telegram →
-              </a>
+                {{ filter }}
+              </button>
             </div>
-          </div>
-        </div>
-      </section>
 
-      <!-- SECTION 5: HANGAR & CONNECT (2 Spacious Minimalist Cards) -->
-      <section class="py-20 px-4 sm:px-6 lg:px-8 max-w-[1100px] mx-auto">
-        <div class="mb-8 pb-4 border-b border-slate-200 dark:border-white/10">
-          <div class="text-[11px] font-mono tracking-widest uppercase text-slate-400 dark:text-slate-500 mb-1">04 // CONNECT</div>
-          <h2 class="text-2xl sm:text-4xl font-black text-[#0c1e5b] dark:text-white">Community & Workshop</h2>
-        </div>
-
-        <div class="grid md:grid-cols-2 gap-6">
-          <!-- Card A: Telegram -->
-          <div class="p-8 rounded-2xl bg-white/75 dark:bg-white/[0.03] border border-slate-200 dark:border-white/10 backdrop-blur-xl flex flex-col justify-between">
+            <!-- Stacked Buddy Notice Cards -->
             <div class="space-y-3">
-              <div class="text-2xl">💬</div>
-              <h3 class="text-xl font-bold text-[#0c1e5b] dark:text-white">Telegram Pilot Hub</h3>
-              <p class="text-xs sm:text-sm text-slate-600 dark:text-[#9aa6c4] leading-relaxed">
-                Active group for live weekend weather polls, frequency reservations, and flight coordinates.
-              </p>
-            </div>
-            <div class="pt-6">
-              <a
-                href="https://t.me/aerobyteacademy"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="inline-flex items-center gap-2 text-xs font-bold text-[#0c1e5b] dark:text-white hover:underline"
+              <div
+                v-for="post in filteredPosts"
+                :key="post.id"
+                class="p-4 rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 backdrop-blur-xl flex flex-col justify-between"
               >
-                <span>Open t.me/aerobyteacademy</span>
-                <span>↗</span>
-              </a>
+                <div>
+                  <div class="flex items-center justify-between text-xs mb-1">
+                    <span class="font-bold text-[#0c1e5b] dark:text-white">{{ post.author }}</span>
+                    <span class="text-[10px] font-mono text-slate-400 dark:text-slate-500">{{ post.dateTime }}</span>
+                  </div>
+                  <div class="text-[11px] font-mono text-slate-500 dark:text-slate-400 mb-1.5">
+                    📍 {{ post.spot }} · {{ post.droneSetup }}
+                  </div>
+                  <p class="text-xs text-slate-600 dark:text-[#a0afcf] leading-relaxed">
+                    "{{ post.message }}"
+                  </p>
+                </div>
+
+                <div class="pt-2.5 mt-2 border-t border-slate-100 dark:border-white/5 flex items-center justify-between text-[11px]">
+                  <span class="text-slate-400 dark:text-slate-500">{{ post.category }}</span>
+                  <a
+                    :href="post.telegramLink || 'https://t.me/aerobyteacademy'"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="font-bold text-sky-600 dark:text-cyan-400 hover:underline"
+                  >
+                    Connect on Telegram →
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 5: HANGAR & CONNECT (Drone flies to RIGHT, Text on LEFT) -->
+      <section class="py-24 sm:py-32 px-4 sm:px-6 lg:px-8 max-w-[1240px] mx-auto min-h-[85vh] flex items-center">
+        <div class="w-full grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+          <!-- Left 7 cols: Content & Text on the left -->
+          <div class="lg:col-span-7 space-y-6">
+            <div class="pb-4 border-b border-slate-200 dark:border-white/10">
+              <div class="text-[11px] font-mono tracking-widest uppercase text-slate-400 dark:text-slate-500 mb-1">04 // CONNECT</div>
+              <h2 class="text-2xl sm:text-4xl font-black text-[#0c1e5b] dark:text-white">Community & Workshop</h2>
+            </div>
+
+            <div class="grid sm:grid-cols-2 gap-4">
+              <!-- Telegram -->
+              <div class="p-6 rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 backdrop-blur-xl flex flex-col justify-between">
+                <div class="space-y-2">
+                  <div class="text-xl">💬</div>
+                  <h3 class="text-base font-bold text-[#0c1e5b] dark:text-white">Telegram Pilot Hub</h3>
+                  <p class="text-xs text-slate-600 dark:text-[#9aa6c4]">
+                    Live weather polls, frequency reservations, and flight coordinates.
+                  </p>
+                </div>
+                <div class="pt-4">
+                  <a
+                    href="https://t.me/aerobyteacademy"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex items-center gap-1.5 text-xs font-bold text-[#0c1e5b] dark:text-white hover:underline"
+                  >
+                    <span>t.me/aerobyteacademy</span>
+                    <span>↗</span>
+                  </a>
+                </div>
+              </div>
+
+              <!-- Ta Khmau Lab -->
+              <div class="p-6 rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 backdrop-blur-xl flex flex-col justify-between">
+                <div class="space-y-2">
+                  <div class="text-xl">📍</div>
+                  <h3 class="text-base font-bold text-[#0c1e5b] dark:text-white">Ta Khmau Flight Lab</h3>
+                  <p class="text-xs text-slate-600 dark:text-[#9aa6c4]">
+                    Free physical bench, soldering stations, and Betaflight bench.
+                  </p>
+                </div>
+                <div class="pt-4">
+                  <a
+                    href="https://maps.google.com/?q=Ta+Khmau+Cambodia"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex items-center gap-1.5 text-xs font-bold text-[#0c1e5b] dark:text-white hover:underline"
+                  >
+                    <span>Directions</span>
+                    <span>↗</span>
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
 
-          <!-- Card B: Ta Khmau Lab -->
-          <div class="p-8 rounded-2xl bg-white/75 dark:bg-white/[0.03] border border-slate-200 dark:border-white/10 backdrop-blur-xl flex flex-col justify-between">
-            <div class="space-y-3">
-              <div class="text-2xl">📍</div>
-              <h3 class="text-xl font-bold text-[#0c1e5b] dark:text-white">Ta Khmau Flight Lab</h3>
-              <p class="text-xs sm:text-sm text-slate-600 dark:text-[#9aa6c4] leading-relaxed">
-                Free open workshop with soldering stations, smoke stoppers, and Betaflight bench. Open Tue–Sun, 9 AM – 6 PM.
-              </p>
-            </div>
-            <div class="pt-6">
-              <a
-                href="https://maps.google.com/?q=Ta+Khmau+Cambodia"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="inline-flex items-center gap-2 text-xs font-bold text-[#0c1e5b] dark:text-white hover:underline"
-              >
-                <span>Google Maps Directions</span>
-                <span>↗</span>
-              </a>
-            </div>
-          </div>
+          <!-- Right 5 cols: Completely clear open air for 3D drone flying on the right -->
+          <div class="hidden lg:block lg:col-span-5 pointer-events-none"></div>
         </div>
       </section>
 
       <!-- MINIMALIST FOOTER -->
-      <footer class="py-12 px-4 sm:px-6 text-center border-t border-slate-200 dark:border-white/10 max-w-[1100px] mx-auto flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 dark:text-slate-500 font-mono gap-4">
+      <footer class="py-12 px-4 sm:px-6 text-center border-t border-slate-200 dark:border-white/10 max-w-[1240px] mx-auto flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 dark:text-slate-500 font-mono gap-4">
         <div>© {{ currentYear }} AERO FLY // CAMBODIA DRONE COLLECTIVE</div>
         <div class="flex items-center gap-6">
           <a href="https://t.me/aerobyteacademy" target="_blank" rel="noopener noreferrer" class="hover:text-slate-800 dark:hover:text-white transition">Telegram</a>
@@ -1050,11 +1076,54 @@ onMounted(() => {
   composer.addPass(bloomPass)
   composer.addPass(new ShaderPass(GammaCorrectionShader))
 
-  const STOPS_X = [{ p: 0, v: 0 }, { p: 0.28, v: -2.2 }, { p: 0.58, v: 2.3 }, { p: 1, v: 0 }]
-  const STOPS_Y = [{ p: 0, v: -0.4 }, { p: 0.28, v: 0.2 }, { p: 0.58, v: 0.1 }, { p: 1, v: 0.2 }]
-  const STOPS_S = [{ p: 0, v: 1.35 }, { p: 0.28, v: 1.05 }, { p: 0.58, v: 0.95 }, { p: 1, v: 1.15 }]
-  const STOPS_ROLL = [{ p: 0, v: -0.06 }, { p: 0.28, v: 0.16 }, { p: 0.58, v: -0.18 }, { p: 1, v: 0.04 }]
-  const STOPS_PITCH = [{ p: 0, v: 0.22 }, { p: 0.28, v: 0.16 }, { p: 0.58, v: 0.18 }, { p: 1, v: 0.24 }]
+  const STOPS_X = [
+    { p: 0.00, v: 0.0 },   // Top Hero: Center
+    { p: 0.22, v: -2.8 },  // Section 1 (Gatherings): Drone on Left, Text on Right
+    { p: 0.48, v: 2.8 },   // Section 2 (Spectrum): Drone on Right, Text on Left
+    { p: 0.72, v: -2.8 },  // Section 3 (Radar): Drone on Left, Text on Right
+    { p: 0.95, v: 2.8 },   // Section 4 (Connect): Drone on Right, Text on Left
+    { p: 1.00, v: 2.8 }
+  ]
+  const STOPS_Y = [
+    { p: 0.00, v: -0.4 },  // Hero: slightly low so it sits below top text
+    { p: 0.22, v: 0.0 },
+    { p: 0.48, v: 0.0 },
+    { p: 0.72, v: 0.0 },
+    { p: 0.95, v: 0.0 },
+    { p: 1.00, v: 0.0 }
+  ]
+  const STOPS_S = [
+    { p: 0.00, v: 1.35 },
+    { p: 0.22, v: 1.15 },
+    { p: 0.48, v: 1.15 },
+    { p: 0.72, v: 1.15 },
+    { p: 0.95, v: 1.15 },
+    { p: 1.00, v: 1.15 }
+  ]
+  const STOPS_ROLL = [
+    { p: 0.00, v: 0.0 },
+    { p: 0.22, v: 0.22 },   // Bank into left turn
+    { p: 0.48, v: -0.22 },  // Bank into right turn
+    { p: 0.72, v: 0.22 },   // Bank into left turn
+    { p: 0.95, v: -0.22 },  // Bank into right turn
+    { p: 1.00, v: 0.0 }
+  ]
+  const STOPS_PITCH = [
+    { p: 0.00, v: 0.22 },   // Natural forward flight pitch
+    { p: 0.22, v: 0.18 },
+    { p: 0.48, v: 0.18 },
+    { p: 0.72, v: 0.18 },
+    { p: 0.95, v: 0.18 },
+    { p: 1.00, v: 0.20 }
+  ]
+  const STOPS_YAW = [
+    { p: 0.00, v: 0.0 },
+    { p: 0.22, v: -0.25 },  // Point nose slightly toward left
+    { p: 0.48, v: 0.25 },   // Point nose slightly toward right
+    { p: 0.72, v: -0.25 },  // Point nose slightly toward left
+    { p: 0.95, v: 0.25 },   // Point nose slightly toward right
+    { p: 1.00, v: 0.0 }
+  ]
 
   function sample(stops, p) {
     if (p <= stops[0].p) return stops[0].v
@@ -1075,6 +1144,7 @@ onMounted(() => {
   let curS = STOPS_S[0].v
   let curRoll = STOPS_ROLL[0].v
   let curPitch = STOPS_PITCH[0].v
+  let curYaw = STOPS_YAW[0].v
   let lastTime = performance.now()
 
   applySceneTheme(isDark.value)
@@ -1108,6 +1178,7 @@ onMounted(() => {
     const targetS = sample(STOPS_S, curP)
     const targetRoll = sample(STOPS_ROLL, curP)
     const targetPitch = sample(STOPS_PITCH, curP)
+    const targetYaw = sample(STOPS_YAW, curP)
 
     const k = Math.min(1, dt * 3.2)
     curX += (targetX - curX) * k
@@ -1115,6 +1186,7 @@ onMounted(() => {
     curS += (targetS - curS) * k
     curRoll += (targetRoll - curRoll) * k
     curPitch += (targetPitch - curPitch) * k
+    curYaw += (targetYaw - curYaw) * k
 
     worldGroup.position.set(curX, curY, 0)
     worldGroup.scale.setScalar(curS)
@@ -1130,7 +1202,7 @@ onMounted(() => {
 
     droneGroup.rotation.x = curPitch
     droneGroup.rotation.z = curRoll
-    droneGroup.rotation.y = curP * Math.PI * 1.5
+    droneGroup.rotation.y = curYaw
 
     if (!isDark.value) {
       renderer.render(scene, camera)
