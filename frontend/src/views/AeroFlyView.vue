@@ -319,116 +319,270 @@
         </div>
       </section>
 
-      <!-- SECTION 5: PILOT RADAR & WORKSHOP HUB (Drone stops in the MIDDLE, Text Below) -->
-      <section id="buddy-board" class="pt-6 sm:pt-10 pb-16 px-4 sm:px-6 lg:px-8 max-w-[1240px] mx-auto">
-        <!-- Generous space above so the 3D drone hovers freely in the center -->
-        <div class="flex-1 min-h-[30vh] pointer-events-none"></div>
+      <!-- SECTION 5: AERO STORE & LAB SUPPLY (Drone in Center Sky, Aero Store Showcase Below) -->
+      <section id="store" class="pt-6 sm:pt-10 pb-16 px-4 sm:px-6 lg:px-8 max-w-[1240px] mx-auto">
+        <!-- Open air spacer where the 3D drone hovers high in the sky -->
+        <div class="flex-1 min-h-[36vh] sm:min-h-[40vh] pointer-events-none"></div>
 
-        <div class="w-full space-y-8 relative z-10">
-          <!-- Active Pilot Callouts -->
-          <div class="space-y-4">
-            <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-white/10">
-              <div>
-                <div class="text-[10px] font-mono tracking-widest uppercase text-slate-400 dark:text-slate-500">03 // PILOT RADAR</div>
-                <h2 class="text-2xl sm:text-3xl font-black text-[#0c1e5b] dark:text-white">Active Flight Callouts</h2>
+        <div class="w-full space-y-10 relative z-10">
+          <!-- Section Header: What Aero Store Is & Does -->
+          <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-4 border-b border-slate-200 dark:border-white/10">
+            <div>
+              <div class="text-[10px] font-mono tracking-widest uppercase text-slate-400 dark:text-slate-500">
+                03 // HARDWARE &amp; LAB SUPPLY
               </div>
-              <button
-                type="button"
-                @click="showCalloutModal = true"
-                class="px-3.5 py-1.5 rounded-full text-xs font-bold bg-[#0c1e5b] dark:bg-white text-white dark:text-[#0c1e5b] hover:opacity-90 transition cursor-pointer"
-              >
-                + Post Callout
-              </button>
+              <h2 class="text-2xl sm:text-3xl lg:text-4xl font-black text-[#0c1e5b] dark:text-white">
+                Aero Store &amp; Hardware Lab
+              </h2>
+              <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1 max-w-2xl">
+                Cambodia's dedicated hardware hub for BNF FPV quads, robotics lab kits, custom 3D TPU parts, and hands-on bench tuning.
+              </p>
             </div>
 
-            <!-- Filter pills -->
-            <div class="flex flex-wrap items-center gap-1.5">
-              <button
-                v-for="filter in ['All Callouts', 'Looking for Spotter', 'Beginners Welcome', 'Freestyle & Gaps', 'Ta Khmau Lab']"
-                :key="filter"
-                type="button"
-                @click="activeFilter = filter"
-                class="px-3 py-1 rounded-full text-[11px] font-medium transition cursor-pointer"
-                :class="activeFilter === filter
-                  ? 'bg-[#0c1e5b] dark:bg-white text-white dark:text-[#0c1e5b]'
-                  : 'bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-white/10'"
+            <div class="flex items-center gap-2.5 shrink-0">
+              <router-link
+                to="/store"
+                class="px-4 py-2 rounded-full text-xs font-bold bg-[#0c1e5b] dark:bg-white text-white dark:text-[#0c1e5b] hover:opacity-90 transition shadow-sm inline-flex items-center gap-1.5 cursor-pointer"
               >
-                {{ filter }}
-              </button>
+                <span>Browse Store Catalog</span>
+                <span>→</span>
+              </router-link>
+            </div>
+          </div>
+
+          <!-- BLOCK 1: WHAT WE DO IN AERO STORE (3 Core Specialties) -->
+          <div class="space-y-4">
+            <div class="flex items-center justify-between">
+              <h3 class="text-xs font-mono font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                What We Do in Aero Store
+              </h3>
+              <span class="text-[11px] font-mono text-emerald-600 dark:text-[#5df0a8] font-bold">
+                ● 100% BENCH-TESTED
+              </span>
             </div>
 
-            <!-- Short Callout Cards Grid -->
-            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
-              <div
-                v-for="post in filteredPosts"
-                :key="post.id"
-                class="p-3.5 rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 backdrop-blur-xl flex flex-col justify-between gap-3"
-              >
-                <div class="space-y-1">
-                  <div class="flex items-center justify-between text-[10px] font-mono text-slate-400">
-                    <span class="font-bold text-[#0c1e5b] dark:text-white">{{ post.author }}</span>
-                    <span>{{ post.spot }}</span>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <!-- Specialty 1: FPV Drone Hardware -->
+              <div class="p-5 rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 backdrop-blur-xl flex flex-col justify-between gap-4 hover:border-slate-400 dark:hover:border-white/20 transition">
+                <div class="space-y-2.5">
+                  <div class="flex items-center justify-between">
+                    <span class="text-2xl">🚁</span>
+                    <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-sky-500/10 text-sky-600 dark:text-sky-400">
+                      FPV DRONES
+                    </span>
                   </div>
-                  <p class="text-xs text-slate-600 dark:text-slate-300">
-                    "{{ post.message }}"
+                  <h4 class="text-base font-bold text-[#0c1e5b] dark:text-white">
+                    Flight-Tested FPV Quads &amp; Parts
+                  </h4>
+                  <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                    From beginner Tiny Whoops to 5-inch freestyle beasts, ESC stacks, brushless motors, ELRS radios, and digital HD video transmitters.
                   </p>
                 </div>
 
-                <div class="flex items-center justify-between pt-1 text-[11px] font-mono border-t border-slate-100 dark:border-white/5">
-                  <span class="text-slate-400">{{ post.droneSetup }}</span>
-                  <a
-                    :href="post.telegramLink || 'https://t.me/aerobyteacademy'"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="font-bold text-sky-600 dark:text-cyan-400 hover:underline"
+                <div class="pt-3 border-t border-slate-100 dark:border-white/5 space-y-2">
+                  <div class="flex flex-wrap gap-1.5 text-[10px] font-mono text-slate-500 dark:text-slate-400">
+                    <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-white/5">BNF Quads</span>
+                    <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-white/5">55A Stacks</span>
+                    <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-white/5">ELRS 2.4G</span>
+                  </div>
+                  <router-link
+                    to="/store"
+                    class="inline-flex items-center gap-1 text-xs font-bold text-[#0c1e5b] dark:text-white hover:underline pt-1"
                   >
-                    Reply →
-                  </a>
+                    <span>View Drone Gear</span>
+                    <span>→</span>
+                  </router-link>
+                </div>
+              </div>
+
+              <!-- Specialty 2: Robotics & STEM Maker Kits -->
+              <div class="p-5 rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 backdrop-blur-xl flex flex-col justify-between gap-4 hover:border-slate-400 dark:hover:border-white/20 transition">
+                <div class="space-y-2.5">
+                  <div class="flex items-center justify-between">
+                    <span class="text-2xl">🤖</span>
+                    <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                      STEM &amp; MAKER
+                    </span>
+                  </div>
+                  <h4 class="text-base font-bold text-[#0c1e5b] dark:text-white">
+                    Robotics &amp; IoT Learning Kits
+                  </h4>
+                  <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                    ESP32 dual-core learning kits, Arduino Uno compatible sets, sensor arrays, and motor driver shields designed for students and university labs.
+                  </p>
+                </div>
+
+                <div class="pt-3 border-t border-slate-100 dark:border-white/5 space-y-2">
+                  <div class="flex flex-wrap gap-1.5 text-[10px] font-mono text-slate-500 dark:text-slate-400">
+                    <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-white/5">ESP32 Lab Kit</span>
+                    <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-white/5">IoT Sensors</span>
+                    <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-white/5">Motor Shields</span>
+                  </div>
+                  <router-link
+                    to="/store"
+                    class="inline-flex items-center gap-1 text-xs font-bold text-[#0c1e5b] dark:text-white hover:underline pt-1"
+                  >
+                    <span>View Maker Kits</span>
+                    <span>→</span>
+                  </router-link>
+                </div>
+              </div>
+
+              <!-- Specialty 3: Custom 3D TPU Armor -->
+              <div class="p-5 rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 backdrop-blur-xl flex flex-col justify-between gap-4 hover:border-slate-400 dark:hover:border-white/20 transition">
+                <div class="space-y-2.5">
+                  <div class="flex items-center justify-between">
+                    <span class="text-2xl">🖨️</span>
+                    <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-purple-500/10 text-purple-600 dark:text-purple-400">
+                      3D TPU LAB
+                    </span>
+                  </div>
+                  <h4 class="text-base font-bold text-[#0c1e5b] dark:text-white">
+                    Crash-Proof 3D TPU Armor
+                  </h4>
+                  <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                    Custom vibration-damped GoPro mounts, motor arm skids, antenna holders, and frame bumpers precision-printed for your exact drone frame.
+                  </p>
+                </div>
+
+                <div class="pt-3 border-t border-slate-100 dark:border-white/5 space-y-2">
+                  <div class="flex flex-wrap gap-1.5 text-[10px] font-mono text-slate-500 dark:text-slate-400">
+                    <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-white/5">GoPro Mounts</span>
+                    <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-white/5">Arm Guards</span>
+                    <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-white/5">Antenna Tubes</span>
+                  </div>
+                  <router-link
+                    to="/print"
+                    class="inline-flex items-center gap-1 text-xs font-bold text-[#0c1e5b] dark:text-white hover:underline pt-1"
+                  >
+                    <span>Custom 3D Printing</span>
+                    <span>→</span>
+                  </router-link>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Bottom Row: Community & Workshop Hub -->
-          <div class="grid sm:grid-cols-2 gap-3.5 pt-4 border-t border-slate-200 dark:border-white/10">
-            <!-- Telegram -->
-            <div class="p-5 rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 backdrop-blur-xl flex flex-col justify-between">
+          <!-- BLOCK 2: WHAT CUSTOMERS NEED & WHY THEY NEED AERO STORE -->
+          <div class="space-y-4 pt-4 border-t border-slate-200 dark:border-white/10">
+            <div>
+              <h3 class="text-xs font-mono font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                Why You Need Aero Store &amp; How We Help You
+              </h3>
+              <p class="text-sm font-bold text-[#0c1e5b] dark:text-white mt-0.5">
+                Solving the most expensive mistakes pilots and builders face in Cambodia.
+              </p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+              <!-- Reason 1: No Burnt Boards -->
+              <div class="p-4 rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 backdrop-blur-xl flex items-start gap-3.5">
+                <div class="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 text-base">
+                  ⚡
+                </div>
+                <div class="space-y-1">
+                  <h4 class="text-xs font-bold text-[#0c1e5b] dark:text-white">
+                    Zero Burnt Electronics (Pre-Checked Smoke Stop)
+                  </h4>
+                  <p class="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">
+                    The #1 beginner heartbreak is plugging in a battery and frying a $60 flight controller or ESC. Every stack and motor we deliver is pre-checked on multimeter bench diagnostics with verified wiring guides.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Reason 2: Fast Local Cambodia Stock -->
+              <div class="p-4 rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 backdrop-blur-xl flex items-start gap-3.5">
+                <div class="w-9 h-9 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 text-base">
+                  🚚
+                </div>
+                <div class="space-y-1">
+                  <h4 class="text-xs font-bold text-[#0c1e5b] dark:text-white">
+                    Local Cambodia Stock (No 4-Week Customs Wait)
+                  </h4>
+                  <p class="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">
+                    When you crash on Saturday, you cannot wait 3 to 4 weeks for AliExpress or risk import customs. We keep genuine inventory in Phnom Penh and dispatch nationwide in 24–48 hours.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Reason 3: Hands-on Lab Bench Support -->
+              <div class="p-4 rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 backdrop-blur-xl flex items-start gap-3.5">
+                <div class="w-9 h-9 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 text-base">
+                  🛠️
+                </div>
+                <div class="space-y-1">
+                  <h4 class="text-xs font-bold text-[#0c1e5b] dark:text-white">
+                    Free Ta Khmau Bench Lab &amp; Tuning Guidance
+                  </h4>
+                  <p class="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">
+                    Need help soldering tiny motor pads, flashing Betaflight 4.5, or binding ELRS? Bring your parts to our Ta Khmau Lab for free smoke-stopper maiden checks and rate tuning.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Reason 4: Correct Hardware Matching -->
+              <div class="p-4 rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 backdrop-blur-xl flex items-start gap-3.5">
+                <div class="w-9 h-9 rounded-xl bg-rose-500/10 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0 text-base">
+                  🎯
+                </div>
+                <div class="space-y-1">
+                  <h4 class="text-xs font-bold text-[#0c1e5b] dark:text-white">
+                    Engineered Compatibility (Zero Guesswork)
+                  </h4>
+                  <p class="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">
+                    Never accidentally buy 4S motors for a 6S build or mismatched antenna polarizations. Our engineers review your setup before purchase to ensure 100% plug-and-fly synergy.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- BLOCK 3: QUICK CONSULT & TA KHMAU LAB CONTACT -->
+          <div class="grid sm:grid-cols-2 gap-4 pt-4 border-t border-slate-200 dark:border-white/10">
+            <!-- Telegram Hub -->
+            <div class="p-5 rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 backdrop-blur-xl flex flex-col justify-between gap-3">
               <div class="space-y-1.5">
-                <div class="text-lg">💬</div>
-                <h3 class="text-sm font-bold text-[#0c1e5b] dark:text-white">Telegram Pilot Hub</h3>
+                <div class="text-xl">💬</div>
+                <h3 class="text-sm font-bold text-[#0c1e5b] dark:text-white">
+                  Chat with an Aero Store Engineer
+                </h3>
                 <p class="text-xs text-slate-500 dark:text-slate-400">
-                  Weekend weather polls, frequency reservations, and flight pins.
+                  Send your build questions, part requirements, or custom order inquiries directly to our lab pilots.
                 </p>
               </div>
-              <div class="pt-3">
+              <div class="pt-2">
                 <a
                   href="https://t.me/aerobyteacademy"
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="text-xs font-bold text-[#0c1e5b] dark:text-white hover:underline"
+                  class="inline-flex items-center gap-1.5 text-xs font-bold text-sky-600 dark:text-cyan-400 hover:underline"
                 >
-                  t.me/aerobyteacademy ↗
+                  <span>Open Telegram Chat</span>
+                  <span>↗</span>
                 </a>
               </div>
             </div>
 
-            <!-- Ta Khmau Lab -->
-            <div class="p-5 rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 backdrop-blur-xl flex flex-col justify-between">
+            <!-- Ta Khmau Flight & Maker Lab -->
+            <div class="p-5 rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 backdrop-blur-xl flex flex-col justify-between gap-3">
               <div class="space-y-1.5">
-                <div class="text-lg">📍</div>
-                <h3 class="text-sm font-bold text-[#0c1e5b] dark:text-white">Ta Khmau Flight Lab</h3>
+                <div class="text-xl">📍</div>
+                <h3 class="text-sm font-bold text-[#0c1e5b] dark:text-white">
+                  Ta Khmau Flight &amp; Maker Lab
+                </h3>
                 <p class="text-xs text-slate-500 dark:text-slate-400">
-                  Free open bench: Soldering, Betaflight 4.5 tuning, and Maiden tests.
+                  Free open soldering benches, smoke stoppers, Betaflight diagnostics, and in-person hardware pickup.
                 </p>
               </div>
-              <div class="pt-3">
+              <div class="pt-2">
                 <a
                   href="https://maps.google.com/?q=Ta+Khmau+Cambodia"
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="text-xs font-bold text-[#0c1e5b] dark:text-white hover:underline"
+                  class="inline-flex items-center gap-1.5 text-xs font-bold text-[#0c1e5b] dark:text-white hover:underline"
                 >
-                  Directions ↗
+                  <span>Get Directions</span>
+                  <span>↗</span>
                 </a>
               </div>
             </div>
@@ -438,123 +592,15 @@
 
       <!-- MINIMALIST FOOTER -->
       <footer class="py-12 px-4 sm:px-6 text-center border-t border-slate-200 dark:border-white/10 max-w-[1240px] mx-auto flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 dark:text-slate-500 font-mono gap-4">
-        <div>© {{ currentYear }} AERO FLY // CAMBODIA DRONE COLLECTIVE</div>
+        <div>© {{ currentYear }} AERO FLY // CAMBODIA DRONE &amp; HARDWARE COLLECTIVE</div>
         <div class="flex items-center gap-6">
           <a href="https://t.me/aerobyteacademy" target="_blank" rel="noopener noreferrer" class="hover:text-slate-800 dark:hover:text-white transition">Telegram</a>
           <a href="#sessions" class="hover:text-slate-800 dark:hover:text-white transition">Sessions</a>
-          <a href="#buddy-board" class="hover:text-slate-800 dark:hover:text-white transition">Radar</a>
+          <a href="#benefits" class="hover:text-slate-800 dark:hover:text-white transition">Benefits</a>
+          <a href="#store" class="hover:text-slate-800 dark:hover:text-white transition">Aero Store</a>
         </div>
       </footer>
     </div>
-
-    <!-- MODAL 1: POST A FLIGHT CALLOUT -->
-    <div
-      v-if="showCalloutModal"
-      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md"
-      @click.self="showCalloutModal = false"
-    >
-      <div class="w-full max-w-md p-6 rounded-2xl bg-white dark:bg-[#0c142c] border border-slate-200 dark:border-white/10 shadow-2xl text-left space-y-4 animate-in fade-in zoom-in-95 duration-200">
-        <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-white/10">
-          <div>
-            <h3 class="text-base font-bold text-[#0c1e5b] dark:text-white font-mono">POST // FLIGHT NOTICE</h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400">Invite pilots or request a spotter.</p>
-          </div>
-          <button
-            type="button"
-            @click="showCalloutModal = false"
-            class="w-7 h-7 rounded-full bg-slate-100 dark:bg-white/10 text-slate-500 dark:text-white flex items-center justify-center hover:bg-slate-200 dark:hover:bg-white/20 transition cursor-pointer text-xs"
-          >
-            ✕
-          </button>
-        </div>
-
-        <form @submit.prevent="submitCallout" class="space-y-3 text-xs">
-          <div>
-            <label class="block font-medium text-slate-700 dark:text-slate-300 mb-1">Callsign / Name</label>
-            <input
-              v-model="newCallout.author"
-              required
-              placeholder="e.g. Dara_FPV"
-              class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-black/30 border border-slate-300 dark:border-white/10 text-slate-800 dark:text-white outline-none"
-            />
-          </div>
-
-          <div class="grid grid-cols-2 gap-3">
-            <div>
-              <label class="block font-medium text-slate-700 dark:text-slate-300 mb-1">Category</label>
-              <select
-                v-model="newCallout.category"
-                class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-[#121c3d] border border-slate-300 dark:border-white/10 text-slate-800 dark:text-white outline-none"
-              >
-                <option value="Looking for Spotter">Looking for Spotter</option>
-                <option value="Weekend Fly-In">Weekend Fly-In</option>
-                <option value="Beginners Welcome">Beginners Welcome</option>
-                <option value="Freestyle & Gaps">Freestyle & Gaps</option>
-                <option value="Ta Khmau Lab">Ta Khmau Lab</option>
-              </select>
-            </div>
-            <div>
-              <label class="block font-medium text-slate-700 dark:text-slate-300 mb-1">Drone Setup</label>
-              <input
-                v-model="newCallout.droneSetup"
-                required
-                placeholder="e.g. 5-inch 6S"
-                class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-black/30 border border-slate-300 dark:border-white/10 text-slate-800 dark:text-white outline-none"
-              />
-            </div>
-          </div>
-
-          <div class="grid grid-cols-2 gap-3">
-            <div>
-              <label class="block font-medium text-slate-700 dark:text-slate-300 mb-1">Spot</label>
-              <input
-                v-model="newCallout.spot"
-                required
-                placeholder="e.g. Chroy Changvar"
-                class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-black/30 border border-slate-300 dark:border-white/10 text-slate-800 dark:text-white outline-none"
-              />
-            </div>
-            <div>
-              <label class="block font-medium text-slate-700 dark:text-slate-300 mb-1">Date & Time</label>
-              <input
-                v-model="newCallout.dateTime"
-                required
-                placeholder="e.g. Sunday 6:30 AM"
-                class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-black/30 border border-slate-300 dark:border-white/10 text-slate-800 dark:text-white outline-none"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label class="block font-medium text-slate-700 dark:text-slate-300 mb-1">Message</label>
-            <textarea
-              v-model="newCallout.message"
-              required
-              rows="2"
-              placeholder="Short note about what you're flying or what you need..."
-              class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-black/30 border border-slate-300 dark:border-white/10 text-slate-800 dark:text-white outline-none resize-none"
-            ></textarea>
-          </div>
-
-          <div class="pt-2 flex items-center justify-end gap-2">
-            <button
-              type="button"
-              @click="showCalloutModal = false"
-              class="px-4 py-2 rounded-full text-slate-600 dark:text-slate-300 font-medium cursor-pointer"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              class="px-5 py-2 rounded-full font-bold bg-[#0c1e5b] dark:bg-white text-white dark:text-[#0c1e5b] cursor-pointer"
-            >
-              Post Notice
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-
   </div>
 </template>
 
@@ -632,91 +678,9 @@ function toggleRSVP(session) {
 }
 
 // ----------------------------------------------------
-// PILOT RADAR NOTICEBOARD
+// AERO STORE & HARDWARE LAB SUPPLY
 // ----------------------------------------------------
-const activeFilter = ref('All Callouts')
-const showCalloutModal = ref(false)
-
-const newCallout = ref({
-  author: '',
-  category: 'Looking for Spotter',
-  droneSetup: '',
-  spot: '',
-  dateTime: '',
-  message: ''
-})
-
-const buddyPosts = ref([
-  {
-    id: 1,
-    author: 'Rithy_Aero',
-    droneSetup: '5" 6S Freestyle',
-    category: 'Looking for Spotter',
-    spot: 'Chroy Changvar',
-    dateTime: 'Saturday 6:30 AM',
-    message: 'Need a spotter for practicing power loops and inverted yaw spins.',
-    telegramLink: 'https://t.me/aerobyteacademy'
-  },
-  {
-    id: 2,
-    author: 'Sreymom_Wings',
-    droneSetup: 'Cetus X Tinywhoop',
-    category: 'Beginners Welcome',
-    spot: 'Ta Khmau Field',
-    dateTime: 'Sunday 8:00 AM',
-    message: 'First outdoor flight in acro mode. Looking for someone to guide rate settings.',
-    telegramLink: 'https://t.me/aerobyteacademy'
-  },
-  {
-    id: 3,
-    author: 'Samnang_FPV',
-    droneSetup: '3.5" Sub-250g',
-    category: 'Freestyle & Gaps',
-    spot: 'Koh Pich',
-    dateTime: 'Friday 5:00 PM',
-    message: 'Sunset proximity run. Looking for a chase cam buddy.',
-    telegramLink: 'https://t.me/aerobyteacademy'
-  },
-  {
-    id: 4,
-    author: 'Alex_Tech',
-    droneSetup: '7" Long Range',
-    category: 'Ta Khmau Lab',
-    spot: 'AeroByte Lab',
-    dateTime: 'Saturday 2:00 PM',
-    message: 'Testing ELRS 3.4 dynamic power & GPS rescue at the bench.',
-    telegramLink: 'https://t.me/aerobyteacademy'
-  }
-])
-
-const filteredPosts = computed(() => {
-  if (activeFilter.value === 'All Callouts') return buddyPosts.value
-  return buddyPosts.value.filter((p) => p.category === activeFilter.value)
-})
-
-function submitCallout() {
-  if (!newCallout.value.author || !newCallout.value.message) return
-  buddyPosts.value.unshift({
-    id: Date.now(),
-    author: newCallout.value.author,
-    droneSetup: newCallout.value.droneSetup || 'FPV Quad',
-    category: newCallout.value.category,
-    spot: newCallout.value.spot || 'Phnom Penh',
-    dateTime: newCallout.value.dateTime || 'This Weekend',
-    message: newCallout.value.message,
-    telegramLink: 'https://t.me/aerobyteacademy'
-  })
-  showCalloutModal.value = false
-  showToast('Notice posted to board')
-  newCallout.value = {
-    author: '',
-    category: 'Looking for Spotter',
-    droneSetup: '',
-    spot: '',
-    dateTime: '',
-    message: ''
-  }
-}
+// Replaced pilot radar with Aero Store hardware & lab supply guidance
 
 // ----------------------------------------------------
 // THREE.JS 3D DRONE BACKGROUND CANVAS LOGIC (PRESERVED INTACT)
@@ -1120,8 +1084,8 @@ onMounted(() => {
     { p: 0.48, v: 0.75 },  // Middle Stop hold: text sits cleanly UNDER the drone!
     { p: 0.58, v: 0.15 },  // Section 4: level with upper perks cards
     { p: 0.74, v: 0.15 },
-    { p: 0.86, v: 0.35 },  // Bottom: Upper center
-    { p: 1.00, v: 0.35 }
+    { p: 0.86, v: 0.50 },  // Bottom Aero Store: High in upper center above store header
+    { p: 1.00, v: 0.50 }
   ]
 
   const STOPS_S = [
