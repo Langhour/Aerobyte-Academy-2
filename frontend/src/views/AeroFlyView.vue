@@ -143,15 +143,12 @@
       </section>
 
       <!-- SECTION: THE MIDDLE STOP (Drone in Middle, Text Pinned Under Drone with Jitter Sliding Reveal) -->
-      <section id="middle" class="h-[135vh] relative">
-        <div class="sticky top-0 h-screen w-full flex flex-col items-center justify-between px-4 pt-20 pb-16 sm:pb-24 overflow-hidden pointer-events-none select-none">
-          <!-- Top area where the 3D drone hovers (STOPS_Y: v = 0.65) with zero overlap -->
-          <div class="flex-1 w-full pointer-events-none"></div>
-
-          <!-- TWO TEXT LINES ALWAYS PINNED UNDER THE CENTERED DRONE WITH JITTER SLIDING REVEAL -->
-          <div class="max-w-4xl mx-auto space-y-3 sm:space-y-4 pb-8 sm:pb-14 relative z-10 pointer-events-auto">
+      <section id="middle" class="h-[125vh] relative">
+        <div class="sticky top-0 h-screen w-full flex flex-col items-center justify-between px-4 pt-10 sm:pt-14 pb-8 overflow-hidden pointer-events-none select-none">
+          <!-- UPPER UX/UI FRAME: TEXT LINES PLACED HIGH AND CLEAN WITH JITTER SLIDING REVEAL -->
+          <div class="max-w-4xl mx-auto text-center space-y-2.5 sm:space-y-3.5 pt-2 sm:pt-4 relative z-10 pointer-events-auto">
             <!-- LINE 1: BOLD GEOMETRIC TITLE (Masked Sliding Reveal) -->
-            <div class="overflow-hidden py-2 inline-block">
+            <div class="overflow-hidden py-1.5 inline-block">
               <h2
                 class="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-[0.14em] sm:tracking-[0.18em] uppercase text-[#0c1e5b] dark:text-white drop-shadow-sm font-sans transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] transform"
                 :class="{
@@ -181,7 +178,7 @@
 
               <!-- Minimal Red Dot Accents (Fades/Scales in with delay) -->
               <div
-                class="mt-3 flex items-center justify-center gap-1.5 transition-all duration-500 delay-200 ease-out transform"
+                class="mt-2.5 flex items-center justify-center gap-1.5 transition-all duration-500 delay-200 ease-out transform"
                 :class="{
                   'opacity-80 scale-100 translate-y-0': middleTextState === 'active',
                   'opacity-0 scale-75 translate-y-2': middleTextState !== 'active'
@@ -198,10 +195,12 @@
               </div>
             </div>
           </div>
+
+          <!-- LOWER AREA: Open air where the 3D drone hovers cleanly under the text -->
+          <div class="flex-1 w-full pointer-events-none"></div>
         </div>
       </section>
 
-      <!-- SECTION 3: COMMUNITY BENEFITS (Drone flies to RIGHT, Text on LEFT) -->
       <section id="benefits" class="py-20 sm:py-28 px-4 sm:px-6 lg:px-8 max-w-[1240px] mx-auto min-h-[85vh] flex items-center">
         <div class="w-full grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           <!-- Left 7 cols: Content & Text on the left -->
@@ -1098,58 +1097,82 @@ onMounted(() => {
 
   const DEG90 = Math.PI * 0.5
 
-  // ORIGINAL HARMONIC FLIGHT S-CURVE MOTION (RESTORED):
-  // 1. Top Hero: Center
-  // 2. Weekend Flights: Drone smoothly glides to Left, Text on Right
-  // 3. Middle Anthem: Drone smoothly glides to Center above FLY AS ONE text
-  // 4. Membership Perks: Drone smoothly glides to Right, Text on Left
-  // 5. Bottom Hub: Drone smoothly glides to Center above Radar
+  // HARMONIC FLUID FLIGHT PATH:
+  // Stage 1 (Hero): Center hover under AERO FLY title
+  // Stage 2 (Weekend Flights): Left hover facing cards
+  // Stage 3 (Middle Anthem): Drone sweeps FASTER into center as cards end, hovering cleanly UNDER FLY AS ONE
+  // Stage 4 (Perks): Right hover facing perks
+  // Stage 5 (Radar): Center hover above noticeboard
   const STOPS_X = [
-    { p: 0.00, v: 0.0 },   // 1. Hero: Center
-    { p: 0.25, v: -3.0 },  // 2. Weekend Flights: Drone on Left
-    { p: 0.50, v: 0.0 },   // 3. Middle Stop: Center
-    { p: 0.75, v: 3.0 },   // 4. Perks: Drone on Right
-    { p: 1.00, v: 0.0 }    // 5. Bottom Hub: Center
+    { p: 0.00, v: 0.0 },   // Hero: Center
+    { p: 0.14, v: -2.8 },  // Section 2: Drone on Left opposite cards
+    { p: 0.20, v: -2.8 },  // Section 2 hold: cards view
+    { p: 0.30, v: 0.0 },   // Rotates & sweeps FASTER into Center right as cards end!
+    { p: 0.44, v: 0.0 },   // Middle Stop: Center hold under text
+    { p: 0.58, v: 2.8 },   // Section 4: Drone sweeps to Right
+    { p: 0.74, v: 2.8 },   // Section 4 hold: perks view
+    { p: 0.88, v: 0.0 },   // Section 5: Drone sweeps to Center
+    { p: 1.00, v: 0.0 }    // Bottom hold: Center
   ]
 
   const STOPS_Y = [
-    { p: 0.00, v: -0.40 }, // 1. Hero: sits below top text
-    { p: 0.25, v: 0.00 },  // 2. Weekend Flights: vertically centered
-    { p: 0.50, v: 0.60 },  // 3. Middle Stop: sits high in upper center above text
-    { p: 0.75, v: 0.00 },  // 4. Perks: vertically centered
-    { p: 1.00, v: 0.35 }   // 5. Bottom Hub: sits in upper center
+    { p: 0.00, v: -0.40 }, // Hero: comfortably below top text
+    { p: 0.14, v: 0.05 },  // Section 2: level with cards
+    { p: 0.20, v: 0.05 },
+    { p: 0.30, v: -0.32 }, // Middle Stop: hovers cleanly UNDER FLY AS ONE text!
+    { p: 0.44, v: -0.32 }, // Middle Stop hold under text
+    { p: 0.58, v: 0.05 },  // Section 4: level with perks
+    { p: 0.74, v: 0.05 },
+    { p: 0.88, v: 0.35 },  // Bottom: Upper center
+    { p: 1.00, v: 0.35 }
   ]
 
   const STOPS_S = [
-    { p: 0.00, v: 1.35 },  // Hero
-    { p: 0.25, v: 1.10 },  // Left
-    { p: 0.50, v: 1.30 },  // Middle Stop
-    { p: 0.75, v: 1.10 },  // Right
-    { p: 1.00, v: 1.15 }   // Bottom
+    { p: 0.00, v: 1.35 },
+    { p: 0.14, v: 1.10 },
+    { p: 0.20, v: 1.10 },
+    { p: 0.30, v: 1.25 },  // Middle Stop: Prominent
+    { p: 0.44, v: 1.25 },
+    { p: 0.58, v: 1.10 },
+    { p: 0.74, v: 1.10 },
+    { p: 0.88, v: 1.15 },
+    { p: 1.00, v: 1.15 }
   ]
 
   const STOPS_ROLL = [
     { p: 0.00, v: 0.0 },
-    { p: 0.25, v: 0.0 },
-    { p: 0.50, v: 0.0 },
-    { p: 0.75, v: 0.0 },
+    { p: 0.14, v: 0.0 },
+    { p: 0.20, v: 0.0 },
+    { p: 0.30, v: 0.0 },
+    { p: 0.44, v: 0.0 },
+    { p: 0.58, v: 0.0 },
+    { p: 0.74, v: 0.0 },
+    { p: 0.88, v: 0.0 },
     { p: 1.00, v: 0.0 }
   ]
 
   const STOPS_PITCH = [
-    { p: 0.00, v: 0.22 },  // Natural forward flight tilt
-    { p: 0.25, v: 0.10 },  // Slight hover tilt pointing at text
-    { p: 0.50, v: 0.22 },  // Forward flight tilt facing user
-    { p: 0.75, v: 0.10 },  // Slight hover tilt pointing at text
+    { p: 0.00, v: 0.22 },  // Natural forward flight tilt facing user
+    { p: 0.14, v: 0.08 },  // Slight hover tilt pointing at text
+    { p: 0.20, v: 0.08 },
+    { p: 0.30, v: 0.22 },  // Natural forward flight tilt facing user under text
+    { p: 0.44, v: 0.22 },
+    { p: 0.58, v: 0.08 },  // Slight hover tilt pointing at perks
+    { p: 0.74, v: 0.08 },
+    { p: 0.88, v: 0.20 },
     { p: 1.00, v: 0.20 }
   ]
 
   const STOPS_YAW = [
     { p: 0.00, v: 0.0 },     // 1. Hero: Facing forward
-    { p: 0.25, v: DEG90 },   // 2. Left: Rotates 90° right to point directly at text
-    { p: 0.50, v: 0.0 },     // 3. Middle Stop: Facing forward in Center
-    { p: 0.75, v: -DEG90 },  // 4. Right: Rotates 90° left to point directly at text
-    { p: 1.00, v: 0.0 }      // 5. Bottom: Facing forward in Center
+    { p: 0.14, v: DEG90 },   // 2. Left: Rotates 90° right to point directly at cards
+    { p: 0.20, v: DEG90 },   // Section 2 hold
+    { p: 0.30, v: 0.0 },     // Rotates FASTER to 0° facing forward as it glides to center!
+    { p: 0.44, v: 0.0 },     // Middle Stop hold: Facing forward
+    { p: 0.58, v: -DEG90 },  // Rotates 90° left to point at perks
+    { p: 0.74, v: -DEG90 },  // Section 4 hold
+    { p: 0.88, v: 0.0 },     // Rotates to 0° facing forward
+    { p: 1.00, v: 0.0 }
   ]
 
   function sample(stops, p) {
@@ -1207,7 +1230,7 @@ onMounted(() => {
     const targetPitch = sample(STOPS_PITCH, curP)
     const targetYaw = sample(STOPS_YAW, curP)
 
-    const k = Math.min(1, dt * 3.2)
+    const k = Math.min(1, dt * 3.5)
     curX += (targetX - curX) * k
     curY += (targetY - curY) * k
     curS += (targetS - curS) * k
@@ -1215,10 +1238,10 @@ onMounted(() => {
     curPitch += (targetPitch - curPitch) * k
     curYaw += (targetYaw - curYaw) * k
 
-    // Middle text sliding reveal: smoothly shows when approaching middle stop
-    if (curP < 0.38) {
+    // Middle text sliding reveal: smoothly shows right as drone approaches the middle
+    if (curP < 0.22) {
       middleTextState.value = 'before'
-    } else if (curP > 0.62) {
+    } else if (curP > 0.46) {
       middleTextState.value = 'after'
     } else {
       middleTextState.value = 'active'
