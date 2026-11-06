@@ -142,46 +142,120 @@
         </div>
       </section>
 
-      <!-- SECTION 3: VTX SPECTRUM (Drone flies to RIGHT, Text on LEFT) -->
-      <section class="py-32 sm:py-44 lg:py-52 px-4 sm:px-6 lg:px-8 max-w-[1240px] mx-auto min-h-[110vh] flex items-center">
+      <!-- SECTION 3: COMMUNITY BENEFITS (Drone flies to RIGHT, Text on LEFT) -->
+      <section id="benefits" class="py-32 sm:py-44 lg:py-52 px-4 sm:px-6 lg:px-8 max-w-[1240px] mx-auto min-h-[110vh] flex items-center">
         <div class="w-full grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           <!-- Left 7 cols: Content & Text on the left -->
           <div class="lg:col-span-7 space-y-5">
-            <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-white/10">
+            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2 pb-3 border-b border-slate-200 dark:border-white/10">
               <div>
-                <div class="text-[10px] font-mono tracking-widest uppercase text-slate-400 dark:text-slate-500">02 // SPECTRUM</div>
-                <h2 class="text-2xl sm:text-3xl font-black text-[#0c1e5b] dark:text-white">VTX Frequency Board</h2>
+                <div class="text-[10px] font-mono tracking-widest uppercase text-slate-400 dark:text-slate-500">02 // MEMBERSHIP BENEFITS</div>
+                <h2 class="text-2xl sm:text-3xl font-black text-[#0c1e5b] dark:text-white">What You Get When You Join</h2>
               </div>
-              <span class="text-[11px] font-mono text-slate-400">RACEBAND 5.8 GHz</span>
+              <span class="text-[11px] font-mono text-emerald-600 dark:text-[#5df0a8] font-bold">
+                ● 100% FREE COMMUNITY
+              </span>
             </div>
 
-            <p class="text-xs text-slate-500 dark:text-[#9aa6c4]">Check channel before arming motors in the pits.</p>
+            <p class="text-xs text-slate-600 dark:text-[#9aa6c4]">
+              Join Cambodia's open FPV collective. Everything you need to build, tune, and fly safely with active pilots.
+            </p>
 
-            <!-- 4x2 Grid for R1-R8 Channels -->
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-              <div
-                v-for="ch in vtxChannels"
-                :key="ch.channel"
-                class="p-3 rounded-xl border text-center transition flex flex-col justify-between"
-                :class="ch.pilot
-                  ? 'bg-slate-100/80 dark:bg-white/[0.04] border-slate-300 dark:border-white/20'
-                  : 'bg-white/80 dark:bg-white/[0.02] border-slate-200 dark:border-white/5 hover:border-emerald-400/50 cursor-pointer'"
-                @click="!ch.pilot && openClaimChannel(ch)"
-              >
-                <div>
-                  <div class="text-[10px] font-mono text-slate-400">{{ ch.mhz }} MHz</div>
-                  <div class="text-base font-black my-0.5 text-[#0c1e5b] dark:text-white font-mono">{{ ch.channel }}</div>
+            <!-- 6 Key Member Benefits Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <!-- Benefit 1 -->
+              <div class="p-3.5 rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 backdrop-blur-xl flex items-start gap-3 hover:border-slate-400 dark:hover:border-white/20 transition">
+                <div class="w-8 h-8 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 text-sm">
+                  🛠️
                 </div>
-
-                <div class="mt-1.5 pt-1.5 border-t border-slate-200/60 dark:border-white/5">
-                  <span v-if="ch.pilot" class="text-[11px] font-medium text-slate-700 dark:text-slate-200 truncate block">
-                    {{ ch.pilot }}
-                  </span>
-                  <span v-else class="text-[11px] font-bold text-emerald-600 dark:text-[#5df0a8] block">
-                    + Free
-                  </span>
+                <div class="space-y-0.5">
+                  <h4 class="text-xs font-bold text-[#0c1e5b] dark:text-white">Free Ta Khmau Bench Lab</h4>
+                  <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-snug">
+                    Open soldering stations, smoke stoppers, Betaflight 4.5 tuning, and multimeter diagnostics.
+                  </p>
                 </div>
               </div>
+
+              <!-- Benefit 2 -->
+              <div class="p-3.5 rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 backdrop-blur-xl flex items-start gap-3 hover:border-slate-400 dark:hover:border-white/20 transition">
+                <div class="w-8 h-8 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 text-sm">
+                  📍
+                </div>
+                <div class="space-y-0.5">
+                  <h4 class="text-xs font-bold text-[#0c1e5b] dark:text-white">Curated Flying Spots</h4>
+                  <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-snug">
+                    Tested legal locations across Phnom Penh (Koh Pich, OCIC, Chroy Changvar) with active spotters.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Benefit 3 -->
+              <div class="p-3.5 rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 backdrop-blur-xl flex items-start gap-3 hover:border-slate-400 dark:hover:border-white/20 transition">
+                <div class="w-8 h-8 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 text-sm">
+                  📡
+                </div>
+                <div class="space-y-0.5">
+                  <h4 class="text-xs font-bold text-[#0c1e5b] dark:text-white">Coordinated VTX Spectrum</h4>
+                  <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-snug">
+                    Zero video stomping. Coordinated Raceband 5.8 GHz & HD channels so nobody crashes your feed.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Benefit 4 -->
+              <div class="p-3.5 rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 backdrop-blur-xl flex items-start gap-3 hover:border-slate-400 dark:hover:border-white/20 transition">
+                <div class="w-8 h-8 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0 text-sm">
+                  🖨️
+                </div>
+                <div class="space-y-0.5">
+                  <h4 class="text-xs font-bold text-[#0c1e5b] dark:text-white">TPU 3D Print Priority</h4>
+                  <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-snug">
+                    Member discounts on custom GoPro mounts, motor arm skids, antenna mounts, and bumpers.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Benefit 5 -->
+              <div class="p-3.5 rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 backdrop-blur-xl flex items-start gap-3 hover:border-slate-400 dark:hover:border-white/20 transition">
+                <div class="w-8 h-8 rounded-xl bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 flex items-center justify-center shrink-0 text-sm">
+                  🤝
+                </div>
+                <div class="space-y-0.5">
+                  <h4 class="text-xs font-bold text-[#0c1e5b] dark:text-white">Maiden Flight Mentorship</h4>
+                  <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-snug">
+                    Senior pilots personally guide your first flight, failsafe setup, and emergency safety disarms.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Benefit 6 -->
+              <div class="p-3.5 rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 backdrop-blur-xl flex items-start gap-3 hover:border-slate-400 dark:hover:border-white/20 transition">
+                <div class="w-8 h-8 rounded-xl bg-rose-500/10 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0 text-sm">
+                  ⚡
+                </div>
+                <div class="space-y-0.5">
+                  <h4 class="text-xs font-bold text-[#0c1e5b] dark:text-white">Field Spares & Repairs</h4>
+                  <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-snug">
+                    Shared field toolkit with spare props, M3 hardware, parallel LiPo charging, and quick solder fixes.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Bottom action banner -->
+            <div class="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <span class="text-[11px] text-slate-400 dark:text-slate-500 font-mono">
+                Open to Tiny Whoop, 3.5" cinewhoop, 5" freestyle & long-range.
+              </span>
+              <a
+                href="https://t.me/aerobyteacademy"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-full text-xs font-bold bg-[#0c1e5b] dark:bg-white text-white dark:text-[#0c1e5b] hover:opacity-90 transition cursor-pointer shrink-0"
+              >
+                <span>Join Telegram Hub</span>
+                <span>↗</span>
+              </a>
             </div>
           </div>
 
@@ -441,59 +515,6 @@
       </div>
     </div>
 
-    <!-- MODAL 2: CLAIM VTX RACEBAND SLOT -->
-    <div
-      v-if="showClaimModal && targetChannel"
-      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md"
-      @click.self="showClaimModal = false"
-    >
-      <div class="w-full max-w-sm p-6 rounded-2xl bg-white dark:bg-[#0c142c] border border-slate-200 dark:border-white/10 shadow-2xl text-left space-y-4 animate-in fade-in zoom-in-95 duration-200">
-        <h3 class="text-base font-bold text-[#0c1e5b] dark:text-white font-mono">
-          RESERVE // {{ targetChannel.channel }} ({{ targetChannel.mhz }} MHz)
-        </h3>
-
-        <form @submit.prevent="confirmClaimChannel" class="space-y-3 text-xs">
-          <div>
-            <label class="block font-medium text-slate-700 dark:text-slate-300 mb-1">Callsign</label>
-            <input
-              v-model="claimForm.pilot"
-              required
-              placeholder="e.g. Vireak_FPV"
-              class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-black/30 border border-slate-300 dark:border-white/10 text-slate-800 dark:text-white outline-none"
-            />
-          </div>
-          <div>
-            <label class="block font-medium text-slate-700 dark:text-slate-300 mb-1">Protocol</label>
-            <select
-              v-model="claimForm.protocol"
-              class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-[#121c3d] border border-slate-300 dark:border-white/10 text-slate-800 dark:text-white outline-none"
-            >
-              <option value="DJI O3 / 25mW">DJI O3 (25mW)</option>
-              <option value="Analog / 200mW">Analog (200mW)</option>
-              <option value="Walksnail Avatar">Walksnail Avatar</option>
-              <option value="HDZero / 200mW">HDZero (200mW)</option>
-            </select>
-          </div>
-
-          <div class="pt-3 flex items-center justify-end gap-2">
-            <button
-              type="button"
-              @click="showClaimModal = false"
-              class="px-4 py-2 rounded-full text-slate-600 dark:text-slate-300 cursor-pointer"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              class="px-5 py-2 rounded-full font-bold bg-emerald-500 hover:bg-emerald-600 text-white cursor-pointer"
-            >
-              Confirm
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-
   </div>
 </template>
 
@@ -567,39 +588,6 @@ function toggleRSVP(session) {
     session.attendees = session.attendees.filter((p) => p !== 'You')
     showToast(`RSVP Cancelled: ${session.title}`)
   }
-}
-
-// ----------------------------------------------------
-// VTX RACEBAND FREQUENCIES (5.8 GHz)
-// ----------------------------------------------------
-const vtxChannels = ref([
-  { channel: 'R1', mhz: 5658, pilot: 'Dara', protocol: 'DJI O3' },
-  { channel: 'R2', mhz: 5695, pilot: null, protocol: null },
-  { channel: 'R3', mhz: 5732, pilot: 'Samnang', protocol: 'Analog' },
-  { channel: 'R4', mhz: 5769, pilot: null, protocol: null },
-  { channel: 'R5', mhz: 5806, pilot: 'Alex', protocol: 'Walksnail' },
-  { channel: 'R6', mhz: 5843, pilot: null, protocol: null },
-  { channel: 'R7', mhz: 5880, pilot: 'Sophea', protocol: 'HDZero' },
-  { channel: 'R8', mhz: 5917, pilot: null, protocol: null }
-])
-
-const showClaimModal = ref(false)
-const targetChannel = ref(null)
-const claimForm = ref({ pilot: '', protocol: 'DJI O3 / 25mW' })
-
-function openClaimChannel(ch) {
-  targetChannel.value = ch
-  claimForm.value.pilot = ''
-  showClaimModal.value = true
-}
-
-function confirmClaimChannel() {
-  if (!targetChannel.value || !claimForm.value.pilot.trim()) return
-  targetChannel.value.pilot = claimForm.value.pilot.trim()
-  targetChannel.value.protocol = claimForm.value.protocol
-  showClaimModal.value = false
-  showToast(`Reserved ${targetChannel.value.channel} for ${claimForm.value.pilot}`)
-  targetChannel.value = null
 }
 
 // ----------------------------------------------------
