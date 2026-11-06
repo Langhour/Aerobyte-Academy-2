@@ -34,9 +34,10 @@
     <!-- Page Content Floating Over Fixed 3D Drone -->
     <div class="relative z-10">
 
-      <!-- SECTION 1: HERO (Pure 2-Line Cinematic Layout matching Neuralink example) -->
-      <section class="h-[calc(100vh-64px)] min-h-[580px] flex flex-col items-center justify-center text-center px-4 sm:px-6 relative select-none">
-        <div class="max-w-4xl mx-auto space-y-3 sm:space-y-4">
+      <!-- SECTION 1: HERO (Pure 2-Line Cinematic Layout placed on top of the drone) -->
+      <section class="h-[calc(100vh-64px)] min-h-[580px] flex flex-col items-center justify-between text-center px-4 sm:px-6 pt-8 sm:pt-12 pb-8 relative select-none">
+        <!-- TOP AREA: TWO TEXT LINES DIRECTLY ABOVE THE DRONE -->
+        <div class="max-w-4xl mx-auto space-y-2.5 sm:space-y-3.5 pt-2 sm:pt-4">
           <!-- LINE 1: BOLD GEOMETRIC TITLE -->
           <h1 class="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-black tracking-[0.14em] sm:tracking-[0.18em] uppercase text-[#0c1e5b] dark:text-white drop-shadow-sm font-sans transition-colors">
             AERO FLY
@@ -61,10 +62,13 @@
           </div>
         </div>
 
-        <!-- Scroll Indicator -->
+        <!-- Middle spacer keeping drone clear and unobstructed in view -->
+        <div class="flex-1 pointer-events-none"></div>
+
+        <!-- Scroll Indicator at bottom -->
         <a
           href="#sessions"
-          class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1.5 opacity-40 hover:opacity-100 transition-opacity text-[10px] font-mono tracking-widest uppercase text-slate-400 dark:text-slate-500 cursor-pointer"
+          class="flex flex-col items-center gap-1.5 opacity-40 hover:opacity-100 transition-opacity text-[10px] font-mono tracking-widest uppercase text-slate-400 dark:text-slate-500 cursor-pointer"
         >
           <span>SCROLL</span>
           <span class="animate-bounce">↓</span>
