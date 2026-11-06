@@ -218,85 +218,84 @@
 
             <!-- 6 Key Member Benefits Grid -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <!-- Benefit 1 -->
-              <div class="p-3.5 rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 backdrop-blur-xl flex items-start gap-3 hover:border-slate-400 dark:hover:border-white/20 transition">
-                <div class="w-8 h-8 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 text-sm">
-                  🛠️
-                </div>
-                <div class="space-y-0.5">
-                  <h4 class="text-xs font-bold text-[#0c1e5b] dark:text-white">Free Ta Khmau Bench Lab</h4>
-                  <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-snug">
-                    Open soldering stations, smoke stoppers, Betaflight 4.5 tuning, and multimeter diagnostics.
-                  </p>
-                </div>
-              </div>
-
-              <!-- Benefit 2 -->
-              <div class="p-3.5 rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 backdrop-blur-xl flex items-start gap-3 hover:border-slate-400 dark:hover:border-white/20 transition">
-                <div class="w-8 h-8 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 text-sm">
-                  📍
-                </div>
-                <div class="space-y-0.5">
-                  <h4 class="text-xs font-bold text-[#0c1e5b] dark:text-white">Curated Flying Spots</h4>
-                  <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-snug">
-                    Tested legal locations across Phnom Penh (Koh Pich, OCIC, Chroy Changvar) with active spotters.
-                  </p>
-                </div>
-              </div>
-
-              <!-- Benefit 3 -->
-              <div class="p-3.5 rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 backdrop-blur-xl flex items-start gap-3 hover:border-slate-400 dark:hover:border-white/20 transition">
-                <div class="w-8 h-8 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 text-sm">
-                  📡
-                </div>
-                <div class="space-y-0.5">
-                  <h4 class="text-xs font-bold text-[#0c1e5b] dark:text-white">Coordinated VTX Spectrum</h4>
-                  <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-snug">
-                    Zero video stomping. Coordinated Raceband 5.8 GHz & HD channels so nobody crashes your feed.
-                  </p>
-                </div>
-              </div>
-
-              <!-- Benefit 4 -->
+              <!-- Benefit 1: Aero Print Discounts -->
               <div class="p-3.5 rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 backdrop-blur-xl flex items-start gap-3 hover:border-slate-400 dark:hover:border-white/20 transition">
                 <div class="w-8 h-8 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0 text-sm">
                   🖨️
                 </div>
                 <div class="space-y-0.5">
-                  <h4 class="text-xs font-bold text-[#0c1e5b] dark:text-white">TPU 3D Print Priority</h4>
+                  <h4 class="text-xs font-bold text-[#0c1e5b] dark:text-white">Aero Print 3D Discounts</h4>
                   <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-snug">
-                    Member discounts on custom GoPro mounts, motor arm skids, antenna mounts, and bumpers.
+                    Exclusive member discounts when you order 3D prints — custom TPU GoPro mounts, arm skids, antenna tubes, and drone armor.
                   </p>
                 </div>
               </div>
 
-              <!-- Benefit 5 -->
+              <!-- Benefit 2: Free Ta Khmau Lab Access -->
+              <div class="p-3.5 rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 backdrop-blur-xl flex items-start gap-3 hover:border-slate-400 dark:hover:border-white/20 transition">
+                <div class="w-8 h-8 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 text-sm">
+                  📍
+                </div>
+                <div class="space-y-0.5">
+                  <h4 class="text-xs font-bold text-[#0c1e5b] dark:text-white">Free Ta Khmau Lab Access</h4>
+                  <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-snug">
+                    Our workshop in Ta Khmau is 100% free. Come and join anytime in your free time — use open soldering benches and tools at no cost.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Benefit 3: Meet Pro Pilots & Mechanics -->
+              <div class="p-3.5 rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 backdrop-blur-xl flex items-start gap-3 hover:border-slate-400 dark:hover:border-white/20 transition">
+                <div class="w-8 h-8 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 text-sm">
+                  🛠️
+                </div>
+                <div class="space-y-0.5">
+                  <h4 class="text-xs font-bold text-[#0c1e5b] dark:text-white">Pro Config &amp; Mechanic Team</h4>
+                  <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-snug">
+                    Bring your drone to configure Betaflight, tune rates, and discuss electronics directly with our professional pilots and mechanics.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Benefit 4: Find Flight Partners (Never Fly Alone) -->
               <div class="p-3.5 rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 backdrop-blur-xl flex items-start gap-3 hover:border-slate-400 dark:hover:border-white/20 transition">
                 <div class="w-8 h-8 rounded-xl bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 flex items-center justify-center shrink-0 text-sm">
                   🤝
                 </div>
                 <div class="space-y-0.5">
-                  <h4 class="text-xs font-bold text-[#0c1e5b] dark:text-white">Maiden Flight Mentorship</h4>
+                  <h4 class="text-xs font-bold text-[#0c1e5b] dark:text-white">Have a Drone? Find Flight Buddies</h4>
                   <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-snug">
-                    Senior pilots personally guide your first flight, failsafe setup, and emergency safety disarms.
+                    Have a drone but no partner to fly with? Come and join our group flights, meet local pilots, find spotters, and fly together safely.
                   </p>
                 </div>
               </div>
 
-              <!-- Benefit 6 -->
+              <!-- Benefit 5: Beginners & Hobbyists Welcome (No Drone Needed) -->
+              <div class="p-3.5 rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 backdrop-blur-xl flex items-start gap-3 hover:border-slate-400 dark:hover:border-white/20 transition">
+                <div class="w-8 h-8 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 text-sm">
+                  🐣
+                </div>
+                <div class="space-y-0.5">
+                  <h4 class="text-xs font-bold text-[#0c1e5b] dark:text-white">No Drone Yet? You Can Still Join!</h4>
+                  <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-snug">
+                    New to drones or have a hobby curiosity without gear? You are 100% welcome! Hang out, spectate in goggles, try sims, and learn for free.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Benefit 6: Coordinated Airspace & Field Spares -->
               <div class="p-3.5 rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 backdrop-blur-xl flex items-start gap-3 hover:border-slate-400 dark:hover:border-white/20 transition">
                 <div class="w-8 h-8 rounded-xl bg-rose-500/10 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0 text-sm">
                   ⚡
                 </div>
                 <div class="space-y-0.5">
-                  <h4 class="text-xs font-bold text-[#0c1e5b] dark:text-white">Field Spares & Repairs</h4>
+                  <h4 class="text-xs font-bold text-[#0c1e5b] dark:text-white">Coordinated Airspace &amp; Field Spares</h4>
                   <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-snug">
-                    Shared field toolkit with spare props, M3 hardware, parallel LiPo charging, and quick solder fixes.
+                    Zero video stomping with coordinated 5.8 GHz &amp; HD channels, plus shared field toolkits and spare hardware so you never get grounded.
                   </p>
                 </div>
               </div>
             </div>
-
             <!-- Bottom action banner -->
             <div class="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <span class="text-[11px] text-slate-400 dark:text-slate-500 font-mono">
