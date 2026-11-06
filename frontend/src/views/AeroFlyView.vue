@@ -1210,9 +1210,9 @@ onMounted(() => {
 
     // Middle section sliding reveal: triggers when drone is in middle stop (around p = 0.50)
     // Slides into view when arriving, and disappears when drone goes down (curP > 0.56) or back up (curP < 0.44)
-    if (curP < 0.43) {
+    if (curP < 0.38) {
       middleTextState.value = 'before'
-    } else if (curP > 0.57) {
+    } else if (curP > 0.60) {
       middleTextState.value = 'after'
     } else {
       middleTextState.value = 'active'
