@@ -1107,79 +1107,79 @@ onMounted(() => {
   // Stage 5 (Radar): Center (Drone in upper center, Radar noticeboard below)
   const STOPS_X = [
     { p: 0.00, v: 0.0 },   // Hero: Center
-    { p: 0.08, v: 0.0 },   // Hero hold
-    { p: 0.16, v: -2.8 },  // Sweep smoothly to Left
-    { p: 0.38, v: -2.8 },  // Section 2 Plateau: LOCKED ON LEFT opposite cards
-    { p: 0.46, v: 0.0 },   // Sweep smoothly to Center
-    { p: 0.62, v: 0.0 },   // Middle Stop Plateau: LOCKED IN CENTER
-    { p: 0.70, v: 2.8 },   // Sweep smoothly to Right
-    { p: 0.88, v: 2.8 },   // Section 4 Plateau: LOCKED ON RIGHT opposite perks
-    { p: 0.94, v: 0.0 },   // Sweep smoothly to Center
+    { p: 0.06, v: 0.0 },   // Hero hold
+    { p: 0.12, v: -2.8 },  // Sweep smoothly to Left
+    { p: 0.25, v: -2.8 },  // Section 2 Plateau: LOCKED ON LEFT opposite cards
+    { p: 0.33, v: 0.0 },   // Rotates & sweeps smoothly to Center right after Kirirom card!
+    { p: 0.52, v: 0.0 },   // Middle Stop Plateau: LOCKED IN CENTER
+    { p: 0.60, v: 2.8 },   // Sweep smoothly to Right
+    { p: 0.78, v: 2.8 },   // Section 4 Plateau: LOCKED ON RIGHT opposite perks
+    { p: 0.86, v: 0.0 },   // Sweep smoothly to Center
     { p: 1.00, v: 0.0 }    // Bottom Plateau: LOCKED IN CENTER
   ]
 
   const STOPS_Y = [
     { p: 0.00, v: -0.40 }, // Hero: Below top text lines
-    { p: 0.08, v: -0.40 }, // Hero hold
-    { p: 0.16, v: 0.15 },  // Section 2: Elevated opposite cards
-    { p: 0.38, v: 0.15 },  // Section 2 hold
-    { p: 0.46, v: 0.55 },  // Rise into upper center
-    { p: 0.62, v: 0.55 },  // Middle Stop Plateau: High above FLY AS ONE text
-    { p: 0.70, v: 0.15 },  // Section 4: Elevated opposite perks
-    { p: 0.88, v: 0.15 },  // Section 4 hold
-    { p: 0.94, v: 0.35 },  // Bottom: Upper center
+    { p: 0.06, v: -0.40 }, // Hero hold
+    { p: 0.12, v: 0.15 },  // Section 2: Elevated opposite cards
+    { p: 0.25, v: 0.15 },  // Section 2 hold
+    { p: 0.33, v: 0.55 },  // Rise into upper center
+    { p: 0.52, v: 0.55 },  // Middle Stop Plateau: High above FLY AS ONE text
+    { p: 0.60, v: 0.15 },  // Section 4: Elevated opposite perks
+    { p: 0.78, v: 0.15 },  // Section 4 hold
+    { p: 0.86, v: 0.35 },  // Bottom: Upper center
     { p: 1.00, v: 0.35 }   // Bottom hold
   ]
 
   const STOPS_S = [
     { p: 0.00, v: 1.35 },  // Hero
-    { p: 0.08, v: 1.35 },
-    { p: 0.16, v: 1.10 },  // Left: Compact
-    { p: 0.38, v: 1.10 },
-    { p: 0.46, v: 1.25 },  // Middle Stop: Prominent
-    { p: 0.62, v: 1.25 },
-    { p: 0.70, v: 1.10 },  // Right: Compact
-    { p: 0.88, v: 1.10 },
-    { p: 0.94, v: 1.15 },  // Bottom: Balanced
+    { p: 0.06, v: 1.35 },
+    { p: 0.12, v: 1.10 },  // Left: Compact
+    { p: 0.25, v: 1.10 },
+    { p: 0.33, v: 1.25 },  // Middle Stop: Prominent
+    { p: 0.52, v: 1.25 },
+    { p: 0.60, v: 1.10 },  // Right: Compact
+    { p: 0.78, v: 1.10 },
+    { p: 0.86, v: 1.15 },  // Bottom: Balanced
     { p: 1.00, v: 1.15 }
   ]
 
   const STOPS_ROLL = [
     { p: 0.00, v: 0.0 },
-    { p: 0.08, v: 0.0 },
-    { p: 0.16, v: 0.0 },
-    { p: 0.38, v: 0.0 },
-    { p: 0.46, v: 0.0 },
-    { p: 0.62, v: 0.0 },
-    { p: 0.70, v: 0.0 },
-    { p: 0.88, v: 0.0 },
-    { p: 0.94, v: 0.0 },
+    { p: 0.06, v: 0.0 },
+    { p: 0.12, v: 0.0 },
+    { p: 0.25, v: 0.0 },
+    { p: 0.33, v: 0.0 },
+    { p: 0.52, v: 0.0 },
+    { p: 0.60, v: 0.0 },
+    { p: 0.78, v: 0.0 },
+    { p: 0.86, v: 0.0 },
     { p: 1.00, v: 0.0 }
   ]
 
   const STOPS_PITCH = [
     { p: 0.00, v: 0.22 },   // Natural forward flight tilt facing user
-    { p: 0.08, v: 0.22 },
-    { p: 0.16, v: 0.00 },   // True level horizontal hover pointed directly sideways at text
-    { p: 0.38, v: 0.00 },
-    { p: 0.46, v: 0.22 },   // Natural forward flight tilt in middle stop
-    { p: 0.62, v: 0.22 },
-    { p: 0.70, v: 0.00 },   // True level horizontal hover pointed directly sideways at perks
-    { p: 0.88, v: 0.00 },
-    { p: 0.94, v: 0.20 },
+    { p: 0.06, v: 0.22 },
+    { p: 0.12, v: 0.00 },   // True level horizontal hover pointed directly sideways at text
+    { p: 0.25, v: 0.00 },
+    { p: 0.33, v: 0.22 },   // Natural forward flight tilt in middle stop
+    { p: 0.52, v: 0.22 },
+    { p: 0.60, v: 0.00 },   // True level horizontal hover pointed directly sideways at perks
+    { p: 0.78, v: 0.00 },
+    { p: 0.86, v: 0.20 },
     { p: 1.00, v: 0.20 }
   ]
 
   const STOPS_YAW = [
     { p: 0.00, v: 0.0 },            // 1. Hero: Facing forward
-    { p: 0.08, v: 0.0 },            // Hero hold
-    { p: 0.16, v: YAW_90_RIGHT },   // Rotates FULL 90° right to point directly at text
-    { p: 0.38, v: YAW_90_RIGHT },   // Section 2 Plateau: FIRMLY LOCKED AT 90° opposite cards
-    { p: 0.46, v: 0.0 },            // Rotates to 0° facing forward in center
-    { p: 0.62, v: 0.0 },            // Middle Stop Plateau: FIRMLY LOCKED AT 0° facing forward
-    { p: 0.70, v: YAW_90_LEFT },    // Rotates FULL 90° left to point directly at perks
-    { p: 0.88, v: YAW_90_LEFT },    // Section 4 Plateau: FIRMLY LOCKED AT 90° opposite perks
-    { p: 0.94, v: 0.0 },            // Rotates to 0° facing forward in center
+    { p: 0.06, v: 0.0 },            // Hero hold
+    { p: 0.12, v: YAW_90_RIGHT },   // Rotates FULL 90° right to point directly at text
+    { p: 0.25, v: YAW_90_RIGHT },   // Section 2 Plateau: FIRMLY LOCKED AT 90° opposite cards
+    { p: 0.33, v: 0.0 },            // Rotates to 0° facing forward in center right after cards!
+    { p: 0.52, v: 0.0 },            // Middle Stop Plateau: FIRMLY LOCKED AT 0° facing forward
+    { p: 0.60, v: YAW_90_LEFT },    // Rotates FULL 90° left to point directly at perks
+    { p: 0.78, v: YAW_90_LEFT },    // Section 4 Plateau: FIRMLY LOCKED AT 90° opposite perks
+    { p: 0.86, v: 0.0 },            // Rotates to 0° facing forward in center
     { p: 1.00, v: 0.0 }             // Bottom hold: Facing forward
   ]
 
@@ -1238,10 +1238,10 @@ onMounted(() => {
     curPitch = sample(STOPS_PITCH, curP)
     curYaw = sample(STOPS_YAW, curP)
 
-    // Middle section sliding reveal: triggers smoothly when arriving from Section 2
-    if (curP < 0.36) {
+    // Middle section sliding reveal: triggers smoothly when arriving from Section 2 (right after cards)
+    if (curP < 0.26) {
       middleTextState.value = 'before'
-    } else if (curP > 0.66) {
+    } else if (curP > 0.55) {
       middleTextState.value = 'after'
     } else {
       middleTextState.value = 'active'
