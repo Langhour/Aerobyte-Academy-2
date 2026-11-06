@@ -15,57 +15,6 @@
 
     <!-- Page Content Floating Over Fixed 3D Drone -->
     <div class="relative z-10">
-      <!-- Aero Fly Top Sub-Navigation Bar -->
-      <header class="sticky top-0 z-40 bg-white/85 dark:bg-[#04060f]/85 backdrop-blur-xl border-b border-slate-200 dark:border-[rgba(150,175,230,0.12)] transition-colors duration-300 shadow-2xs">
-        <div class="mx-auto max-w-[1180px] px-4 sm:px-6 lg:px-8">
-          <div class="flex items-center justify-between py-3.5 gap-4">
-            <!-- Brand Mark -->
-            <div class="flex items-center gap-2.5">
-              <span class="text-orange-500 dark:text-[#5df0a8] text-base font-extrabold select-none">▲</span>
-              <span class="text-lg font-black tracking-widest uppercase text-[#0c1e5b] dark:text-white">Aero Fly</span>
-              <span class="hidden sm:inline-block text-[10px] font-bold uppercase tracking-wider bg-sky-100 text-sky-700 dark:bg-[#5df0a8]/10 dark:text-[#5df0a8] border border-sky-200 dark:border-[#5df0a8]/20 px-2.5 py-0.5 rounded-full ml-1">
-                Real FPV Flight Collective
-              </span>
-            </div>
-
-            <!-- Page Nav Links -->
-            <nav class="hidden md:flex items-center gap-6 text-xs sm:text-sm font-semibold text-slate-600 dark:text-[#9aa6c4]">
-              <a href="#features" class="hover:text-[#0c1e5b] dark:hover:text-white transition">Features</a>
-              <a href="#telemetry" class="hover:text-[#0c1e5b] dark:hover:text-white transition">Telemetry</a>
-              <a href="#events" class="hover:text-[#0c1e5b] dark:hover:text-white transition">Events & Schedule</a>
-              <a href="#store" class="hover:text-[#0c1e5b] dark:hover:text-white transition">Aero Store</a>
-            </nav>
-
-            <!-- Action Buttons: Theme Toggle & Telegram -->
-            <div class="flex items-center gap-3">
-              <!-- Quick Theme Toggle Pill Button -->
-              <button
-                type="button"
-                @click="toggleTheme"
-                class="inline-flex items-center justify-center p-2 rounded-full border border-slate-300 dark:border-[rgba(150,175,230,0.2)] bg-white/90 dark:bg-white/5 text-slate-800 dark:text-slate-200 hover:scale-105 active:scale-95 transition cursor-pointer shadow-xs"
-                :title="isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'"
-                aria-label="Toggle Theme"
-              >
-                <span v-if="isDark" class="text-sm">☀️</span>
-                <span v-else class="text-sm">🌙</span>
-              </button>
-
-              <a
-                href="https://t.me/aerobyteacademy"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="inline-flex items-center gap-2 rounded-full bg-[#ff6b00] hover:bg-[#e05e00] text-white px-4 py-2 text-xs sm:text-sm font-bold transition shadow-sm active:scale-95 cursor-pointer"
-              >
-                <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
-                  <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.121l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.458c.538-.196 1.006.128.832.943z"/>
-                </svg>
-                <span>Join Telegram</span>
-              </a>
-            </div>
-          </div>
-        </div>
-      </header>
-
       <!-- SECTION 1: HERO (The 3D Drone is centered right below the content) -->
       <section class="min-h-[92vh] flex flex-col justify-between items-center text-center px-4 sm:px-6 pt-12 pb-16 relative">
         <div class="max-w-3xl mx-auto space-y-5">
@@ -412,7 +361,7 @@ import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js'
 import { GammaCorrectionShader } from 'three/examples/jsm/shaders/GammaCorrectionShader.js'
 import { useTheme } from '../composables/useTheme'
 
-const { isDark, toggleTheme } = useTheme()
+const { isDark } = useTheme()
 
 const canvasRef = ref(null)
 const loadingProgress = ref(0)
