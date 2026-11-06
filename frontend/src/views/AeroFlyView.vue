@@ -142,6 +142,38 @@
         </div>
       </section>
 
+      <!-- SECTION: THE MIDDLE STOP (Drone stops in the MIDDLE, Two Text Lines) -->
+      <section id="middle" class="py-32 sm:py-44 lg:py-52 px-4 sm:px-6 min-h-[110vh] flex flex-col items-center justify-end text-center relative select-none">
+        <!-- Generous space above so the 3D drone hovers freely in the center -->
+        <div class="flex-1 min-h-[35vh] pointer-events-none"></div>
+
+        <!-- TWO TEXT LINES UNDER THE CENTERED DRONE -->
+        <div class="max-w-4xl mx-auto space-y-3 sm:space-y-4 pb-12 sm:pb-20 relative z-10">
+          <!-- LINE 1: BOLD GEOMETRIC TITLE -->
+          <h2 class="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-[0.14em] sm:tracking-[0.18em] uppercase text-[#0c1e5b] dark:text-white drop-shadow-sm font-sans transition-colors">
+            FLY AS ONE
+          </h2>
+
+          <!-- LINE 2: UPPERCASE SUBTITLE WITH MINIMAL RED DOT ACCENTS -->
+          <div class="relative inline-block">
+            <p class="text-xs sm:text-sm md:text-base font-bold tracking-[0.24em] sm:tracking-[0.32em] uppercase text-slate-700 dark:text-white/90">
+              FROM FIRST HOVER TO PRO FREESTYLE &amp; CINEMATIC MISSIONS.
+            </p>
+            <!-- Minimal Red Dot Accents from reference image -->
+            <div class="mt-2.5 flex items-center justify-center gap-1.5 opacity-80">
+              <span class="w-1 h-1 rounded-full bg-red-500"></span>
+              <span class="w-1 h-1 rounded-full bg-red-500"></span>
+              <span class="w-1 h-1 rounded-full bg-red-500"></span>
+              <span class="w-1 h-1 rounded-full bg-red-500"></span>
+              <span class="w-1 h-1 rounded-full bg-red-500"></span>
+              <span class="w-1 h-1 rounded-full bg-red-500"></span>
+              <span class="w-1 h-1 rounded-full bg-red-500"></span>
+              <span class="w-1 h-1 rounded-full bg-red-500"></span>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <!-- SECTION 3: COMMUNITY BENEFITS (Drone flies to RIGHT, Text on LEFT) -->
       <section id="benefits" class="py-32 sm:py-44 lg:py-52 px-4 sm:px-6 lg:px-8 max-w-[1240px] mx-auto min-h-[110vh] flex items-center">
         <div class="w-full grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
@@ -264,18 +296,18 @@
         </div>
       </section>
 
-      <!-- SECTION 4: PILOT RADAR (Drone flies to LEFT, Text on RIGHT) -->
-      <section id="buddy-board" class="py-32 sm:py-44 lg:py-52 px-4 sm:px-6 lg:px-8 max-w-[1240px] mx-auto min-h-[110vh] flex items-center">
-        <div class="w-full grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-          <!-- Left 5 cols: Completely clear open air for 3D drone flying on the left -->
-          <div class="hidden lg:block lg:col-span-5 pointer-events-none"></div>
+      <!-- SECTION 5: PILOT RADAR & WORKSHOP HUB (Drone stops in the MIDDLE, Text Below) -->
+      <section id="buddy-board" class="py-32 sm:py-44 lg:py-52 px-4 sm:px-6 lg:px-8 max-w-[1240px] mx-auto min-h-[110vh] flex flex-col justify-end">
+        <!-- Generous space above so the 3D drone hovers freely in the center -->
+        <div class="flex-1 min-h-[30vh] pointer-events-none"></div>
 
-          <!-- Right 7 cols: Content & Text on the right -->
-          <div class="lg:col-span-7 space-y-4">
+        <div class="w-full space-y-8 relative z-10">
+          <!-- Active Pilot Callouts -->
+          <div class="space-y-4">
             <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-white/10">
               <div>
-                <div class="text-[10px] font-mono tracking-widest uppercase text-slate-400 dark:text-slate-500">03 // RADAR</div>
-                <h2 class="text-2xl sm:text-3xl font-black text-[#0c1e5b] dark:text-white">Pilot Callouts</h2>
+                <div class="text-[10px] font-mono tracking-widest uppercase text-slate-400 dark:text-slate-500">03 // PILOT RADAR</div>
+                <h2 class="text-2xl sm:text-3xl font-black text-[#0c1e5b] dark:text-white">Active Flight Callouts</h2>
               </div>
               <button
                 type="button"
@@ -302,97 +334,82 @@
               </button>
             </div>
 
-            <!-- Short Callout Cards -->
-            <div class="space-y-2.5">
+            <!-- Short Callout Cards Grid -->
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
               <div
                 v-for="post in filteredPosts"
                 :key="post.id"
-                class="p-3.5 rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 backdrop-blur-xl flex items-center justify-between gap-3"
+                class="p-3.5 rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 backdrop-blur-xl flex flex-col justify-between gap-3"
               >
-                <div class="space-y-0.5">
-                  <div class="flex items-center gap-2 text-[10px] font-mono text-slate-400">
+                <div class="space-y-1">
+                  <div class="flex items-center justify-between text-[10px] font-mono text-slate-400">
                     <span class="font-bold text-[#0c1e5b] dark:text-white">{{ post.author }}</span>
-                    <span>·</span>
                     <span>{{ post.spot }}</span>
-                    <span>·</span>
-                    <span>{{ post.droneSetup }}</span>
                   </div>
                   <p class="text-xs text-slate-600 dark:text-slate-300">
                     "{{ post.message }}"
                   </p>
                 </div>
 
+                <div class="flex items-center justify-between pt-1 text-[11px] font-mono border-t border-slate-100 dark:border-white/5">
+                  <span class="text-slate-400">{{ post.droneSetup }}</span>
+                  <a
+                    :href="post.telegramLink || 'https://t.me/aerobyteacademy'"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="font-bold text-sky-600 dark:text-cyan-400 hover:underline"
+                  >
+                    Reply →
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom Row: Community & Workshop Hub -->
+          <div class="grid sm:grid-cols-2 gap-3.5 pt-4 border-t border-slate-200 dark:border-white/10">
+            <!-- Telegram -->
+            <div class="p-5 rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 backdrop-blur-xl flex flex-col justify-between">
+              <div class="space-y-1.5">
+                <div class="text-lg">💬</div>
+                <h3 class="text-sm font-bold text-[#0c1e5b] dark:text-white">Telegram Pilot Hub</h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400">
+                  Weekend weather polls, frequency reservations, and flight pins.
+                </p>
+              </div>
+              <div class="pt-3">
                 <a
-                  :href="post.telegramLink || 'https://t.me/aerobyteacademy'"
+                  href="https://t.me/aerobyteacademy"
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="font-bold text-xs text-sky-600 dark:text-cyan-400 hover:underline shrink-0"
+                  class="text-xs font-bold text-[#0c1e5b] dark:text-white hover:underline"
                 >
-                  Reply →
+                  t.me/aerobyteacademy ↗
+                </a>
+              </div>
+            </div>
+
+            <!-- Ta Khmau Lab -->
+            <div class="p-5 rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 backdrop-blur-xl flex flex-col justify-between">
+              <div class="space-y-1.5">
+                <div class="text-lg">📍</div>
+                <h3 class="text-sm font-bold text-[#0c1e5b] dark:text-white">Ta Khmau Flight Lab</h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400">
+                  Free open bench: Soldering, Betaflight 4.5 tuning, and Maiden tests.
+                </p>
+              </div>
+              <div class="pt-3">
+                <a
+                  href="https://maps.google.com/?q=Ta+Khmau+Cambodia"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="text-xs font-bold text-[#0c1e5b] dark:text-white hover:underline"
+                >
+                  Directions ↗
                 </a>
               </div>
             </div>
           </div>
-        </div>
-      </section>
-
-      <!-- SECTION 5: HANGAR & CONNECT (Drone flies to RIGHT, Text on LEFT) -->
-      <section class="py-32 sm:py-44 lg:py-52 px-4 sm:px-6 lg:px-8 max-w-[1240px] mx-auto min-h-[110vh] flex items-center">
-        <div class="w-full grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-          <!-- Left 7 cols: Content & Text on the left -->
-          <div class="lg:col-span-7 space-y-5">
-            <div class="pb-3 border-b border-slate-200 dark:border-white/10">
-              <div class="text-[10px] font-mono tracking-widest uppercase text-slate-400 dark:text-slate-500">04 // CONNECT</div>
-              <h2 class="text-2xl sm:text-3xl font-black text-[#0c1e5b] dark:text-white">Community & Workshop</h2>
-            </div>
-
-            <div class="grid sm:grid-cols-2 gap-3.5">
-              <!-- Telegram -->
-              <div class="p-5 rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 backdrop-blur-xl flex flex-col justify-between">
-                <div class="space-y-1.5">
-                  <div class="text-lg">💬</div>
-                  <h3 class="text-sm font-bold text-[#0c1e5b] dark:text-white">Telegram Pilot Hub</h3>
-                  <p class="text-xs text-slate-500 dark:text-slate-400">
-                    Weekend weather polls, frequency reservations, and flight pins.
-                  </p>
-                </div>
-                <div class="pt-3">
-                  <a
-                    href="https://t.me/aerobyteacademy"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="text-xs font-bold text-[#0c1e5b] dark:text-white hover:underline"
-                  >
-                    t.me/aerobyteacademy ↗
-                  </a>
-                </div>
-              </div>
-
-              <!-- Ta Khmau Lab -->
-              <div class="p-5 rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 backdrop-blur-xl flex flex-col justify-between">
-                <div class="space-y-1.5">
-                  <div class="text-lg">📍</div>
-                  <h3 class="text-sm font-bold text-[#0c1e5b] dark:text-white">Ta Khmau Flight Lab</h3>
-                  <p class="text-xs text-slate-500 dark:text-slate-400">
-                    Free open bench: Soldering, Betaflight 4.5 tuning, and Maiden tests.
-                  </p>
-                </div>
-                <div class="pt-3">
-                  <a
-                    href="https://maps.google.com/?q=Ta+Khmau+Cambodia"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="text-xs font-bold text-[#0c1e5b] dark:text-white hover:underline"
-                  >
-                    Directions ↗
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Right 5 cols: Completely clear open air for 3D drone flying on the right -->
-          <div class="hidden lg:block lg:col-span-5 pointer-events-none"></div>
         </div>
       </section>
 
@@ -1053,53 +1070,53 @@ onMounted(() => {
 
   const DEG90 = Math.PI * 0.5 // Exactly 90 degrees
 
+  // 5-STAGE FLIGHT S-CURVE MATCHING THE 5 CIRCLE PATH:
+  // Circle 1: Center (Hero, Text top)
+  // Circle 2: Left (Sessions, Text right)
+  // Circle 3: Middle Center (Middle Anthem, Two Text Lines below drone)
+  // Circle 4: Right (Benefits, Text left)
+  // Circle 5: Bottom Center (Radar & Workshop, Text below drone)
   const STOPS_X = [
-    { p: 0.00, v: 0.0 },   // Top Hero: Center
-    { p: 0.22, v: -3.0 },  // Section 1 (Gatherings): Drone on Left, Text on Right
-    { p: 0.48, v: 3.0 },   // Section 2 (Spectrum): Drone on Right, Text on Left
-    { p: 0.72, v: -3.0 },  // Section 3 (Radar): Drone on Left, Text on Right
-    { p: 0.95, v: 3.0 },   // Section 4 (Connect): Drone on Right, Text on Left
-    { p: 1.00, v: 3.0 }
+    { p: 0.00, v: 0.0 },   // 1. Top Hero: Center
+    { p: 0.25, v: -3.0 },  // 2. Weekend Flights: Drone on Left, Text on Right
+    { p: 0.50, v: 0.0 },   // 3. Middle Stop: Drone stops in the Middle
+    { p: 0.75, v: 3.0 },   // 4. Perks/Benefits: Drone on Right, Text on Left
+    { p: 1.00, v: 0.0 }    // 5. Bottom Hub: Drone stops in the Center
   ]
   const STOPS_Y = [
-    { p: 0.00, v: -0.4 },  // Hero: slightly low so it sits below top text
-    { p: 0.22, v: 0.0 },
-    { p: 0.48, v: 0.0 },
-    { p: 0.72, v: 0.0 },
-    { p: 0.95, v: 0.0 },
-    { p: 1.00, v: 0.0 }
+    { p: 0.00, v: -0.40 }, // 1. Hero: sits below top text
+    { p: 0.25, v: 0.00 },  // 2. Weekend Flights: vertically centered
+    { p: 0.50, v: 0.35 },  // 3. Middle Stop: sits in upper center above 2 text lines
+    { p: 0.75, v: 0.00 },  // 4. Perks: vertically centered
+    { p: 1.00, v: 0.35 }   // 5. Bottom Hub: sits in upper center above content
   ]
   const STOPS_S = [
-    { p: 0.00, v: 1.35 },
-    { p: 0.22, v: 1.10 },
-    { p: 0.48, v: 1.10 },
-    { p: 0.72, v: 1.10 },
-    { p: 0.95, v: 1.10 },
-    { p: 1.00, v: 1.10 }
+    { p: 0.00, v: 1.35 },  // Hero: Heroic
+    { p: 0.25, v: 1.10 },  // Side: Compact
+    { p: 0.50, v: 1.30 },  // Middle Stop: Prominent showcase
+    { p: 0.75, v: 1.10 },  // Side: Compact
+    { p: 1.00, v: 1.15 }   // Bottom: Balanced
   ]
   const STOPS_ROLL = [
     { p: 0.00, v: 0.0 },
-    { p: 0.22, v: 0.0 },
-    { p: 0.48, v: 0.0 },
-    { p: 0.72, v: 0.0 },
-    { p: 0.95, v: 0.0 },
+    { p: 0.25, v: 0.0 },
+    { p: 0.50, v: 0.0 },
+    { p: 0.75, v: 0.0 },
     { p: 1.00, v: 0.0 }
   ]
   const STOPS_PITCH = [
-    { p: 0.00, v: 0.22 },   // Natural forward flight pitch in hero
-    { p: 0.22, v: 0.12 },   // Slight forward hover tilt towards text
-    { p: 0.48, v: 0.12 },   // Slight forward hover tilt towards text
-    { p: 0.72, v: 0.12 },   // Slight forward hover tilt towards text
-    { p: 0.95, v: 0.12 },   // Slight forward hover tilt towards text
-    { p: 1.00, v: 0.15 }
+    { p: 0.00, v: 0.22 },  // Natural forward flight pitch in hero
+    { p: 0.25, v: 0.12 },  // Forward hover tilt towards text on right
+    { p: 0.50, v: 0.22 },  // Natural forward flight tilt facing user
+    { p: 0.75, v: 0.12 },  // Forward hover tilt towards text on left
+    { p: 1.00, v: 0.20 }   // Natural forward flight tilt
   ]
   const STOPS_YAW = [
-    { p: 0.00, v: 0.0 },     // Top Hero: Facing forward
-    { p: 0.22, v: DEG90 },   // Section 1: Drone on Left -> Rotates 90° to point directly at text on Right
-    { p: 0.48, v: -DEG90 },  // Section 2: Drone on Right -> Rotates 90° to point directly at text on Left
-    { p: 0.72, v: DEG90 },   // Section 3: Drone on Left -> Rotates 90° to point directly at text on Right
-    { p: 0.95, v: -DEG90 },  // Section 4: Drone on Right -> Rotates 90° to point directly at text on Left
-    { p: 1.00, v: -DEG90 }
+    { p: 0.00, v: 0.0 },     // 1. Hero: Facing forward
+    { p: 0.25, v: DEG90 },   // 2. Left: Rotates 90° right to point directly at text
+    { p: 0.50, v: 0.0 },     // 3. Middle Stop: Facing forward in Center
+    { p: 0.75, v: -DEG90 },  // 4. Right: Rotates 90° left to point directly at text
+    { p: 1.00, v: 0.0 }      // 5. Bottom: Facing forward in Center
   ]
 
   function sample(stops, p) {
