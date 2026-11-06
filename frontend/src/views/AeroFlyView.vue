@@ -76,72 +76,59 @@
       </section>
 
       <!-- SECTION 2: GATHERINGS (Drone flies to LEFT, Text on RIGHT) -->
-      <section id="sessions" class="py-24 sm:py-32 px-4 sm:px-6 lg:px-8 max-w-[1240px] mx-auto min-h-[85vh] flex items-center">
+      <section id="sessions" class="py-32 sm:py-44 lg:py-52 px-4 sm:px-6 lg:px-8 max-w-[1240px] mx-auto min-h-[110vh] flex items-center">
         <div class="w-full grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           <!-- Left 5 cols: Completely clear open air for 3D drone flying on the left -->
           <div class="hidden lg:block lg:col-span-5 pointer-events-none"></div>
 
           <!-- Right 7 cols: Content & Text on the right -->
-          <div class="lg:col-span-7 space-y-6">
-            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3 pb-4 border-b border-slate-200 dark:border-white/10">
+          <div class="lg:col-span-7 space-y-5">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-white/10">
               <div>
-                <div class="text-[11px] font-mono tracking-widest uppercase text-slate-400 dark:text-slate-500 mb-1">01 // GATHERINGS</div>
-                <h2 class="text-2xl sm:text-4xl font-black text-[#0c1e5b] dark:text-white">Weekend Flight Sessions</h2>
+                <div class="text-[10px] font-mono tracking-widest uppercase text-slate-400 dark:text-slate-500">01 // SESSIONS</div>
+                <h2 class="text-2xl sm:text-3xl font-black text-[#0c1e5b] dark:text-white">Weekend Flights</h2>
               </div>
-              <div class="inline-flex items-center gap-2 text-xs font-mono text-emerald-600 dark:text-[#5df0a8]">
-                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
-                <span>SKY: OPTIMAL · WIND 8 KM/H</span>
-              </div>
+              <span class="text-[11px] font-mono text-emerald-600 dark:text-[#5df0a8] font-bold">
+                ● SKY CLEAR · 8 KM/H
+              </span>
             </div>
 
-            <!-- Quick Specs Badges -->
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center py-2 border-b border-slate-100 dark:border-white/5">
-              <div class="p-2">
-                <div class="text-xl font-black font-mono text-[#0c1e5b] dark:text-white">140+</div>
-                <div class="text-[9px] font-mono uppercase text-slate-400">Pilots</div>
-              </div>
-              <div class="p-2">
-                <div class="text-xl font-black font-mono text-[#0c1e5b] dark:text-white">5.8 GHz</div>
-                <div class="text-[9px] font-mono uppercase text-slate-400">VTX Spectrum</div>
-              </div>
-              <div class="p-2">
-                <div class="text-xl font-black font-mono text-[#0c1e5b] dark:text-white">Weekly</div>
-                <div class="text-[9px] font-mono uppercase text-slate-400">Gatherings</div>
-              </div>
-              <div class="p-2">
-                <div class="text-xl font-black font-mono text-[#0c1e5b] dark:text-white">Free</div>
-                <div class="text-[9px] font-mono uppercase text-slate-400">Bench Lab</div>
-              </div>
+            <!-- Minimal Stats Line -->
+            <div class="flex items-center gap-6 text-xs font-mono text-slate-500 dark:text-slate-400 py-1">
+              <span><strong>140+</strong> Pilots</span>
+              <span><strong>5.8 GHz</strong> Band</span>
+              <span><strong>Weekly</strong> Gatherings</span>
             </div>
 
-            <!-- Sessions Stack -->
-            <div class="space-y-3.5">
+            <!-- Ultra-Short Sessions List -->
+            <div class="space-y-3">
               <div
                 v-for="session in flightSessions"
                 :key="session.id"
-                class="p-5 rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 backdrop-blur-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-slate-400 dark:hover:border-white/25 transition duration-200"
+                class="p-4 rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 backdrop-blur-xl flex items-center justify-between gap-4 hover:border-slate-400 dark:hover:border-white/20 transition duration-150"
               >
-                <div class="space-y-1">
-                  <div class="flex items-center gap-2 text-[10px] font-mono text-slate-400 dark:text-slate-500">
-                    <span class="px-2 py-0.5 rounded-full bg-slate-100 dark:bg-white/5 font-semibold">{{ session.category }}</span>
+                <div class="space-y-0.5">
+                  <div class="flex items-center gap-2 text-[10px] font-mono text-slate-400">
+                    <span class="uppercase font-bold text-slate-600 dark:text-slate-300">{{ session.category }}</span>
+                    <span>·</span>
                     <span>{{ session.time }}</span>
                   </div>
-                  <h3 class="text-base font-bold text-[#0c1e5b] dark:text-white">
+                  <h3 class="text-sm sm:text-base font-bold text-[#0c1e5b] dark:text-white">
                     {{ session.title }}
                   </h3>
-                  <p class="text-xs text-slate-600 dark:text-[#9aa6c4]">
-                    📍 {{ session.location }} · {{ session.description }}
+                  <p class="text-xs text-slate-500 dark:text-slate-400">
+                    📍 {{ session.location }}
                   </p>
                 </div>
 
-                <div class="flex items-center sm:flex-col items-end gap-2 shrink-0">
-                  <span class="text-[11px] font-mono text-slate-400 dark:text-slate-500">
+                <div class="flex items-center gap-3 shrink-0">
+                  <span class="text-[11px] font-mono text-slate-400 hidden sm:inline">
                     {{ session.attendees.length }} attending
                   </span>
                   <button
                     type="button"
                     @click="toggleRSVP(session)"
-                    class="px-4 py-1.5 rounded-full text-xs font-bold transition cursor-pointer"
+                    class="px-3.5 py-1.5 rounded-full text-xs font-bold transition cursor-pointer"
                     :class="session.isJoined
                       ? 'bg-emerald-500 text-white'
                       : 'bg-slate-100 dark:bg-white/10 hover:bg-slate-200 dark:hover:bg-white/20 text-[#0c1e5b] dark:text-white'"
@@ -155,34 +142,38 @@
         </div>
       </section>
 
-      <!-- SECTION 3: VTX SPECTRUM MATRIX (Drone flies to RIGHT, Text on LEFT) -->
-      <section class="py-24 sm:py-32 px-4 sm:px-6 lg:px-8 max-w-[1240px] mx-auto min-h-[85vh] flex items-center">
+      <!-- SECTION 3: VTX SPECTRUM (Drone flies to RIGHT, Text on LEFT) -->
+      <section class="py-32 sm:py-44 lg:py-52 px-4 sm:px-6 lg:px-8 max-w-[1240px] mx-auto min-h-[110vh] flex items-center">
         <div class="w-full grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           <!-- Left 7 cols: Content & Text on the left -->
-          <div class="lg:col-span-7 space-y-6">
-            <div class="pb-4 border-b border-slate-200 dark:border-white/10">
-              <div class="text-[11px] font-mono tracking-widest uppercase text-slate-400 dark:text-slate-500 mb-1">02 // SPECTRUM</div>
-              <h2 class="text-2xl sm:text-4xl font-black text-[#0c1e5b] dark:text-white">VTX Frequency Board</h2>
-              <p class="text-xs text-slate-500 dark:text-[#9aa6c4] mt-1">Reserve your 5.8GHz Raceband channel before powering on in the field.</p>
+          <div class="lg:col-span-7 space-y-5">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-white/10">
+              <div>
+                <div class="text-[10px] font-mono tracking-widest uppercase text-slate-400 dark:text-slate-500">02 // SPECTRUM</div>
+                <h2 class="text-2xl sm:text-3xl font-black text-[#0c1e5b] dark:text-white">VTX Frequency Board</h2>
+              </div>
+              <span class="text-[11px] font-mono text-slate-400">RACEBAND 5.8 GHz</span>
             </div>
 
+            <p class="text-xs text-slate-500 dark:text-[#9aa6c4]">Check channel before arming motors in the pits.</p>
+
             <!-- 4x2 Grid for R1-R8 Channels -->
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
               <div
                 v-for="ch in vtxChannels"
                 :key="ch.channel"
-                class="p-3.5 rounded-xl border text-center transition flex flex-col justify-between"
+                class="p-3 rounded-xl border text-center transition flex flex-col justify-between"
                 :class="ch.pilot
                   ? 'bg-slate-100/80 dark:bg-white/[0.04] border-slate-300 dark:border-white/20'
                   : 'bg-white/80 dark:bg-white/[0.02] border-slate-200 dark:border-white/5 hover:border-emerald-400/50 cursor-pointer'"
                 @click="!ch.pilot && openClaimChannel(ch)"
               >
                 <div>
-                  <div class="text-[10px] font-mono text-slate-400 dark:text-slate-500">{{ ch.mhz }} MHz</div>
-                  <div class="text-base font-black my-1 text-[#0c1e5b] dark:text-white font-mono">{{ ch.channel }}</div>
+                  <div class="text-[10px] font-mono text-slate-400">{{ ch.mhz }} MHz</div>
+                  <div class="text-base font-black my-0.5 text-[#0c1e5b] dark:text-white font-mono">{{ ch.channel }}</div>
                 </div>
 
-                <div class="mt-2 pt-2 border-t border-slate-200/60 dark:border-white/5">
+                <div class="mt-1.5 pt-1.5 border-t border-slate-200/60 dark:border-white/5">
                   <span v-if="ch.pilot" class="text-[11px] font-medium text-slate-700 dark:text-slate-200 truncate block">
                     {{ ch.pilot }}
                   </span>
@@ -199,25 +190,25 @@
         </div>
       </section>
 
-      <!-- SECTION 4: PILOT RADAR NOTICEBOARD (Drone flies to LEFT, Text on RIGHT) -->
-      <section id="buddy-board" class="py-24 sm:py-32 px-4 sm:px-6 lg:px-8 max-w-[1240px] mx-auto min-h-[85vh] flex items-center">
+      <!-- SECTION 4: PILOT RADAR (Drone flies to LEFT, Text on RIGHT) -->
+      <section id="buddy-board" class="py-32 sm:py-44 lg:py-52 px-4 sm:px-6 lg:px-8 max-w-[1240px] mx-auto min-h-[110vh] flex items-center">
         <div class="w-full grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           <!-- Left 5 cols: Completely clear open air for 3D drone flying on the left -->
           <div class="hidden lg:block lg:col-span-5 pointer-events-none"></div>
 
           <!-- Right 7 cols: Content & Text on the right -->
-          <div class="lg:col-span-7 space-y-5">
-            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-4 border-b border-slate-200 dark:border-white/10">
+          <div class="lg:col-span-7 space-y-4">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-white/10">
               <div>
-                <div class="text-[11px] font-mono tracking-widest uppercase text-slate-400 dark:text-slate-500 mb-1">03 // PILOT RADAR</div>
-                <h2 class="text-2xl sm:text-4xl font-black text-[#0c1e5b] dark:text-white">Flight Spotter & Buddy Board</h2>
+                <div class="text-[10px] font-mono tracking-widest uppercase text-slate-400 dark:text-slate-500">03 // RADAR</div>
+                <h2 class="text-2xl sm:text-3xl font-black text-[#0c1e5b] dark:text-white">Pilot Callouts</h2>
               </div>
               <button
                 type="button"
                 @click="showCalloutModal = true"
-                class="px-4 py-2 rounded-full text-xs font-bold bg-[#0c1e5b] dark:bg-white text-white dark:text-[#0c1e5b] hover:opacity-90 transition cursor-pointer self-start sm:self-auto"
+                class="px-3.5 py-1.5 rounded-full text-xs font-bold bg-[#0c1e5b] dark:bg-white text-white dark:text-[#0c1e5b] hover:opacity-90 transition cursor-pointer"
               >
-                + Post Notice
+                + Post Callout
               </button>
             </div>
 
@@ -228,7 +219,7 @@
                 :key="filter"
                 type="button"
                 @click="activeFilter = filter"
-                class="px-3 py-1 rounded-full text-xs font-medium transition cursor-pointer"
+                class="px-3 py-1 rounded-full text-[11px] font-medium transition cursor-pointer"
                 :class="activeFilter === filter
                   ? 'bg-[#0c1e5b] dark:bg-white text-white dark:text-[#0c1e5b]'
                   : 'bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-white/10'"
@@ -237,37 +228,34 @@
               </button>
             </div>
 
-            <!-- Stacked Buddy Notice Cards -->
-            <div class="space-y-3">
+            <!-- Short Callout Cards -->
+            <div class="space-y-2.5">
               <div
                 v-for="post in filteredPosts"
                 :key="post.id"
-                class="p-4 rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 backdrop-blur-xl flex flex-col justify-between"
+                class="p-3.5 rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 backdrop-blur-xl flex items-center justify-between gap-3"
               >
-                <div>
-                  <div class="flex items-center justify-between text-xs mb-1">
+                <div class="space-y-0.5">
+                  <div class="flex items-center gap-2 text-[10px] font-mono text-slate-400">
                     <span class="font-bold text-[#0c1e5b] dark:text-white">{{ post.author }}</span>
-                    <span class="text-[10px] font-mono text-slate-400 dark:text-slate-500">{{ post.dateTime }}</span>
+                    <span>·</span>
+                    <span>{{ post.spot }}</span>
+                    <span>·</span>
+                    <span>{{ post.droneSetup }}</span>
                   </div>
-                  <div class="text-[11px] font-mono text-slate-500 dark:text-slate-400 mb-1.5">
-                    📍 {{ post.spot }} · {{ post.droneSetup }}
-                  </div>
-                  <p class="text-xs text-slate-600 dark:text-[#a0afcf] leading-relaxed">
+                  <p class="text-xs text-slate-600 dark:text-slate-300">
                     "{{ post.message }}"
                   </p>
                 </div>
 
-                <div class="pt-2.5 mt-2 border-t border-slate-100 dark:border-white/5 flex items-center justify-between text-[11px]">
-                  <span class="text-slate-400 dark:text-slate-500">{{ post.category }}</span>
-                  <a
-                    :href="post.telegramLink || 'https://t.me/aerobyteacademy'"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="font-bold text-sky-600 dark:text-cyan-400 hover:underline"
-                  >
-                    Connect on Telegram →
-                  </a>
-                </div>
+                <a
+                  :href="post.telegramLink || 'https://t.me/aerobyteacademy'"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="font-bold text-xs text-sky-600 dark:text-cyan-400 hover:underline shrink-0"
+                >
+                  Reply →
+                </a>
               </div>
             </div>
           </div>
@@ -275,56 +263,54 @@
       </section>
 
       <!-- SECTION 5: HANGAR & CONNECT (Drone flies to RIGHT, Text on LEFT) -->
-      <section class="py-24 sm:py-32 px-4 sm:px-6 lg:px-8 max-w-[1240px] mx-auto min-h-[85vh] flex items-center">
+      <section class="py-32 sm:py-44 lg:py-52 px-4 sm:px-6 lg:px-8 max-w-[1240px] mx-auto min-h-[110vh] flex items-center">
         <div class="w-full grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           <!-- Left 7 cols: Content & Text on the left -->
-          <div class="lg:col-span-7 space-y-6">
-            <div class="pb-4 border-b border-slate-200 dark:border-white/10">
-              <div class="text-[11px] font-mono tracking-widest uppercase text-slate-400 dark:text-slate-500 mb-1">04 // CONNECT</div>
-              <h2 class="text-2xl sm:text-4xl font-black text-[#0c1e5b] dark:text-white">Community & Workshop</h2>
+          <div class="lg:col-span-7 space-y-5">
+            <div class="pb-3 border-b border-slate-200 dark:border-white/10">
+              <div class="text-[10px] font-mono tracking-widest uppercase text-slate-400 dark:text-slate-500">04 // CONNECT</div>
+              <h2 class="text-2xl sm:text-3xl font-black text-[#0c1e5b] dark:text-white">Community & Workshop</h2>
             </div>
 
-            <div class="grid sm:grid-cols-2 gap-4">
+            <div class="grid sm:grid-cols-2 gap-3.5">
               <!-- Telegram -->
-              <div class="p-6 rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 backdrop-blur-xl flex flex-col justify-between">
-                <div class="space-y-2">
-                  <div class="text-xl">💬</div>
-                  <h3 class="text-base font-bold text-[#0c1e5b] dark:text-white">Telegram Pilot Hub</h3>
-                  <p class="text-xs text-slate-600 dark:text-[#9aa6c4]">
-                    Live weather polls, frequency reservations, and flight coordinates.
+              <div class="p-5 rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 backdrop-blur-xl flex flex-col justify-between">
+                <div class="space-y-1.5">
+                  <div class="text-lg">💬</div>
+                  <h3 class="text-sm font-bold text-[#0c1e5b] dark:text-white">Telegram Pilot Hub</h3>
+                  <p class="text-xs text-slate-500 dark:text-slate-400">
+                    Weekend weather polls, frequency reservations, and flight pins.
                   </p>
                 </div>
-                <div class="pt-4">
+                <div class="pt-3">
                   <a
                     href="https://t.me/aerobyteacademy"
                     target="_blank"
                     rel="noopener noreferrer"
-                    class="inline-flex items-center gap-1.5 text-xs font-bold text-[#0c1e5b] dark:text-white hover:underline"
+                    class="text-xs font-bold text-[#0c1e5b] dark:text-white hover:underline"
                   >
-                    <span>t.me/aerobyteacademy</span>
-                    <span>↗</span>
+                    t.me/aerobyteacademy ↗
                   </a>
                 </div>
               </div>
 
               <!-- Ta Khmau Lab -->
-              <div class="p-6 rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 backdrop-blur-xl flex flex-col justify-between">
-                <div class="space-y-2">
-                  <div class="text-xl">📍</div>
-                  <h3 class="text-base font-bold text-[#0c1e5b] dark:text-white">Ta Khmau Flight Lab</h3>
-                  <p class="text-xs text-slate-600 dark:text-[#9aa6c4]">
-                    Free physical bench, soldering stations, and Betaflight bench.
+              <div class="p-5 rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 backdrop-blur-xl flex flex-col justify-between">
+                <div class="space-y-1.5">
+                  <div class="text-lg">📍</div>
+                  <h3 class="text-sm font-bold text-[#0c1e5b] dark:text-white">Ta Khmau Flight Lab</h3>
+                  <p class="text-xs text-slate-500 dark:text-slate-400">
+                    Free open bench: Soldering, Betaflight 4.5 tuning, and Maiden tests.
                   </p>
                 </div>
-                <div class="pt-4">
+                <div class="pt-3">
                   <a
                     href="https://maps.google.com/?q=Ta+Khmau+Cambodia"
                     target="_blank"
                     rel="noopener noreferrer"
-                    class="inline-flex items-center gap-1.5 text-xs font-bold text-[#0c1e5b] dark:text-white hover:underline"
+                    class="text-xs font-bold text-[#0c1e5b] dark:text-white hover:underline"
                   >
-                    <span>Directions</span>
-                    <span>↗</span>
+                    Directions ↗
                   </a>
                 </div>
               </div>
