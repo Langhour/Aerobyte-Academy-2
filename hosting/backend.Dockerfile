@@ -5,6 +5,7 @@ COPY frontend/package*.json ./
 RUN npm ci
 COPY frontend/ ./
 ENV VITE_API_BASE_URL=/api
+ENV NODE_OPTIONS="--max-old-space-size=384"
 RUN npm run build
 
 FROM python:3.12-slim
