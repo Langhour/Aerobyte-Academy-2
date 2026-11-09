@@ -35,21 +35,21 @@
     <div class="relative z-10">
 
       <!-- SECTION 1: HERO (Pure 2-Line Cinematic Layout placed on top of the drone) -->
-      <section class="h-[calc(100vh-64px)] min-h-[580px] flex flex-col items-center justify-between text-center px-4 sm:px-6 pt-8 sm:pt-12 pb-8 relative select-none">
+      <section class="h-[calc(100vh-64px)] min-h-[520px] sm:min-h-[580px] flex flex-col items-center justify-between text-center px-4 sm:px-6 pt-6 sm:pt-12 pb-6 sm:pb-8 relative select-none">
         <!-- TOP AREA: TWO TEXT LINES DIRECTLY ABOVE THE DRONE -->
-        <div class="max-w-4xl mx-auto space-y-2.5 sm:space-y-3.5 pt-2 sm:pt-4">
+        <div class="max-w-4xl mx-auto space-y-2 sm:space-y-3.5 pt-1 sm:pt-4">
           <!-- LINE 1: BOLD GEOMETRIC TITLE -->
-          <h1 class="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-black tracking-[0.14em] sm:tracking-[0.18em] uppercase text-[#0c1e5b] dark:text-white drop-shadow-sm font-sans transition-colors">
+          <h1 class="text-4xl sm:text-6xl md:text-8xl lg:text-9xl font-black tracking-[0.10em] sm:tracking-[0.18em] uppercase text-[#0c1e5b] dark:text-white drop-shadow-sm font-sans transition-colors">
             AERO FLY
           </h1>
 
           <!-- LINE 2: UPPERCASE SUBTITLE WITH SUBTLE RED DOT ACCENTS -->
-          <div class="relative inline-block">
-            <p class="text-xs sm:text-sm md:text-base font-bold tracking-[0.24em] sm:tracking-[0.32em] uppercase text-slate-700 dark:text-white/90">
+          <div class="relative inline-block max-w-sm sm:max-w-none px-2">
+            <p class="text-[10px] sm:text-sm md:text-base font-bold tracking-[0.16em] sm:tracking-[0.32em] uppercase text-slate-700 dark:text-white/90">
               {{ t('THE OPEN DRONE FLIGHT COMMUNITY FOR CAMBODIA.') }}
             </p>
             <!-- Minimal Red Dot Accents from reference image -->
-            <div class="mt-2.5 flex items-center justify-center gap-1.5 opacity-80">
+            <div class="mt-2 sm:mt-2.5 flex items-center justify-center gap-1.5 opacity-80">
               <span class="w-1 h-1 rounded-full bg-red-500"></span>
               <span class="w-1 h-1 rounded-full bg-red-500"></span>
               <span class="w-1 h-1 rounded-full bg-red-500"></span>
@@ -68,44 +68,46 @@
         <!-- Scroll Indicator at bottom -->
         <a
           href="#sessions"
-          class="flex flex-col items-center gap-1.5 opacity-40 hover:opacity-100 transition-opacity text-[10px] font-mono tracking-widest uppercase text-slate-400 dark:text-slate-500 cursor-pointer"
+          class="flex flex-col items-center gap-1.5 opacity-50 hover:opacity-100 active:scale-95 transition text-[10px] font-mono tracking-widest uppercase text-slate-400 dark:text-slate-500 cursor-pointer py-2"
         >
           <span>{{ t('SCROLL') }}</span>
           <span class="animate-bounce">↓</span>
         </a>
       </section>
 
-      <!-- SECTION 2: GATHERINGS (Drone flies to LEFT, Text on RIGHT) -->
-      <section id="sessions" class="pt-6 sm:pt-10 pb-16 px-4 sm:px-6 lg:px-8 max-w-[1240px] mx-auto">
-        <div class="w-full grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+      <!-- SECTION 2: GATHERINGS (Drone flies to LEFT on desktop, centered aloft on mobile) -->
+      <section id="sessions" class="pt-4 sm:pt-10 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-8 max-w-[1240px] mx-auto">
+        <div class="w-full grid lg:grid-cols-12 gap-6 lg:gap-12 items-center">
           <!-- Left 5 cols: Completely clear open air for 3D drone flying on the left -->
           <div class="hidden lg:block lg:col-span-5 pointer-events-none"></div>
 
           <!-- Right 7 cols: Content & Text on the right -->
-          <div class="lg:col-span-7 space-y-5">
-            <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-white/10">
+          <div class="lg:col-span-7 space-y-4 sm:space-y-5">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 pb-3 border-b border-slate-200 dark:border-white/10">
               <div>
                 <div class="text-[10px] font-mono tracking-widest uppercase text-slate-400 dark:text-slate-500">{{ t('01 // SESSIONS') }}</div>
-                <h2 class="text-2xl sm:text-3xl font-black text-[#0c1e5b] dark:text-white">{{ t('Weekend Flights') }}</h2>
+                <h2 class="text-xl sm:text-3xl font-black text-[#0c1e5b] dark:text-white">{{ t('Weekend Flights') }}</h2>
               </div>
-              <span class="text-[11px] font-mono text-emerald-600 dark:text-[#5df0a8] font-bold">
+              <span class="text-[10px] sm:text-[11px] font-mono text-emerald-600 dark:text-[#5df0a8] font-bold self-start sm:self-auto">
                 {{ t('● SKY CLEAR · 8 KM/H') }}
               </span>
             </div>
 
             <!-- Minimal Stats Line -->
-            <div class="flex items-center gap-6 text-xs font-mono text-slate-500 dark:text-slate-400 py-1">
+            <div class="flex flex-wrap items-center gap-3 sm:gap-6 text-[11px] sm:text-xs font-mono text-slate-500 dark:text-slate-400 py-0.5">
               <span><strong>140+</strong> {{ t('Pilots') }}</span>
+              <span>•</span>
               <span><strong>5.8 GHz</strong> {{ t('Band') }}</span>
+              <span>•</span>
               <span><strong>{{ t('Weekly') }}</strong> {{ t('Gatherings') }}</span>
             </div>
 
             <!-- Ultra-Short Sessions List -->
-            <div class="space-y-3">
+            <div class="space-y-2.5 sm:space-y-3">
               <div
                 v-for="session in flightSessions"
                 :key="session.id"
-                class="p-4 rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 backdrop-blur-xl flex items-center justify-between gap-4 hover:border-slate-400 dark:hover:border-white/20 transition duration-150"
+                class="p-3.5 sm:p-4 rounded-2xl bg-white/92 dark:bg-[#070e24]/90 border border-slate-200/90 dark:border-white/10 backdrop-blur-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 hover:border-slate-400 dark:hover:border-white/20 transition shadow-xs"
               >
                 <div class="space-y-0.5">
                   <div class="flex items-center gap-2 text-[10px] font-mono text-slate-400">
@@ -121,14 +123,14 @@
                   </p>
                 </div>
 
-                <div class="flex items-center gap-3 shrink-0">
-                  <span class="text-[11px] font-mono text-slate-400 hidden sm:inline">
+                <div class="flex items-center justify-between sm:justify-end gap-3 shrink-0 pt-1 sm:pt-0 border-t sm:border-t-0 border-slate-100 dark:border-white/5">
+                  <span class="text-[10px] sm:text-[11px] font-mono text-slate-400">
                     {{ session.attendees.length }} {{ t('attending') }}
                   </span>
                   <button
                     type="button"
                     @click="toggleRSVP(session)"
-                    class="px-3.5 py-1.5 rounded-full text-xs font-bold transition cursor-pointer"
+                    class="px-4 py-1.5 min-h-[34px] rounded-full text-xs font-bold active:scale-95 transition cursor-pointer"
                     :class="session.isJoined
                       ? 'bg-emerald-500 text-white'
                       : 'bg-slate-100 dark:bg-white/10 hover:bg-slate-200 dark:hover:bg-white/20 text-[#0c1e5b] dark:text-white'"
@@ -144,13 +146,13 @@
 
       <!-- SECTION: THE MIDDLE STOP (Drone in Middle, Text Cleanly Under Drone with Masked Sliding Reveal) -->
       <section id="middle" class="h-[120vh] relative">
-        <div class="sticky top-0 h-screen w-full flex flex-col items-center justify-start px-4 pt-[50vh] sm:pt-[52vh] overflow-hidden pointer-events-none select-none">
+        <div class="sticky top-0 h-screen w-full flex flex-col items-center justify-start px-4 pt-[45vh] sm:pt-[52vh] overflow-hidden pointer-events-none select-none">
           <!-- TWO TEXT LINES CLEANLY UNDER THE DRONE (Elevated into upper UX/UI frame, NOT sunken down below!) -->
           <div class="max-w-4xl mx-auto text-center space-y-2 sm:space-y-3 relative z-10 pointer-events-auto">
             <!-- LINE 1: BOLD GEOMETRIC TITLE (Masked Sliding Reveal) -->
             <div class="overflow-hidden py-1 inline-block">
               <h2
-                class="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-[0.14em] sm:tracking-[0.18em] uppercase text-[#0c1e5b] dark:text-white drop-shadow-sm font-sans transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] transform"
+                class="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-black tracking-[0.08em] sm:tracking-[0.18em] uppercase text-[#0c1e5b] dark:text-white drop-shadow-sm font-sans transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] transform"
                 :class="{
                   'translate-y-0 opacity-100': middleTextState === 'active',
                   'translate-y-[120%] opacity-0': middleTextState === 'before',
@@ -162,10 +164,10 @@
             </div>
 
             <!-- LINE 2: UPPERCASE SUBTITLE (Masked Sliding Reveal with Stagger) -->
-            <div class="block">
+            <div class="block max-w-sm sm:max-w-none px-2">
               <div class="overflow-hidden py-1 inline-block">
                 <p
-                  class="text-xs sm:text-sm md:text-base font-bold tracking-[0.24em] sm:tracking-[0.32em] uppercase text-slate-700 dark:text-white/90 transition-all duration-700 delay-100 ease-[cubic-bezier(0.16,1,0.3,1)] transform"
+                  class="text-[11px] sm:text-sm md:text-base font-bold tracking-[0.14em] sm:tracking-[0.32em] uppercase text-slate-700 dark:text-white/90 transition-all duration-700 delay-100 ease-[cubic-bezier(0.16,1,0.3,1)] transform"
                   :class="{
                     'translate-y-0 opacity-100': middleTextState === 'active',
                     'translate-y-[120%] opacity-0': middleTextState === 'before',
@@ -178,7 +180,7 @@
 
               <!-- Minimal Red Dot Accents -->
               <div
-                class="mt-2.5 flex items-center justify-center gap-1.5 transition-all duration-500 delay-200 ease-out transform"
+                class="mt-2 sm:mt-2.5 flex items-center justify-center gap-1.5 transition-all duration-500 delay-200 ease-out transform"
                 :class="{
                   'opacity-80 scale-100 translate-y-0': middleTextState === 'active',
                   'opacity-0 scale-75 translate-y-2': middleTextState !== 'active'
@@ -198,16 +200,16 @@
         </div>
       </section>
 
-      <section id="benefits" class="pt-6 sm:pt-10 pb-16 px-4 sm:px-6 lg:px-8 max-w-[1240px] mx-auto">
-        <div class="w-full grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+      <section id="benefits" class="pt-4 sm:pt-10 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-8 max-w-[1240px] mx-auto">
+        <div class="w-full grid lg:grid-cols-12 gap-6 lg:gap-12 items-center">
           <!-- Left 7 cols: Content & Text on the left -->
-          <div class="lg:col-span-7 space-y-5">
-            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2 pb-3 border-b border-slate-200 dark:border-white/10">
+          <div class="lg:col-span-7 space-y-4 sm:space-y-5">
+            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-1.5 pb-3 border-b border-slate-200 dark:border-white/10">
               <div>
                 <div class="text-[10px] font-mono tracking-widest uppercase text-slate-400 dark:text-slate-500">{{ t('02 // MEMBERSHIP BENEFITS') }}</div>
-                <h2 class="text-2xl sm:text-3xl font-black text-[#0c1e5b] dark:text-white">{{ t('What You Get When You Join') }}</h2>
+                <h2 class="text-xl sm:text-3xl font-black text-[#0c1e5b] dark:text-white">{{ t('What You Get When You Join') }}</h2>
               </div>
-              <span class="text-[11px] font-mono text-emerald-600 dark:text-[#5df0a8] font-bold">
+              <span class="text-[10px] sm:text-[11px] font-mono text-emerald-600 dark:text-[#5df0a8] font-bold self-start sm:self-auto">
                 {{ t('● 100% FREE COMMUNITY') }}
               </span>
             </div>
@@ -217,9 +219,9 @@
             </p>
 
             <!-- 6 Key Member Benefits Grid -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
               <!-- Benefit 1: Aero Print Discounts -->
-              <div class="p-3.5 rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 backdrop-blur-xl flex items-start gap-3 hover:border-slate-400 dark:hover:border-white/20 transition">
+              <div class="p-3.5 rounded-2xl bg-white/92 dark:bg-[#070e24]/90 border border-slate-200/90 dark:border-white/10 backdrop-blur-xl flex items-start gap-3 hover:border-slate-400 dark:hover:border-white/20 transition shadow-xs">
                 <div class="w-8 h-8 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0 text-sm">
                   🖨️
                 </div>
@@ -232,7 +234,7 @@
               </div>
 
               <!-- Benefit 2: Free Ta Khmau Lab Access -->
-              <div class="p-3.5 rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 backdrop-blur-xl flex items-start gap-3 hover:border-slate-400 dark:hover:border-white/20 transition">
+              <div class="p-3.5 rounded-2xl bg-white/92 dark:bg-[#070e24]/90 border border-slate-200/90 dark:border-white/10 backdrop-blur-xl flex items-start gap-3 hover:border-slate-400 dark:hover:border-white/20 transition shadow-xs">
                 <div class="w-8 h-8 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 text-sm">
                   📍
                 </div>
@@ -245,7 +247,7 @@
               </div>
 
               <!-- Benefit 3: Meet Pro Pilots & Mechanics -->
-              <div class="p-3.5 rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 backdrop-blur-xl flex items-start gap-3 hover:border-slate-400 dark:hover:border-white/20 transition">
+              <div class="p-3.5 rounded-2xl bg-white/92 dark:bg-[#070e24]/90 border border-slate-200/90 dark:border-white/10 backdrop-blur-xl flex items-start gap-3 hover:border-slate-400 dark:hover:border-white/20 transition shadow-xs">
                 <div class="w-8 h-8 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 text-sm">
                   🛠️
                 </div>
@@ -258,7 +260,7 @@
               </div>
 
               <!-- Benefit 4: Find Flight Partners (Never Fly Alone) -->
-              <div class="p-3.5 rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 backdrop-blur-xl flex items-start gap-3 hover:border-slate-400 dark:hover:border-white/20 transition">
+              <div class="p-3.5 rounded-2xl bg-white/92 dark:bg-[#070e24]/90 border border-slate-200/90 dark:border-white/10 backdrop-blur-xl flex items-start gap-3 hover:border-slate-400 dark:hover:border-white/20 transition shadow-xs">
                 <div class="w-8 h-8 rounded-xl bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 flex items-center justify-center shrink-0 text-sm">
                   🤝
                 </div>
@@ -271,7 +273,7 @@
               </div>
 
               <!-- Benefit 5: Beginners & Hobbyists Welcome (No Drone Needed) -->
-              <div class="p-3.5 rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 backdrop-blur-xl flex items-start gap-3 hover:border-slate-400 dark:hover:border-white/20 transition">
+              <div class="p-3.5 rounded-2xl bg-white/92 dark:bg-[#070e24]/90 border border-slate-200/90 dark:border-white/10 backdrop-blur-xl flex items-start gap-3 hover:border-slate-400 dark:hover:border-white/20 transition shadow-xs">
                 <div class="w-8 h-8 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 text-sm">
                   🐣
                 </div>
@@ -284,7 +286,7 @@
               </div>
 
               <!-- Benefit 6: Coordinated Airspace & Field Spares -->
-              <div class="p-3.5 rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 backdrop-blur-xl flex items-start gap-3 hover:border-slate-400 dark:hover:border-white/20 transition">
+              <div class="p-3.5 rounded-2xl bg-white/92 dark:bg-[#070e24]/90 border border-slate-200/90 dark:border-white/10 backdrop-blur-xl flex items-start gap-3 hover:border-slate-400 dark:hover:border-white/20 transition shadow-xs">
                 <div class="w-8 h-8 rounded-xl bg-rose-500/10 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0 text-sm">
                   ⚡
                 </div>
@@ -305,7 +307,7 @@
                 href="https://t.me/aerobyteacademy"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-full text-xs font-bold bg-[#0c1e5b] dark:bg-white text-white dark:text-[#0c1e5b] hover:opacity-90 transition cursor-pointer shrink-0"
+                class="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-full text-xs font-bold bg-[#0c1e5b] dark:bg-white text-white dark:text-[#0c1e5b] hover:opacity-90 active:scale-95 transition cursor-pointer shrink-0 shadow-sm"
               >
                 <span>{{ t('Join Telegram Hub') }}</span>
                 <span>↗</span>
@@ -319,18 +321,19 @@
       </section>
 
       <!-- SECTION 5: AERO STORE & LAB SUPPLY (Drone in Center Sky, Aero Store Showcase Below) -->
-      <section id="store" class="pt-6 sm:pt-10 pb-16 px-4 sm:px-6 lg:px-8 max-w-[1240px] mx-auto">
+      <section id="store" class="pt-4 sm:pt-10 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-8 max-w-[1240px] mx-auto">
         <!-- Open air spacer where the 3D drone hovers high in the sky -->
-        <div class="flex-1 min-h-[36vh] sm:min-h-[40vh] pointer-events-none"></div>
+        <div class="hidden sm:block flex-1 min-h-[36vh] sm:min-h-[40vh] pointer-events-none"></div>
+        <div class="block sm:hidden h-24 pointer-events-none"></div>
 
-        <div class="w-full space-y-10 relative z-10">
+        <div class="w-full space-y-8 sm:space-y-10 relative z-10">
           <!-- Section Header: What Aero Store Is & Does -->
-          <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-4 border-b border-slate-200 dark:border-white/10">
+          <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3 sm:gap-4 pb-4 border-b border-slate-200 dark:border-white/10">
             <div>
               <div class="text-[10px] font-mono tracking-widest uppercase text-slate-400 dark:text-slate-500">
                 {{ t('03 // HARDWARE & LAB SUPPLY') }}
               </div>
-              <h2 class="text-2xl sm:text-3xl lg:text-4xl font-black text-[#0c1e5b] dark:text-white">
+              <h2 class="text-xl sm:text-3xl lg:text-4xl font-black text-[#0c1e5b] dark:text-white">
                 {{ t('Aero Store & Hardware Lab') }}
               </h2>
               <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1 max-w-2xl">
@@ -338,10 +341,10 @@
               </p>
             </div>
 
-            <div class="flex items-center gap-2.5 shrink-0">
+            <div class="flex items-center gap-2.5 shrink-0 pt-1 sm:pt-0">
               <router-link
                 to="/store"
-                class="px-4 py-2 rounded-full text-xs font-bold bg-[#0c1e5b] dark:bg-white text-white dark:text-[#0c1e5b] hover:opacity-90 transition shadow-sm inline-flex items-center gap-1.5 cursor-pointer"
+                class="w-full sm:w-auto justify-center px-5 py-2.5 rounded-full text-xs font-bold bg-[#0c1e5b] dark:bg-white text-white dark:text-[#0c1e5b] hover:opacity-90 active:scale-95 transition shadow-sm inline-flex items-center gap-1.5 cursor-pointer"
               >
                 <span>{{ t('Browse Store Catalog') }}</span>
                 <span>→</span>
@@ -360,17 +363,17 @@
               </span>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4">
               <!-- Specialty 1: FPV Drone Hardware -->
-              <div class="p-5 rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 backdrop-blur-xl flex flex-col justify-between gap-4 hover:border-slate-400 dark:hover:border-white/20 transition">
-                <div class="space-y-2.5">
+              <div class="p-4 sm:p-5 rounded-2xl bg-white/92 dark:bg-[#070e24]/90 border border-slate-200/90 dark:border-white/10 backdrop-blur-xl flex flex-col justify-between gap-3 sm:gap-4 hover:border-slate-400 dark:hover:border-white/20 transition shadow-xs">
+                <div class="space-y-2 sm:space-y-2.5">
                   <div class="flex items-center justify-between">
                     <span class="text-2xl">🚁</span>
                     <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-sky-500/10 text-sky-600 dark:text-sky-400">
                       {{ t('FPV DRONES') }}
                     </span>
                   </div>
-                  <h4 class="text-base font-bold text-[#0c1e5b] dark:text-white">
+                  <h4 class="text-sm sm:text-base font-bold text-[#0c1e5b] dark:text-white">
                     {{ t('Flight-Tested FPV Quads & Parts') }}
                   </h4>
                   <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
@@ -378,7 +381,7 @@
                   </p>
                 </div>
 
-                <div class="pt-3 border-t border-slate-100 dark:border-white/5 space-y-2">
+                <div class="pt-2.5 sm:pt-3 border-t border-slate-100 dark:border-white/5 space-y-2">
                   <div class="flex flex-wrap gap-1.5 text-[10px] font-mono text-slate-500 dark:text-slate-400">
                     <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-white/5">{{ t('BNF Quads') }}</span>
                     <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-white/5">{{ t('55A Stacks') }}</span>
@@ -386,7 +389,7 @@
                   </div>
                   <router-link
                     to="/store"
-                    class="inline-flex items-center gap-1 text-xs font-bold text-[#0c1e5b] dark:text-white hover:underline pt-1"
+                    class="inline-flex items-center gap-1 text-xs font-bold text-[#0c1e5b] dark:text-white hover:underline pt-0.5"
                   >
                     <span>{{ t('View Drone Gear') }}</span>
                     <span>→</span>
@@ -395,15 +398,15 @@
               </div>
 
               <!-- Specialty 2: Robotics & STEM Maker Kits -->
-              <div class="p-5 rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 backdrop-blur-xl flex flex-col justify-between gap-4 hover:border-slate-400 dark:hover:border-white/20 transition">
-                <div class="space-y-2.5">
+              <div class="p-4 sm:p-5 rounded-2xl bg-white/92 dark:bg-[#070e24]/90 border border-slate-200/90 dark:border-white/10 backdrop-blur-xl flex flex-col justify-between gap-3 sm:gap-4 hover:border-slate-400 dark:hover:border-white/20 transition shadow-xs">
+                <div class="space-y-2 sm:space-y-2.5">
                   <div class="flex items-center justify-between">
                     <span class="text-2xl">🤖</span>
                     <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
                       {{ t('STEM & MAKER') }}
                     </span>
                   </div>
-                  <h4 class="text-base font-bold text-[#0c1e5b] dark:text-white">
+                  <h4 class="text-sm sm:text-base font-bold text-[#0c1e5b] dark:text-white">
                     {{ t('Robotics & IoT Learning Kits') }}
                   </h4>
                   <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
@@ -411,7 +414,7 @@
                   </p>
                 </div>
 
-                <div class="pt-3 border-t border-slate-100 dark:border-white/5 space-y-2">
+                <div class="pt-2.5 sm:pt-3 border-t border-slate-100 dark:border-white/5 space-y-2">
                   <div class="flex flex-wrap gap-1.5 text-[10px] font-mono text-slate-500 dark:text-slate-400">
                     <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-white/5">{{ t('ESP32 Lab Kit') }}</span>
                     <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-white/5">{{ t('IoT Sensors') }}</span>
@@ -419,7 +422,7 @@
                   </div>
                   <router-link
                     to="/store"
-                    class="inline-flex items-center gap-1 text-xs font-bold text-[#0c1e5b] dark:text-white hover:underline pt-1"
+                    class="inline-flex items-center gap-1 text-xs font-bold text-[#0c1e5b] dark:text-white hover:underline pt-0.5"
                   >
                     <span>{{ t('View Maker Kits') }}</span>
                     <span>→</span>
@@ -428,15 +431,15 @@
               </div>
 
               <!-- Specialty 3: Custom 3D TPU Armor -->
-              <div class="p-5 rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 backdrop-blur-xl flex flex-col justify-between gap-4 hover:border-slate-400 dark:hover:border-white/20 transition">
-                <div class="space-y-2.5">
+              <div class="p-4 sm:p-5 rounded-2xl bg-white/92 dark:bg-[#070e24]/90 border border-slate-200/90 dark:border-white/10 backdrop-blur-xl flex flex-col justify-between gap-3 sm:gap-4 hover:border-slate-400 dark:hover:border-white/20 transition shadow-xs">
+                <div class="space-y-2 sm:space-y-2.5">
                   <div class="flex items-center justify-between">
                     <span class="text-2xl">🖨️</span>
                     <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-purple-500/10 text-purple-600 dark:text-purple-400">
                       {{ t('3D TPU LAB') }}
                     </span>
                   </div>
-                  <h4 class="text-base font-bold text-[#0c1e5b] dark:text-white">
+                  <h4 class="text-sm sm:text-base font-bold text-[#0c1e5b] dark:text-white">
                     {{ t('Crash-Proof 3D TPU Armor') }}
                   </h4>
                   <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
@@ -444,7 +447,7 @@
                   </p>
                 </div>
 
-                <div class="pt-3 border-t border-slate-100 dark:border-white/5 space-y-2">
+                <div class="pt-2.5 sm:pt-3 border-t border-slate-100 dark:border-white/5 space-y-2">
                   <div class="flex flex-wrap gap-1.5 text-[10px] font-mono text-slate-500 dark:text-slate-400">
                     <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-white/5">{{ t('GoPro Mounts') }}</span>
                     <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-white/5">{{ t('Arm Guards') }}</span>
@@ -452,7 +455,7 @@
                   </div>
                   <router-link
                     to="/print"
-                    class="inline-flex items-center gap-1 text-xs font-bold text-[#0c1e5b] dark:text-white hover:underline pt-1"
+                    class="inline-flex items-center gap-1 text-xs font-bold text-[#0c1e5b] dark:text-white hover:underline pt-0.5"
                   >
                     <span>{{ t('Custom 3D Printing') }}</span>
                     <span>→</span>
@@ -468,15 +471,15 @@
               <h3 class="text-xs font-mono font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 {{ t('Why You Need Aero Store & How We Help You') }}
               </h3>
-              <p class="text-sm font-bold text-[#0c1e5b] dark:text-white mt-0.5">
+              <p class="text-xs sm:text-sm font-bold text-[#0c1e5b] dark:text-white mt-0.5">
                 {{ t('Solving the most expensive mistakes pilots and builders face in Cambodia.') }}
               </p>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-3.5">
               <!-- Reason 1: No Burnt Boards -->
-              <div class="p-4 rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 backdrop-blur-xl flex items-start gap-3.5">
-                <div class="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 text-base">
+              <div class="p-3.5 sm:p-4 rounded-2xl bg-white/92 dark:bg-[#070e24]/90 border border-slate-200/90 dark:border-white/10 backdrop-blur-xl flex items-start gap-3 sm:gap-3.5 shadow-xs">
+                <div class="w-8 sm:w-9 h-8 sm:h-9 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 text-sm sm:text-base">
                   ⚡
                 </div>
                 <div class="space-y-1">
@@ -490,8 +493,8 @@
               </div>
 
               <!-- Reason 2: Fast Local Cambodia Stock -->
-              <div class="p-4 rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 backdrop-blur-xl flex items-start gap-3.5">
-                <div class="w-9 h-9 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 text-base">
+              <div class="p-3.5 sm:p-4 rounded-2xl bg-white/92 dark:bg-[#070e24]/90 border border-slate-200/90 dark:border-white/10 backdrop-blur-xl flex items-start gap-3 sm:gap-3.5 shadow-xs">
+                <div class="w-8 sm:w-9 h-8 sm:h-9 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 text-sm sm:text-base">
                   🚚
                 </div>
                 <div class="space-y-1">
@@ -505,8 +508,8 @@
               </div>
 
               <!-- Reason 3: Hands-on Lab Bench Support -->
-              <div class="p-4 rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 backdrop-blur-xl flex items-start gap-3.5">
-                <div class="w-9 h-9 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 text-base">
+              <div class="p-3.5 sm:p-4 rounded-2xl bg-white/92 dark:bg-[#070e24]/90 border border-slate-200/90 dark:border-white/10 backdrop-blur-xl flex items-start gap-3.5 shadow-xs">
+                <div class="w-8 sm:w-9 h-8 sm:h-9 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 text-sm sm:text-base">
                   🛠️
                 </div>
                 <div class="space-y-1">
@@ -520,8 +523,8 @@
               </div>
 
               <!-- Reason 4: Correct Hardware Matching -->
-              <div class="p-4 rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 backdrop-blur-xl flex items-start gap-3.5">
-                <div class="w-9 h-9 rounded-xl bg-rose-500/10 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0 text-base">
+              <div class="p-3.5 sm:p-4 rounded-2xl bg-white/92 dark:bg-[#070e24]/90 border border-slate-200/90 dark:border-white/10 backdrop-blur-xl flex items-start gap-3.5 shadow-xs">
+                <div class="w-8 sm:w-9 h-8 sm:h-9 rounded-xl bg-rose-500/10 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0 text-sm sm:text-base">
                   🎯
                 </div>
                 <div class="space-y-1">
@@ -537,9 +540,9 @@
           </div>
 
           <!-- BLOCK 3: QUICK CONSULT & TA KHMAU LAB CONTACT -->
-          <div class="grid sm:grid-cols-2 gap-4 pt-4 border-t border-slate-200 dark:border-white/10">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 pt-4 border-t border-slate-200 dark:border-white/10">
             <!-- Telegram Hub -->
-            <div class="p-5 rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 backdrop-blur-xl flex flex-col justify-between gap-3">
+            <div class="p-4 sm:p-5 rounded-2xl bg-white/92 dark:bg-[#070e24]/90 border border-slate-200/90 dark:border-white/10 backdrop-blur-xl flex flex-col justify-between gap-3 shadow-xs">
               <div class="space-y-1.5">
                 <div class="text-xl">💬</div>
                 <h3 class="text-sm font-bold text-[#0c1e5b] dark:text-white">
@@ -554,7 +557,7 @@
                   href="https://t.me/aerobyteacademy"
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="inline-flex items-center gap-1.5 text-xs font-bold text-sky-600 dark:text-cyan-400 hover:underline"
+                  class="inline-flex items-center gap-1.5 text-xs font-bold text-sky-600 dark:text-cyan-400 hover:underline active:scale-95 transition"
                 >
                   <span>{{ t('Open Telegram Chat') }}</span>
                   <span>↗</span>
@@ -563,7 +566,7 @@
             </div>
 
             <!-- Ta Khmau Flight & Maker Lab -->
-            <div class="p-5 rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 backdrop-blur-xl flex flex-col justify-between gap-3">
+            <div class="p-4 sm:p-5 rounded-2xl bg-white/92 dark:bg-[#070e24]/90 border border-slate-200/90 dark:border-white/10 backdrop-blur-xl flex flex-col justify-between gap-3 shadow-xs">
               <div class="space-y-1.5">
                 <div class="text-xl">📍</div>
                 <h3 class="text-sm font-bold text-[#0c1e5b] dark:text-white">
@@ -578,7 +581,7 @@
                   href="https://maps.google.com/?q=Ta+Khmau+Cambodia"
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="inline-flex items-center gap-1.5 text-xs font-bold text-[#0c1e5b] dark:text-white hover:underline"
+                  class="inline-flex items-center gap-1.5 text-xs font-bold text-[#0c1e5b] dark:text-white hover:underline active:scale-95 transition"
                 >
                   <span>{{ t('Get Directions') }}</span>
                   <span>↗</span>
@@ -590,13 +593,13 @@
       </section>
 
       <!-- MINIMALIST FOOTER -->
-      <footer ref="footerRef" class="py-12 px-4 sm:px-6 text-center border-t border-slate-200 dark:border-white/10 max-w-[1240px] mx-auto flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 dark:text-slate-500 font-mono gap-4 relative z-20 bg-slate-50 dark:bg-slate-950">
+      <footer ref="footerRef" class="py-8 sm:py-12 px-4 sm:px-6 text-center border-t border-slate-200 dark:border-white/10 max-w-[1240px] mx-auto flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 dark:text-slate-500 font-mono gap-4 relative z-20 bg-slate-50 dark:bg-slate-950">
         <div>© {{ currentYear }} {{ t('AERO FLY // CAMBODIA DRONE & HARDWARE COLLECTIVE') }}</div>
-        <div class="flex items-center gap-6">
-          <a href="https://t.me/aerobyteacademy" target="_blank" rel="noopener noreferrer" class="hover:text-slate-800 dark:hover:text-white transition">Telegram</a>
-          <a href="#sessions" class="hover:text-slate-800 dark:hover:text-white transition">{{ t('Sessions') }}</a>
-          <a href="#benefits" class="hover:text-slate-800 dark:hover:text-white transition">{{ t('Benefits') }}</a>
-          <a href="#store" class="hover:text-slate-800 dark:hover:text-white transition">{{ t('Aero Store') }}</a>
+        <div class="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
+          <a href="https://t.me/aerobyteacademy" target="_blank" rel="noopener noreferrer" class="hover:text-slate-800 dark:hover:text-white py-1 transition">Telegram</a>
+          <a href="#sessions" class="hover:text-slate-800 dark:hover:text-white py-1 transition">{{ t('Sessions') }}</a>
+          <a href="#benefits" class="hover:text-slate-800 dark:hover:text-white py-1 transition">{{ t('Benefits') }}</a>
+          <a href="#store" class="hover:text-slate-800 dark:hover:text-white py-1 transition">{{ t('Aero Store') }}</a>
         </div>
       </footer>
     </div>
@@ -1198,15 +1201,15 @@ onMounted(() => {
       factor = 0.85 + ((w - 992) / 208) * 0.15
     } else if (w >= 640) {
       // Tablets: scaled down to fit neatly
-      factor = 0.70 + ((w - 640) / 352) * 0.15
+      factor = 0.65 + ((w - 640) / 352) * 0.15
     } else {
-      // Mobile screens (< 640px): smaller to fit the screen without blocking content
-      factor = Math.max(0.48, 0.50 + ((w - 320) / 320) * 0.15)
+      // Mobile screens (< 640px): sleek mobile app size that fits portrait viewports cleanly
+      factor = Math.max(0.36, 0.38 + ((w - 320) / 320) * 0.12)
     }
 
     // Viewport height guard: slightly scale down on short laptop/landscape heights
     if (h < 750) {
-      const hRatio = Math.max(0.72, h / 750)
+      const hRatio = Math.max(0.70, h / 750)
       factor *= hRatio
     }
 
@@ -1260,17 +1263,30 @@ onMounted(() => {
     const pTarget = Math.max(0, Math.min(1, scrollY / maxScroll))
     curP += (pTarget - curP) * Math.min(1, dt * 5.0)
 
-    const sideScale = window.innerWidth >= 1024
-      ? Math.min(1.05, Math.max(0.85, window.innerWidth / 1600))
-      : Math.min(0.55, Math.max(0.20, (window.innerWidth - 320) / 704))
+    const isMobile = window.innerWidth < 1024
 
-    const targetX = sample(STOPS_X, curP) * sideScale
-    const targetY = sample(STOPS_Y, curP)
+    // On desktop, the drone sweeps between the left and right 5-column airspaces.
+    // On mobile portrait, the screen is single-column, so the drone hovers gracefully
+    // in the central aerial channel with a gentle, natural aerodynamic sway (no screen-edge cut-off).
+    const targetX = isMobile
+      ? sample(STOPS_X, curP) * 0.10
+      : sample(STOPS_X, curP) * Math.min(1.05, Math.max(0.85, window.innerWidth / 1600))
+
+    // On mobile, elevate the drone slightly in content sections so it hovers in clear airspace above cards
+    const mobileYOffset = isMobile && (curP < 0.20 || (curP > 0.46 && curP < 0.72)) ? 0.35 : 0.0
+    const targetY = sample(STOPS_Y, curP) + mobileYOffset
+
     const baseS = sample(STOPS_S, curP)
     const targetS = baseS * getResponsiveDroneScale()
-    const targetRoll = sample(STOPS_ROLL, curP)
+    const targetRoll = isMobile
+      ? sample(STOPS_X, curP) * -0.04
+      : sample(STOPS_ROLL, curP)
     const targetPitch = sample(STOPS_PITCH, curP)
-    const targetYaw = sample(STOPS_YAW, curP)
+
+    // On desktop, drone turns 90° to face side cards. On mobile, drone faces forward with subtle dynamic banking.
+    const targetYaw = isMobile
+      ? sample(STOPS_YAW, curP) * 0.25
+      : sample(STOPS_YAW, curP)
 
     const k = Math.min(1, dt * 4.5)
     curX += (targetX - curX) * k
