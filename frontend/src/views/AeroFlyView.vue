@@ -10,7 +10,7 @@
       :class="loadingProgress >= 100 ? 'opacity-0 pointer-events-none' : 'opacity-100'"
     >
       <div class="w-3.5 h-3.5 border-2 border-orange-500 dark:border-[#5df0a8] border-t-transparent rounded-full animate-spin"></div>
-      <span>SYS // LOADING DRONE 3D · {{ loadingProgress }}%</span>
+      <span>{{ t('SYS // LOADING DRONE 3D') }} · {{ loadingProgress }}%</span>
     </div>
 
     <!-- Notification Toast -->
@@ -46,7 +46,7 @@
           <!-- LINE 2: UPPERCASE SUBTITLE WITH SUBTLE RED DOT ACCENTS -->
           <div class="relative inline-block">
             <p class="text-xs sm:text-sm md:text-base font-bold tracking-[0.24em] sm:tracking-[0.32em] uppercase text-slate-700 dark:text-white/90">
-              THE OPEN DRONE FLIGHT COMMUNITY FOR CAMBODIA.
+              {{ t('THE OPEN DRONE FLIGHT COMMUNITY FOR CAMBODIA.') }}
             </p>
             <!-- Minimal Red Dot Accents from reference image -->
             <div class="mt-2.5 flex items-center justify-center gap-1.5 opacity-80">
@@ -70,7 +70,7 @@
           href="#sessions"
           class="flex flex-col items-center gap-1.5 opacity-40 hover:opacity-100 transition-opacity text-[10px] font-mono tracking-widest uppercase text-slate-400 dark:text-slate-500 cursor-pointer"
         >
-          <span>SCROLL</span>
+          <span>{{ t('SCROLL') }}</span>
           <span class="animate-bounce">↓</span>
         </a>
       </section>
@@ -85,19 +85,19 @@
           <div class="lg:col-span-7 space-y-5">
             <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-white/10">
               <div>
-                <div class="text-[10px] font-mono tracking-widest uppercase text-slate-400 dark:text-slate-500">01 // SESSIONS</div>
-                <h2 class="text-2xl sm:text-3xl font-black text-[#0c1e5b] dark:text-white">Weekend Flights</h2>
+                <div class="text-[10px] font-mono tracking-widest uppercase text-slate-400 dark:text-slate-500">{{ t('01 // SESSIONS') }}</div>
+                <h2 class="text-2xl sm:text-3xl font-black text-[#0c1e5b] dark:text-white">{{ t('Weekend Flights') }}</h2>
               </div>
               <span class="text-[11px] font-mono text-emerald-600 dark:text-[#5df0a8] font-bold">
-                ● SKY CLEAR · 8 KM/H
+                {{ t('● SKY CLEAR · 8 KM/H') }}
               </span>
             </div>
 
             <!-- Minimal Stats Line -->
             <div class="flex items-center gap-6 text-xs font-mono text-slate-500 dark:text-slate-400 py-1">
-              <span><strong>140+</strong> Pilots</span>
-              <span><strong>5.8 GHz</strong> Band</span>
-              <span><strong>Weekly</strong> Gatherings</span>
+              <span><strong>140+</strong> {{ t('Pilots') }}</span>
+              <span><strong>5.8 GHz</strong> {{ t('Band') }}</span>
+              <span><strong>{{ t('Weekly') }}</strong> {{ t('Gatherings') }}</span>
             </div>
 
             <!-- Ultra-Short Sessions List -->
@@ -123,7 +123,7 @@
 
                 <div class="flex items-center gap-3 shrink-0">
                   <span class="text-[11px] font-mono text-slate-400 hidden sm:inline">
-                    {{ session.attendees.length }} attending
+                    {{ session.attendees.length }} {{ t('attending') }}
                   </span>
                   <button
                     type="button"
@@ -133,7 +133,7 @@
                       ? 'bg-emerald-500 text-white'
                       : 'bg-slate-100 dark:bg-white/10 hover:bg-slate-200 dark:hover:bg-white/20 text-[#0c1e5b] dark:text-white'"
                   >
-                    {{ session.isJoined ? '✓ Joined' : 'RSVP' }}
+                    {{ session.isJoined ? t('✓ Joined') : t('RSVP') }}
                   </button>
                 </div>
               </div>
@@ -157,7 +157,7 @@
                   '-translate-y-[120%] opacity-0': middleTextState === 'after'
                 }"
               >
-                FLY AS ONE
+                {{ t('FLY AS ONE') }}
               </h2>
             </div>
 
@@ -172,7 +172,7 @@
                     '-translate-y-[120%] opacity-0': middleTextState === 'after'
                   }"
                 >
-                  FROM FIRST HOVER TO PRO FREESTYLE &amp; CINEMATIC MISSIONS.
+                  {{ t('FROM FIRST HOVER TO PRO FREESTYLE & CINEMATIC MISSIONS.') }}
                 </p>
               </div>
 
@@ -204,16 +204,16 @@
           <div class="lg:col-span-7 space-y-5">
             <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2 pb-3 border-b border-slate-200 dark:border-white/10">
               <div>
-                <div class="text-[10px] font-mono tracking-widest uppercase text-slate-400 dark:text-slate-500">02 // MEMBERSHIP BENEFITS</div>
-                <h2 class="text-2xl sm:text-3xl font-black text-[#0c1e5b] dark:text-white">What You Get When You Join</h2>
+                <div class="text-[10px] font-mono tracking-widest uppercase text-slate-400 dark:text-slate-500">{{ t('02 // MEMBERSHIP BENEFITS') }}</div>
+                <h2 class="text-2xl sm:text-3xl font-black text-[#0c1e5b] dark:text-white">{{ t('What You Get When You Join') }}</h2>
               </div>
               <span class="text-[11px] font-mono text-emerald-600 dark:text-[#5df0a8] font-bold">
-                ● 100% FREE COMMUNITY
+                {{ t('● 100% FREE COMMUNITY') }}
               </span>
             </div>
 
             <p class="text-xs text-slate-600 dark:text-[#9aa6c4]">
-              Join Cambodia's open FPV collective. Everything you need to build, tune, and fly safely with active pilots.
+              {{ t("Join Cambodia's open FPV collective. Everything you need to build, tune, and fly safely with active pilots.") }}
             </p>
 
             <!-- 6 Key Member Benefits Grid -->
@@ -224,9 +224,9 @@
                   🖨️
                 </div>
                 <div class="space-y-0.5">
-                  <h4 class="text-xs font-bold text-[#0c1e5b] dark:text-white">Aero Print 3D Discounts</h4>
+                  <h4 class="text-xs font-bold text-[#0c1e5b] dark:text-white">{{ t('Aero Print 3D Discounts') }}</h4>
                   <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-snug">
-                    Exclusive member discounts when you order 3D prints — custom TPU GoPro mounts, arm skids, antenna tubes, and drone armor.
+                    {{ t('Exclusive member discounts when you order 3D prints — custom TPU GoPro mounts, arm skids, antenna tubes, and drone armor.') }}
                   </p>
                 </div>
               </div>
@@ -237,9 +237,9 @@
                   📍
                 </div>
                 <div class="space-y-0.5">
-                  <h4 class="text-xs font-bold text-[#0c1e5b] dark:text-white">Free Ta Khmau Lab Access</h4>
+                  <h4 class="text-xs font-bold text-[#0c1e5b] dark:text-white">{{ t('Free Ta Khmau Lab Access') }}</h4>
                   <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-snug">
-                    Our workshop in Ta Khmau is 100% free. Come and join anytime in your free time — use open soldering benches and tools at no cost.
+                    {{ t('Our workshop in Ta Khmau is 100% free. Come and join anytime in your free time — use open soldering benches and tools at no cost.') }}
                   </p>
                 </div>
               </div>
@@ -250,9 +250,9 @@
                   🛠️
                 </div>
                 <div class="space-y-0.5">
-                  <h4 class="text-xs font-bold text-[#0c1e5b] dark:text-white">Pro Config &amp; Mechanic Team</h4>
+                  <h4 class="text-xs font-bold text-[#0c1e5b] dark:text-white">{{ t('Pro Config & Mechanic Team') }}</h4>
                   <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-snug">
-                    Bring your drone to configure Betaflight, tune rates, and discuss electronics directly with our professional pilots and mechanics.
+                    {{ t('Bring your drone to configure Betaflight, tune rates, and discuss electronics directly with our professional pilots and mechanics.') }}
                   </p>
                 </div>
               </div>
@@ -263,9 +263,9 @@
                   🤝
                 </div>
                 <div class="space-y-0.5">
-                  <h4 class="text-xs font-bold text-[#0c1e5b] dark:text-white">Have a Drone? Find Flight Buddies</h4>
+                  <h4 class="text-xs font-bold text-[#0c1e5b] dark:text-white">{{ t('Have a Drone? Find Flight Buddies') }}</h4>
                   <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-snug">
-                    Have a drone but no partner to fly with? Come and join our group flights, meet local pilots, find spotters, and fly together safely.
+                    {{ t('Have a drone but no partner to fly with? Come and join our group flights, meet local pilots, find spotters, and fly together safely.') }}
                   </p>
                 </div>
               </div>
@@ -276,9 +276,9 @@
                   🐣
                 </div>
                 <div class="space-y-0.5">
-                  <h4 class="text-xs font-bold text-[#0c1e5b] dark:text-white">No Drone Yet? You Can Still Join!</h4>
+                  <h4 class="text-xs font-bold text-[#0c1e5b] dark:text-white">{{ t('No Drone Yet? You Can Still Join!') }}</h4>
                   <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-snug">
-                    New to drones or have a hobby curiosity without gear? You are 100% welcome! Hang out, spectate in goggles, try sims, and learn for free.
+                    {{ t('New to drones or have a hobby curiosity without gear? You are 100% welcome! Hang out, spectate in goggles, try sims, and learn for free.') }}
                   </p>
                 </div>
               </div>
@@ -289,9 +289,9 @@
                   ⚡
                 </div>
                 <div class="space-y-0.5">
-                  <h4 class="text-xs font-bold text-[#0c1e5b] dark:text-white">Coordinated Airspace &amp; Field Spares</h4>
+                  <h4 class="text-xs font-bold text-[#0c1e5b] dark:text-white">{{ t('Coordinated Airspace & Field Spares') }}</h4>
                   <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-snug">
-                    Zero video stomping with coordinated 5.8 GHz &amp; HD channels, plus shared field toolkits and spare hardware so you never get grounded.
+                    {{ t('Zero video stomping with coordinated 5.8 GHz & HD channels, plus shared field toolkits and spare hardware so you never get grounded.') }}
                   </p>
                 </div>
               </div>
@@ -299,7 +299,7 @@
             <!-- Bottom action banner -->
             <div class="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <span class="text-[11px] text-slate-400 dark:text-slate-500 font-mono">
-                Open to Tiny Whoop, 3.5" cinewhoop, 5" freestyle & long-range.
+                {{ t('Open to Tiny Whoop, 3.5" cinewhoop, 5" freestyle & long-range.') }}
               </span>
               <a
                 href="https://t.me/aerobyteacademy"
@@ -307,7 +307,7 @@
                 rel="noopener noreferrer"
                 class="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-full text-xs font-bold bg-[#0c1e5b] dark:bg-white text-white dark:text-[#0c1e5b] hover:opacity-90 transition cursor-pointer shrink-0"
               >
-                <span>Join Telegram Hub</span>
+                <span>{{ t('Join Telegram Hub') }}</span>
                 <span>↗</span>
               </a>
             </div>
@@ -328,13 +328,13 @@
           <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-4 border-b border-slate-200 dark:border-white/10">
             <div>
               <div class="text-[10px] font-mono tracking-widest uppercase text-slate-400 dark:text-slate-500">
-                03 // HARDWARE &amp; LAB SUPPLY
+                {{ t('03 // HARDWARE & LAB SUPPLY') }}
               </div>
               <h2 class="text-2xl sm:text-3xl lg:text-4xl font-black text-[#0c1e5b] dark:text-white">
-                Aero Store &amp; Hardware Lab
+                {{ t('Aero Store & Hardware Lab') }}
               </h2>
               <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1 max-w-2xl">
-                Cambodia's dedicated hardware hub for BNF FPV quads, robotics lab kits, custom 3D TPU parts, and hands-on bench tuning.
+                {{ t("Cambodia's dedicated hardware hub for BNF FPV quads, robotics lab kits, custom 3D TPU parts, and hands-on bench tuning.") }}
               </p>
             </div>
 
@@ -343,7 +343,7 @@
                 to="/store"
                 class="px-4 py-2 rounded-full text-xs font-bold bg-[#0c1e5b] dark:bg-white text-white dark:text-[#0c1e5b] hover:opacity-90 transition shadow-sm inline-flex items-center gap-1.5 cursor-pointer"
               >
-                <span>Browse Store Catalog</span>
+                <span>{{ t('Browse Store Catalog') }}</span>
                 <span>→</span>
               </router-link>
             </div>
@@ -353,10 +353,10 @@
           <div class="space-y-4">
             <div class="flex items-center justify-between">
               <h3 class="text-xs font-mono font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                What We Do in Aero Store
+                {{ t('What We Do in Aero Store') }}
               </h3>
               <span class="text-[11px] font-mono text-emerald-600 dark:text-[#5df0a8] font-bold">
-                ● 100% BENCH-TESTED
+                {{ t('● 100% BENCH-TESTED') }}
               </span>
             </div>
 
@@ -367,28 +367,28 @@
                   <div class="flex items-center justify-between">
                     <span class="text-2xl">🚁</span>
                     <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-sky-500/10 text-sky-600 dark:text-sky-400">
-                      FPV DRONES
+                      {{ t('FPV DRONES') }}
                     </span>
                   </div>
                   <h4 class="text-base font-bold text-[#0c1e5b] dark:text-white">
-                    Flight-Tested FPV Quads &amp; Parts
+                    {{ t('Flight-Tested FPV Quads & Parts') }}
                   </h4>
                   <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-                    From beginner Tiny Whoops to 5-inch freestyle beasts, ESC stacks, brushless motors, ELRS radios, and digital HD video transmitters.
+                    {{ t('From beginner Tiny Whoops to 5-inch freestyle beasts, ESC stacks, brushless motors, ELRS radios, and digital HD video transmitters.') }}
                   </p>
                 </div>
 
                 <div class="pt-3 border-t border-slate-100 dark:border-white/5 space-y-2">
                   <div class="flex flex-wrap gap-1.5 text-[10px] font-mono text-slate-500 dark:text-slate-400">
-                    <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-white/5">BNF Quads</span>
-                    <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-white/5">55A Stacks</span>
-                    <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-white/5">ELRS 2.4G</span>
+                    <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-white/5">{{ t('BNF Quads') }}</span>
+                    <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-white/5">{{ t('55A Stacks') }}</span>
+                    <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-white/5">{{ t('ELRS 2.4G') }}</span>
                   </div>
                   <router-link
                     to="/store"
                     class="inline-flex items-center gap-1 text-xs font-bold text-[#0c1e5b] dark:text-white hover:underline pt-1"
                   >
-                    <span>View Drone Gear</span>
+                    <span>{{ t('View Drone Gear') }}</span>
                     <span>→</span>
                   </router-link>
                 </div>
@@ -400,28 +400,28 @@
                   <div class="flex items-center justify-between">
                     <span class="text-2xl">🤖</span>
                     <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
-                      STEM &amp; MAKER
+                      {{ t('STEM & MAKER') }}
                     </span>
                   </div>
                   <h4 class="text-base font-bold text-[#0c1e5b] dark:text-white">
-                    Robotics &amp; IoT Learning Kits
+                    {{ t('Robotics & IoT Learning Kits') }}
                   </h4>
                   <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-                    ESP32 dual-core learning kits, Arduino Uno compatible sets, sensor arrays, and motor driver shields designed for students and university labs.
+                    {{ t('ESP32 dual-core learning kits, Arduino Uno compatible sets, sensor arrays, and motor driver shields designed for students and university labs.') }}
                   </p>
                 </div>
 
                 <div class="pt-3 border-t border-slate-100 dark:border-white/5 space-y-2">
                   <div class="flex flex-wrap gap-1.5 text-[10px] font-mono text-slate-500 dark:text-slate-400">
-                    <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-white/5">ESP32 Lab Kit</span>
-                    <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-white/5">IoT Sensors</span>
-                    <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-white/5">Motor Shields</span>
+                    <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-white/5">{{ t('ESP32 Lab Kit') }}</span>
+                    <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-white/5">{{ t('IoT Sensors') }}</span>
+                    <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-white/5">{{ t('Motor Shields') }}</span>
                   </div>
                   <router-link
                     to="/store"
                     class="inline-flex items-center gap-1 text-xs font-bold text-[#0c1e5b] dark:text-white hover:underline pt-1"
                   >
-                    <span>View Maker Kits</span>
+                    <span>{{ t('View Maker Kits') }}</span>
                     <span>→</span>
                   </router-link>
                 </div>
@@ -433,28 +433,28 @@
                   <div class="flex items-center justify-between">
                     <span class="text-2xl">🖨️</span>
                     <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-purple-500/10 text-purple-600 dark:text-purple-400">
-                      3D TPU LAB
+                      {{ t('3D TPU LAB') }}
                     </span>
                   </div>
                   <h4 class="text-base font-bold text-[#0c1e5b] dark:text-white">
-                    Crash-Proof 3D TPU Armor
+                    {{ t('Crash-Proof 3D TPU Armor') }}
                   </h4>
                   <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-                    Custom vibration-damped GoPro mounts, motor arm skids, antenna holders, and frame bumpers precision-printed for your exact drone frame.
+                    {{ t('Custom vibration-damped GoPro mounts, motor arm skids, antenna holders, and frame bumpers precision-printed for your exact drone frame.') }}
                   </p>
                 </div>
 
                 <div class="pt-3 border-t border-slate-100 dark:border-white/5 space-y-2">
                   <div class="flex flex-wrap gap-1.5 text-[10px] font-mono text-slate-500 dark:text-slate-400">
-                    <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-white/5">GoPro Mounts</span>
-                    <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-white/5">Arm Guards</span>
-                    <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-white/5">Antenna Tubes</span>
+                    <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-white/5">{{ t('GoPro Mounts') }}</span>
+                    <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-white/5">{{ t('Arm Guards') }}</span>
+                    <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-white/5">{{ t('Antenna Tubes') }}</span>
                   </div>
                   <router-link
                     to="/print"
                     class="inline-flex items-center gap-1 text-xs font-bold text-[#0c1e5b] dark:text-white hover:underline pt-1"
                   >
-                    <span>Custom 3D Printing</span>
+                    <span>{{ t('Custom 3D Printing') }}</span>
                     <span>→</span>
                   </router-link>
                 </div>
@@ -466,10 +466,10 @@
           <div class="space-y-4 pt-4 border-t border-slate-200 dark:border-white/10">
             <div>
               <h3 class="text-xs font-mono font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                Why You Need Aero Store &amp; How We Help You
+                {{ t('Why You Need Aero Store & How We Help You') }}
               </h3>
               <p class="text-sm font-bold text-[#0c1e5b] dark:text-white mt-0.5">
-                Solving the most expensive mistakes pilots and builders face in Cambodia.
+                {{ t('Solving the most expensive mistakes pilots and builders face in Cambodia.') }}
               </p>
             </div>
 
@@ -481,10 +481,10 @@
                 </div>
                 <div class="space-y-1">
                   <h4 class="text-xs font-bold text-[#0c1e5b] dark:text-white">
-                    Zero Burnt Electronics (Pre-Checked Smoke Stop)
+                    {{ t('Zero Burnt Electronics (Pre-Checked Smoke Stop)') }}
                   </h4>
                   <p class="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">
-                    The #1 beginner heartbreak is plugging in a battery and frying a $60 flight controller or ESC. Every stack and motor we deliver is pre-checked on multimeter bench diagnostics with verified wiring guides.
+                    {{ t('The #1 beginner heartbreak is plugging in a battery and frying a $60 flight controller or ESC. Every stack and motor we deliver is pre-checked on multimeter bench diagnostics with verified wiring guides.') }}
                   </p>
                 </div>
               </div>
@@ -496,10 +496,10 @@
                 </div>
                 <div class="space-y-1">
                   <h4 class="text-xs font-bold text-[#0c1e5b] dark:text-white">
-                    Local Cambodia Stock (No 4-Week Customs Wait)
+                    {{ t('Local Cambodia Stock (No 4-Week Customs Wait)') }}
                   </h4>
                   <p class="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">
-                    When you crash on Saturday, you cannot wait 3 to 4 weeks for AliExpress or risk import customs. We keep genuine inventory in Phnom Penh and dispatch nationwide in 24–48 hours.
+                    {{ t('When you crash on Saturday, you cannot wait 3 to 4 weeks for AliExpress or risk import customs. We keep genuine inventory in Phnom Penh and dispatch nationwide in 24–48 hours.') }}
                   </p>
                 </div>
               </div>
@@ -511,10 +511,10 @@
                 </div>
                 <div class="space-y-1">
                   <h4 class="text-xs font-bold text-[#0c1e5b] dark:text-white">
-                    Free Ta Khmau Bench Lab &amp; Tuning Guidance
+                    {{ t('Free Ta Khmau Bench Lab & Tuning Guidance') }}
                   </h4>
                   <p class="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">
-                    Need help soldering tiny motor pads, flashing Betaflight 4.5, or binding ELRS? Bring your parts to our Ta Khmau Lab for free smoke-stopper maiden checks and rate tuning.
+                    {{ t('Need help soldering tiny motor pads, flashing Betaflight 4.5, or binding ELRS? Bring your parts to our Ta Khmau Lab for free smoke-stopper maiden checks and rate tuning.') }}
                   </p>
                 </div>
               </div>
@@ -526,10 +526,10 @@
                 </div>
                 <div class="space-y-1">
                   <h4 class="text-xs font-bold text-[#0c1e5b] dark:text-white">
-                    Engineered Compatibility (Zero Guesswork)
+                    {{ t('Engineered Compatibility (Zero Guesswork)') }}
                   </h4>
                   <p class="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">
-                    Never accidentally buy 4S motors for a 6S build or mismatched antenna polarizations. Our engineers review your setup before purchase to ensure 100% plug-and-fly synergy.
+                    {{ t('Never accidentally buy 4S motors for a 6S build or mismatched antenna polarizations. Our engineers review your setup before purchase to ensure 100% plug-and-fly synergy.') }}
                   </p>
                 </div>
               </div>
@@ -543,10 +543,10 @@
               <div class="space-y-1.5">
                 <div class="text-xl">💬</div>
                 <h3 class="text-sm font-bold text-[#0c1e5b] dark:text-white">
-                  Chat with an Aero Store Engineer
+                  {{ t('Chat with an Aero Store Engineer') }}
                 </h3>
                 <p class="text-xs text-slate-500 dark:text-slate-400">
-                  Send your build questions, part requirements, or custom order inquiries directly to our lab pilots.
+                  {{ t('Send your build questions, part requirements, or custom order inquiries directly to our lab pilots.') }}
                 </p>
               </div>
               <div class="pt-2">
@@ -556,7 +556,7 @@
                   rel="noopener noreferrer"
                   class="inline-flex items-center gap-1.5 text-xs font-bold text-sky-600 dark:text-cyan-400 hover:underline"
                 >
-                  <span>Open Telegram Chat</span>
+                  <span>{{ t('Open Telegram Chat') }}</span>
                   <span>↗</span>
                 </a>
               </div>
@@ -567,10 +567,10 @@
               <div class="space-y-1.5">
                 <div class="text-xl">📍</div>
                 <h3 class="text-sm font-bold text-[#0c1e5b] dark:text-white">
-                  Ta Khmau Flight &amp; Maker Lab
+                  {{ t('Ta Khmau Flight & Maker Lab') }}
                 </h3>
                 <p class="text-xs text-slate-500 dark:text-slate-400">
-                  Free open soldering benches, smoke stoppers, Betaflight diagnostics, and in-person hardware pickup.
+                  {{ t('Free open soldering benches, smoke stoppers, Betaflight diagnostics, and in-person hardware pickup.') }}
                 </p>
               </div>
               <div class="pt-2">
@@ -580,7 +580,7 @@
                   rel="noopener noreferrer"
                   class="inline-flex items-center gap-1.5 text-xs font-bold text-[#0c1e5b] dark:text-white hover:underline"
                 >
-                  <span>Get Directions</span>
+                  <span>{{ t('Get Directions') }}</span>
                   <span>↗</span>
                 </a>
               </div>
@@ -591,12 +591,12 @@
 
       <!-- MINIMALIST FOOTER -->
       <footer class="py-12 px-4 sm:px-6 text-center border-t border-slate-200 dark:border-white/10 max-w-[1240px] mx-auto flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 dark:text-slate-500 font-mono gap-4 relative z-20">
-        <div>© {{ currentYear }} AERO FLY // CAMBODIA DRONE &amp; HARDWARE COLLECTIVE</div>
+        <div>© {{ currentYear }} {{ t('AERO FLY // CAMBODIA DRONE & HARDWARE COLLECTIVE') }}</div>
         <div class="flex items-center gap-6">
           <a href="https://t.me/aerobyteacademy" target="_blank" rel="noopener noreferrer" class="hover:text-slate-800 dark:hover:text-white transition">Telegram</a>
-          <a href="#sessions" class="hover:text-slate-800 dark:hover:text-white transition">Sessions</a>
-          <a href="#benefits" class="hover:text-slate-800 dark:hover:text-white transition">Benefits</a>
-          <a href="#store" class="hover:text-slate-800 dark:hover:text-white transition">Aero Store</a>
+          <a href="#sessions" class="hover:text-slate-800 dark:hover:text-white transition">{{ t('Sessions') }}</a>
+          <a href="#benefits" class="hover:text-slate-800 dark:hover:text-white transition">{{ t('Benefits') }}</a>
+          <a href="#store" class="hover:text-slate-800 dark:hover:text-white transition">{{ t('Aero Store') }}</a>
         </div>
       </footer>
     </div>
@@ -614,8 +614,10 @@ import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPa
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js'
 import { GammaCorrectionShader } from 'three/examples/jsm/shaders/GammaCorrectionShader.js'
 import { useTheme } from '../composables/useTheme'
+import { useI18n } from '../i18n'
 
 const { isDark } = useTheme()
+const { t } = useI18n()
 
 const canvasRef = ref(null)
 const loadingProgress = ref(0)
@@ -633,47 +635,65 @@ function showToast(msg) {
 // ----------------------------------------------------
 // COMMUNITY SESSIONS DATA (Clear & Concise)
 // ----------------------------------------------------
-const flightSessions = ref([
+const joinedSessionIds = ref([2])
+
+const rawFlightSessions = [
   {
     id: 1,
-    title: 'Sunrise Freestyle & Proximity Run',
-    category: 'WEEKEND FLY-IN',
-    time: 'Sun · 6:30 AM',
-    location: 'AeroByte Flight Zone, Ta Khmau',
-    description: 'Open grass runway with low morning wind. Freestyle gaps, proximity practice, and active spotters.',
-    attendees: ['Vuthy', 'Dara', 'Alex', 'Samnang', 'Chhay', 'Sreypov'],
-    isJoined: false
+    titleKey: 'Sunrise Freestyle & Proximity Run',
+    categoryKey: 'WEEKEND FLY-IN',
+    timeKey: 'Sun · 6:30 AM',
+    locationKey: 'AeroByte Flight Zone, Ta Khmau',
+    descriptionKey: 'Open grass runway with low morning wind. Freestyle gaps, proximity practice, and active spotters.',
+    attendees: ['Vuthy', 'Dara', 'Alex', 'Samnang', 'Chhay', 'Sreypov']
   },
   {
     id: 2,
-    title: 'Bench Tuning & Maiden Diagnostics',
-    category: 'TECH WORKSHOP',
-    time: 'Sat · 2:00 PM',
-    location: 'AeroByte Maker Lab, Ta Khmau',
-    description: 'Free open soldering bench, Betaflight 4.5 tuning, smoke-stopper tests, and motor telemetry checks.',
-    attendees: ['Rithy', 'Bona', 'Sophea', 'Sovann', 'Alex'],
-    isJoined: true
+    titleKey: 'Bench Tuning & Maiden Diagnostics',
+    categoryKey: 'TECH WORKSHOP',
+    timeKey: 'Sat · 2:00 PM',
+    locationKey: 'AeroByte Maker Lab, Ta Khmau',
+    descriptionKey: 'Free open soldering bench, Betaflight 4.5 tuning, smoke-stopper tests, and motor telemetry checks.',
+    attendees: ['Rithy', 'Bona', 'Sophea', 'Sovann', 'Alex']
   },
   {
     id: 3,
-    title: 'Beginner Clinic & Simulator Coaching',
-    category: 'COMMUNITY CLINIC',
-    time: 'Sat & Sun · 4:30 PM',
-    location: 'Ta Khmau Lab & Testing Field',
-    description: 'Zero gear required. First-timer goggles spectating, simulator practice, and flight buddy pairing.',
-    attendees: ['Samnang', 'Dara', 'Alex', 'Kosal'],
-    isJoined: false
+    titleKey: 'Beginner Clinic & Simulator Coaching',
+    categoryKey: 'COMMUNITY CLINIC',
+    timeKey: 'Sat & Sun · 4:30 PM',
+    locationKey: 'Ta Khmau Lab & Testing Field',
+    descriptionKey: 'Zero gear required. First-timer goggles spectating, simulator practice, and flight buddy pairing.',
+    attendees: ['Samnang', 'Dara', 'Alex', 'Kosal']
   }
-])
+]
+
+const flightSessions = computed(() =>
+  rawFlightSessions.map((session) => {
+    const isJoined = joinedSessionIds.value.includes(session.id)
+    const attendees = [...session.attendees]
+    if (isJoined && !attendees.includes('You')) {
+      attendees.push('You')
+    }
+    return {
+      id: session.id,
+      title: t(session.titleKey),
+      category: t(session.categoryKey),
+      time: t(session.timeKey),
+      location: t(session.locationKey),
+      description: t(session.descriptionKey),
+      attendees,
+      isJoined
+    }
+  })
+)
 
 function toggleRSVP(session) {
-  session.isJoined = !session.isJoined
-  if (session.isJoined) {
-    if (!session.attendees.includes('You')) session.attendees.push('You')
-    showToast(`RSVP Confirmed: ${session.title}`)
+  if (joinedSessionIds.value.includes(session.id)) {
+    joinedSessionIds.value = joinedSessionIds.value.filter((id) => id !== session.id)
+    showToast(`${t('RSVP Cancelled:')} ${session.title}`)
   } else {
-    session.attendees = session.attendees.filter((p) => p !== 'You')
-    showToast(`RSVP Cancelled: ${session.title}`)
+    joinedSessionIds.value.push(session.id)
+    showToast(`${t('RSVP Confirmed:')} ${session.title}`)
   }
 }
 
