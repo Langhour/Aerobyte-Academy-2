@@ -24,15 +24,33 @@
           <img src="/aerobyte-logo.png" alt="" class="h-8 w-10 object-contain transition duration-200 dark:brightness-0 dark:invert" />
           <span class="block text-sm font-extrabold text-navy-900 dark:text-white leading-tight">AeroByte Academy</span>
         </div>
-        <button
-          type="button"
-          class="p-2 rounded-lg text-slate-600 dark:text-slate-300 hover:text-navy-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition"
-          :aria-label="sidebarOpen ? 'Close menu' : 'Open menu'"
-          @click="sidebarOpen = !sidebarOpen"
-        >
-          <X v-if="sidebarOpen" class="w-5 h-5" />
-          <Menu v-else class="w-5 h-5" />
-        </button>
+        <div class="flex items-center gap-2">
+          <!-- Mobile Notification Bell -->
+          <button
+            type="button"
+            class="relative p-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-navy-900 dark:hover:text-white transition cursor-pointer"
+            :aria-label="t('Notifications')"
+            @click="toggleNotificationDropdown"
+          >
+            <BellRing v-if="unreadNotificationsCount > 0" class="w-4 h-4 text-rose-500 animate-pulse" />
+            <Bell v-else class="w-4 h-4" />
+            <span
+              v-if="unreadNotificationsCount > 0"
+              class="absolute -top-1 -right-1 min-w-4 h-4 px-1 rounded-full bg-rose-500 text-white text-[9px] font-black flex items-center justify-center ring-2 ring-white dark:ring-slate-900"
+            >
+              {{ unreadNotificationsCount > 99 ? '99+' : unreadNotificationsCount }}
+            </span>
+          </button>
+          <button
+            type="button"
+            class="p-2 rounded-lg text-slate-600 dark:text-slate-300 hover:text-navy-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+            :aria-label="sidebarOpen ? 'Close menu' : 'Open menu'"
+            @click="sidebarOpen = !sidebarOpen"
+          >
+            <X v-if="sidebarOpen" class="w-5 h-5" />
+            <Menu v-else class="w-5 h-5" />
+          </button>
+        </div>
       </div>
 
       <!-- Mobile Backdrop Overlay -->
@@ -117,23 +135,43 @@
               @click="selectSection(section.id)"
             >
               <!-- Icon with active / hover effect -->
-              <component
-                :is="section.icon"
-                class="shrink-0 transition-transform duration-150"
-                :class="[
-                  activeSection === section.id
-                    ? 'text-white'
-                    : 'text-slate-400 group-hover:text-navy-900 dark:group-hover:text-white group-hover:scale-110',
-                  sidebarCollapsed ? 'w-5 h-5' : 'w-4 h-4'
-                ]"
-              />
+              <div class="relative shrink-0 flex items-center justify-center">
+                <component
+                  :is="section.icon"
+                  class="shrink-0 transition-transform duration-150"
+                  :class="[
+                    activeSection === section.id
+                      ? 'text-white'
+                      : 'text-slate-400 group-hover:text-navy-900 dark:group-hover:text-white group-hover:scale-110',
+                    sidebarCollapsed ? 'w-5 h-5' : 'w-4 h-4'
+                  ]"
+                />
+                <!-- Dot indicator when sidebar is collapsed and section has pending updates -->
+                <span
+                  v-if="sidebarCollapsed && getSectionBadgeCount(section.id) > 0"
+                  class="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-rose-500 ring-2 ring-white dark:ring-slate-900 animate-pulse"
+                ></span>
+              </div>
 
               <!-- Label (visible when expanded) -->
               <span v-if="!sidebarCollapsed" class="truncate flex-1">{{ t(section.title) }}</span>
 
-              <!-- Animated Arrow Indicator (visible when expanded) -->
+              <!-- Badge Counter (visible when expanded) -->
+              <span
+                v-if="!sidebarCollapsed && getSectionBadgeCount(section.id) > 0"
+                class="px-1.5 py-0.5 text-[10px] font-extrabold rounded-full transition-colors shrink-0"
+                :class="[
+                  activeSection === section.id
+                    ? 'bg-white/20 text-white'
+                    : getSectionBadgeColor(section.id)
+                ]"
+              >
+                {{ getSectionBadgeCount(section.id) }}
+              </span>
+
+              <!-- Animated Arrow Indicator (visible when expanded & no badge) -->
               <ChevronRight
-                v-if="!sidebarCollapsed"
+                v-if="!sidebarCollapsed && getSectionBadgeCount(section.id) === 0"
                 class="w-3.5 h-3.5 shrink-0 transition-all duration-150"
                 :class="activeSection === section.id
                   ? 'opacity-100 text-white translate-x-0'
@@ -386,6 +424,227 @@
               >
                 <X class="w-3.5 h-3.5" />
               </button>
+            </div>
+
+            <!-- ADMIN NOTIFICATION CENTER DROPDOWN -->
+            <div class="relative" ref="notificationDropdownRef">
+              <button
+                type="button"
+                @click="toggleNotificationDropdown"
+                class="relative p-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-navy-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-700/80 shadow-2xs transition cursor-pointer flex items-center justify-center"
+                :aria-label="t('Notifications')"
+                :title="t('Notifications')"
+              >
+                <BellRing v-if="unreadNotificationsCount > 0" class="w-4 h-4 text-rose-500 animate-pulse" />
+                <Bell v-else class="w-4 h-4" />
+
+                <!-- Unread Badge Counter -->
+                <span
+                  v-if="unreadNotificationsCount > 0"
+                  class="absolute -top-1.5 -right-1.5 min-w-4 h-4 px-1 rounded-full bg-rose-500 text-white text-[10px] font-black flex items-center justify-center shadow-xs ring-2 ring-white dark:ring-slate-900"
+                >
+                  {{ unreadNotificationsCount > 99 ? '99+' : unreadNotificationsCount }}
+                </span>
+              </button>
+
+              <!-- Dropdown Card -->
+              <transition
+                enter-active-class="transition duration-150 ease-out"
+                enter-from-class="transform scale-95 opacity-0 -translate-y-1"
+                enter-to-class="transform scale-100 opacity-100 translate-y-0"
+                leave-active-class="transition duration-100 ease-in"
+                leave-from-class="transform scale-100 opacity-100 translate-y-0"
+                leave-to-class="transform scale-95 opacity-0 -translate-y-1"
+              >
+                <div
+                  v-if="notificationDropdownOpen"
+                  class="absolute right-0 mt-2 w-80 sm:w-96 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl z-50 overflow-hidden flex flex-col max-h-[540px]"
+                >
+                  <!-- Notification Header -->
+                  <div class="px-4 py-3 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-900/50 shrink-0">
+                    <div class="flex items-center gap-2">
+                      <Bell class="w-4 h-4 text-navy-800 dark:text-indigo-400" />
+                      <h3 class="font-black text-sm text-navy-900 dark:text-white tracking-tight">
+                        {{ t('Notifications') }}
+                      </h3>
+                      <span
+                        v-if="unreadNotificationsCount > 0"
+                        class="px-2 py-0.5 rounded-full text-[10px] font-black bg-rose-100 dark:bg-rose-950/80 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-900/40"
+                      >
+                        {{ unreadNotificationsCount }} {{ t('New') }}
+                      </span>
+                    </div>
+
+                    <div class="flex items-center gap-1.5">
+                      <button
+                        type="button"
+                        class="p-1.5 rounded-lg text-slate-400 hover:text-navy-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
+                        :title="t('Refresh notifications')"
+                        :disabled="isRefreshingNotifications"
+                        @click="refreshNotifications"
+                      >
+                        <RefreshCw class="w-3.5 h-3.5" :class="{ 'animate-spin': isRefreshingNotifications }" />
+                      </button>
+                      <button
+                        v-if="unreadNotificationsCount > 0"
+                        type="button"
+                        class="flex items-center gap-1 px-2 py-1 rounded-lg text-[11px] font-bold text-slate-500 hover:text-navy-900 dark:text-slate-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
+                        @click="markAllNotificationsAsRead"
+                      >
+                        <CheckCheck class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+                        <span>{{ t('Mark all as read') }}</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Filter Pills -->
+                  <div class="px-3 py-2 border-b border-slate-100 dark:border-slate-800 flex items-center gap-1 overflow-x-auto shrink-0 bg-white dark:bg-slate-900 text-xs scrollbar-none">
+                    <button
+                      type="button"
+                      v-for="tab in [
+                        { id: 'all', label: t('All'), count: allNotifications.length },
+                        { id: 'pending', label: t('Pending Action'), count: pendingActionsCount, urgent: true },
+                        { id: 'students', label: t('Students'), count: allNotifications.filter(n => n.type === 'enrollment').length },
+                        { id: 'payments', label: t('Payments'), count: allNotifications.filter(n => n.type === 'payment').length },
+                        { id: 'users', label: t('Accounts'), count: allNotifications.filter(n => n.type === 'user').length }
+                      ]"
+                      :key="tab.id"
+                      class="px-2.5 py-1 rounded-lg text-[11px] font-bold whitespace-nowrap transition cursor-pointer flex items-center gap-1.5"
+                      :class="notificationFilter === tab.id
+                        ? 'bg-navy-900 dark:bg-indigo-600 text-white shadow-2xs'
+                        : 'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white'"
+                      @click="notificationFilter = tab.id"
+                    >
+                      <span>{{ tab.label }}</span>
+                      <span
+                        v-if="tab.count > 0"
+                        class="px-1.5 py-0.2 rounded-full text-[9px] font-extrabold"
+                        :class="[
+                          notificationFilter === tab.id
+                            ? 'bg-white/20 text-white'
+                            : tab.urgent && tab.count > 0
+                              ? 'bg-rose-100 text-rose-700 dark:bg-rose-950/80 dark:text-rose-300'
+                              : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'
+                        ]"
+                      >
+                        {{ tab.count }}
+                      </span>
+                    </button>
+                  </div>
+
+                  <!-- Notifications Scrollable List -->
+                  <div class="flex-1 overflow-y-auto divide-y divide-slate-100 dark:divide-slate-800 max-h-[350px]">
+                    <div
+                      v-if="filteredNotifications.length === 0"
+                      class="p-8 text-center flex flex-col items-center justify-center text-slate-400 dark:text-slate-500"
+                    >
+                      <div class="w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mb-2">
+                        <Inbox class="w-6 h-6 text-slate-400" />
+                      </div>
+                      <p class="text-xs font-bold text-slate-700 dark:text-slate-300">{{ t('All caught up!') }}</p>
+                      <p class="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">{{ t('No notifications yet') }}</p>
+                    </div>
+
+                    <button
+                      v-for="notif in filteredNotifications"
+                      :key="notif.id"
+                      type="button"
+                      class="w-full text-left p-3.5 transition flex items-start gap-3 cursor-pointer group"
+                      :class="[
+                        !notif.read
+                          ? 'bg-blue-50/40 dark:bg-indigo-950/20 hover:bg-blue-50/80 dark:hover:bg-indigo-950/40'
+                          : 'hover:bg-slate-50 dark:hover:bg-slate-800/60'
+                      ]"
+                      @click="handleNotificationClick(notif)"
+                    >
+                      <!-- Icon -->
+                      <div
+                        class="w-8 h-8 rounded-xl shrink-0 flex items-center justify-center border"
+                        :class="[
+                          notif.type === 'enrollment'
+                            ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800/60'
+                            : notif.type === 'payment'
+                              ? notif.isUrgent
+                                ? 'bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-800/60'
+                                : 'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-800/60'
+                              : 'bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 border-indigo-200 dark:border-indigo-800/60'
+                        ]"
+                      >
+                        <Users v-if="notif.type === 'enrollment'" class="w-4 h-4" />
+                        <CreditCard v-else-if="notif.type === 'payment'" class="w-4 h-4" />
+                        <UserCog v-else class="w-4 h-4" />
+                      </div>
+
+                      <!-- Details -->
+                      <div class="flex-1 min-w-0">
+                        <div class="flex items-center justify-between gap-1.5 mb-0.5">
+                          <p class="text-xs font-extrabold text-navy-900 dark:text-white truncate">
+                            {{ notif.title }}
+                          </p>
+                          <span class="text-[10px] text-slate-400 font-mono shrink-0">
+                            {{ formatTimeAgo(notif.timestamp) }}
+                          </span>
+                        </div>
+
+                        <p class="text-[11px] font-semibold text-slate-700 dark:text-slate-200 truncate">
+                          {{ notif.subtitle }}
+                        </p>
+
+                        <div class="flex items-center justify-between gap-2 mt-1">
+                          <span class="text-[10px] text-slate-400 truncate font-mono">
+                            {{ notif.detail }}
+                          </span>
+
+                          <span
+                            class="px-1.5 py-0.5 rounded text-[9px] font-bold border shrink-0"
+                            :class="[
+                              notif.badgeType === 'danger'
+                                ? 'bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border-rose-200 dark:border-rose-900'
+                                : notif.badgeType === 'warning'
+                                  ? 'bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 border-amber-200 dark:border-amber-900'
+                                  : notif.badgeType === 'success'
+                                    ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border-emerald-200 dark:border-emerald-900'
+                                    : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300 border-slate-200 dark:border-slate-700'
+                            ]"
+                          >
+                            {{ notif.badgeText }}
+                          </span>
+                        </div>
+                      </div>
+
+                      <!-- Unread Indicator Dot -->
+                      <span
+                        v-if="!notif.read"
+                        class="w-2 h-2 rounded-full bg-blue-500 shrink-0 mt-1"
+                        :title="t('Unread')"
+                      ></span>
+                    </button>
+                  </div>
+
+                  <!-- Notification Footer -->
+                  <div class="p-2.5 border-t border-slate-100 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900/80 flex items-center justify-between text-xs shrink-0">
+                    <span class="text-[11px] text-slate-400">
+                      {{ t('Quick Navigation') }}
+                    </span>
+                    <div class="flex items-center gap-1.5">
+                      <button
+                        type="button"
+                        class="px-2 py-1 rounded text-[10px] font-bold text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 transition cursor-pointer"
+                        @click="selectSection('students'); notificationDropdownOpen = false"
+                      >
+                        {{ t('Students') }}
+                      </button>
+                      <button
+                        type="button"
+                        class="px-2 py-1 rounded text-[10px] font-bold text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 transition cursor-pointer"
+                        @click="selectSection('payments'); notificationDropdownOpen = false"
+                      >
+                        {{ t('Payments') }}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </transition>
             </div>
 
             <!-- Language Switcher in Header -->
@@ -1068,7 +1327,29 @@
 
         <section v-else-if="activeSection === 'payments'" class="w-full pb-8">
           <div class="overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-card">
-            <div class="border-b border-slate-100 dark:border-slate-800 p-5"><h2 class="text-lg font-extrabold text-navy-900 dark:text-white">{{ t('Payments & QR Checkout') }}</h2><p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ t('Manual status changes should only be made after checking your payment provider.') }}</p></div>
+            <div class="border-b border-slate-100 dark:border-slate-800 p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <h2 class="text-lg font-extrabold text-navy-900 dark:text-white">{{ t('Payments & QR Checkout') }}</h2>
+                <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ t('Manual status changes should only be made after checking your payment provider.') }}</p>
+              </div>
+              <div class="relative w-full sm:w-72">
+                <Search class="w-4 h-4 text-slate-400 dark:text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <input
+                  v-model="paymentSearch"
+                  type="text"
+                  class="w-full pl-10 pr-9 py-2 text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 shadow-2xs focus:outline-none focus:ring-2 focus:ring-navy-800 dark:focus:ring-indigo-500 transition-all"
+                  :placeholder="t('Search transactions, email, enrollment ID...')"
+                />
+                <button
+                  v-if="paymentSearch"
+                  type="button"
+                  class="absolute right-3 top-1/2 -translate-y-1/2 p-0.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+                  @click="paymentSearch = ''"
+                >
+                  <X class="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
             <div class="overflow-x-auto"><table class="min-w-full divide-y divide-slate-100 dark:divide-slate-800 text-left text-sm">
               <thead class="bg-slate-50 dark:bg-slate-800/80 text-xs uppercase text-slate-500 dark:text-slate-400"><tr><th class="px-4 py-3">{{ t('Transaction') }}</th><th class="px-4 py-3">{{ t('Student / course') }}</th><th class="px-4 py-3">{{ t('Log fields') }}</th><th class="px-4 py-3">{{ t('Subtotal / discount / final') }}</th><th class="px-4 py-3">{{ t('Status') }}</th></tr></thead>
               <tbody class="divide-y divide-slate-100 dark:divide-slate-800"><tr v-for="payment in paginatedPayments" :key="payment.transaction_id">
@@ -3141,6 +3422,56 @@
     </div>
   </div>
 </div>
+
+    <!-- Real-time Interactive Notification Toast -->
+    <transition
+      enter-active-class="transform transition ease-out duration-300"
+      enter-from-class="translate-y-4 opacity-0 sm:translate-y-0 sm:translate-x-4"
+      enter-to-class="translate-y-0 opacity-100 sm:translate-x-0"
+      leave-active-class="transition ease-in duration-200"
+      leave-from-class="opacity-100"
+      leave-to-class="opacity-0"
+    >
+      <div
+        v-if="liveToastNotification"
+        class="fixed bottom-6 right-6 z-50 max-w-sm rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl p-4 flex items-start gap-3 ring-1 ring-slate-900/5 dark:ring-white/10"
+      >
+        <div class="w-9 h-9 rounded-xl bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-800/60 flex items-center justify-center shrink-0">
+          <BellRing class="w-4 h-4 animate-bounce" />
+        </div>
+        <div class="flex-1 min-w-0">
+          <p class="text-xs font-black text-navy-900 dark:text-white tracking-tight">
+            {{ liveToastNotification.title }}
+          </p>
+          <p class="text-[11px] text-slate-600 dark:text-slate-300 font-semibold truncate mt-0.5">
+            {{ liveToastNotification.subtitle }}
+          </p>
+          <div class="mt-2 flex items-center gap-2">
+            <button
+              type="button"
+              class="px-2.5 py-1 rounded-lg bg-navy-900 dark:bg-indigo-600 text-white text-[10px] font-bold hover:opacity-90 transition cursor-pointer"
+              @click="handleNotificationClick({ actionSection: liveToastNotification.section, actionSearch: liveToastNotification.search, id: 'toast-' + Date.now() }); liveToastNotification = null"
+            >
+              {{ t('View') }} →
+            </button>
+            <button
+              type="button"
+              class="px-2 py-1 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-[10px] font-semibold transition cursor-pointer"
+              @click="liveToastNotification = null"
+            >
+              {{ t('Dismiss') }}
+            </button>
+          </div>
+        </div>
+        <button
+          type="button"
+          class="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition"
+          @click="liveToastNotification = null"
+        >
+          <X class="w-3.5 h-3.5" />
+        </button>
+      </div>
+    </transition>
 </template>
 
 <script setup>
@@ -3194,6 +3525,11 @@ import {
   Mail,
   X,
   Crop,
+  Bell,
+  BellRing,
+  CheckCheck,
+  Inbox,
+  AlertCircle,
 } from 'lucide-vue-next'
 import { useLanguage } from '../i18n'
 import { useTheme } from '../composables/useTheme'
@@ -3964,14 +4300,29 @@ watch(totalStudentPages, (newTotal) => {
   }
 })
 
+const paymentSearch = ref('')
+const filteredPayments = computed(() => {
+  const query = paymentSearch.value.toLowerCase().trim()
+  if (!query) return payments.value
+  return payments.value.filter((record) =>
+    [
+      record.transaction_id,
+      record.enrollment_id,
+      record.email,
+      record.student_name,
+      record.coupon_code,
+      record.status
+    ].some((value) => String(value || '').toLowerCase().includes(query))
+  )
+})
 const paymentPage = ref(1)
 const paymentPerPage = ref(8)
 const totalPaymentPages = computed(() =>
-  Math.max(1, Math.ceil(payments.value.length / paymentPerPage.value))
+  Math.max(1, Math.ceil(filteredPayments.value.length / paymentPerPage.value))
 )
 const paginatedPayments = computed(() => {
   const start = (paymentPage.value - 1) * paymentPerPage.value
-  return payments.value.slice(start, start + paymentPerPage.value)
+  return filteredPayments.value.slice(start, start + paymentPerPage.value)
 })
 watch(totalPaymentPages, (newTotal) => {
   if (paymentPage.value > newTotal) {
@@ -4885,22 +5236,323 @@ watch(activeSection, (sec) => {
   }
 })
 
+
+// ----------------------------------------------------
+// ADMIN NOTIFICATION SYSTEM (Instant Updates & Tracking)
+// ----------------------------------------------------
+const notificationDropdownOpen = ref(false)
+const notificationDropdownRef = ref(null)
+const notificationFilter = ref('all') // 'all', 'pending', 'students', 'payments', 'users'
+const isRefreshingNotifications = ref(false)
+const liveToastNotification = ref(null)
+let liveToastTimer = null
+let notificationPollInterval = null
+let lastKnownEnrollmentIds = new Set()
+let lastKnownPaymentIds = new Set()
+
+const readNotificationIds = ref(new Set())
+try {
+  const stored = localStorage.getItem('aerobyte_admin_read_notifications')
+  if (stored) {
+    readNotificationIds.value = new Set(JSON.parse(stored))
+  }
+} catch (e) {
+  readNotificationIds.value = new Set()
+}
+
+function persistReadNotifications() {
+  try {
+    localStorage.setItem(
+      'aerobyte_admin_read_notifications',
+      JSON.stringify(Array.from(readNotificationIds.value))
+    )
+  } catch (e) {
+    console.error('Could not persist read notifications:', e)
+  }
+}
+
+const allNotifications = computed(() => {
+  const list = []
+
+  // 1. Student Enrollments
+  if (Array.isArray(enrollments.value)) {
+    for (const record of enrollments.value) {
+      const id = `enr-${record.enrollment_id}`
+      const isPending = record.enrollment_status === 'pending'
+      list.push({
+        id,
+        type: 'enrollment',
+        title: isPending ? t('Pending Student Enrollment') : t('Student Enrolled'),
+        subtitle: `${record.student_name || t('Student')} · ${record.course_title || t('Course')}`,
+        detail: `${record.phone_telegram || record.email || ''} ${record.amount_due ? '· $' + Number(record.amount_due).toFixed(2) : ''}`,
+        timestamp: record.created_at || '',
+        badgeText: isPending ? t('Pending Review') : t('Confirmed'),
+        badgeType: isPending ? 'warning' : 'success',
+        actionSection: 'students',
+        actionSearch: record.student_name || record.email || record.enrollment_id,
+        read: readNotificationIds.value.has(id),
+        isUrgent: isPending
+      })
+    }
+  }
+
+  // 2. Payments & QR Checkout
+  if (Array.isArray(payments.value)) {
+    for (const payment of payments.value) {
+      const id = `pay-${payment.transaction_id || payment.enrollment_id}-${payment.status}`
+      const isPending = payment.status === 'pending'
+      const amountStr = payment.amount_due !== undefined ? `$${Number(payment.amount_due).toFixed(2)}` : ''
+      list.push({
+        id,
+        type: 'payment',
+        title: isPending ? t('Pending QR Scan / Payment') : payment.status === 'paid' ? t('Payment Received') : t('Payment Update'),
+        subtitle: `${payment.email || payment.student_name || t('Checkout Transaction')}`,
+        detail: `${amountStr} · ${payment.enrollment_id || payment.transaction_id || ''}`,
+        timestamp: payment.created_at || (payment.payment_history && payment.payment_history[payment.payment_history.length - 1]?.created_at) || '',
+        badgeText: isPending ? t('Pending Scan') : payment.status === 'paid' ? t('Paid') : t(payment.status || 'Pending'),
+        badgeType: isPending ? 'danger' : payment.status === 'paid' ? 'success' : 'neutral',
+        actionSection: 'payments',
+        actionSearch: payment.enrollment_id || payment.email || payment.transaction_id,
+        read: readNotificationIds.value.has(id),
+        isUrgent: isPending
+      })
+    }
+  }
+
+  // 3. User Accounts
+  if (Array.isArray(users.value)) {
+    for (const user of users.value) {
+      const id = `usr-${user.user_id || user.id || user.email}`
+      list.push({
+        id,
+        type: 'user',
+        title: t('New User Account'),
+        subtitle: user.full_name || user.name || t('Student User'),
+        detail: user.email,
+        timestamp: user.created_at || '',
+        badgeText: t('Active Account'),
+        badgeType: 'info',
+        actionSection: 'users',
+        actionSearch: user.email,
+        read: readNotificationIds.value.has(id),
+        isUrgent: false
+      })
+    }
+  }
+
+  // Sort newest first
+  return list.sort((a, b) => {
+    const timeA = a.timestamp ? new Date(a.timestamp).getTime() : 0
+    const timeB = b.timestamp ? new Date(b.timestamp).getTime() : 0
+    return timeB - timeA
+  })
+})
+
+const filteredNotifications = computed(() => {
+  if (notificationFilter.value === 'pending') {
+    return allNotifications.value.filter(n => n.isUrgent)
+  }
+  if (notificationFilter.value === 'students') {
+    return allNotifications.value.filter(n => n.type === 'enrollment')
+  }
+  if (notificationFilter.value === 'payments') {
+    return allNotifications.value.filter(n => n.type === 'payment')
+  }
+  if (notificationFilter.value === 'users') {
+    return allNotifications.value.filter(n => n.type === 'user')
+  }
+  return allNotifications.value
+})
+
+const unreadNotificationsCount = computed(() =>
+  allNotifications.value.filter(n => !n.read).length
+)
+
+const pendingActionsCount = computed(() =>
+  allNotifications.value.filter(n => n.isUrgent).length
+)
+
+const pendingEnrollmentsCount = computed(() =>
+  enrollments.value ? enrollments.value.filter(e => e.enrollment_status === 'pending').length : 0
+)
+
+const pendingPaymentsCount = computed(() => {
+  if (overview.value?.pending_qr_scans !== undefined && overview.value.pending_qr_scans > 0) {
+    return overview.value.pending_qr_scans
+  }
+  return payments.value ? payments.value.filter(p => p.status === 'pending').length : 0
+})
+
+function toggleNotificationDropdown() {
+  notificationDropdownOpen.value = !notificationDropdownOpen.value
+}
+
+function markNotificationAsRead(id) {
+  readNotificationIds.value.add(id)
+  persistReadNotifications()
+}
+
+function markAllNotificationsAsRead() {
+  for (const notif of allNotifications.value) {
+    readNotificationIds.value.add(notif.id)
+  }
+  persistReadNotifications()
+  triggerSuccess(t('Mark all as read'))
+}
+
+function handleNotificationClick(notif) {
+  if (notif.id) {
+    markNotificationAsRead(notif.id)
+  }
+  notificationDropdownOpen.value = false
+
+  if (notif.actionSection) {
+    selectSection(notif.actionSection)
+    if (notif.actionSection === 'students' && notif.actionSearch) {
+      studentSearch.value = notif.actionSearch
+    } else if (notif.actionSection === 'payments' && notif.actionSearch) {
+      paymentSearch.value = notif.actionSearch
+    } else if (notif.actionSection === 'users' && notif.actionSearch) {
+      userSearch.value = notif.actionSearch
+    }
+  }
+}
+
+async function refreshNotifications() {
+  if (isRefreshingNotifications.value) return
+  isRefreshingNotifications.value = true
+  try {
+    await loadAdminData()
+    triggerSuccess(t('Notifications refreshed.'))
+  } finally {
+    setTimeout(() => {
+      isRefreshingNotifications.value = false
+    }, 400)
+  }
+}
+
+function getSectionBadgeCount(sectionId) {
+  if (sectionId === 'students') return pendingEnrollmentsCount.value
+  if (sectionId === 'payments') return pendingPaymentsCount.value
+  return 0
+}
+
+function getSectionBadgeColor(sectionId) {
+  if (sectionId === 'payments') {
+    return 'bg-rose-100 dark:bg-rose-950/80 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800'
+  }
+  if (sectionId === 'students') {
+    return 'bg-amber-100 dark:bg-amber-950/80 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800'
+  }
+  return 'bg-blue-100 dark:bg-blue-950/80 text-blue-700 dark:text-blue-300'
+}
+
+function formatTimeAgo(dateInput) {
+  if (!dateInput) return ''
+  const date = new Date(dateInput)
+  if (isNaN(date.getTime())) return formatCambodiaTime(dateInput)
+  const now = new Date()
+  const diffSec = Math.floor((now.getTime() - date.getTime()) / 1000)
+  if (diffSec < 60) return t('Just now')
+  const diffMin = Math.floor(diffSec / 60)
+  if (diffMin < 60) return `${diffMin} ${t('m ago')}`
+  const diffHour = Math.floor(diffMin / 60)
+  if (diffHour < 24) return `${diffHour} ${t('h ago')}`
+  const diffDay = Math.floor(diffHour / 24)
+  if (diffDay < 7) return `${diffDay} ${t('d ago')}`
+  return formatCambodiaTime(dateInput)
+}
+
+function handleOutsideClick(event) {
+  if (
+    notificationDropdownOpen.value &&
+    notificationDropdownRef.value &&
+    !notificationDropdownRef.value.contains(event.target)
+  ) {
+    notificationDropdownOpen.value = false
+  }
+}
+
+async function backgroundPollUpdates() {
+  if (!authenticated.value || (typeof document !== 'undefined' && document.hidden)) return
+  try {
+    const [enrollmentRes, paymentRes, overviewRes] = await Promise.all([
+      adminService.getEnrollments(),
+      adminService.getPayments(),
+      adminService.getOverview()
+    ])
+
+    // Check for brand-new enrollments
+    if (Array.isArray(enrollmentRes?.data) && lastKnownEnrollmentIds.size > 0) {
+      const newItems = enrollmentRes.data.filter(e => !lastKnownEnrollmentIds.has(e.enrollment_id))
+      if (newItems.length > 0) {
+        const latest = newItems[0]
+        showLiveToast({
+          title: t('New Student Enrollment'),
+          subtitle: `${latest.student_name} · ${latest.course_title}`,
+          section: 'students',
+          search: latest.student_name
+        })
+      }
+    }
+
+    // Check for brand-new payments
+    if (Array.isArray(paymentRes?.data) && lastKnownPaymentIds.size > 0) {
+      const newPayments = paymentRes.data.filter(p => !lastKnownPaymentIds.has(`${p.transaction_id || p.enrollment_id}-${p.status}`))
+      if (newPayments.length > 0) {
+        const latestPay = newPayments[0]
+        showLiveToast({
+          title: latestPay.status === 'pending' ? t('Pending QR Scan / Payment') : t('Payment Received'),
+          subtitle: `${latestPay.email || latestPay.student_name || t('Checkout Transaction')} ($${Number(latestPay.amount_due || 0).toFixed(2)})`,
+          section: 'payments',
+          search: latestPay.enrollment_id
+        })
+      }
+    }
+
+    if (enrollmentRes?.data) enrollments.value = enrollmentRes.data
+    if (paymentRes?.data) payments.value = paymentRes.data
+    if (overviewRes?.data) overview.value = overviewRes.data
+
+    lastKnownEnrollmentIds = new Set((enrollments.value || []).map(e => e.enrollment_id))
+    lastKnownPaymentIds = new Set((payments.value || []).map(p => `${p.transaction_id || p.enrollment_id}-${p.status}`))
+  } catch (err) {
+    // quiet fail
+  }
+}
+
+function showLiveToast(notif) {
+  liveToastNotification.value = notif
+  if (liveToastTimer) clearTimeout(liveToastTimer)
+  liveToastTimer = setTimeout(() => {
+    liveToastNotification.value = null
+  }, 7000)
+}
+
 onMounted(() => {
   document.documentElement.classList.add('admin-locked-viewport')
   document.body.classList.add('admin-locked-viewport')
   window.addEventListener('keydown', handleEscapeKey)
-  checkSession()
+  document.addEventListener('click', handleOutsideClick)
+  checkSession().then(() => {
+    lastKnownEnrollmentIds = new Set((enrollments.value || []).map(e => e.enrollment_id))
+    lastKnownPaymentIds = new Set((payments.value || []).map(p => `${p.transaction_id || p.enrollment_id}-${p.status}`))
+  })
   if (activeSection.value === 'logs') {
     loadLogsData()
   } else if (activeSection.value === 'users') {
     loadUsersData()
   }
+  notificationPollInterval = setInterval(backgroundPollUpdates, 25000)
 })
 
 onUnmounted(() => {
   document.documentElement.classList.remove('admin-locked-viewport')
   document.body.classList.remove('admin-locked-viewport')
   window.removeEventListener('keydown', handleEscapeKey)
+  document.removeEventListener('click', handleOutsideClick)
+  if (notificationPollInterval) clearInterval(notificationPollInterval)
+  if (liveToastTimer) clearTimeout(liveToastTimer)
 })
 </script>
 
