@@ -171,6 +171,81 @@
               </div>
             </div>
           </div>
+<!-- Category 2: Aero Services (Separate Category) -->
+          <div class="pt-2.5 mt-2 border-t border-slate-100 dark:border-slate-800/80">
+            <!-- Category Header -->
+            <div
+              v-if="!sidebarCollapsed"
+              class="px-2 pt-1 pb-1.5 text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 flex items-center justify-between"
+            >
+              <span>{{ t('Aero Services') }}</span>
+              <span class="text-[9px] font-semibold text-slate-400 lowercase tracking-normal">{{ t('Public') }}</span>
+            </div>
+            <div v-else class="h-2"></div>
+
+            <div class="space-y-1.5">
+              <div
+                v-for="service in aeroServices"
+                :key="service.id"
+                class="relative group"
+              >
+                <!-- Navigation Link Button -->
+                <RouterLink
+                  :to="service.route"
+                  class="w-full flex items-center rounded-xl text-left text-xs font-bold transition-all duration-150 cursor-pointer border border-transparent text-slate-600 dark:text-slate-400 hover:text-navy-900 dark:hover:text-white hover:bg-slate-100/90 dark:hover:bg-slate-800/80 hover:border-slate-200/70 dark:hover:border-slate-700/60 hover:shadow-2xs"
+                  :class="sidebarCollapsed ? 'justify-center p-3' : 'gap-3 px-3.5 py-3'"
+                  :title="sidebarCollapsed ? t(service.title) : undefined"
+                >
+                  <!-- Icon with hover effect -->
+                  <component
+                    :is="service.icon"
+                    class="shrink-0 transition-transform duration-150 text-slate-400 group-hover:text-navy-900 dark:group-hover:text-white group-hover:scale-110"
+                    :class="sidebarCollapsed ? 'w-5 h-5' : 'w-4 h-4'"
+                  />
+
+                  <!-- Label (visible when expanded) -->
+                  <span v-if="!sidebarCollapsed" class="truncate flex-1">{{ t(service.title) }}</span>
+
+                  <!-- External Indicator (visible when expanded) -->
+                  <ExternalLink
+                    v-if="!sidebarCollapsed"
+                    class="w-3.5 h-3.5 shrink-0 transition-all duration-150 opacity-0 -translate-x-1.5 group-hover:opacity-100 group-hover:translate-x-0 text-slate-400 group-hover:text-navy-900 dark:group-hover:text-white"
+                  />
+                </RouterLink>
+
+                <!-- Floating Preview Card on Hover (Desktop) -->
+                <div
+                  class="hidden lg:block absolute left-full top-0 ml-3 z-50 w-64 p-4 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/90 dark:border-slate-700 shadow-xl opacity-0 translate-x-1 pointer-events-none group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 ease-out"
+                >
+                  <div class="flex items-center justify-between mb-1.5">
+                    <div class="flex items-center gap-2">
+                      <component :is="service.icon" class="w-4 h-4 text-navy-800 dark:text-indigo-400" />
+                      <h4 class="font-extrabold text-xs text-navy-900 dark:text-white">{{ t(service.title) }}</h4>
+                    </div>
+                    <span class="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+                      {{ t('Public') }}
+                    </span>
+                  </div>
+                  <p class="text-[11px] leading-relaxed text-slate-600 dark:text-slate-300 mb-2.5">{{ t(service.summary) }}</p>
+
+                  <div class="space-y-1 pt-2 border-t border-slate-100 dark:border-slate-700">
+                    <p v-for="feat in service.features" :key="feat" class="text-[10px] text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+                      <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400 shrink-0"></span>
+                      <span class="truncate">{{ t(feat) }}</span>
+                    </p>
+                  </div>
+
+                  <div class="mt-2.5 pt-2 border-t border-slate-100 dark:border-slate-700 flex items-center justify-between text-[10px]">
+                    <span class="text-slate-400">{{ t('Open public experience') }}</span>
+                    <span class="font-bold px-2 py-0.5 rounded border text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/50 border-emerald-200 dark:border-emerald-800 flex items-center gap-1">
+                      <span>{{ t('Open') }}</span>
+                      <ExternalLink class="w-2.5 h-2.5" />
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </nav>
 
         <!-- Sidebar Footer Controls -->
@@ -2523,6 +2598,7 @@ import {
   Moon,
   PieChart,
   Plus,
+  Plane,
   Printer,
   Search,
   Settings,
@@ -2873,6 +2949,27 @@ const adminSections = [
     features: ['About page stats', 'Merchant QR and bank details', 'Contact / footer information', 'Checkout session duration'],
   },
 ]
+const aeroServices = [
+  {
+    id: 'aero-fly',
+    title: 'Aero Fly',
+    icon: Plane,
+    route: '/fly',
+    description: 'Interactive 3D drone flight simulation, community hub, and flight missions.',
+    summary: 'Interactive 3D drone flight, community membership, and live FPV pilot missions.',
+    features: ['3D Drone Flight Experience', 'Cambodia Drone Community', 'FPV Missions & Fleet Showcase'],
+  },
+  {
+    id: 'aero-print',
+    title: 'Aero Print',
+    icon: Printer,
+    route: '/print',
+    description: 'Professional 3D printing studio, prototyping, and custom engineering manufacturing.',
+    summary: '3D printing studio, rapid prototyping, and custom maker engineering models.',
+    features: ['3D Rapid Prototyping', 'Custom Maker Engineering', 'Filament & Materials Showcase'],
+  },
+]
+
 const currentSection = computed(() => adminSections.find((section) => section.id === activeSection.value) || adminSections[0])
 
 function emptyCoupon() {

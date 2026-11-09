@@ -142,9 +142,9 @@
         </div>
       </section>
 
-      <!-- SECTION: THE MIDDLE STOP (Drone in Middle, Text Elevated Under Drone with Masked Sliding Reveal) -->
+      <!-- SECTION: THE MIDDLE STOP (Drone in Middle, Text Cleanly Under Drone with Masked Sliding Reveal) -->
       <section id="middle" class="h-[120vh] relative">
-        <div class="sticky top-0 h-screen w-full flex flex-col items-center justify-start px-4 pt-[46vh] sm:pt-[48vh] overflow-hidden pointer-events-none select-none">
+        <div class="sticky top-0 h-screen w-full flex flex-col items-center justify-start px-4 pt-[50vh] sm:pt-[52vh] overflow-hidden pointer-events-none select-none">
           <!-- TWO TEXT LINES CLEANLY UNDER THE DRONE (Elevated into upper UX/UI frame, NOT sunken down below!) -->
           <div class="max-w-4xl mx-auto text-center space-y-2 sm:space-y-3 relative z-10 pointer-events-auto">
             <!-- LINE 1: BOLD GEOMETRIC TITLE (Masked Sliding Reveal) -->
@@ -1178,6 +1178,41 @@ onMounted(() => {
     { p: 1.00, v: 0.0 }
   ]
 
+  // Responsive Drone Scaling: Big on large desktop/4K monitors, scaled down to fit on laptops, tablets, and phones
+  function getResponsiveDroneScale() {
+    const w = window.innerWidth
+    const h = window.innerHeight
+
+    let factor = 1.0
+    if (w >= 2200) {
+      // 2K / 4K / Ultrawide displays: prominent, big, grand drone
+      factor = 1.35 + Math.min(0.25, (w - 2200) / 2000)
+    } else if (w >= 1600) {
+      // Large 1080p+ desktop monitors: bigger drone
+      factor = 1.15 + ((w - 1600) / 600) * 0.20
+    } else if (w >= 1200) {
+      // Standard desktop displays
+      factor = 1.00 + ((w - 1200) / 400) * 0.15
+    } else if (w >= 992) {
+      // Laptops & small desktops
+      factor = 0.85 + ((w - 992) / 208) * 0.15
+    } else if (w >= 640) {
+      // Tablets: scaled down to fit neatly
+      factor = 0.70 + ((w - 640) / 352) * 0.15
+    } else {
+      // Mobile screens (< 640px): smaller to fit the screen without blocking content
+      factor = Math.max(0.50, 0.52 + ((w - 320) / 320) * 0.16)
+    }
+
+    // Viewport height guard: slightly scale down on short laptop/landscape heights
+    if (h < 750) {
+      const hRatio = Math.max(0.75, h / 750)
+      factor *= hRatio
+    }
+
+    return factor
+  }
+
   function sample(stops, p) {
     if (p <= stops[0].p) return stops[0].v
     if (p >= stops[stops.length - 1].p) return stops[stops.length - 1].v
@@ -1194,7 +1229,7 @@ onMounted(() => {
   let curP = 0
   let curX = STOPS_X[0].v
   let curY = STOPS_Y[0].v
-  let curS = STOPS_S[0].v
+  let curS = STOPS_S[0].v * getResponsiveDroneScale()
   let curRoll = STOPS_ROLL[0].v
   let curPitch = STOPS_PITCH[0].v
   let curYaw = STOPS_YAW[0].v
@@ -1225,10 +1260,14 @@ onMounted(() => {
     const pTarget = Math.max(0, Math.min(1, scrollY / maxScroll))
     curP += (pTarget - curP) * Math.min(1, dt * 5.0)
 
-    const sideScale = Math.max(0.5, Math.min(1, window.innerWidth / 1200))
+    const sideScale = window.innerWidth >= 1024
+      ? Math.min(1.35, Math.max(0.85, window.innerWidth / 1440))
+      : Math.min(0.55, Math.max(0.20, (window.innerWidth - 320) / 704))
+
     const targetX = sample(STOPS_X, curP) * sideScale
     const targetY = sample(STOPS_Y, curP)
-    const targetS = sample(STOPS_S, curP)
+    const baseS = sample(STOPS_S, curP)
+    const targetS = baseS * getResponsiveDroneScale()
     const targetRoll = sample(STOPS_ROLL, curP)
     const targetPitch = sample(STOPS_PITCH, curP)
     const targetYaw = sample(STOPS_YAW, curP)

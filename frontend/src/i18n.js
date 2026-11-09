@@ -1567,6 +1567,17 @@ export const khmerTranslations = {
   "AERO FLY // CAMBODIA DRONE & HARDWARE COLLECTIVE": "AERO FLY // សហគមន៍ដ្រូន និងគ្រឿងរឹងកម្ពុជា",
   "Sessions": "កាលវិភាគ",
   "Benefits": "អត្ថប្រយោជន៍",
+  "Aero Services": "សេវាកម្ម Aero",
+  "Aero Experiences": "បទពិសោធន៍ Aero",
+  "3D Drone Flight Experience": "បទពិសោធន៍ហោះហើរដ្រូន 3D",
+  "Cambodia Drone Community": "សហគមន៍ដ្រូនកម្ពុជា",
+  "FPV Missions & Fleet Showcase": "បេសកកម្ម FPV និងបង្ហាញម៉ូដែលដ្រូន",
+  "3D Rapid Prototyping": "ការបង្កើតគំរូ 3D រហ័ស",
+  "Custom Maker Engineering": "វិស្វកម្មផលិតកម្មតាមតម្រូវការ",
+  "Filament & Materials Showcase": "បង្ហាញសរសៃជ័រ និងវត្ថុធាតុដើម",
+  "Open public experience": "បើកមើលទំព័រសាធារណៈ",
+  "Interactive 3D drone flight, community membership, and live FPV pilot missions.": "ការហោះហើរដ្រូន 3D អន្តរកម្ម សមាជិកភាពសហគមន៍ និងបេសកកម្មពីឡុត FPV។",
+  "3D printing studio, rapid prototyping, and custom maker engineering models.": "ស្ទូឌីយោបោះពុម្ព 3D ការបង្កើតគំរូរហ័ស និងម៉ូដែលវិស្វកម្មអ្នកផលិត។",
 }
 
 export function getCourseLocalized(course, field) {
