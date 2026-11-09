@@ -590,7 +590,7 @@
       </section>
 
       <!-- MINIMALIST FOOTER -->
-      <footer class="py-12 px-4 sm:px-6 text-center border-t border-slate-200 dark:border-white/10 max-w-[1240px] mx-auto flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 dark:text-slate-500 font-mono gap-4 relative z-20">
+      <footer ref="footerRef" class="py-12 px-4 sm:px-6 text-center border-t border-slate-200 dark:border-white/10 max-w-[1240px] mx-auto flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 dark:text-slate-500 font-mono gap-4 relative z-20 bg-slate-50 dark:bg-slate-950">
         <div>© {{ currentYear }} {{ t('AERO FLY // CAMBODIA DRONE & HARDWARE COLLECTIVE') }}</div>
         <div class="flex items-center gap-6">
           <a href="https://t.me/aerobyteacademy" target="_blank" rel="noopener noreferrer" class="hover:text-slate-800 dark:hover:text-white transition">Telegram</a>
@@ -620,6 +620,7 @@ const { isDark } = useTheme()
 const { t } = useI18n()
 
 const canvasRef = ref(null)
+const footerRef = ref(null)
 const loadingProgress = ref(0)
 const currentYear = new Date().getFullYear()
 const toastMessage = ref('')
@@ -1091,14 +1092,15 @@ onMounted(() => {
     { p: 0.00, v: 0.0 },   // Hero: Center
     { p: 0.12, v: -2.8 },  // Section 2: Drone glides to Left opposite cards
     { p: 0.18, v: -2.8 },  // Section 2 hold
-    { p: 0.28, v: 0.0 },   // Rotates & sweeps smoothly and promptly into Center as cards end!
+    { p: 0.28, v: 0.0 },   // Rotates & sweeps smoothly into Center as cards end
     { p: 0.48, v: 0.0 },   // Middle Stop: Center hold above text
     { p: 0.58, v: 2.8 },   // Section 4: Drone sweeps to Right opposite perks
     { p: 0.74, v: 2.8 },   // Section 4 hold
-    { p: 0.84, v: 0.0 },   // Section 5: Drone sweeps to Center (Aero Store)
-    { p: 0.88, v: 0.0 },   // Section 5 hold (Aero Store)
-    { p: 0.94, v: 0.0 },   // Departs: ascends into sky before footer
-    { p: 1.00, v: 0.0 }    // Fully exited above screen ceiling
+    { p: 0.80, v: 0.0 },   // Section 5: Drone sweeps to Center (Aero Store)
+    { p: 0.84, v: 0.0 },   // Section 5 hold (Aero Store)
+    { p: 0.88, v: 0.0 },   // Ascends into sky BEFORE footer
+    { p: 0.92, v: 0.0 },   // Fully exited above screen ceiling
+    { p: 1.00, v: 0.0 }
   ]
 
   const STOPS_Y = [
@@ -1109,10 +1111,11 @@ onMounted(() => {
     { p: 0.48, v: 0.75 },  // Middle Stop hold: text sits cleanly UNDER the drone!
     { p: 0.58, v: 0.15 },  // Section 4: level with upper perks cards
     { p: 0.74, v: 0.15 },
-    { p: 0.84, v: 0.45 },  // Bottom Aero Store: High in upper center above store header
-    { p: 0.88, v: 0.45 },  // Aero Store hold
-    { p: 0.94, v: 2.60 },  // Smooth rapid ascent into sky as user scrolls towards footer
-    { p: 1.00, v: 5.40 }   // Exits completely above viewport ceiling (top of screen is ~2.9)
+    { p: 0.80, v: 0.45 },  // Bottom Aero Store: High in upper center above store header
+    { p: 0.84, v: 0.45 },  // Aero Store hold
+    { p: 0.88, v: 3.20 },  // Smooth rapid ascent into sky BEFORE reaching footer (ceiling is 2.91)
+    { p: 0.92, v: 6.50 },  // Completely exited above viewport ceiling!
+    { p: 1.00, v: 6.50 }
   ]
 
   const STOPS_S = [
@@ -1123,10 +1126,11 @@ onMounted(() => {
     { p: 0.48, v: 1.25 },
     { p: 0.58, v: 1.10 },
     { p: 0.74, v: 1.10 },
-    { p: 0.84, v: 1.15 },  // Aero Store
-    { p: 0.88, v: 1.15 },
-    { p: 0.94, v: 0.70 },  // Recedes into the distance as it flies away
-    { p: 1.00, v: 0.20 }   // Small in the sky
+    { p: 0.80, v: 1.15 },  // Aero Store
+    { p: 0.84, v: 1.15 },
+    { p: 0.88, v: 0.50 },  // Recedes into the distance as it flies away
+    { p: 0.92, v: 0.10 },  // Tiny dot in the sky
+    { p: 1.00, v: 0.10 }
   ]
 
   const STOPS_ROLL = [
@@ -1137,9 +1141,10 @@ onMounted(() => {
     { p: 0.48, v: 0.0 },
     { p: 0.58, v: 0.0 },
     { p: 0.74, v: 0.0 },
+    { p: 0.80, v: 0.0 },
     { p: 0.84, v: 0.0 },
     { p: 0.88, v: 0.0 },
-    { p: 0.94, v: 0.0 },
+    { p: 0.92, v: 0.0 },
     { p: 1.00, v: 0.0 }
   ]
 
@@ -1151,10 +1156,11 @@ onMounted(() => {
     { p: 0.48, v: 0.22 },
     { p: 0.58, v: 0.08 },  // Slight hover tilt pointing at perks
     { p: 0.74, v: 0.08 },
-    { p: 0.84, v: 0.20 },  // Aero Store tilt
-    { p: 0.88, v: 0.20 },
-    { p: 0.94, v: -0.15 }, // Tilts up as it climbs into the sky!
-    { p: 1.00, v: -0.30 }  // Climbing angle
+    { p: 0.80, v: 0.20 },  // Aero Store tilt
+    { p: 0.84, v: 0.20 },
+    { p: 0.88, v: -0.25 }, // Tilts up as it climbs into the sky!
+    { p: 0.92, v: -0.35 }, // Climbing angle
+    { p: 1.00, v: -0.35 }
   ]
 
   const STOPS_YAW = [
@@ -1165,9 +1171,10 @@ onMounted(() => {
     { p: 0.48, v: 0.0 },     // Middle Stop hold: Facing forward
     { p: 0.58, v: -DEG90 },  // Rotates 90° left to point at perks
     { p: 0.74, v: -DEG90 },  // Section 4 hold
-    { p: 0.84, v: 0.0 },     // Rotates to 0° facing forward at Aero store
+    { p: 0.80, v: 0.0 },     // Rotates to 0° facing forward at Aero store
+    { p: 0.84, v: 0.0 },
     { p: 0.88, v: 0.0 },
-    { p: 0.94, v: 0.0 },
+    { p: 0.92, v: 0.0 },
     { p: 1.00, v: 0.0 }
   ]
 
@@ -1243,12 +1250,26 @@ onMounted(() => {
       middleTextState.value = 'active'
     }
 
-    const hoverBob = Math.sin(now * 0.0018) * 0.05
-    worldGroup.position.set(curX, curY + hoverBob, 0)
-    worldGroup.scale.setScalar(curS)
+    // Dynamic Footer Clearance: Ensure drone NEVER flies into or touches footer navigation
+    const targetFooter = footerRef.value || document.querySelector('footer')
+    let footerExitProgress = 0
+    if (targetFooter) {
+      const footerRect = targetFooter.getBoundingClientRect()
+      // When footer approaches within 350px of entering viewport:
+      const approachDistance = 350
+      const distFromBottom = footerRect.top - window.innerHeight
+      if (distFromBottom < approachDistance) {
+        footerExitProgress = Math.min(1, Math.max(0, (approachDistance - distFromBottom) / approachDistance))
+      }
+    }
 
-    // Complete departure before footer: when scrolling towards the footer, drone ascends and is hidden
-    worldGroup.visible = curP < 0.96
+    const dynExitY = footerExitProgress * 5.0
+    const dynExitPitch = -footerExitProgress * 0.40
+    const dynExitScale = Math.max(0.01, 1 - footerExitProgress * 0.6)
+
+    const hoverBob = Math.sin(now * 0.0018) * 0.05
+    worldGroup.position.set(curX, curY + hoverBob + dynExitY, 0)
+    worldGroup.scale.setScalar(curS * dynExitScale)
 
     scrollSpeed *= Math.pow(0.04, dt)
     if (scrollSpeed < 0.04) scrollSpeed = 0
@@ -1260,8 +1281,13 @@ onMounted(() => {
     })
 
     droneGroup.rotation.y = curYaw
-    droneGroup.rotation.x = curPitch
+    droneGroup.rotation.x = curPitch + dynExitPitch
     droneGroup.rotation.z = curRoll
+
+    // Drone CANNOT fly into footer navigation under any circumstance:
+    // When the footer enters near the viewport or scroll reaches the footer zone, hide the drone completely!
+    const isAtFooter = footerExitProgress >= 0.65 || curP >= 0.86
+    worldGroup.visible = !isAtFooter
 
     if (!isDark.value) {
       renderer.render(scene, camera)
