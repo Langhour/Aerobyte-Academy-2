@@ -2006,7 +2006,7 @@
           </div>
         </section>
 
-        <div v-else class="w-full grid gap-6 items-start lg:grid-cols-[30%_minmax(0,1fr)]">
+        <div v-else-if="activeSection === 'courses'" class="w-full grid gap-6 items-start lg:grid-cols-[30%_minmax(0,1fr)]">
           <!-- 30% Column: Courses List -->
           <section class="h-fit rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 sm:p-5 shadow-card flex flex-col">
             <div>
@@ -3025,6 +3025,7 @@
             </div>
           </div>
         </section>
+      </main>
     </div>
   </template>
 
@@ -3038,6 +3039,107 @@
     @crop="onCropperApply"
     @use-original="onCropperUseOriginal"
   />
+
+  <!-- Modal: Add / Edit Flight Session -->
+  <div
+    v-if="sessionModalOpen"
+    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-950/60 dark:bg-black/70 backdrop-blur-xs"
+  >
+    <div class="relative w-full max-w-lg rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl p-6 space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+        <h3 class="text-base font-extrabold text-navy-900 dark:text-white">
+          {{ editingSessionId ? t('Edit Flight Session') : t('Add Flight Session') }}
+        </h3>
+        <button
+          type="button"
+          @click="sessionModalOpen = false"
+          class="p-1 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
+        >
+          <X class="w-4 h-4" />
+        </button>
+      </div>
+
+      <div class="space-y-3 text-xs">
+        <div>
+          <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">{{ t('Session Title') }}</label>
+          <input
+            v-model.trim="sessionForm.title"
+            type="text"
+            class="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3.5 py-2 text-xs font-medium text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-navy-800 dark:focus:ring-indigo-500"
+            placeholder="Sunrise Freestyle & Proximity Run"
+          />
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">{{ t('Date & Time') }}</label>
+            <input
+              v-model.trim="sessionForm.time"
+              type="text"
+              class="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3.5 py-2 text-xs font-medium text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-navy-800 dark:focus:ring-indigo-500"
+              placeholder="Every Saturday, 05:45 - 08:30 AM"
+            />
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">{{ t('Location') }}</label>
+            <input
+              v-model.trim="sessionForm.location"
+              type="text"
+              class="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3.5 py-2 text-xs font-medium text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-navy-800 dark:focus:ring-indigo-500"
+              placeholder="Ta Khmau Open Meadow"
+            />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">{{ t('Max Spots') }}</label>
+            <input
+              v-model.number="sessionForm.maxSpots"
+              type="number"
+              class="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3.5 py-2 text-xs font-medium text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-navy-800 dark:focus:ring-indigo-500"
+            />
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">RSVP Count</label>
+            <input
+              v-model.number="sessionForm.spots"
+              type="number"
+              class="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3.5 py-2 text-xs font-medium text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-navy-800 dark:focus:ring-indigo-500"
+            />
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">{{ t('RSVP Status') }}</label>
+            <select
+              v-model="sessionForm.status"
+              class="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-xs font-medium text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-navy-800 dark:focus:ring-indigo-500"
+            >
+              <option value="Open RSVP">{{ t('Open RSVP') }}</option>
+              <option value="Full">{{ t('Full') }}</option>
+              <option value="Completed">{{ t('Completed') }}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-3 flex justify-end gap-2 border-t border-slate-100 dark:border-slate-800">
+        <button
+          type="button"
+          @click="sessionModalOpen = false"
+          class="rounded-xl border border-slate-200 dark:border-slate-700 px-4 py-2 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer"
+        >
+          {{ t('Cancel') }}
+        </button>
+        <button
+          type="button"
+          @click="saveFlightSession"
+          class="rounded-xl bg-navy-900 dark:bg-indigo-600 text-white px-4 py-2 text-xs font-bold hover:bg-navy-800 dark:hover:bg-indigo-500 shadow-xs cursor-pointer"
+        >
+          {{ t('Save Changes') }}
+        </button>
+      </div>
+    </div>
+  </div>
 </div>
 </template>
 
