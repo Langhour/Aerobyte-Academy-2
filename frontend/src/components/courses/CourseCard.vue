@@ -130,6 +130,17 @@ const cardImageUrl = computed(() => {
     const sep = base.includes('?') ? '&' : '?'
     return `${base}${sep}w=640`
   }
+  if (base.includes('images.unsplash.com')) {
+    try {
+      const url = new URL(base)
+      url.searchParams.set('w', '600')
+      url.searchParams.set('auto', 'format')
+      url.searchParams.set('q', '75')
+      return url.toString()
+    } catch {
+      return base
+    }
+  }
   return base
 })
 

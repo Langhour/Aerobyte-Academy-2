@@ -850,54 +850,6 @@
 
             </template>
 
-            <template v-else>
-
-              <div class="my-2 border-t border-slate-100 dark:border-slate-800" />
-
-              <p class="px-3 pt-1 pb-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
-
-                {{ t('Account') }}
-
-              </p>
-
-              <div class="grid grid-cols-2 gap-2 px-3 py-1">
-
-                <RouterLink
-
-                  :to="{ path: '/account', query: { mode: 'signin' } }"
-
-                  class="flex items-center justify-center gap-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 py-2.5 px-3 text-xs font-bold text-navy-900 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-700 transition"
-
-                  @click="mobileDrawerOpen = false"
-
-                >
-
-                  <LogIn class="h-4 w-4 text-slate-500 dark:text-slate-400 shrink-0" />
-
-                  <span>{{ t('Sign in') }}</span>
-
-                </RouterLink>
-
-                <RouterLink
-
-                  :to="{ path: '/account', query: { mode: 'register' } }"
-
-                  class="flex items-center justify-center gap-2 rounded-xl bg-navy-900 dark:bg-indigo-600 text-white py-2.5 px-3 text-xs font-bold hover:bg-navy-800 dark:hover:bg-indigo-500 shadow-xs transition"
-
-                  @click="mobileDrawerOpen = false"
-
-                >
-
-                  <UserPlus class="h-4 w-4 shrink-0" />
-
-                  <span>{{ t('Register') }}</span>
-
-                </RouterLink>
-
-              </div>
-
-            </template>
-
           </div>
 
 
@@ -905,6 +857,33 @@
           <!-- Sidebar Drawer Footer -->
 
           <div class="border-t border-slate-100 dark:border-slate-800 p-3 space-y-2 bg-slate-50/60 dark:bg-slate-900/60">
+
+            <!-- Account Section in Drawer (Sign In & Register - Down Below) -->
+            <div v-if="!profileName" class="space-y-1.5 pb-0.5">
+              <p class="px-1 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                {{ t('Account') }}
+              </p>
+
+              <div class="grid grid-cols-2 gap-2">
+                <RouterLink
+                  :to="{ path: '/account', query: { mode: 'signin' } }"
+                  class="flex items-center justify-center gap-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 py-2.5 px-3 text-xs font-bold text-navy-900 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-700 transition"
+                  @click="mobileDrawerOpen = false"
+                >
+                  <LogIn class="h-4 w-4 text-slate-500 dark:text-slate-400 shrink-0" />
+                  <span>{{ t('Sign in') }}</span>
+                </RouterLink>
+
+                <RouterLink
+                  :to="{ path: '/account', query: { mode: 'register' } }"
+                  class="flex items-center justify-center gap-2 rounded-xl bg-navy-900 dark:bg-indigo-600 text-white py-2.5 px-3 text-xs font-bold hover:bg-navy-800 dark:hover:bg-indigo-500 shadow-xs transition"
+                  @click="mobileDrawerOpen = false"
+                >
+                  <UserPlus class="h-4 w-4 shrink-0" />
+                  <span>{{ t('Register') }}</span>
+                </RouterLink>
+              </div>
+            </div>
 
             <!-- Language Selector inside Drawer -->
 

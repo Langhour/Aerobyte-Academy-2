@@ -590,7 +590,7 @@
       </section>
 
       <!-- MINIMALIST FOOTER -->
-      <footer class="py-12 px-4 sm:px-6 text-center border-t border-slate-200 dark:border-white/10 max-w-[1240px] mx-auto flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 dark:text-slate-500 font-mono gap-4">
+      <footer class="py-12 px-4 sm:px-6 text-center border-t border-slate-200 dark:border-white/10 max-w-[1240px] mx-auto flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 dark:text-slate-500 font-mono gap-4 relative z-20">
         <div>© {{ currentYear }} AERO FLY // CAMBODIA DRONE &amp; HARDWARE COLLECTIVE</div>
         <div class="flex items-center gap-6">
           <a href="https://t.me/aerobyteacademy" target="_blank" rel="noopener noreferrer" class="hover:text-slate-800 dark:hover:text-white transition">Telegram</a>
@@ -607,6 +607,7 @@
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js'
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js'
@@ -805,7 +806,10 @@ onMounted(() => {
   droneGroup.rotation.order = 'YXZ'
   worldGroup.add(droneGroup)
 
+  const dracoLoader = new DRACOLoader()
+  dracoLoader.setDecoderPath('/draco/')
   const gltfLoader = new GLTFLoader()
+  gltfLoader.setDRACOLoader(dracoLoader)
   gltfLoader.load(
     '/models/dji_fpv.glb',
     (gltf) => {
@@ -1071,8 +1075,10 @@ onMounted(() => {
     { p: 0.48, v: 0.0 },   // Middle Stop: Center hold above text
     { p: 0.58, v: 2.8 },   // Section 4: Drone sweeps to Right opposite perks
     { p: 0.74, v: 2.8 },   // Section 4 hold
-    { p: 0.86, v: 0.0 },   // Section 5: Drone sweeps to Center
-    { p: 1.00, v: 0.0 }    // Bottom hold: Center
+    { p: 0.84, v: 0.0 },   // Section 5: Drone sweeps to Center (Aero Store)
+    { p: 0.88, v: 0.0 },   // Section 5 hold (Aero Store)
+    { p: 0.94, v: 0.0 },   // Departs: ascends into sky before footer
+    { p: 1.00, v: 0.0 }    // Fully exited above screen ceiling
   ]
 
   const STOPS_Y = [
@@ -1083,8 +1089,10 @@ onMounted(() => {
     { p: 0.48, v: 0.75 },  // Middle Stop hold: text sits cleanly UNDER the drone!
     { p: 0.58, v: 0.15 },  // Section 4: level with upper perks cards
     { p: 0.74, v: 0.15 },
-    { p: 0.86, v: 0.50 },  // Bottom Aero Store: High in upper center above store header
-    { p: 1.00, v: 0.50 }
+    { p: 0.84, v: 0.45 },  // Bottom Aero Store: High in upper center above store header
+    { p: 0.88, v: 0.45 },  // Aero Store hold
+    { p: 0.94, v: 2.60 },  // Smooth rapid ascent into sky as user scrolls towards footer
+    { p: 1.00, v: 5.40 }   // Exits completely above viewport ceiling (top of screen is ~2.9)
   ]
 
   const STOPS_S = [
@@ -1095,8 +1103,10 @@ onMounted(() => {
     { p: 0.48, v: 1.25 },
     { p: 0.58, v: 1.10 },
     { p: 0.74, v: 1.10 },
-    { p: 0.86, v: 1.15 },
-    { p: 1.00, v: 1.15 }
+    { p: 0.84, v: 1.15 },  // Aero Store
+    { p: 0.88, v: 1.15 },
+    { p: 0.94, v: 0.70 },  // Recedes into the distance as it flies away
+    { p: 1.00, v: 0.20 }   // Small in the sky
   ]
 
   const STOPS_ROLL = [
@@ -1107,7 +1117,9 @@ onMounted(() => {
     { p: 0.48, v: 0.0 },
     { p: 0.58, v: 0.0 },
     { p: 0.74, v: 0.0 },
-    { p: 0.86, v: 0.0 },
+    { p: 0.84, v: 0.0 },
+    { p: 0.88, v: 0.0 },
+    { p: 0.94, v: 0.0 },
     { p: 1.00, v: 0.0 }
   ]
 
@@ -1119,8 +1131,10 @@ onMounted(() => {
     { p: 0.48, v: 0.22 },
     { p: 0.58, v: 0.08 },  // Slight hover tilt pointing at perks
     { p: 0.74, v: 0.08 },
-    { p: 0.86, v: 0.20 },
-    { p: 1.00, v: 0.20 }
+    { p: 0.84, v: 0.20 },  // Aero Store tilt
+    { p: 0.88, v: 0.20 },
+    { p: 0.94, v: -0.15 }, // Tilts up as it climbs into the sky!
+    { p: 1.00, v: -0.30 }  // Climbing angle
   ]
 
   const STOPS_YAW = [
@@ -1131,7 +1145,9 @@ onMounted(() => {
     { p: 0.48, v: 0.0 },     // Middle Stop hold: Facing forward
     { p: 0.58, v: -DEG90 },  // Rotates 90° left to point at perks
     { p: 0.74, v: -DEG90 },  // Section 4 hold
-    { p: 0.86, v: 0.0 },     // Rotates to 0° facing forward
+    { p: 0.84, v: 0.0 },     // Rotates to 0° facing forward at Aero store
+    { p: 0.88, v: 0.0 },
+    { p: 0.94, v: 0.0 },
     { p: 1.00, v: 0.0 }
   ]
 
@@ -1210,6 +1226,9 @@ onMounted(() => {
     const hoverBob = Math.sin(now * 0.0018) * 0.05
     worldGroup.position.set(curX, curY + hoverBob, 0)
     worldGroup.scale.setScalar(curS)
+
+    // Complete departure before footer: when scrolling towards the footer, drone ascends and is hidden
+    worldGroup.visible = curP < 0.96
 
     scrollSpeed *= Math.pow(0.04, dt)
     if (scrollSpeed < 0.04) scrollSpeed = 0

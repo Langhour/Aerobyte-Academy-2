@@ -7,6 +7,7 @@ from pathlib import Path
 from fastapi import FastAPI, HTTPException, Request, Response, Query
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.sessions import SessionMiddleware
 from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
@@ -69,6 +70,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+app.add_middleware(GZipMiddleware, minimum_size=1000)
 app.add_middleware(ProxyHeadersMiddleware, trusted_hosts="*")
 
 cookie_samesite = os.getenv("SESSION_COOKIE_SAMESITE", "lax").lower()
@@ -291,7 +293,7 @@ def serve_frontend(path: str):
     if requested_file.is_relative_to(frontend_directory.resolve()) and requested_file.is_file():
         if path:
             headers = {}
-            if path.startswith("assets/") or path.endswith((".js", ".css", ".woff2", ".png", ".jpg", ".svg", ".ico", ".webp", ".txt", ".xml")):
+            if path.startswith(("assets/", "draco/", "models/")) or path.endswith((".js", ".css", ".woff2", ".png", ".jpg", ".jpeg", ".svg", ".ico", ".webp", ".txt", ".xml", ".glb", ".gltf", ".wasm")):
                 headers["Cache-Control"] = "public, max-age=31536000, immutable"
             return FileResponse(requested_file, headers=headers)
     if path == "api" or path.startswith("api/") or path == "uploads" or path.startswith("uploads/"):

@@ -235,37 +235,59 @@ function handlePageChange(page) {
 }
 
 async function fetchCourses() {
-  loading.value = true
   loadError.value = ''
-  try {
-    const params = {
-      page: currentPage.value,
-      limit: 12
-    }
-    if (searchQuery.value.trim()) {
-      params.search = searchQuery.value.trim()
-    }
-    if (filters.value.categories.length > 0) {
-      params.categories = filters.value.categories
-    }
-    if (filters.value.levels.length > 0) {
-      params.levels = filters.value.levels
-    }
-    if (filters.value.price_range !== 'all') {
-      params.price_range = filters.value.price_range
-    }
-    if (filters.value.languages.length > 0) {
-      params.languages = filters.value.languages
-    }
+  const params = {
+    page: currentPage.value,
+    limit: 12
+  }
+  if (searchQuery.value.trim()) {
+    params.search = searchQuery.value.trim()
+  }
+  if (filters.value.categories.length > 0) {
+    params.categories = filters.value.categories
+  }
+  if (filters.value.levels.length > 0) {
+    params.levels = filters.value.levels
+  }
+  if (filters.value.price_range !== 'all') {
+    params.price_range = filters.value.price_range
+  }
+  if (filters.value.languages.length > 0) {
+    params.languages = filters.value.languages
+  }
 
+  // Instant Cache Recall (Stale-While-Revalidate) so cards pop up with zero delay
+  const cacheKey = `courses_cache_${JSON.stringify(params)}`
+  try {
+    const cached = sessionStorage.getItem(cacheKey)
+    if (cached) {
+      const parsed = JSON.parse(cached)
+      if (Array.isArray(parsed?.courses) && parsed.courses.length > 0) {
+        courses.value = parsed.courses
+        totalCourses.value = parsed.total || parsed.courses.length
+        totalPages.value = parsed.total_pages || 1
+        loading.value = false
+      }
+    }
+  } catch {}
+
+  if (courses.value.length === 0) {
+    loading.value = true
+  }
+
+  try {
     const { data } = await courseService.getCourses(params)
     courses.value = data.courses
     totalCourses.value = data.total
     totalPages.value = data.total_pages
+    try {
+      sessionStorage.setItem(cacheKey, JSON.stringify(data))
+    } catch {}
   } catch (error) {
     console.error('Failed to fetch courses:', error)
-    courses.value = []
-    loadError.value = 'Could not load courses. Check that the API server is running and try again.'
+    if (courses.value.length === 0) {
+      loadError.value = 'Could not load courses. Check that the API server is running and try again.'
+    }
   } finally {
     loading.value = false
   }

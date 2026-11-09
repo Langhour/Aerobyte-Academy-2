@@ -576,6 +576,8 @@
     }
 
     .footer {
+      position: relative;
+      z-index: 20;
       display: flex;
       justify-content: space-between;
       gap: 48px;
@@ -1531,10 +1533,10 @@
     // SCROLL STORYTELLING & FLIGHT CHOREOGRAPHY
     // ==============================================================
     const STOPS_X = [{ p: 0, v: 0 }, { p: 0.32, v: -2.4 }, { p: 0.64, v: 2.5 }, { p: 1, v: 0 }];
-    const STOPS_Y = [{ p: 0, v: -0.4 }, { p: 0.32, v: 0.2 }, { p: 0.64, v: 0.1 }, { p: 1, v: 0.2 }];
-    const STOPS_S = [{ p: 0, v: 1.35 }, { p: 0.32, v: 1.05 }, { p: 0.64, v: 0.95 }, { p: 1, v: 1.15 }];
+    const STOPS_Y = [{ p: 0, v: -0.4 }, { p: 0.32, v: 0.2 }, { p: 0.64, v: 0.1 }, { p: 0.85, v: 0.2 }, { p: 1, v: 5.2 }];
+    const STOPS_S = [{ p: 0, v: 1.35 }, { p: 0.32, v: 1.05 }, { p: 0.64, v: 0.95 }, { p: 0.85, v: 1.15 }, { p: 1, v: 0.25 }];
     const STOPS_ROLL = [{ p: 0, v: -0.06 }, { p: 0.32, v: 0.16 }, { p: 0.64, v: -0.18 }, { p: 1, v: 0.04 }];
-    const STOPS_PITCH = [{ p: 0, v: 0.22 }, { p: 0.32, v: 0.16 }, { p: 0.64, v: 0.18 }, { p: 1, v: 0.24 }];
+    const STOPS_PITCH = [{ p: 0, v: 0.22 }, { p: 0.32, v: 0.16 }, { p: 0.64, v: 0.18 }, { p: 0.85, v: 0.2 }, { p: 1, v: -0.3 }];
 
     let curP = 0;
     let curX = STOPS_X[0].v;
@@ -1551,6 +1553,7 @@
 
     worldGroup.position.set(curX, curY + ENTRY_START_Y, 0);
     worldGroup.scale.setScalar(curS);
+      worldGroup.visible = curP < 0.96;
 
     // Animation Loop
     let lastTime = performance.now();
@@ -1602,6 +1605,7 @@
       // Update World position & scale
       worldGroup.position.set(curX, curY + entryY, 0);
       worldGroup.scale.setScalar(curS);
+      worldGroup.visible = curP < 0.96;
 
       // Subtle drone hovering bobbing physics
       const hoverWobble = Math.sin(now * 0.003) * 0.06;
