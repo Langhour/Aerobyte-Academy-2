@@ -1085,64 +1085,64 @@ onMounted(() => {
   // HARMONIC FLUID FLIGHT PATH:
   // Stage 1 (Hero): Center hover under AERO FLY title
   // Stage 2 (Weekend Flights): Left hover facing elevated cards
-  // Stage 3 (Middle Anthem): Drone sweeps promptly and smoothly into center (y = 0.75) ABOVE FLY AS ONE text
-  // Stage 4 (Perks): Right hover facing elevated perks
-  // Stage 5 (Radar): Center hover above noticeboard
+  // Stage 3 (Middle Anthem): Drone promptly & smoothly sweeps up into upper center (y = 1.15) comfortably ABOVE FLY AS ONE text
+  // Stage 4 (Perks): Right hover facing perks without cut-off
+  // Stage 5 (Aero Store): Center hover above store supply
   const STOPS_X = [
-    { p: 0.00, v: 0.0 },   // Hero: Center
-    { p: 0.12, v: -2.8 },  // Section 2: Drone glides to Left opposite cards
-    { p: 0.18, v: -2.8 },  // Section 2 hold
-    { p: 0.28, v: 0.0 },   // Rotates & sweeps smoothly into Center as cards end
-    { p: 0.48, v: 0.0 },   // Middle Stop: Center hold above text
-    { p: 0.58, v: 2.8 },   // Section 4: Drone sweeps to Right opposite perks
-    { p: 0.74, v: 2.8 },   // Section 4 hold
-    { p: 0.80, v: 0.0 },   // Section 5: Drone sweeps to Center (Aero Store)
-    { p: 0.84, v: 0.0 },   // Section 5 hold (Aero Store)
-    { p: 0.88, v: 0.0 },   // Ascends into sky BEFORE footer
-    { p: 0.92, v: 0.0 },   // Fully exited above screen ceiling
+    { p: 0.00, v: 0.0 },    // 1. Hero: Center
+    { p: 0.10, v: -2.25 },  // 2. Section 2: Smooth glide to Left
+    { p: 0.15, v: -2.25 },  // Section 2 hold
+    { p: 0.22, v: 0.0 },    // FASTER ROTATE & SWEEP into Center as cards end (not stuck on left!)
+    { p: 0.44, v: 0.0 },    // Middle Stop: Center hold cleanly ABOVE FLY AS ONE
+    { p: 0.52, v: 2.25 },   // Section 4: Smooth sweep to Right opposite perks (well within screen boundary)
+    { p: 0.68, v: 2.25 },   // Section 4 hold
+    { p: 0.76, v: 0.0 },    // Section 5: Smooth sweep to Center (Aero Store)
+    { p: 0.83, v: 0.0 },    // Section 5 hold
+    { p: 0.88, v: 0.0 },    // Ascends into sky BEFORE footer
+    { p: 0.92, v: 0.0 },    // Fully exited above screen ceiling
     { p: 1.00, v: 0.0 }
   ]
 
   const STOPS_Y = [
-    { p: 0.00, v: -0.40 }, // Hero: comfortably below top text
-    { p: 0.12, v: 0.15 },  // Section 2: level with upper cards
-    { p: 0.18, v: 0.15 },
-    { p: 0.28, v: 0.75 },  // Middle Stop: HIGH in upper center (37% from top), hovers ABOVE text!
-    { p: 0.48, v: 0.75 },  // Middle Stop hold: text sits cleanly UNDER the drone!
-    { p: 0.58, v: 0.15 },  // Section 4: level with upper perks cards
-    { p: 0.74, v: 0.15 },
-    { p: 0.80, v: 0.45 },  // Bottom Aero Store: High in upper center above store header
-    { p: 0.84, v: 0.45 },  // Aero Store hold
-    { p: 0.88, v: 3.20 },  // Smooth rapid ascent into sky BEFORE reaching footer (ceiling is 2.91)
-    { p: 0.92, v: 6.50 },  // Completely exited above viewport ceiling!
+    { p: 0.00, v: -0.35 },  // Hero: comfortably below top title
+    { p: 0.10, v: 0.25 },   // Section 2: level with upper cards
+    { p: 0.15, v: 0.25 },   // Section 2 hold
+    { p: 0.22, v: 1.15 },   // Elevated HIGH in upper frame (30% from top) so text sits cleanly UNDER drone!
+    { p: 0.44, v: 1.15 },   // Middle Stop hold: hovers cleanly ABOVE text with zero overlap
+    { p: 0.52, v: 0.20 },   // Section 4: level with upper perks cards
+    { p: 0.68, v: 0.20 },   // Section 4 hold
+    { p: 0.76, v: 0.55 },   // Bottom Aero Store: High in upper center above store header
+    { p: 0.83, v: 0.55 },   // Aero Store hold
+    { p: 0.88, v: 3.50 },   // Smooth rapid ascent into sky BEFORE reaching footer (ceiling is 2.91)
+    { p: 0.92, v: 6.50 },   // Completely exited above viewport ceiling!
     { p: 1.00, v: 6.50 }
   ]
 
   const STOPS_S = [
-    { p: 0.00, v: 1.35 },
-    { p: 0.12, v: 1.10 },
-    { p: 0.18, v: 1.10 },
-    { p: 0.28, v: 1.25 },  // Middle Stop: Prominent showcase
-    { p: 0.48, v: 1.25 },
-    { p: 0.58, v: 1.10 },
-    { p: 0.74, v: 1.10 },
-    { p: 0.80, v: 1.15 },  // Aero Store
-    { p: 0.84, v: 1.15 },
-    { p: 0.88, v: 0.50 },  // Recedes into the distance as it flies away
-    { p: 0.92, v: 0.10 },  // Tiny dot in the sky
+    { p: 0.00, v: 1.20 },
+    { p: 0.10, v: 1.00 },
+    { p: 0.15, v: 1.00 },
+    { p: 0.22, v: 1.05 },   // Middle Stop: Prominent showcase proportioned cleanly
+    { p: 0.44, v: 1.05 },
+    { p: 0.52, v: 1.00 },
+    { p: 0.68, v: 1.00 },
+    { p: 0.76, v: 1.05 },   // Aero Store
+    { p: 0.83, v: 1.05 },
+    { p: 0.88, v: 0.50 },   // Recedes into the distance as it flies away
+    { p: 0.92, v: 0.10 },   // Tiny dot in the sky
     { p: 1.00, v: 0.10 }
   ]
 
   const STOPS_ROLL = [
     { p: 0.00, v: 0.0 },
-    { p: 0.12, v: 0.0 },
-    { p: 0.18, v: 0.0 },
-    { p: 0.28, v: 0.0 },
-    { p: 0.48, v: 0.0 },
-    { p: 0.58, v: 0.0 },
-    { p: 0.74, v: 0.0 },
-    { p: 0.80, v: 0.0 },
-    { p: 0.84, v: 0.0 },
+    { p: 0.10, v: 0.0 },
+    { p: 0.15, v: 0.0 },
+    { p: 0.22, v: 0.0 },
+    { p: 0.44, v: 0.0 },
+    { p: 0.52, v: 0.0 },
+    { p: 0.68, v: 0.0 },
+    { p: 0.76, v: 0.0 },
+    { p: 0.83, v: 0.0 },
     { p: 0.88, v: 0.0 },
     { p: 0.92, v: 0.0 },
     { p: 1.00, v: 0.0 }
@@ -1150,14 +1150,14 @@ onMounted(() => {
 
   const STOPS_PITCH = [
     { p: 0.00, v: 0.22 },  // Natural forward flight tilt facing user
-    { p: 0.12, v: 0.08 },  // Slight hover tilt pointing at cards
-    { p: 0.18, v: 0.08 },
-    { p: 0.28, v: 0.22 },  // Forward flight tilt facing user above text
-    { p: 0.48, v: 0.22 },
-    { p: 0.58, v: 0.08 },  // Slight hover tilt pointing at perks
-    { p: 0.74, v: 0.08 },
-    { p: 0.80, v: 0.20 },  // Aero Store tilt
-    { p: 0.84, v: 0.20 },
+    { p: 0.10, v: 0.08 },  // Slight hover tilt pointing at cards
+    { p: 0.15, v: 0.08 },
+    { p: 0.22, v: 0.22 },  // Forward flight tilt facing user above text
+    { p: 0.44, v: 0.22 },
+    { p: 0.52, v: 0.08 },  // Slight hover tilt pointing at perks
+    { p: 0.68, v: 0.08 },
+    { p: 0.76, v: 0.20 },  // Aero Store tilt
+    { p: 0.83, v: 0.20 },
     { p: 0.88, v: -0.25 }, // Tilts up as it climbs into the sky!
     { p: 0.92, v: -0.35 }, // Climbing angle
     { p: 1.00, v: -0.35 }
@@ -1165,14 +1165,14 @@ onMounted(() => {
 
   const STOPS_YAW = [
     { p: 0.00, v: 0.0 },     // 1. Hero: Facing forward
-    { p: 0.12, v: DEG90 },   // 2. Left: Rotates 90° right to point directly at cards
-    { p: 0.18, v: DEG90 },   // Section 2 hold
-    { p: 0.28, v: 0.0 },     // Rotates promptly to 0° facing forward as it glides to center!
-    { p: 0.48, v: 0.0 },     // Middle Stop hold: Facing forward
-    { p: 0.58, v: -DEG90 },  // Rotates 90° left to point at perks
-    { p: 0.74, v: -DEG90 },  // Section 4 hold
-    { p: 0.80, v: 0.0 },     // Rotates to 0° facing forward at Aero store
-    { p: 0.84, v: 0.0 },
+    { p: 0.10, v: DEG90 },   // 2. Left: Rotates 90° right to point directly at cards
+    { p: 0.15, v: DEG90 },   // Section 2 hold
+    { p: 0.22, v: 0.0 },     // PROMPTLY rotates to 0° facing forward into center as cards end!
+    { p: 0.44, v: 0.0 },     // Middle Stop hold: Facing forward
+    { p: 0.52, v: -DEG90 },  // Rotates 90° left to point at perks
+    { p: 0.68, v: -DEG90 },  // Section 4 hold
+    { p: 0.76, v: 0.0 },     // Rotates to 0° facing forward at Aero store
+    { p: 0.83, v: 0.0 },
     { p: 0.88, v: 0.0 },
     { p: 0.92, v: 0.0 },
     { p: 1.00, v: 0.0 }
@@ -1186,13 +1186,13 @@ onMounted(() => {
     let factor = 1.0
     if (w >= 2200) {
       // 2K / 4K / Ultrawide displays: prominent, big, grand drone
-      factor = 1.35 + Math.min(0.25, (w - 2200) / 2000)
+      factor = 1.25 + Math.min(0.20, (w - 2200) / 2000)
     } else if (w >= 1600) {
       // Large 1080p+ desktop monitors: bigger drone
-      factor = 1.15 + ((w - 1600) / 600) * 0.20
+      factor = 1.10 + ((w - 1600) / 600) * 0.15
     } else if (w >= 1200) {
       // Standard desktop displays
-      factor = 1.00 + ((w - 1200) / 400) * 0.15
+      factor = 1.00 + ((w - 1200) / 400) * 0.10
     } else if (w >= 992) {
       // Laptops & small desktops
       factor = 0.85 + ((w - 992) / 208) * 0.15
@@ -1201,12 +1201,12 @@ onMounted(() => {
       factor = 0.70 + ((w - 640) / 352) * 0.15
     } else {
       // Mobile screens (< 640px): smaller to fit the screen without blocking content
-      factor = Math.max(0.50, 0.52 + ((w - 320) / 320) * 0.16)
+      factor = Math.max(0.48, 0.50 + ((w - 320) / 320) * 0.15)
     }
 
     // Viewport height guard: slightly scale down on short laptop/landscape heights
     if (h < 750) {
-      const hRatio = Math.max(0.75, h / 750)
+      const hRatio = Math.max(0.72, h / 750)
       factor *= hRatio
     }
 
@@ -1261,7 +1261,7 @@ onMounted(() => {
     curP += (pTarget - curP) * Math.min(1, dt * 5.0)
 
     const sideScale = window.innerWidth >= 1024
-      ? Math.min(1.35, Math.max(0.85, window.innerWidth / 1440))
+      ? Math.min(1.05, Math.max(0.85, window.innerWidth / 1600))
       : Math.min(0.55, Math.max(0.20, (window.innerWidth - 320) / 704))
 
     const targetX = sample(STOPS_X, curP) * sideScale
@@ -1281,9 +1281,9 @@ onMounted(() => {
     curYaw += (targetYaw - curYaw) * k
 
     // Middle text sliding reveal: smoothly shows as drone arrives in the middle
-    if (curP < 0.22) {
+    if (curP < 0.18) {
       middleTextState.value = 'before'
-    } else if (curP > 0.50) {
+    } else if (curP > 0.46) {
       middleTextState.value = 'after'
     } else {
       middleTextState.value = 'active'
@@ -1325,7 +1325,7 @@ onMounted(() => {
 
     // Drone CANNOT fly into footer navigation under any circumstance:
     // When the footer enters near the viewport or scroll reaches the footer zone, hide the drone completely!
-    const isAtFooter = footerExitProgress >= 0.65 || curP >= 0.86
+    const isAtFooter = footerExitProgress >= 0.65 || curP >= 0.89
     worldGroup.visible = !isAtFooter
 
     if (!isDark.value) {
