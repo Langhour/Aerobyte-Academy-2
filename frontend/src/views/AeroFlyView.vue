@@ -118,8 +118,9 @@
                   <h3 class="text-sm sm:text-base font-bold text-[#0c1e5b] dark:text-white">
                     {{ session.title }}
                   </h3>
-                  <p class="text-xs text-slate-500 dark:text-slate-400">
-                    📍 {{ session.location }}
+                  <p class="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+                    <MapPin class="w-3.5 h-3.5 text-[#0c1e5b] dark:text-white shrink-0" />
+                    <span>{{ session.location }}</span>
                   </p>
                 </div>
 
@@ -238,8 +239,8 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
               <!-- Benefit 1: Aero Print Discounts -->
               <div class="p-3.5 rounded-2xl bg-white/92 dark:bg-[#070e24]/90 border border-slate-200/90 dark:border-white/10 backdrop-blur-xl flex items-start gap-3 hover:border-slate-400 dark:hover:border-white/20 transition shadow-xs">
-                <div class="w-8 h-8 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0 text-sm">
-                  🖨️
+                <div class="w-8 h-8 rounded-xl bg-[#0c1e5b]/5 dark:bg-white/10 text-[#0c1e5b] dark:text-white border border-[#0c1e5b]/10 dark:border-white/10 flex items-center justify-center shrink-0">
+                  <Printer class="w-4 h-4 stroke-[2]" />
                 </div>
                 <div class="space-y-0.5">
                   <h4 class="text-xs font-bold text-[#0c1e5b] dark:text-white">{{ t('Aero Print 3D Discounts') }}</h4>
@@ -251,8 +252,8 @@
 
               <!-- Benefit 2: Free Ta Khmau Lab Access -->
               <div class="p-3.5 rounded-2xl bg-white/92 dark:bg-[#070e24]/90 border border-slate-200/90 dark:border-white/10 backdrop-blur-xl flex items-start gap-3 hover:border-slate-400 dark:hover:border-white/20 transition shadow-xs">
-                <div class="w-8 h-8 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 text-sm">
-                  📍
+                <div class="w-8 h-8 rounded-xl bg-[#0c1e5b]/5 dark:bg-white/10 text-[#0c1e5b] dark:text-white border border-[#0c1e5b]/10 dark:border-white/10 flex items-center justify-center shrink-0">
+                  <MapPin class="w-4 h-4 stroke-[2]" />
                 </div>
                 <div class="space-y-0.5">
                   <h4 class="text-xs font-bold text-[#0c1e5b] dark:text-white">{{ t('Free Ta Khmau Lab Access') }}</h4>
@@ -264,8 +265,8 @@
 
               <!-- Benefit 3: Meet Pro Pilots & Mechanics -->
               <div class="p-3.5 rounded-2xl bg-white/92 dark:bg-[#070e24]/90 border border-slate-200/90 dark:border-white/10 backdrop-blur-xl flex items-start gap-3 hover:border-slate-400 dark:hover:border-white/20 transition shadow-xs">
-                <div class="w-8 h-8 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 text-sm">
-                  🛠️
+                <div class="w-8 h-8 rounded-xl bg-[#0c1e5b]/5 dark:bg-white/10 text-[#0c1e5b] dark:text-white border border-[#0c1e5b]/10 dark:border-white/10 flex items-center justify-center shrink-0">
+                  <Wrench class="w-4 h-4 stroke-[2]" />
                 </div>
                 <div class="space-y-0.5">
                   <h4 class="text-xs font-bold text-[#0c1e5b] dark:text-white">{{ t('Pro Config & Mechanic Team') }}</h4>
@@ -277,8 +278,8 @@
 
               <!-- Benefit 4: Find Flight Partners (Never Fly Alone) -->
               <div class="p-3.5 rounded-2xl bg-white/92 dark:bg-[#070e24]/90 border border-slate-200/90 dark:border-white/10 backdrop-blur-xl flex items-start gap-3 hover:border-slate-400 dark:hover:border-white/20 transition shadow-xs">
-                <div class="w-8 h-8 rounded-xl bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 flex items-center justify-center shrink-0 text-sm">
-                  🤝
+                <div class="w-8 h-8 rounded-xl bg-[#0c1e5b]/5 dark:bg-white/10 text-[#0c1e5b] dark:text-white border border-[#0c1e5b]/10 dark:border-white/10 flex items-center justify-center shrink-0">
+                  <Users class="w-4 h-4 stroke-[2]" />
                 </div>
                 <div class="space-y-0.5">
                   <h4 class="text-xs font-bold text-[#0c1e5b] dark:text-white">{{ t('Have a Drone? Find Flight Buddies') }}</h4>
@@ -290,8 +291,8 @@
 
               <!-- Benefit 5: Beginners & Hobbyists Welcome (No Drone Needed) -->
               <div class="p-3.5 rounded-2xl bg-white/92 dark:bg-[#070e24]/90 border border-slate-200/90 dark:border-white/10 backdrop-blur-xl flex items-start gap-3 hover:border-slate-400 dark:hover:border-white/20 transition shadow-xs">
-                <div class="w-8 h-8 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 text-sm">
-                  🐣
+                <div class="w-8 h-8 rounded-xl bg-[#0c1e5b]/5 dark:bg-white/10 text-[#0c1e5b] dark:text-white border border-[#0c1e5b]/10 dark:border-white/10 flex items-center justify-center shrink-0">
+                  <Sparkles class="w-4 h-4 stroke-[2]" />
                 </div>
                 <div class="space-y-0.5">
                   <h4 class="text-xs font-bold text-[#0c1e5b] dark:text-white">{{ t('No Drone Yet? You Can Still Join!') }}</h4>
@@ -303,8 +304,8 @@
 
               <!-- Benefit 6: Coordinated Airspace & Field Spares -->
               <div class="p-3.5 rounded-2xl bg-white/92 dark:bg-[#070e24]/90 border border-slate-200/90 dark:border-white/10 backdrop-blur-xl flex items-start gap-3 hover:border-slate-400 dark:hover:border-white/20 transition shadow-xs">
-                <div class="w-8 h-8 rounded-xl bg-rose-500/10 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0 text-sm">
-                  ⚡
+                <div class="w-8 h-8 rounded-xl bg-[#0c1e5b]/5 dark:bg-white/10 text-[#0c1e5b] dark:text-white border border-[#0c1e5b]/10 dark:border-white/10 flex items-center justify-center shrink-0">
+                  <Radio class="w-4 h-4 stroke-[2]" />
                 </div>
                 <div class="space-y-0.5">
                   <h4 class="text-xs font-bold text-[#0c1e5b] dark:text-white">{{ t('Coordinated Airspace & Field Spares') }}</h4>
@@ -453,8 +454,10 @@
               <div class="p-4 sm:p-5 rounded-2xl bg-white/92 dark:bg-[#070e24]/90 border border-slate-200/90 dark:border-white/10 backdrop-blur-xl flex flex-col justify-between gap-3 sm:gap-4 hover:border-slate-400 dark:hover:border-white/20 transition shadow-xs">
                 <div class="space-y-2 sm:space-y-2.5">
                   <div class="flex items-center justify-between">
-                    <span class="text-2xl">🚁</span>
-                    <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-sky-500/10 text-sky-600 dark:text-sky-400">
+                    <div class="w-8 h-8 rounded-xl bg-[#0c1e5b]/5 dark:bg-white/10 text-[#0c1e5b] dark:text-white border border-[#0c1e5b]/10 dark:border-white/10 flex items-center justify-center">
+                      <Plane class="w-4 h-4 stroke-[2]" />
+                    </div>
+                    <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-[#0c1e5b]/5 dark:bg-white/10 text-[#0c1e5b] dark:text-white border border-[#0c1e5b]/10 dark:border-white/10">
                       {{ t('FPV DRONES') }}
                     </span>
                   </div>
@@ -486,8 +489,10 @@
               <div class="p-4 sm:p-5 rounded-2xl bg-white/92 dark:bg-[#070e24]/90 border border-slate-200/90 dark:border-white/10 backdrop-blur-xl flex flex-col justify-between gap-3 sm:gap-4 hover:border-slate-400 dark:hover:border-white/20 transition shadow-xs">
                 <div class="space-y-2 sm:space-y-2.5">
                   <div class="flex items-center justify-between">
-                    <span class="text-2xl">🤖</span>
-                    <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                    <div class="w-8 h-8 rounded-xl bg-[#0c1e5b]/5 dark:bg-white/10 text-[#0c1e5b] dark:text-white border border-[#0c1e5b]/10 dark:border-white/10 flex items-center justify-center">
+                      <Cpu class="w-4 h-4 stroke-[2]" />
+                    </div>
+                    <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-[#0c1e5b]/5 dark:bg-white/10 text-[#0c1e5b] dark:text-white border border-[#0c1e5b]/10 dark:border-white/10">
                       {{ t('STEM & MAKER') }}
                     </span>
                   </div>
@@ -519,8 +524,10 @@
               <div class="p-4 sm:p-5 rounded-2xl bg-white/92 dark:bg-[#070e24]/90 border border-slate-200/90 dark:border-white/10 backdrop-blur-xl flex flex-col justify-between gap-3 sm:gap-4 hover:border-slate-400 dark:hover:border-white/20 transition shadow-xs">
                 <div class="space-y-2 sm:space-y-2.5">
                   <div class="flex items-center justify-between">
-                    <span class="text-2xl">🖨️</span>
-                    <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-purple-500/10 text-purple-600 dark:text-purple-400">
+                    <div class="w-8 h-8 rounded-xl bg-[#0c1e5b]/5 dark:bg-white/10 text-[#0c1e5b] dark:text-white border border-[#0c1e5b]/10 dark:border-white/10 flex items-center justify-center">
+                      <Layers class="w-4 h-4 stroke-[2]" />
+                    </div>
+                    <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-[#0c1e5b]/5 dark:bg-white/10 text-[#0c1e5b] dark:text-white border border-[#0c1e5b]/10 dark:border-white/10">
                       {{ t('3D TPU LAB') }}
                     </span>
                   </div>
@@ -564,8 +571,8 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-3.5">
               <!-- Reason 1: No Burnt Boards -->
               <div class="p-3.5 sm:p-4 rounded-2xl bg-white/92 dark:bg-[#070e24]/90 border border-slate-200/90 dark:border-white/10 backdrop-blur-xl flex items-start gap-3 sm:gap-3.5 shadow-xs">
-                <div class="w-8 sm:w-9 h-8 sm:h-9 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 text-sm sm:text-base">
-                  ⚡
+                <div class="w-8 sm:w-9 h-8 sm:h-9 rounded-xl bg-[#0c1e5b]/5 dark:bg-white/10 text-[#0c1e5b] dark:text-white border border-[#0c1e5b]/10 dark:border-white/10 flex items-center justify-center shrink-0">
+                  <ShieldCheck class="w-4.5 h-4.5 stroke-[2]" />
                 </div>
                 <div class="space-y-1">
                   <h4 class="text-xs font-bold text-[#0c1e5b] dark:text-white">
@@ -579,8 +586,8 @@
 
               <!-- Reason 2: Fast Local Cambodia Stock -->
               <div class="p-3.5 sm:p-4 rounded-2xl bg-white/92 dark:bg-[#070e24]/90 border border-slate-200/90 dark:border-white/10 backdrop-blur-xl flex items-start gap-3 sm:gap-3.5 shadow-xs">
-                <div class="w-8 sm:w-9 h-8 sm:h-9 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 text-sm sm:text-base">
-                  🚚
+                <div class="w-8 sm:w-9 h-8 sm:h-9 rounded-xl bg-[#0c1e5b]/5 dark:bg-white/10 text-[#0c1e5b] dark:text-white border border-[#0c1e5b]/10 dark:border-white/10 flex items-center justify-center shrink-0">
+                  <Truck class="w-4.5 h-4.5 stroke-[2]" />
                 </div>
                 <div class="space-y-1">
                   <h4 class="text-xs font-bold text-[#0c1e5b] dark:text-white">
@@ -594,8 +601,8 @@
 
               <!-- Reason 3: Hands-on Lab Bench Support -->
               <div class="p-3.5 sm:p-4 rounded-2xl bg-white/92 dark:bg-[#070e24]/90 border border-slate-200/90 dark:border-white/10 backdrop-blur-xl flex items-start gap-3.5 shadow-xs">
-                <div class="w-8 sm:w-9 h-8 sm:h-9 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 text-sm sm:text-base">
-                  🛠️
+                <div class="w-8 sm:w-9 h-8 sm:h-9 rounded-xl bg-[#0c1e5b]/5 dark:bg-white/10 text-[#0c1e5b] dark:text-white border border-[#0c1e5b]/10 dark:border-white/10 flex items-center justify-center shrink-0">
+                  <Wrench class="w-4.5 h-4.5 stroke-[2]" />
                 </div>
                 <div class="space-y-1">
                   <h4 class="text-xs font-bold text-[#0c1e5b] dark:text-white">
@@ -609,8 +616,8 @@
 
               <!-- Reason 4: Correct Hardware Matching -->
               <div class="p-3.5 sm:p-4 rounded-2xl bg-white/92 dark:bg-[#070e24]/90 border border-slate-200/90 dark:border-white/10 backdrop-blur-xl flex items-start gap-3.5 shadow-xs">
-                <div class="w-8 sm:w-9 h-8 sm:h-9 rounded-xl bg-rose-500/10 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0 text-sm sm:text-base">
-                  🎯
+                <div class="w-8 sm:w-9 h-8 sm:h-9 rounded-xl bg-[#0c1e5b]/5 dark:bg-white/10 text-[#0c1e5b] dark:text-white border border-[#0c1e5b]/10 dark:border-white/10 flex items-center justify-center shrink-0">
+                  <Target class="w-4.5 h-4.5 stroke-[2]" />
                 </div>
                 <div class="space-y-1">
                   <h4 class="text-xs font-bold text-[#0c1e5b] dark:text-white">
@@ -629,7 +636,9 @@
             <!-- Telegram Hub -->
             <div class="p-4 sm:p-5 rounded-2xl bg-white/92 dark:bg-[#070e24]/90 border border-slate-200/90 dark:border-white/10 backdrop-blur-xl flex flex-col justify-between gap-3 shadow-xs">
               <div class="space-y-1.5">
-                <div class="text-xl">💬</div>
+                <div class="w-8 h-8 rounded-xl bg-[#0c1e5b]/5 dark:bg-white/10 text-[#0c1e5b] dark:text-white border border-[#0c1e5b]/10 dark:border-white/10 flex items-center justify-center mb-1">
+                  <MessageSquare class="w-4 h-4 stroke-[2]" />
+                </div>
                 <h3 class="text-sm font-bold text-[#0c1e5b] dark:text-white">
                   {{ t('Chat with an Aero Store Engineer') }}
                 </h3>
@@ -653,7 +662,9 @@
             <!-- Ta Khmau Flight & Maker Lab -->
             <div class="p-4 sm:p-5 rounded-2xl bg-white/92 dark:bg-[#070e24]/90 border border-slate-200/90 dark:border-white/10 backdrop-blur-xl flex flex-col justify-between gap-3 shadow-xs">
               <div class="space-y-1.5">
-                <div class="text-xl">📍</div>
+                <div class="w-8 h-8 rounded-xl bg-[#0c1e5b]/5 dark:bg-white/10 text-[#0c1e5b] dark:text-white border border-[#0c1e5b]/10 dark:border-white/10 flex items-center justify-center mb-1">
+                  <MapPin class="w-4 h-4 stroke-[2]" />
+                </div>
                 <h3 class="text-sm font-bold text-[#0c1e5b] dark:text-white">
                   {{ t('Ta Khmau Flight & Maker Lab') }}
                 </h3>
@@ -694,6 +705,21 @@
 <script setup>
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import * as THREE from 'three'
+import {
+  Printer,
+  MapPin,
+  Wrench,
+  Users,
+  Sparkles,
+  Radio,
+  Plane,
+  Cpu,
+  Layers,
+  ShieldCheck,
+  Truck,
+  Target,
+  MessageSquare
+} from 'lucide-vue-next'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js'
