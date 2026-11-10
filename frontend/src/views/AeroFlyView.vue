@@ -320,7 +320,7 @@
                 {{ t('Open to Tiny Whoop, 3.5" cinewhoop, 5" freestyle & long-range.') }}
               </span>
               <a
-                href="https://t.me/aerobyteacademy"
+                href="https://t.me/+9o8_5bVa20MyMzdl"
                 target="_blank"
                 rel="noopener noreferrer"
                 class="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-full text-xs font-bold bg-[#0c1e5b] dark:bg-white text-white dark:text-[#0c1e5b] hover:opacity-90 active:scale-95 transition cursor-pointer shrink-0 shadow-sm"
@@ -639,7 +639,7 @@
               </div>
               <div class="pt-2">
                 <a
-                  href="https://t.me/aerobyteacademy"
+                  href="https://t.me/+9o8_5bVa20MyMzdl"
                   target="_blank"
                   rel="noopener noreferrer"
                   class="inline-flex items-center gap-1.5 text-xs font-bold text-sky-600 dark:text-cyan-400 hover:underline active:scale-95 transition"
@@ -681,7 +681,7 @@
       <footer ref="footerRef" class="py-8 sm:py-12 px-4 sm:px-6 text-center border-t border-slate-200 dark:border-white/10 max-w-[1240px] mx-auto flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 dark:text-slate-500 font-mono gap-4 relative z-20 bg-slate-50 dark:bg-slate-950">
         <div>© {{ currentYear }} {{ t('AERO FLY // CAMBODIA DRONE & HARDWARE COLLECTIVE') }}</div>
         <div class="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
-          <a href="https://t.me/aerobyteacademy" target="_blank" rel="noopener noreferrer" class="hover:text-slate-800 dark:hover:text-white py-1 transition">Telegram</a>
+          <a href="https://t.me/+9o8_5bVa20MyMzdl" target="_blank" rel="noopener noreferrer" class="hover:text-slate-800 dark:hover:text-white py-1 transition">Telegram</a>
           <a href="#sessions" class="hover:text-slate-800 dark:hover:text-white py-1 transition">{{ t('Sessions') }}</a>
           <a href="#benefits" class="hover:text-slate-800 dark:hover:text-white py-1 transition">{{ t('Benefits') }}</a>
           <a href="#store" class="hover:text-slate-800 dark:hover:text-white py-1 transition">{{ t('Aero Store') }}</a>
