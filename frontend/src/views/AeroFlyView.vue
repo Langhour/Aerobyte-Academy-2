@@ -336,56 +336,72 @@
         </div>
       </section>
 
-      <!-- SECTION: THE SECOND MIDDLE STOP (Drone Rotates to Center, Big Line Text Cleanly Under Drone) -->
+      <!-- SECTION: THE SECOND MIDDLE STOP (Drone Rotates to Center, Jitter Cascading Text Under Drone) -->
       <section id="middle-two" class="h-[120vh] relative">
         <div class="sticky top-0 h-screen w-full flex flex-col items-center justify-start px-4 pt-[45vh] sm:pt-[52vh] overflow-hidden pointer-events-none select-none">
-          <!-- TWO TEXT LINES CLEANLY UNDER THE DRONE -->
-          <div class="max-w-4xl mx-auto text-center space-y-2 sm:space-y-3 relative z-10 pointer-events-auto">
-            <!-- LINE 1: BOLD GEOMETRIC TITLE (Masked Sliding Reveal) -->
-            <div class="overflow-hidden py-1 inline-block">
-              <h2
-                class="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-black tracking-[0.08em] sm:tracking-[0.18em] uppercase text-[#0c1e5b] dark:text-white drop-shadow-sm font-sans transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] transform"
-                :class="{
-                  'translate-y-0 opacity-100': middleTextTwoState === 'active',
-                  'translate-y-[120%] opacity-0': middleTextTwoState === 'before',
-                  '-translate-y-[120%] opacity-0': middleTextTwoState === 'after'
-                }"
+          <!-- TWO TEXT LINES CLEANLY UNDER THE DRONE (Jitter Cascading Text Style) -->
+          <div class="max-w-4xl mx-auto text-center space-y-3 sm:space-y-4 relative z-10 pointer-events-auto">
+            <!-- LINE 1: BOLD GEOMETRIC TITLE (Jitter Cascading Letters) -->
+            <h2 class="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-black uppercase text-[#0c1e5b] dark:text-white drop-shadow-sm font-sans flex flex-wrap justify-center items-center">
+              <span
+                v-for="(group, gIdx) in titleTwoWordGroups"
+                :key="gIdx"
+                class="inline-flex whitespace-nowrap mx-[0.14em]"
               >
-                {{ t('BUILT TO SOAR') }}
-              </h2>
-            </div>
-
-            <!-- LINE 2: UPPERCASE SUBTITLE (Masked Sliding Reveal with Stagger) -->
-            <div class="block max-w-sm sm:max-w-none px-2">
-              <div class="overflow-hidden py-1 inline-block">
-                <p
-                  class="text-[11px] sm:text-sm md:text-base font-bold tracking-[0.14em] sm:tracking-[0.32em] uppercase text-slate-700 dark:text-white/90 transition-all duration-700 delay-100 ease-[cubic-bezier(0.16,1,0.3,1)] transform"
-                  :class="{
-                    'translate-y-0 opacity-100': middleTextTwoState === 'active',
-                    'translate-y-[120%] opacity-0': middleTextTwoState === 'before',
-                    '-translate-y-[120%] opacity-0': middleTextTwoState === 'after'
-                  }"
+                <span
+                  v-for="item in group.chars"
+                  :key="item.globalIndex"
+                  class="inline-block overflow-hidden py-1 px-[0.02em]"
                 >
-                  {{ t('FROM CAD BENCH TO FULL THROTTLE FREEDOM.') }}
-                </p>
-              </div>
+                  <span
+                    class="inline-block transform transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] tracking-[0.06em] sm:tracking-[0.14em]"
+                    :style="{ transitionDelay: getCharTwoDelay(item.globalIndex) }"
+                    :class="{
+                      'translate-y-0 opacity-100': middleTextTwoState === 'active',
+                      'translate-y-[120%] opacity-0': middleTextTwoState === 'before',
+                      '-translate-y-[120%] opacity-0': middleTextTwoState === 'after'
+                    }"
+                  >
+                    {{ item.char }}
+                  </span>
+                </span>
+              </span>
+            </h2>
 
-              <!-- Minimal Red Dot Accents -->
-              <div
-                class="mt-2 sm:mt-2.5 flex items-center justify-center gap-1.5 transition-all duration-500 delay-200 ease-out transform"
-                :class="{
-                  'opacity-80 scale-100 translate-y-0': middleTextTwoState === 'active',
-                  'opacity-0 scale-75 translate-y-2': middleTextTwoState !== 'active'
-                }"
-              >
-                <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
-                <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
-                <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
-                <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
-                <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
-                <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
-                <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
-                <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+            <!-- LINE 2: UPPERCASE SUBTITLE (Jitter Cascading Words) -->
+            <div class="block max-w-xl sm:max-w-2xl mx-auto px-2">
+              <p class="text-[11px] sm:text-sm md:text-base font-bold uppercase text-slate-700 dark:text-white/90 flex flex-wrap justify-center items-center leading-relaxed">
+                <span
+                  v-for="(word, wIdx) in subtitleTwoWordsList"
+                  :key="wIdx"
+                  class="inline-block overflow-hidden py-0.5 mx-[0.18em]"
+                >
+                  <span
+                    class="inline-block transform transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] tracking-[0.12em] sm:tracking-[0.24em]"
+                    :style="{ transitionDelay: getSubtitleTwoWordDelay(wIdx) }"
+                    :class="{
+                      'translate-y-0 opacity-100': middleTextTwoState === 'active',
+                      'translate-y-[120%] opacity-0': middleTextTwoState === 'before',
+                      '-translate-y-[120%] opacity-0': middleTextTwoState === 'after'
+                    }"
+                  >
+                    {{ word }}
+                  </span>
+                </span>
+              </p>
+
+              <!-- Minimal Red Dot Accents (Cascading Ripple) -->
+              <div class="mt-2.5 sm:mt-3 flex items-center justify-center gap-1.5 sm:gap-2">
+                <span
+                  v-for="i in 8"
+                  :key="i"
+                  class="w-1.5 h-1.5 rounded-full bg-red-500 transition-all duration-500 ease-out transform"
+                  :style="{ transitionDelay: getDotTwoDelay(i - 1) }"
+                  :class="{
+                    'opacity-80 scale-100 translate-y-0': middleTextTwoState === 'active',
+                    'opacity-0 scale-50 translate-y-2': middleTextTwoState !== 'active'
+                  }"
+                ></span>
               </div>
             </div>
           </div>
@@ -752,6 +768,61 @@ function getSubtitleWordDelay(wIdx) {
 
 function getDotDelay(dIdx) {
   if (middleTextState.value === 'active') {
+    return `${720 + dIdx * 35}ms`
+  }
+  return '0ms'
+}
+
+// ----------------------------------------------------
+// JITTER CASCADING TEXT ANIMATION (BUILT TO SOAR)
+// ----------------------------------------------------
+const middleTitleTwoText = computed(() => t('BUILT TO SOAR'))
+const middleSubtitleTwoText = computed(() => t('FROM CAD BENCH TO FULL THROTTLE FREEDOM.'))
+
+const titleTwoWordGroups = computed(() => {
+  const text = middleTitleTwoText.value || 'BUILT TO SOAR'
+  const words = text.split(' ')
+  let globalCount = 0
+  return words.map((word) => {
+    const chars = word.split('').map((ch) => {
+      const idx = globalCount++
+      return { char: ch, globalIndex: idx }
+    })
+    return { word, chars }
+  })
+})
+
+const totalTitleTwoChars = computed(() => {
+  return titleTwoWordGroups.value.reduce((acc, g) => acc + g.chars.length, 0)
+})
+
+const subtitleTwoWordsList = computed(() => {
+  const text = middleSubtitleTwoText.value || 'FROM CAD BENCH TO FULL THROTTLE FREEDOM.'
+  return text.split(' ')
+})
+
+function getCharTwoDelay(globalIndex) {
+  if (middleTextTwoState.value === 'active') {
+    return `${globalIndex * 45}ms`
+  } else if (middleTextTwoState.value === 'after') {
+    const total = totalTitleTwoChars.value
+    return `${(total - 1 - globalIndex) * 20}ms`
+  }
+  return '0ms'
+}
+
+function getSubtitleTwoWordDelay(wIdx) {
+  if (middleTextTwoState.value === 'active') {
+    return `${320 + wIdx * 40}ms`
+  } else if (middleTextTwoState.value === 'after') {
+    const total = subtitleTwoWordsList.value.length
+    return `${(total - 1 - wIdx) * 15}ms`
+  }
+  return '0ms'
+}
+
+function getDotTwoDelay(dIdx) {
+  if (middleTextTwoState.value === 'active') {
     return `${720 + dIdx * 35}ms`
   }
   return '0ms'
@@ -1221,91 +1292,91 @@ onMounted(() => {
   // Stage 5 (Aero Store): Center hover above store supply
   const STOPS_X = [
     { p: 0.00, v: 0.0 },    // 1. Hero: Center
-    { p: 0.09, v: -2.25 },  // 2. Section 2: Smooth glide to Left
-    { p: 0.16, v: -2.25 },  // Section 2 hold
-    { p: 0.23, v: 0.0 },    // Sweep into Center
-    { p: 0.38, v: 0.0 },    // Middle Stop 1: Center hold cleanly ABOVE FLY AS ONE
-    { p: 0.45, v: 2.25 },   // Section 4: Smooth sweep to Right opposite perks
-    { p: 0.58, v: 2.25 },   // Section 4 hold
-    { p: 0.65, v: 0.0 },    // Middle Stop 2: Rotate and sweep into Center!
-    { p: 0.77, v: 0.0 },    // Middle Stop 2 hold: Center above BUILT TO SOAR
-    { p: 0.83, v: 0.0 },    // Ascends into sky BEFORE Aero Store
-    { p: 0.88, v: 0.0 },    // Fully exited above screen ceiling
+    { p: 0.09, v: -2.25 },  // 2. Section 1 (Weekend Flights): Smooth glide to Left
+    { p: 0.15, v: -2.25 },  // Section 1 hold
+    { p: 0.22, v: 0.0 },    // Sweep into Center
+    { p: 0.36, v: 0.0 },    // Middle Stop 1: Center hold cleanly ABOVE FLY AS ONE
+    { p: 0.43, v: 2.25 },   // Section 2 (Benefits): Smooth sweep to Right opposite cards
+    { p: 0.50, v: 2.25 },   // Section 2 hold (ends promptly as cards end)
+    { p: 0.57, v: 0.0 },    // Middle Stop 2: Rotate to forward & sweep into Center (Built to Soar)!
+    { p: 0.68, v: 0.0 },    // Middle Stop 2 hold: Center above BUILT TO SOAR
+    { p: 0.76, v: 0.0 },    // Ascends into sky BEFORE Aero Store
+    { p: 0.84, v: 0.0 },    // Fully exited above screen ceiling
     { p: 1.00, v: 0.0 }
   ]
 
   const STOPS_Y = [
     { p: 0.00, v: -0.35 },  // Hero: comfortably below top title
-    { p: 0.09, v: 0.25 },   // Section 2: level with upper cards
-    { p: 0.16, v: 0.25 },   // Section 2 hold
-    { p: 0.23, v: 1.15 },   // Elevated HIGH in upper frame above FLY AS ONE
-    { p: 0.38, v: 1.15 },   // Middle Stop 1 hold
-    { p: 0.45, v: 0.20 },   // Section 4: level with upper perks cards
-    { p: 0.58, v: 0.20 },   // Section 4 hold
-    { p: 0.65, v: 1.15 },   // Middle Stop 2: Elevated in upper frame above BUILT TO SOAR
-    { p: 0.77, v: 1.15 },   // Middle Stop 2 hold
-    { p: 0.83, v: 3.50 },   // Smooth rapid ascent into sky BEFORE Aero Store (ceiling is 2.91)
-    { p: 0.88, v: 7.00 },   // Completely exited above viewport ceiling!
+    { p: 0.09, v: 0.25 },   // Section 1: level with upper cards
+    { p: 0.15, v: 0.25 },   // Section 1 hold
+    { p: 0.22, v: 1.15 },   // Elevated HIGH in upper frame above FLY AS ONE
+    { p: 0.36, v: 1.15 },   // Middle Stop 1 hold
+    { p: 0.43, v: 0.20 },   // Section 2: level with upper perks cards
+    { p: 0.50, v: 0.20 },   // Section 2 hold (ends promptly as cards end)
+    { p: 0.57, v: 1.15 },   // Middle Stop 2: Elevated in upper frame above BUILT TO SOAR
+    { p: 0.68, v: 1.15 },   // Middle Stop 2 hold
+    { p: 0.76, v: 3.50 },   // Smooth rapid ascent into sky BEFORE Aero Store (ceiling is 2.91)
+    { p: 0.84, v: 7.00 },   // Completely exited above viewport ceiling!
     { p: 1.00, v: 7.00 }
   ]
 
   const STOPS_S = [
     { p: 0.00, v: 1.20 },
     { p: 0.09, v: 1.00 },
-    { p: 0.16, v: 1.00 },
-    { p: 0.23, v: 1.05 },   // Middle Stop 1
-    { p: 0.38, v: 1.05 },
-    { p: 0.45, v: 1.00 },
-    { p: 0.58, v: 1.00 },
-    { p: 0.65, v: 1.05 },   // Middle Stop 2: Prominent showcase
-    { p: 0.77, v: 1.05 },
-    { p: 0.83, v: 0.45 },   // Recedes into distance as it climbs
-    { p: 0.88, v: 0.05 },   // Exits
+    { p: 0.15, v: 1.00 },
+    { p: 0.22, v: 1.05 },   // Middle Stop 1
+    { p: 0.36, v: 1.05 },
+    { p: 0.43, v: 1.00 },
+    { p: 0.50, v: 1.00 },
+    { p: 0.57, v: 1.05 },   // Middle Stop 2: Prominent showcase
+    { p: 0.68, v: 1.05 },
+    { p: 0.76, v: 0.45 },   // Recedes into distance as it climbs
+    { p: 0.84, v: 0.05 },   // Exits
     { p: 1.00, v: 0.05 }
   ]
 
   const STOPS_ROLL = [
     { p: 0.00, v: 0.0 },
     { p: 0.09, v: 0.0 },
-    { p: 0.16, v: 0.0 },
-    { p: 0.23, v: 0.0 },
-    { p: 0.38, v: 0.0 },
-    { p: 0.45, v: 0.0 },
-    { p: 0.58, v: 0.0 },
-    { p: 0.65, v: 0.0 },
-    { p: 0.77, v: 0.0 },
-    { p: 0.83, v: 0.0 },
-    { p: 0.88, v: 0.0 },
+    { p: 0.15, v: 0.0 },
+    { p: 0.22, v: 0.0 },
+    { p: 0.36, v: 0.0 },
+    { p: 0.43, v: 0.0 },
+    { p: 0.50, v: 0.0 },
+    { p: 0.57, v: 0.0 },
+    { p: 0.68, v: 0.0 },
+    { p: 0.76, v: 0.0 },
+    { p: 0.84, v: 0.0 },
     { p: 1.00, v: 0.0 }
   ]
 
   const STOPS_PITCH = [
     { p: 0.00, v: 0.22 },  // Natural forward flight tilt facing user
     { p: 0.09, v: 0.08 },  // Slight hover tilt pointing at cards
-    { p: 0.16, v: 0.08 },
-    { p: 0.23, v: 0.22 },  // Forward flight tilt facing user above text 1
-    { p: 0.38, v: 0.22 },
-    { p: 0.45, v: 0.08 },  // Slight hover tilt pointing at perks
-    { p: 0.58, v: 0.08 },
-    { p: 0.65, v: 0.22 },  // Forward flight tilt facing user above text 2
-    { p: 0.77, v: 0.22 },
-    { p: 0.83, v: -0.28 }, // Tilts up as it climbs into the sky!
-    { p: 0.88, v: -0.38 }, // Climbing angle
+    { p: 0.15, v: 0.08 },
+    { p: 0.22, v: 0.22 },  // Forward flight tilt facing user above text 1
+    { p: 0.36, v: 0.22 },
+    { p: 0.43, v: 0.08 },  // Slight hover tilt pointing at perks
+    { p: 0.50, v: 0.08 },
+    { p: 0.57, v: 0.22 },  // Forward flight tilt facing user above text 2
+    { p: 0.68, v: 0.22 },
+    { p: 0.76, v: -0.28 }, // Tilts up as it climbs into the sky!
+    { p: 0.84, v: -0.38 }, // Climbing angle
     { p: 1.00, v: -0.38 }
   ]
 
   const STOPS_YAW = [
     { p: 0.00, v: 0.0 },     // 1. Hero: Facing forward
     { p: 0.09, v: DEG90 },   // 2. Left: Rotates 90° right to point directly at cards
-    { p: 0.16, v: DEG90 },   // Section 2 hold
-    { p: 0.23, v: 0.0 },     // Rotates to 0° facing forward into center
-    { p: 0.38, v: 0.0 },     // Middle Stop 1 hold: Facing forward
-    { p: 0.45, v: -DEG90 },  // Rotates 90° left to point at perks
-    { p: 0.58, v: -DEG90 },  // Section 4 hold
-    { p: 0.65, v: 0.0 },     // ROTATES TO 0° FACING FORWARD INTO CENTER!
-    { p: 0.77, v: 0.0 },     // Middle Stop 2 hold: Facing forward
-    { p: 0.83, v: 0.0 },     // Exits into sky
-    { p: 0.88, v: 0.0 },
+    { p: 0.15, v: DEG90 },   // Section 1 hold
+    { p: 0.22, v: 0.0 },     // Rotates smoothly to 0° facing forward into center
+    { p: 0.36, v: 0.0 },     // Middle Stop 1 hold: Facing forward
+    { p: 0.43, v: -DEG90 },  // Rotates 90° left to point at perks
+    { p: 0.50, v: -DEG90 },  // Section 2 hold (ends promptly as cards end)
+    { p: 0.57, v: 0.0 },     // ROTATES SMOOTHLY TO 0° FACING FORWARD INTO CENTER!
+    { p: 0.68, v: 0.0 },     // Middle Stop 2 hold: Facing forward
+    { p: 0.76, v: 0.0 },     // Exits into sky
+    { p: 0.84, v: 0.0 },
     { p: 1.00, v: 0.0 }
   ]
 
@@ -1401,7 +1472,7 @@ onMounted(() => {
       : sample(STOPS_X, curP) * Math.min(1.05, Math.max(0.85, window.innerWidth / 1600))
 
     // On mobile, elevate the drone slightly in content sections so it hovers in clear airspace above cards
-    const mobileYOffset = isMobile && (curP < 0.20 || (curP > 0.42 && curP < 0.60)) ? 0.35 : 0.0
+    const mobileYOffset = isMobile && (curP < 0.20 || (curP > 0.40 && curP < 0.52)) ? 0.35 : 0.0
     const targetY = sample(STOPS_Y, curP) + mobileYOffset
 
     const baseS = sample(STOPS_S, curP)
@@ -1425,18 +1496,18 @@ onMounted(() => {
     curYaw += (targetYaw - curYaw) * k
 
     // Middle text sliding reveal for Middle Stop 1: FLY AS ONE
-    if (curP < 0.19) {
+    if (curP < 0.18) {
       middleTextState.value = 'before'
-    } else if (curP > 0.40) {
+    } else if (curP > 0.38) {
       middleTextState.value = 'after'
     } else {
       middleTextState.value = 'active'
     }
 
     // Middle text sliding reveal for Middle Stop 2: BUILT TO SOAR
-    if (curP < 0.60) {
+    if (curP < 0.52) {
       middleTextTwoState.value = 'before'
-    } else if (curP > 0.79) {
+    } else if (curP > 0.70) {
       middleTextTwoState.value = 'after'
     } else {
       middleTextTwoState.value = 'active'
