@@ -144,56 +144,72 @@
         </div>
       </section>
 
-      <!-- SECTION: THE MIDDLE STOP (Drone in Middle, Text Cleanly Under Drone with Masked Sliding Reveal) -->
+      <!-- SECTION: THE MIDDLE STOP (Drone in Middle, Jitter Cascading Text Under Drone) -->
       <section id="middle" class="h-[120vh] relative">
         <div class="sticky top-0 h-screen w-full flex flex-col items-center justify-start px-4 pt-[45vh] sm:pt-[52vh] overflow-hidden pointer-events-none select-none">
-          <!-- TWO TEXT LINES CLEANLY UNDER THE DRONE (Elevated into upper UX/UI frame, NOT sunken down below!) -->
-          <div class="max-w-4xl mx-auto text-center space-y-2 sm:space-y-3 relative z-10 pointer-events-auto">
-            <!-- LINE 1: BOLD GEOMETRIC TITLE (Masked Sliding Reveal) -->
-            <div class="overflow-hidden py-1 inline-block">
-              <h2
-                class="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-black tracking-[0.08em] sm:tracking-[0.18em] uppercase text-[#0c1e5b] dark:text-white drop-shadow-sm font-sans transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] transform"
-                :class="{
-                  'translate-y-0 opacity-100': middleTextState === 'active',
-                  'translate-y-[120%] opacity-0': middleTextState === 'before',
-                  '-translate-y-[120%] opacity-0': middleTextState === 'after'
-                }"
+          <!-- TWO TEXT LINES CLEANLY UNDER THE DRONE (Jitter Cascading Text Style) -->
+          <div class="max-w-4xl mx-auto text-center space-y-3 sm:space-y-4 relative z-10 pointer-events-auto">
+            <!-- LINE 1: BOLD GEOMETRIC TITLE (Jitter Cascading Letters) -->
+            <h2 class="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-black uppercase text-[#0c1e5b] dark:text-white drop-shadow-sm font-sans flex flex-wrap justify-center items-center">
+              <span
+                v-for="(group, gIdx) in titleWordGroups"
+                :key="gIdx"
+                class="inline-flex whitespace-nowrap mx-[0.14em]"
               >
-                {{ t('FLY AS ONE') }}
-              </h2>
-            </div>
-
-            <!-- LINE 2: UPPERCASE SUBTITLE (Masked Sliding Reveal with Stagger) -->
-            <div class="block max-w-sm sm:max-w-none px-2">
-              <div class="overflow-hidden py-1 inline-block">
-                <p
-                  class="text-[11px] sm:text-sm md:text-base font-bold tracking-[0.14em] sm:tracking-[0.32em] uppercase text-slate-700 dark:text-white/90 transition-all duration-700 delay-100 ease-[cubic-bezier(0.16,1,0.3,1)] transform"
-                  :class="{
-                    'translate-y-0 opacity-100': middleTextState === 'active',
-                    'translate-y-[120%] opacity-0': middleTextState === 'before',
-                    '-translate-y-[120%] opacity-0': middleTextState === 'after'
-                  }"
+                <span
+                  v-for="item in group.chars"
+                  :key="item.globalIndex"
+                  class="inline-block overflow-hidden py-1 px-[0.02em]"
                 >
-                  {{ t('FROM FIRST HOVER TO PRO FREESTYLE & CINEMATIC MISSIONS.') }}
-                </p>
-              </div>
+                  <span
+                    class="inline-block transform transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] tracking-[0.06em] sm:tracking-[0.14em]"
+                    :style="{ transitionDelay: getCharDelay(item.globalIndex) }"
+                    :class="{
+                      'translate-y-0 opacity-100': middleTextState === 'active',
+                      'translate-y-[120%] opacity-0': middleTextState === 'before',
+                      '-translate-y-[120%] opacity-0': middleTextState === 'after'
+                    }"
+                  >
+                    {{ item.char }}
+                  </span>
+                </span>
+              </span>
+            </h2>
 
-              <!-- Minimal Red Dot Accents -->
-              <div
-                class="mt-2 sm:mt-2.5 flex items-center justify-center gap-1.5 transition-all duration-500 delay-200 ease-out transform"
-                :class="{
-                  'opacity-80 scale-100 translate-y-0': middleTextState === 'active',
-                  'opacity-0 scale-75 translate-y-2': middleTextState !== 'active'
-                }"
-              >
-                <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
-                <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
-                <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
-                <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
-                <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
-                <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
-                <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
-                <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+            <!-- LINE 2: UPPERCASE SUBTITLE (Jitter Cascading Words) -->
+            <div class="block max-w-xl sm:max-w-2xl mx-auto px-2">
+              <p class="text-[11px] sm:text-sm md:text-base font-bold uppercase text-slate-700 dark:text-white/90 flex flex-wrap justify-center items-center leading-relaxed">
+                <span
+                  v-for="(word, wIdx) in subtitleWordsList"
+                  :key="wIdx"
+                  class="inline-block overflow-hidden py-0.5 mx-[0.18em]"
+                >
+                  <span
+                    class="inline-block transform transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] tracking-[0.12em] sm:tracking-[0.24em]"
+                    :style="{ transitionDelay: getSubtitleWordDelay(wIdx) }"
+                    :class="{
+                      'translate-y-0 opacity-100': middleTextState === 'active',
+                      'translate-y-[120%] opacity-0': middleTextState === 'before',
+                      '-translate-y-[120%] opacity-0': middleTextState === 'after'
+                    }"
+                  >
+                    {{ word }}
+                  </span>
+                </span>
+              </p>
+
+              <!-- Minimal Red Dot Accents (Cascading Ripple) -->
+              <div class="mt-2.5 sm:mt-3 flex items-center justify-center gap-1.5 sm:gap-2">
+                <span
+                  v-for="i in 8"
+                  :key="i"
+                  class="w-1.5 h-1.5 rounded-full bg-red-500 transition-all duration-500 ease-out transform"
+                  :style="{ transitionDelay: getDotDelay(i - 1) }"
+                  :class="{
+                    'opacity-80 scale-100 translate-y-0': middleTextState === 'active',
+                    'opacity-0 scale-50 translate-y-2': middleTextState !== 'active'
+                  }"
+                ></span>
               </div>
             </div>
           </div>
@@ -682,6 +698,64 @@ const currentYear = new Date().getFullYear()
 const toastMessage = ref('')
 const middleTextState = ref('before') // 'before' | 'active' | 'after'
 const middleTextTwoState = ref('before') // 'before' | 'active' | 'after'
+
+// ----------------------------------------------------
+// JITTER CASCADING TEXT ANIMATION (FLY AS ONE)
+// ----------------------------------------------------
+const middleTitleText = computed(() => t('FLY AS ONE'))
+const middleSubtitleText = computed(() => t('FROM FIRST HOVER TO PRO FREESTYLE & CINEMATIC MISSIONS.'))
+
+const titleWordGroups = computed(() => {
+  const text = middleTitleText.value || 'FLY AS ONE'
+  const words = text.split(' ')
+  let globalCount = 0
+  return words.map((word) => {
+    const chars = word.split('').map((ch) => {
+      const idx = globalCount++
+      return { char: ch, globalIndex: idx }
+    })
+    return { word, chars }
+  })
+})
+
+const totalTitleChars = computed(() => {
+  return titleWordGroups.value.reduce((acc, g) => acc + g.chars.length, 0)
+})
+
+const subtitleWordsList = computed(() => {
+  const text = middleSubtitleText.value || 'FROM FIRST HOVER TO PRO FREESTYLE & CINEMATIC MISSIONS.'
+  return text.split(' ')
+})
+
+function getCharDelay(globalIndex) {
+  if (middleTextState.value === 'active') {
+    // Cascading in forward: 45ms per character (Jitter natural slideAndMask)
+    return `${globalIndex * 45}ms`
+  } else if (middleTextState.value === 'after') {
+    // Cascading out backward in reverse
+    const total = totalTitleChars.value
+    return `${(total - 1 - globalIndex) * 20}ms`
+  }
+  return '0ms'
+}
+
+function getSubtitleWordDelay(wIdx) {
+  if (middleTextState.value === 'active') {
+    // Starts after title letters begin cascading: 320ms + 40ms per word
+    return `${320 + wIdx * 40}ms`
+  } else if (middleTextState.value === 'after') {
+    const total = subtitleWordsList.value.length
+    return `${(total - 1 - wIdx) * 15}ms`
+  }
+  return '0ms'
+}
+
+function getDotDelay(dIdx) {
+  if (middleTextState.value === 'active') {
+    return `${720 + dIdx * 35}ms`
+  }
+  return '0ms'
+}
 
 function showToast(msg) {
   toastMessage.value = msg
