@@ -110,14 +110,11 @@
         <!-- TWO-TIER MODULE NAVIGATION (Clean 4-Module Structure)      -->
         <!-- ======================================================== -->
 
-        <!-- LEVEL 1: ROOT MODULE SELECTOR (The 4 Main Cards) -->
-        <nav
-          v-if="!currentNavModule"
-          class="flex-1 px-3 py-3 space-y-2.5 overflow-y-auto"
-        >
+        <!-- ACCORDION TREE MODULE NAVIGATION -->
+        <nav class="flex-1 px-3 py-3 space-y-2.5 overflow-y-auto">
           <div
             v-if="!sidebarCollapsed"
-            class="px-1 pb-1 text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500"
+            class="px-1 pb-0.5 text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500"
           >
             {{ t('Select Module') }}
           </div>
@@ -125,30 +122,30 @@
           <div
             v-for="mod in navigationModules"
             :key="mod.id"
-            class="relative group"
+            class="relative"
           >
-            <!-- Expanded Module Card -->
+            <!-- Expanded Sidebar: Module Accordion Header Card -->
             <button
               v-if="!sidebarCollapsed"
               type="button"
-              class="w-full text-left p-3.5 rounded-2xl border transition-all duration-200 cursor-pointer flex items-center gap-3 relative shadow-2xs group hover:shadow-md"
+              class="w-full text-left p-3 rounded-2xl border transition-all duration-200 cursor-pointer flex items-center gap-3 relative shadow-2xs group hover:shadow-xs"
               :class="[
                 activeModuleId === mod.id
-                  ? 'bg-navy-900/5 dark:bg-indigo-950/40 border-navy-900 dark:border-indigo-500'
-                  : 'bg-white dark:bg-slate-800/80 border-slate-200 dark:border-slate-700/80 hover:border-navy-800/50 dark:hover:border-indigo-400/50 hover:bg-slate-50/80 dark:hover:bg-slate-800'
+                  ? 'bg-navy-900/5 dark:bg-indigo-950/40 border-navy-900/40 dark:border-indigo-500/60'
+                  : 'bg-white dark:bg-slate-800/80 border-slate-200 dark:border-slate-700/80 hover:border-slate-300 dark:hover:border-slate-600 hover:bg-slate-50/80 dark:hover:bg-slate-800'
               ]"
-              @click="openNavModule(mod)"
+              @click="toggleModule(mod)"
             >
               <!-- Icon Container -->
               <div
-                class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border transition-transform duration-200 group-hover:scale-105"
+                class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 border transition-transform duration-200 group-hover:scale-105"
                 :class="[
                   activeModuleId === mod.id
                     ? 'bg-navy-900 dark:bg-indigo-600 text-white border-navy-900 dark:border-indigo-600 shadow-2xs'
                     : 'bg-slate-100 dark:bg-slate-700/60 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-600 group-hover:text-navy-900 dark:group-hover:text-white'
                 ]"
               >
-                <component :is="mod.icon" class="w-5 h-5" />
+                <component :is="mod.icon" class="w-4 h-4" />
               </div>
 
               <!-- Module Info -->
@@ -157,16 +154,18 @@
                   <h4 class="font-extrabold text-xs text-navy-900 dark:text-white truncate">
                     {{ t(mod.title) }}
                   </h4>
+                  <!-- Chevron that rotates down when expanded -->
                   <ChevronRight
-                    class="w-3.5 h-3.5 text-slate-400 group-hover:text-navy-900 dark:group-hover:text-white group-hover:translate-x-0.5 transition-all shrink-0"
+                    class="w-3.5 h-3.5 text-slate-400 group-hover:text-navy-900 dark:group-hover:text-white transition-transform duration-200 shrink-0"
+                    :class="{ 'rotate-90 text-navy-900 dark:text-white': isModuleOpen(mod.id) }"
                   />
                 </div>
                 <p class="text-[10px] leading-tight text-slate-500 dark:text-slate-400 truncate mt-0.5">
                   {{ t(mod.subtitle) }}
                 </p>
 
-                <div class="mt-1.5 flex items-center gap-2">
-                  <span class="text-[10px] font-mono text-slate-400 dark:text-slate-500">
+                <div class="mt-1 flex items-center gap-2">
+                  <span class="text-[9px] font-mono text-slate-400 dark:text-slate-500">
                     {{ mod.sections.length }} {{ t('items') }}
                   </span>
 
@@ -182,7 +181,7 @@
               </div>
             </button>
 
-            <!-- Collapsed Mode Button -->
+            <!-- Collapsed Sidebar Mode Button -->
             <button
               v-else
               type="button"
@@ -193,7 +192,7 @@
                   : 'text-slate-600 dark:text-slate-400 border-transparent hover:text-navy-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
               ]"
               :title="t(mod.title)"
-              @click="openNavModule(mod)"
+              @click="toggleModule(mod)"
             >
               <component :is="mod.icon" class="w-5 h-5" />
               <span
@@ -201,90 +200,41 @@
                 class="absolute top-1.5 right-1.5 w-2.5 h-2.5 rounded-full bg-rose-500 ring-2 ring-white dark:ring-slate-900 animate-pulse"
               ></span>
             </button>
-          </div>
-        </nav>
 
-        <!-- LEVEL 2: SUB-NAVIGATION VIEW (Items relating to chosen module) -->
-        <div v-else class="flex-1 flex flex-col min-h-0 overflow-hidden">
-          <!-- Back Button & Active Module Title Header -->
-          <div class="p-2.5 pb-2 border-b border-slate-100 dark:border-slate-800 shrink-0 space-y-2 bg-slate-50/50 dark:bg-slate-900/50">
-            <!-- Back to All Modules -->
-            <button
-              type="button"
-              @click="currentNavModule = null"
-              class="w-full flex items-center rounded-xl text-xs font-extrabold text-slate-600 dark:text-slate-300 hover:text-navy-900 dark:hover:text-white bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700/80 transition cursor-pointer border border-slate-200/80 dark:border-slate-700/80 shadow-2xs group"
-              :class="sidebarCollapsed ? 'justify-center p-2' : 'justify-between px-3 py-2'"
-              :title="t('Back to Modules')"
-            >
-              <span class="flex items-center gap-1.5 min-w-0">
-                <ChevronLeft class="w-4 h-4 text-slate-400 group-hover:-translate-x-0.5 transition-transform shrink-0" />
-                <span v-if="!sidebarCollapsed" class="truncate">{{ t('Back to Modules') }}</span>
-              </span>
-              <span v-if="!sidebarCollapsed" class="text-[9px] font-mono uppercase text-slate-400 tracking-wider">4 {{ t('All') }}</span>
-            </button>
-
-            <!-- Active Module Header Badge -->
+            <!-- Expanded Sub-items (Appears down below the card when clicked) -->
             <div
-              v-if="!sidebarCollapsed"
-              class="px-1 pt-1 flex items-center justify-between"
-            >
-              <div class="flex items-center gap-2 min-w-0">
-                <component :is="activeModuleData.icon" class="w-3.5 h-3.5 text-navy-800 dark:text-indigo-400 shrink-0" />
-                <span class="font-black text-xs text-navy-900 dark:text-white truncate">
-                  {{ t(activeModuleData.title) }}
-                </span>
-              </div>
-              <span class="text-[10px] font-mono text-slate-400 shrink-0">
-                {{ activeModuleData.sections.length }} {{ t('items') }}
-              </span>
-            </div>
-          </div>
-
-          <!-- Module Sub-Items List -->
-          <nav class="flex-1 px-2.5 py-2.5 space-y-1.5 overflow-y-auto">
-            <div
-              v-for="section in activeModuleData.sections"
-              :key="section.id"
-              class="relative group"
+              v-if="!sidebarCollapsed && isModuleOpen(mod.id)"
+              class="mt-1.5 ml-3 pl-3 border-l-2 border-slate-200/90 dark:border-slate-700/90 space-y-1 py-0.5"
             >
               <button
+                v-for="section in mod.sections"
+                :key="section.id"
                 type="button"
-                class="w-full flex items-center rounded-xl text-left text-xs font-bold transition-all duration-150 cursor-pointer border"
+                class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-left text-xs font-bold transition-all duration-150 cursor-pointer border group"
                 :class="[
-                  sidebarCollapsed ? 'justify-center p-3' : 'gap-3 px-3.5 py-3',
                   activeSection === section.id
-                    ? 'bg-navy-900 dark:bg-blue-600 text-white shadow-sm border-navy-900 dark:border-blue-600'
-                    : 'text-slate-600 dark:text-slate-400 border-transparent hover:text-navy-900 dark:hover:text-white hover:bg-slate-100/90 dark:hover:bg-slate-800/80 hover:border-slate-200/70 dark:hover:border-slate-700/60 hover:shadow-2xs'
+                    ? 'bg-navy-900 dark:bg-indigo-600 text-white shadow-xs border-navy-900 dark:border-indigo-600'
+                    : 'text-slate-600 dark:text-slate-400 border-transparent hover:text-navy-900 dark:hover:text-white hover:bg-slate-100/90 dark:hover:bg-slate-800/80 hover:border-slate-200/70 dark:hover:border-slate-700/60'
                 ]"
-                :title="sidebarCollapsed ? t(section.title) : undefined"
                 @click="selectSection(section.id)"
               >
-                <!-- Icon with active / hover effect -->
-                <div class="relative shrink-0 flex items-center justify-center">
+                <div class="flex items-center gap-2.5 min-w-0 flex-1">
                   <component
                     :is="section.icon"
-                    class="shrink-0 transition-transform duration-150"
+                    class="w-3.5 h-3.5 shrink-0 transition-transform duration-150"
                     :class="[
                       activeSection === section.id
                         ? 'text-white'
-                        : 'text-slate-400 group-hover:text-navy-900 dark:group-hover:text-white group-hover:scale-110',
-                      sidebarCollapsed ? 'w-5 h-5' : 'w-4 h-4'
+                        : 'text-slate-400 group-hover:text-navy-900 dark:group-hover:text-white group-hover:scale-110'
                     ]"
                   />
-                  <!-- Dot indicator when sidebar is collapsed and section has pending updates -->
-                  <span
-                    v-if="sidebarCollapsed && getSectionBadgeCount(section.id) > 0"
-                    class="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-rose-500 ring-2 ring-white dark:ring-slate-900 animate-pulse"
-                  ></span>
+                  <span class="truncate">{{ t(section.title) }}</span>
                 </div>
 
-                <!-- Label (visible when expanded) -->
-                <span v-if="!sidebarCollapsed" class="truncate flex-1">{{ t(section.title) }}</span>
-
-                <!-- Badge Counter (visible when expanded) -->
+                <!-- Section Badge Count -->
                 <span
-                  v-if="!sidebarCollapsed && getSectionBadgeCount(section.id) > 0"
-                  class="px-1.5 py-0.5 text-[10px] font-extrabold rounded-full transition-colors shrink-0"
+                  v-if="getSectionBadgeCount(section.id) > 0"
+                  class="ml-2 px-1.5 py-0.5 text-[9px] font-extrabold rounded-full transition-colors shrink-0"
                   :class="[
                     activeSection === section.id
                       ? 'bg-white/20 text-white'
@@ -293,19 +243,10 @@
                 >
                   {{ getSectionBadgeCount(section.id) }}
                 </span>
-
-                <!-- Animated Arrow Indicator (visible when expanded & no badge) -->
-                <ChevronRight
-                  v-if="!sidebarCollapsed && getSectionBadgeCount(section.id) === 0"
-                  class="w-3.5 h-3.5 shrink-0 transition-all duration-150"
-                  :class="activeSection === section.id
-                    ? 'opacity-100 text-white translate-x-0'
-                    : 'opacity-0 -translate-x-1.5 group-hover:opacity-100 group-hover:translate-x-0 text-slate-400 group-hover:text-navy-900 dark:group-hover:text-white'"
-                />
               </button>
             </div>
-          </nav>
-        </div>
+          </div>
+        </nav>
 
         <!-- Sidebar Footer Controls -->
         <div class="p-2.5 border-t border-slate-100 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-900/60 shrink-0 space-y-2">
@@ -403,17 +344,14 @@
         <!-- Header Bar: Title on Left, Controls & Cat Theme Switch on Right -->
         <header class="px-6 sm:px-8 pt-6 pb-2 flex flex-col sm:flex-row sm:items-center justify-between shrink-0 bg-transparent gap-4">
           <div class="flex items-center gap-2.5 flex-wrap">
-            <!-- Clickable Module Pill to Switch Modules Anytime -->
-            <button
-              type="button"
-              @click="currentNavModule = null"
-              class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs font-extrabold text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-navy-900 dark:hover:text-white transition cursor-pointer border border-slate-200 dark:border-slate-700 shadow-2xs group"
-              :title="t('Back to Modules')"
+            <!-- Active Module Breadcrumb Pill -->
+            <div
+              class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs font-extrabold text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 shadow-2xs"
             >
               <component :is="activeModuleData.icon" class="w-3.5 h-3.5 text-navy-800 dark:text-indigo-400 shrink-0" />
               <span>{{ t(activeModuleData.title) }}</span>
               <span class="text-slate-300 dark:text-slate-600">/</span>
-            </button>
+            </div>
 
             <h1
               class="text-xl sm:text-2xl font-extrabold text-navy-900 dark:text-white tracking-tight u040-main-title"
@@ -4512,8 +4450,37 @@ const navigationModules = [
   },
 ]
 
-// Current module navigation state: 'academy', 'fly', 'print', 'settings', or null (for root selection)
-const currentNavModule = ref('academy')
+// Accordion open / collapsed state for modules
+const openModules = ref({
+  academy: true,
+  fly: false,
+  print: false,
+  settings: false,
+})
+
+function isModuleOpen(moduleId) {
+  return !!openModules.value[moduleId]
+}
+
+function toggleModule(mod) {
+  if (sidebarCollapsed.value) {
+    sidebarCollapsed.value = false
+    openModules.value[mod.id] = true
+    selectSection(mod.defaultSection)
+    return
+  }
+
+  const willOpen = !openModules.value[mod.id]
+  openModules.value[mod.id] = willOpen
+
+  // If opening, switch to default section if current active section is not in this module
+  if (willOpen) {
+    const isCurrentSectionInMod = mod.sections.some((s) => s.id === activeSection.value)
+    if (!isCurrentSectionInMod) {
+      selectSection(mod.defaultSection)
+    }
+  }
+}
 
 const activeModuleId = computed(() => {
   if (['dashboard', 'courses', 'students', 'payments', 'promos'].includes(activeSection.value)) {
@@ -4532,17 +4499,19 @@ const activeModuleId = computed(() => {
 })
 
 const activeModuleData = computed(() => {
-  const targetId = currentNavModule.value || activeModuleId.value
-  return navigationModules.find((m) => m.id === targetId) || navigationModules[0]
+  return navigationModules.find((m) => m.id === activeModuleId.value) || navigationModules[0]
 })
 
-function openNavModule(mod) {
-  currentNavModule.value = mod.id
-  const isAlreadyInModule = mod.sections.some((s) => s.id === activeSection.value)
-  if (!isAlreadyInModule) {
-    selectSection(mod.defaultSection)
-  }
-}
+// Auto-expand the active section's module
+watch(
+  activeModuleId,
+  (newModId) => {
+    if (newModId) {
+      openModules.value[newModId] = true
+    }
+  },
+  { immediate: true }
+)
 
 function getModuleBadgeCount(moduleId) {
   if (moduleId === 'academy') {
@@ -4570,15 +4539,15 @@ function selectSection(sectionId) {
     scrollToId = 'admin-aeroprint-fleet'
   }
 
-  // Ensure currentNavModule matches the selected section
+  // Ensure the module containing target section is expanded
   if (['dashboard', 'courses', 'students', 'payments', 'promos'].includes(targetId)) {
-    currentNavModule.value = 'academy'
+    openModules.value.academy = true
   } else if (targetId === 'aerofly') {
-    currentNavModule.value = 'fly'
+    openModules.value.fly = true
   } else if (targetId === 'aeroprint') {
-    currentNavModule.value = 'print'
+    openModules.value.print = true
   } else if (['users', 'logs', 'settings'].includes(targetId)) {
-    currentNavModule.value = 'settings'
+    openModules.value.settings = true
   }
 
   if (activeSection.value !== targetId) {
