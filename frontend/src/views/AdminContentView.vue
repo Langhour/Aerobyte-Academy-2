@@ -320,14 +320,11 @@
         <!-- Header Bar: Title on Left, Controls & Cat Theme Switch on Right -->
         <header class="px-6 sm:px-8 pt-6 pb-2 flex flex-col sm:flex-row sm:items-center justify-between shrink-0 bg-transparent gap-4">
           <div class="flex items-center gap-2.5 flex-wrap">
-            <!-- Active Module Breadcrumb Pill -->
-            <div
-              class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs font-extrabold text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 shadow-2xs"
-            >
-              <component :is="activeModuleData.icon" class="w-3.5 h-3.5 text-navy-800 dark:text-indigo-400 shrink-0" />
+            <!-- Plain Text Module Breadcrumb (No Icon, No Frame) -->
+            <span class="text-sm sm:text-base font-semibold text-slate-400 dark:text-slate-500 flex items-center gap-1.5">
               <span>{{ t(activeModuleData.title) }}</span>
               <span class="text-slate-300 dark:text-slate-600">/</span>
-            </div>
+            </span>
 
             <h1
               class="text-xl sm:text-2xl font-extrabold text-navy-900 dark:text-white tracking-tight u040-main-title"
