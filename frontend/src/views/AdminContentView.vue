@@ -128,14 +128,10 @@
             <!-- Module Item Row (Compact, Sleek, Native Dashboard Look) -->
             <button
               type="button"
-              class="w-full flex items-center rounded-xl text-left text-xs font-bold transition-all duration-150 cursor-pointer border"
+              class="w-full flex items-center rounded-xl text-left text-xs font-bold transition-all duration-150 cursor-pointer border group"
               :class="[
                 sidebarCollapsed ? 'justify-center p-3' : 'gap-3 px-3.5 py-2.5',
-                activeModuleId === mod.id && !sidebarCollapsed
-                  ? isModuleOpen(mod.id)
-                    ? 'bg-slate-100/90 dark:bg-slate-800/90 text-navy-900 dark:text-white border-slate-200/80 dark:border-slate-700/80 shadow-2xs font-extrabold'
-                    : 'bg-navy-900 dark:bg-blue-600 text-white shadow-sm border-navy-900 dark:border-blue-600'
-                  : 'text-slate-600 dark:text-slate-400 border-transparent hover:text-navy-900 dark:hover:text-white hover:bg-slate-100/90 dark:hover:bg-slate-800/80 hover:border-slate-200/70 dark:hover:border-slate-700/60'
+                getModuleButtonClass(mod)
               ]"
               :title="sidebarCollapsed ? t(mod.title) : undefined"
               @click="toggleModule(mod)"
@@ -146,9 +142,7 @@
                   :is="mod.icon"
                   class="shrink-0 transition-transform duration-150"
                   :class="[
-                    activeModuleId === mod.id
-                      ? (isModuleOpen(mod.id) && !sidebarCollapsed ? 'text-navy-900 dark:text-white' : 'text-white')
-                      : 'text-slate-400 group-hover:text-navy-900 dark:group-hover:text-white group-hover:scale-110',
+                    getModuleIconClass(mod),
                     sidebarCollapsed ? 'w-5 h-5' : 'w-4 h-4'
                   ]"
                 />
@@ -177,8 +171,8 @@
                 class="w-3.5 h-3.5 shrink-0 transition-transform duration-200"
                 :class="[
                   isModuleOpen(mod.id)
-                    ? 'rotate-90 text-navy-900 dark:text-white'
-                    : 'text-slate-400'
+                    ? (activeModuleId === mod.id ? 'rotate-90 text-navy-900 dark:text-white' : 'rotate-90 text-slate-600 dark:text-slate-300')
+                    : (activeModuleId === mod.id && !isModuleOpen(mod.id) ? 'text-white' : 'text-slate-400 group-hover:text-navy-900 dark:group-hover:text-white')
                 ]"
               />
             </button>
@@ -4440,6 +4434,50 @@ const openModules = ref({
 
 function isModuleOpen(moduleId) {
   return !!openModules.value[moduleId]
+}
+
+function getModuleButtonClass(mod) {
+  const isAct = activeModuleId.value === mod.id
+  const isOpen = isModuleOpen(mod.id)
+
+  if (sidebarCollapsed.value) {
+    // Collapsed mode: high contrast active pill or clean hover state
+    return isAct
+      ? 'bg-navy-900 dark:bg-blue-600 text-white shadow-sm border-navy-900 dark:border-blue-600'
+      : 'text-slate-600 dark:text-slate-400 border-transparent hover:text-navy-900 dark:hover:text-white hover:bg-slate-100/90 dark:hover:bg-slate-800/80 hover:border-slate-200/70 dark:hover:border-slate-700/60'
+  }
+
+  // Expanded mode
+  if (isAct) {
+    return isOpen
+      ? 'bg-slate-100/90 dark:bg-slate-800/90 text-navy-900 dark:text-white border-slate-200/80 dark:border-slate-700/80 shadow-2xs font-extrabold'
+      : 'bg-navy-900 dark:bg-blue-600 text-white shadow-sm border-navy-900 dark:border-blue-600'
+  }
+
+  return isOpen
+    ? 'bg-slate-50 dark:bg-slate-800/50 text-slate-700 dark:text-slate-200 border-slate-200/60 dark:border-slate-700/60'
+    : 'text-slate-600 dark:text-slate-400 border-transparent hover:text-navy-900 dark:hover:text-white hover:bg-slate-100/90 dark:hover:bg-slate-800/80 hover:border-slate-200/70 dark:hover:border-slate-700/60'
+}
+
+function getModuleIconClass(mod) {
+  const isAct = activeModuleId.value === mod.id
+  const isOpen = isModuleOpen(mod.id)
+
+  if (sidebarCollapsed.value) {
+    return isAct
+      ? 'text-white'
+      : 'text-slate-500 dark:text-slate-400 group-hover:text-navy-900 dark:group-hover:text-white group-hover:scale-110'
+  }
+
+  if (isAct) {
+    return isOpen
+      ? 'text-navy-900 dark:text-indigo-400'
+      : 'text-white'
+  }
+
+  return isOpen
+    ? 'text-slate-700 dark:text-slate-300'
+    : 'text-slate-400 group-hover:text-navy-900 dark:group-hover:text-white group-hover:scale-110'
 }
 
 function toggleModule(mod) {
