@@ -582,34 +582,7 @@
               </transition>
             </div>
 
-            <!-- Language Switcher in Header -->
-            <div class="hidden sm:flex items-center gap-0.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-0.5 shadow-2xs">
-              <button
-                type="button"
-                @click="setLocale('en')"
-                class="px-2 py-0.5 rounded-lg text-xs font-bold transition-all cursor-pointer"
-                :class="locale === 'en'
-                  ? 'bg-navy-900 dark:bg-indigo-600 text-white shadow-2xs font-extrabold'
-                  : 'text-slate-500 dark:text-slate-400 hover:text-navy-900 dark:hover:text-white'"
-              >
-                EN
-              </button>
-              <button
-                type="button"
-                @click="setLocale('kh')"
-                class="px-2 py-0.5 rounded-lg text-xs font-bold transition-all cursor-pointer"
-                :class="locale === 'kh'
-                  ? 'bg-navy-900 dark:bg-indigo-600 text-white shadow-2xs font-extrabold'
-                  : 'text-slate-500 dark:text-slate-400 hover:text-navy-900 dark:hover:text-white'"
-              >
-                KH
-              </button>
-            </div>
 
-            <!-- Animated Cat Light/Dark Switch in Header -->
-            <div class="hidden sm:flex items-center pl-1">
-              <CatThemeSwitch />
-            </div>
           </div>
         </header>
 
