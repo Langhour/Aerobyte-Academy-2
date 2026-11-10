@@ -1620,6 +1620,8 @@ export const khmerTranslations = {
   "Community flight sessions, RSVP roster, pilot metrics, and lab locations.": "វគ្គហោះហើរសហគមន៍ បញ្ជីឈ្មោះ RSVP សូចនាករពីឡុត និងទីតាំងបន្ទប់ពិសោធន៍។",
   "Manage 3D printing material pricing rates, printer fleet status, and custom print requests.": "គ្រប់គ្រងអត្រាតម្លៃសម្ភារៈបោះពុម្ព 3D ស្ថានភាពម៉ាស៊ីន និងសំណើបោះពុម្ពតាមតម្រូវការ។",
   "Material pricing rates, printer fleet status, and custom print requests.": "អត្រាតម្លៃសម្ភារៈ ស្ថានភាពម៉ាស៊ីន និងសំណើបោះពុម្ពតាមតម្រូវការ។",
+  "BUILT TO SOAR": "បង្កើតឡើងដើម្បីហោះហើរខ្ពស់",
+  "FROM CAD BENCH TO FULL THROTTLE FREEDOM.": "ពីការរចនា CAD រហូតដល់ការហោះហើរដោយសេរីភាពពេញលេញ។",
   "Other Setting Else": "ការកំណត់ផ្សេងៗទៀត",
   "Back to Modules": "ត្រឡប់ទៅម៉ូឌុលទាំងអស់",
   "All Modules": "ម៉ូឌុលទាំងអស់",

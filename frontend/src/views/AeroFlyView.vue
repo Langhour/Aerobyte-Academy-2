@@ -320,11 +320,64 @@
         </div>
       </section>
 
-      <!-- SECTION 5: AERO STORE & LAB SUPPLY (Drone in Center Sky, Aero Store Showcase Below) -->
-      <section id="store" class="pt-4 sm:pt-10 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-8 max-w-[1240px] mx-auto">
-        <!-- Open air spacer where the 3D drone hovers high in the sky -->
-        <div class="hidden sm:block flex-1 min-h-[36vh] sm:min-h-[40vh] pointer-events-none"></div>
-        <div class="block sm:hidden h-24 pointer-events-none"></div>
+      <!-- SECTION: THE SECOND MIDDLE STOP (Drone Rotates to Center, Big Line Text Cleanly Under Drone) -->
+      <section id="middle-two" class="h-[120vh] relative">
+        <div class="sticky top-0 h-screen w-full flex flex-col items-center justify-start px-4 pt-[45vh] sm:pt-[52vh] overflow-hidden pointer-events-none select-none">
+          <!-- TWO TEXT LINES CLEANLY UNDER THE DRONE -->
+          <div class="max-w-4xl mx-auto text-center space-y-2 sm:space-y-3 relative z-10 pointer-events-auto">
+            <!-- LINE 1: BOLD GEOMETRIC TITLE (Masked Sliding Reveal) -->
+            <div class="overflow-hidden py-1 inline-block">
+              <h2
+                class="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-black tracking-[0.08em] sm:tracking-[0.18em] uppercase text-[#0c1e5b] dark:text-white drop-shadow-sm font-sans transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] transform"
+                :class="{
+                  'translate-y-0 opacity-100': middleTextTwoState === 'active',
+                  'translate-y-[120%] opacity-0': middleTextTwoState === 'before',
+                  '-translate-y-[120%] opacity-0': middleTextTwoState === 'after'
+                }"
+              >
+                {{ t('BUILT TO SOAR') }}
+              </h2>
+            </div>
+
+            <!-- LINE 2: UPPERCASE SUBTITLE (Masked Sliding Reveal with Stagger) -->
+            <div class="block max-w-sm sm:max-w-none px-2">
+              <div class="overflow-hidden py-1 inline-block">
+                <p
+                  class="text-[11px] sm:text-sm md:text-base font-bold tracking-[0.14em] sm:tracking-[0.32em] uppercase text-slate-700 dark:text-white/90 transition-all duration-700 delay-100 ease-[cubic-bezier(0.16,1,0.3,1)] transform"
+                  :class="{
+                    'translate-y-0 opacity-100': middleTextTwoState === 'active',
+                    'translate-y-[120%] opacity-0': middleTextTwoState === 'before',
+                    '-translate-y-[120%] opacity-0': middleTextTwoState === 'after'
+                  }"
+                >
+                  {{ t('FROM CAD BENCH TO FULL THROTTLE FREEDOM.') }}
+                </p>
+              </div>
+
+              <!-- Minimal Red Dot Accents -->
+              <div
+                class="mt-2 sm:mt-2.5 flex items-center justify-center gap-1.5 transition-all duration-500 delay-200 ease-out transform"
+                :class="{
+                  'opacity-80 scale-100 translate-y-0': middleTextTwoState === 'active',
+                  'opacity-0 scale-75 translate-y-2': middleTextTwoState !== 'active'
+                }"
+              >
+                <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 5: AERO STORE & LAB SUPPLY (Drone Ended in Middle, Clean Store Display Without Overlap) -->
+      <section id="store" class="pt-10 sm:pt-16 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-8 max-w-[1240px] mx-auto">
 
         <div class="w-full space-y-8 sm:space-y-10 relative z-10">
           <!-- Section Header: What Aero Store Is & Does -->
@@ -628,6 +681,7 @@ const loadingProgress = ref(0)
 const currentYear = new Date().getFullYear()
 const toastMessage = ref('')
 const middleTextState = ref('before') // 'before' | 'active' | 'after'
+const middleTextTwoState = ref('before') // 'before' | 'active' | 'after'
 
 function showToast(msg) {
   toastMessage.value = msg
@@ -1093,91 +1147,91 @@ onMounted(() => {
   // Stage 5 (Aero Store): Center hover above store supply
   const STOPS_X = [
     { p: 0.00, v: 0.0 },    // 1. Hero: Center
-    { p: 0.10, v: -2.25 },  // 2. Section 2: Smooth glide to Left
-    { p: 0.15, v: -2.25 },  // Section 2 hold
-    { p: 0.22, v: 0.0 },    // FASTER ROTATE & SWEEP into Center as cards end (not stuck on left!)
-    { p: 0.44, v: 0.0 },    // Middle Stop: Center hold cleanly ABOVE FLY AS ONE
-    { p: 0.52, v: 2.25 },   // Section 4: Smooth sweep to Right opposite perks (well within screen boundary)
-    { p: 0.68, v: 2.25 },   // Section 4 hold
-    { p: 0.76, v: 0.0 },    // Section 5: Smooth sweep to Center (Aero Store)
-    { p: 0.83, v: 0.0 },    // Section 5 hold
-    { p: 0.88, v: 0.0 },    // Ascends into sky BEFORE footer
-    { p: 0.92, v: 0.0 },    // Fully exited above screen ceiling
+    { p: 0.09, v: -2.25 },  // 2. Section 2: Smooth glide to Left
+    { p: 0.16, v: -2.25 },  // Section 2 hold
+    { p: 0.23, v: 0.0 },    // Sweep into Center
+    { p: 0.38, v: 0.0 },    // Middle Stop 1: Center hold cleanly ABOVE FLY AS ONE
+    { p: 0.45, v: 2.25 },   // Section 4: Smooth sweep to Right opposite perks
+    { p: 0.58, v: 2.25 },   // Section 4 hold
+    { p: 0.65, v: 0.0 },    // Middle Stop 2: Rotate and sweep into Center!
+    { p: 0.77, v: 0.0 },    // Middle Stop 2 hold: Center above BUILT TO SOAR
+    { p: 0.83, v: 0.0 },    // Ascends into sky BEFORE Aero Store
+    { p: 0.88, v: 0.0 },    // Fully exited above screen ceiling
     { p: 1.00, v: 0.0 }
   ]
 
   const STOPS_Y = [
     { p: 0.00, v: -0.35 },  // Hero: comfortably below top title
-    { p: 0.10, v: 0.25 },   // Section 2: level with upper cards
-    { p: 0.15, v: 0.25 },   // Section 2 hold
-    { p: 0.22, v: 1.15 },   // Elevated HIGH in upper frame (30% from top) so text sits cleanly UNDER drone!
-    { p: 0.44, v: 1.15 },   // Middle Stop hold: hovers cleanly ABOVE text with zero overlap
-    { p: 0.52, v: 0.20 },   // Section 4: level with upper perks cards
-    { p: 0.68, v: 0.20 },   // Section 4 hold
-    { p: 0.76, v: 0.55 },   // Bottom Aero Store: High in upper center above store header
-    { p: 0.83, v: 0.55 },   // Aero Store hold
-    { p: 0.88, v: 3.50 },   // Smooth rapid ascent into sky BEFORE reaching footer (ceiling is 2.91)
-    { p: 0.92, v: 6.50 },   // Completely exited above viewport ceiling!
-    { p: 1.00, v: 6.50 }
+    { p: 0.09, v: 0.25 },   // Section 2: level with upper cards
+    { p: 0.16, v: 0.25 },   // Section 2 hold
+    { p: 0.23, v: 1.15 },   // Elevated HIGH in upper frame above FLY AS ONE
+    { p: 0.38, v: 1.15 },   // Middle Stop 1 hold
+    { p: 0.45, v: 0.20 },   // Section 4: level with upper perks cards
+    { p: 0.58, v: 0.20 },   // Section 4 hold
+    { p: 0.65, v: 1.15 },   // Middle Stop 2: Elevated in upper frame above BUILT TO SOAR
+    { p: 0.77, v: 1.15 },   // Middle Stop 2 hold
+    { p: 0.83, v: 3.50 },   // Smooth rapid ascent into sky BEFORE Aero Store (ceiling is 2.91)
+    { p: 0.88, v: 7.00 },   // Completely exited above viewport ceiling!
+    { p: 1.00, v: 7.00 }
   ]
 
   const STOPS_S = [
     { p: 0.00, v: 1.20 },
-    { p: 0.10, v: 1.00 },
-    { p: 0.15, v: 1.00 },
-    { p: 0.22, v: 1.05 },   // Middle Stop: Prominent showcase proportioned cleanly
-    { p: 0.44, v: 1.05 },
-    { p: 0.52, v: 1.00 },
-    { p: 0.68, v: 1.00 },
-    { p: 0.76, v: 1.05 },   // Aero Store
-    { p: 0.83, v: 1.05 },
-    { p: 0.88, v: 0.50 },   // Recedes into the distance as it flies away
-    { p: 0.92, v: 0.10 },   // Tiny dot in the sky
-    { p: 1.00, v: 0.10 }
+    { p: 0.09, v: 1.00 },
+    { p: 0.16, v: 1.00 },
+    { p: 0.23, v: 1.05 },   // Middle Stop 1
+    { p: 0.38, v: 1.05 },
+    { p: 0.45, v: 1.00 },
+    { p: 0.58, v: 1.00 },
+    { p: 0.65, v: 1.05 },   // Middle Stop 2: Prominent showcase
+    { p: 0.77, v: 1.05 },
+    { p: 0.83, v: 0.45 },   // Recedes into distance as it climbs
+    { p: 0.88, v: 0.05 },   // Exits
+    { p: 1.00, v: 0.05 }
   ]
 
   const STOPS_ROLL = [
     { p: 0.00, v: 0.0 },
-    { p: 0.10, v: 0.0 },
-    { p: 0.15, v: 0.0 },
-    { p: 0.22, v: 0.0 },
-    { p: 0.44, v: 0.0 },
-    { p: 0.52, v: 0.0 },
-    { p: 0.68, v: 0.0 },
-    { p: 0.76, v: 0.0 },
+    { p: 0.09, v: 0.0 },
+    { p: 0.16, v: 0.0 },
+    { p: 0.23, v: 0.0 },
+    { p: 0.38, v: 0.0 },
+    { p: 0.45, v: 0.0 },
+    { p: 0.58, v: 0.0 },
+    { p: 0.65, v: 0.0 },
+    { p: 0.77, v: 0.0 },
     { p: 0.83, v: 0.0 },
     { p: 0.88, v: 0.0 },
-    { p: 0.92, v: 0.0 },
     { p: 1.00, v: 0.0 }
   ]
 
   const STOPS_PITCH = [
     { p: 0.00, v: 0.22 },  // Natural forward flight tilt facing user
-    { p: 0.10, v: 0.08 },  // Slight hover tilt pointing at cards
-    { p: 0.15, v: 0.08 },
-    { p: 0.22, v: 0.22 },  // Forward flight tilt facing user above text
-    { p: 0.44, v: 0.22 },
-    { p: 0.52, v: 0.08 },  // Slight hover tilt pointing at perks
-    { p: 0.68, v: 0.08 },
-    { p: 0.76, v: 0.20 },  // Aero Store tilt
-    { p: 0.83, v: 0.20 },
-    { p: 0.88, v: -0.25 }, // Tilts up as it climbs into the sky!
-    { p: 0.92, v: -0.35 }, // Climbing angle
-    { p: 1.00, v: -0.35 }
+    { p: 0.09, v: 0.08 },  // Slight hover tilt pointing at cards
+    { p: 0.16, v: 0.08 },
+    { p: 0.23, v: 0.22 },  // Forward flight tilt facing user above text 1
+    { p: 0.38, v: 0.22 },
+    { p: 0.45, v: 0.08 },  // Slight hover tilt pointing at perks
+    { p: 0.58, v: 0.08 },
+    { p: 0.65, v: 0.22 },  // Forward flight tilt facing user above text 2
+    { p: 0.77, v: 0.22 },
+    { p: 0.83, v: -0.28 }, // Tilts up as it climbs into the sky!
+    { p: 0.88, v: -0.38 }, // Climbing angle
+    { p: 1.00, v: -0.38 }
   ]
 
   const STOPS_YAW = [
     { p: 0.00, v: 0.0 },     // 1. Hero: Facing forward
-    { p: 0.10, v: DEG90 },   // 2. Left: Rotates 90° right to point directly at cards
-    { p: 0.15, v: DEG90 },   // Section 2 hold
-    { p: 0.22, v: 0.0 },     // PROMPTLY rotates to 0° facing forward into center as cards end!
-    { p: 0.44, v: 0.0 },     // Middle Stop hold: Facing forward
-    { p: 0.52, v: -DEG90 },  // Rotates 90° left to point at perks
-    { p: 0.68, v: -DEG90 },  // Section 4 hold
-    { p: 0.76, v: 0.0 },     // Rotates to 0° facing forward at Aero store
-    { p: 0.83, v: 0.0 },
+    { p: 0.09, v: DEG90 },   // 2. Left: Rotates 90° right to point directly at cards
+    { p: 0.16, v: DEG90 },   // Section 2 hold
+    { p: 0.23, v: 0.0 },     // Rotates to 0° facing forward into center
+    { p: 0.38, v: 0.0 },     // Middle Stop 1 hold: Facing forward
+    { p: 0.45, v: -DEG90 },  // Rotates 90° left to point at perks
+    { p: 0.58, v: -DEG90 },  // Section 4 hold
+    { p: 0.65, v: 0.0 },     // ROTATES TO 0° FACING FORWARD INTO CENTER!
+    { p: 0.77, v: 0.0 },     // Middle Stop 2 hold: Facing forward
+    { p: 0.83, v: 0.0 },     // Exits into sky
     { p: 0.88, v: 0.0 },
-    { p: 0.92, v: 0.0 },
     { p: 1.00, v: 0.0 }
   ]
 
@@ -1273,7 +1327,7 @@ onMounted(() => {
       : sample(STOPS_X, curP) * Math.min(1.05, Math.max(0.85, window.innerWidth / 1600))
 
     // On mobile, elevate the drone slightly in content sections so it hovers in clear airspace above cards
-    const mobileYOffset = isMobile && (curP < 0.20 || (curP > 0.46 && curP < 0.72)) ? 0.35 : 0.0
+    const mobileYOffset = isMobile && (curP < 0.20 || (curP > 0.42 && curP < 0.60)) ? 0.35 : 0.0
     const targetY = sample(STOPS_Y, curP) + mobileYOffset
 
     const baseS = sample(STOPS_S, curP)
@@ -1296,13 +1350,22 @@ onMounted(() => {
     curPitch += (targetPitch - curPitch) * k
     curYaw += (targetYaw - curYaw) * k
 
-    // Middle text sliding reveal: smoothly shows as drone arrives in the middle
-    if (curP < 0.18) {
+    // Middle text sliding reveal for Middle Stop 1: FLY AS ONE
+    if (curP < 0.19) {
       middleTextState.value = 'before'
-    } else if (curP > 0.46) {
+    } else if (curP > 0.40) {
       middleTextState.value = 'after'
     } else {
       middleTextState.value = 'active'
+    }
+
+    // Middle text sliding reveal for Middle Stop 2: BUILT TO SOAR
+    if (curP < 0.60) {
+      middleTextTwoState.value = 'before'
+    } else if (curP > 0.79) {
+      middleTextTwoState.value = 'after'
+    } else {
+      middleTextTwoState.value = 'active'
     }
 
     // Dynamic Footer Clearance: Ensure drone NEVER flies into or touches footer navigation
