@@ -76,7 +76,12 @@
       </section>
 
       <!-- SECTION 2: GATHERINGS (Drone flies to LEFT on desktop, centered aloft on mobile) -->
-      <section id="sessions" class="pt-4 sm:pt-10 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-8 max-w-[1240px] mx-auto">
+      <section
+        id="sessions"
+        ref="sessionsSectionRef"
+        class="pt-4 sm:pt-10 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-8 max-w-[1240px] mx-auto"
+        :class="{ 'is-visible': sessionsVisible }"
+      >
         <div class="w-full grid lg:grid-cols-12 gap-6 lg:gap-12 items-center">
           <!-- Left 5 cols: Completely clear open air for 3D drone flying on the left -->
           <div class="hidden lg:block lg:col-span-5 pointer-events-none"></div>
@@ -85,47 +90,81 @@
           <div class="lg:col-span-7 space-y-4 sm:space-y-5">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 pb-3 border-b border-slate-200 dark:border-white/10">
               <div>
-                <div class="text-[10px] font-mono tracking-widest uppercase text-slate-400 dark:text-slate-500">{{ t('01 // SESSIONS') }}</div>
-                <h2 class="text-xl sm:text-3xl font-black text-[#0c1e5b] dark:text-white">{{ t('Weekend Flights') }}</h2>
+                <div
+                  class="stretch-snap-line text-[10px] font-mono tracking-widest uppercase text-slate-400 dark:text-slate-500"
+                  style="animation-delay: 20ms"
+                >
+                  {{ t('01 // SESSIONS') }}
+                </div>
+                <h2 class="text-xl sm:text-3xl font-black text-[#0c1e5b] dark:text-white flex flex-wrap gap-x-[0.26em]">
+                  <span
+                    v-for="(word, wIdx) in sessionsTitleWords"
+                    :key="wIdx"
+                    class="stretch-snap-word"
+                    :style="{ animationDelay: `${60 + wIdx * 80}ms` }"
+                  >
+                    {{ word }}
+                  </span>
+                </h2>
               </div>
-              <span class="text-[10px] sm:text-[11px] font-mono text-emerald-600 dark:text-[#5df0a8] font-bold self-start sm:self-auto">
+              <span
+                class="stretch-snap-line text-[10px] sm:text-[11px] font-mono text-emerald-600 dark:text-[#5df0a8] font-bold self-start sm:self-auto"
+                style="animation-delay: 200ms"
+              >
                 {{ t('● SKY CLEAR · 8 KM/H') }}
               </span>
             </div>
 
             <!-- Minimal Stats Line -->
             <div class="flex flex-wrap items-center gap-3 sm:gap-6 text-[11px] sm:text-xs font-mono text-slate-500 dark:text-slate-400 py-0.5">
-              <span><strong>140+</strong> {{ t('Pilots') }}</span>
-              <span>•</span>
-              <span><strong>5.8 GHz</strong> {{ t('Band') }}</span>
-              <span>•</span>
-              <span><strong>{{ t('Weekly') }}</strong> {{ t('Gatherings') }}</span>
+              <span class="stretch-snap-line" style="animation-delay: 180ms"><strong>140+</strong> {{ t('Pilots') }}</span>
+              <span class="stretch-snap-line" style="animation-delay: 220ms">•</span>
+              <span class="stretch-snap-line" style="animation-delay: 250ms"><strong>5.8 GHz</strong> {{ t('Band') }}</span>
+              <span class="stretch-snap-line" style="animation-delay: 290ms">•</span>
+              <span class="stretch-snap-line" style="animation-delay: 320ms"><strong>{{ t('Weekly') }}</strong> {{ t('Gatherings') }}</span>
             </div>
 
             <!-- Ultra-Short Sessions List -->
             <div class="space-y-2.5 sm:space-y-3">
               <div
-                v-for="session in flightSessions"
+                v-for="(session, sIdx) in flightSessions"
                 :key="session.id"
-                class="p-3.5 sm:p-4 rounded-2xl bg-white/92 dark:bg-[#070e24]/90 border border-slate-200/90 dark:border-white/10 backdrop-blur-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 hover:border-slate-400 dark:hover:border-white/20 transition shadow-xs"
+                class="stretch-snap-card p-3.5 sm:p-4 rounded-2xl bg-white/92 dark:bg-[#070e24]/90 border border-slate-200/90 dark:border-white/10 backdrop-blur-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 hover:border-slate-400 dark:hover:border-white/20 transition-colors shadow-xs"
+                :style="{ animationDelay: `${260 + sIdx * 95}ms` }"
               >
                 <div class="space-y-0.5">
-                  <div class="flex items-center gap-2 text-[10px] font-mono text-slate-400">
+                  <div
+                    class="stretch-snap-line flex items-center gap-2 text-[10px] font-mono text-slate-400"
+                    :style="{ animationDelay: `${320 + sIdx * 95}ms` }"
+                  >
                     <span class="uppercase font-bold text-slate-600 dark:text-slate-300">{{ session.category }}</span>
                     <span>·</span>
                     <span>{{ session.time }}</span>
                   </div>
-                  <h3 class="text-sm sm:text-base font-bold text-[#0c1e5b] dark:text-white">
-                    {{ session.title }}
+                  <h3 class="text-sm sm:text-base font-bold text-[#0c1e5b] dark:text-white flex flex-wrap gap-x-[0.24em]">
+                    <span
+                      v-for="(word, wIdx) in session.title.split(' ')"
+                      :key="wIdx"
+                      class="stretch-snap-word"
+                      :style="{ animationDelay: `${340 + sIdx * 95 + wIdx * 35}ms` }"
+                    >
+                      {{ word }}
+                    </span>
                   </h3>
-                  <p class="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+                  <p
+                    class="stretch-snap-line text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1.5"
+                    :style="{ animationDelay: `${410 + sIdx * 95}ms` }"
+                  >
                     <MapPin class="w-3.5 h-3.5 text-[#0c1e5b] dark:text-white shrink-0" />
                     <span>{{ session.location }}</span>
                   </p>
                 </div>
 
                 <div class="flex items-center justify-between sm:justify-end gap-3 shrink-0 pt-1 sm:pt-0 border-t sm:border-t-0 border-slate-100 dark:border-white/5">
-                  <span class="text-[10px] sm:text-[11px] font-mono text-slate-400">
+                  <span
+                    class="stretch-snap-line text-[10px] sm:text-[11px] font-mono text-slate-400"
+                    :style="{ animationDelay: `${420 + sIdx * 95}ms` }"
+                  >
                     {{ session.attendees.length }} {{ t('attending') }}
                   </span>
                   <button
@@ -217,106 +256,85 @@
         </div>
       </section>
 
-      <section id="benefits" class="pt-4 sm:pt-10 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-8 max-w-[1240px] mx-auto">
+      <section
+        id="benefits"
+        ref="benefitsSectionRef"
+        class="pt-4 sm:pt-10 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-8 max-w-[1240px] mx-auto"
+        :class="{ 'is-visible': benefitsVisible }"
+      >
         <div class="w-full grid lg:grid-cols-12 gap-6 lg:gap-12 items-center">
           <!-- Left 7 cols: Content & Text on the left -->
           <div class="lg:col-span-7 space-y-4 sm:space-y-5">
             <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-1.5 pb-3 border-b border-slate-200 dark:border-white/10">
               <div>
-                <div class="text-[10px] font-mono tracking-widest uppercase text-slate-400 dark:text-slate-500">{{ t('02 // MEMBERSHIP BENEFITS') }}</div>
-                <h2 class="text-xl sm:text-3xl font-black text-[#0c1e5b] dark:text-white">{{ t('What You Get When You Join') }}</h2>
+                <div
+                  class="stretch-snap-line text-[10px] font-mono tracking-widest uppercase text-slate-400 dark:text-slate-500"
+                  style="animation-delay: 20ms"
+                >
+                  {{ t('02 // MEMBERSHIP BENEFITS') }}
+                </div>
+                <h2 class="text-xl sm:text-3xl font-black text-[#0c1e5b] dark:text-white flex flex-wrap gap-x-[0.26em]">
+                  <span
+                    v-for="(word, wIdx) in benefitsTitleWords"
+                    :key="wIdx"
+                    class="stretch-snap-word"
+                    :style="{ animationDelay: `${60 + wIdx * 65}ms` }"
+                  >
+                    {{ word }}
+                  </span>
+                </h2>
               </div>
-              <span class="text-[10px] sm:text-[11px] font-mono text-emerald-600 dark:text-[#5df0a8] font-bold self-start sm:self-auto">
+              <span
+                class="stretch-snap-line text-[10px] sm:text-[11px] font-mono text-emerald-600 dark:text-[#5df0a8] font-bold self-start sm:self-auto"
+                style="animation-delay: 320ms"
+              >
                 {{ t('● 100% FREE COMMUNITY') }}
               </span>
             </div>
 
-            <p class="text-xs text-slate-600 dark:text-[#9aa6c4]">
+            <p
+              class="stretch-snap-line text-xs text-slate-600 dark:text-[#9aa6c4]"
+              style="animation-delay: 240ms"
+            >
               {{ t("Join Cambodia's open FPV collective. Everything you need to build, tune, and fly safely with active pilots.") }}
             </p>
 
             <!-- 6 Key Member Benefits Grid -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
-              <!-- Benefit 1: Aero Print Discounts -->
-              <div class="p-3.5 rounded-2xl bg-white/92 dark:bg-[#070e24]/90 border border-slate-200/90 dark:border-white/10 backdrop-blur-xl flex items-start gap-3 hover:border-slate-400 dark:hover:border-white/20 transition shadow-xs">
+              <div
+                v-for="(benefit, bIdx) in memberBenefits"
+                :key="benefit.titleKey"
+                class="stretch-snap-card p-3.5 rounded-2xl bg-white/92 dark:bg-[#070e24]/90 border border-slate-200/90 dark:border-white/10 backdrop-blur-xl flex items-start gap-3 hover:border-slate-400 dark:hover:border-white/20 transition-colors shadow-xs"
+                :style="{ animationDelay: `${260 + bIdx * 70}ms` }"
+              >
                 <div class="w-8 h-8 rounded-xl bg-[#0c1e5b]/5 dark:bg-white/10 text-[#0c1e5b] dark:text-white border border-[#0c1e5b]/10 dark:border-white/10 flex items-center justify-center shrink-0">
-                  <Printer class="w-4 h-4 stroke-[2]" />
+                  <component :is="benefit.icon" class="w-4 h-4 stroke-[2]" />
                 </div>
                 <div class="space-y-0.5">
-                  <h4 class="text-xs font-bold text-[#0c1e5b] dark:text-white">{{ t('Aero Print 3D Discounts') }}</h4>
-                  <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-snug">
-                    {{ t('Exclusive member discounts when you order 3D prints — custom TPU GoPro mounts, arm skids, antenna tubes, and drone armor.') }}
-                  </p>
-                </div>
-              </div>
-
-              <!-- Benefit 2: Free Ta Khmau Lab Access -->
-              <div class="p-3.5 rounded-2xl bg-white/92 dark:bg-[#070e24]/90 border border-slate-200/90 dark:border-white/10 backdrop-blur-xl flex items-start gap-3 hover:border-slate-400 dark:hover:border-white/20 transition shadow-xs">
-                <div class="w-8 h-8 rounded-xl bg-[#0c1e5b]/5 dark:bg-white/10 text-[#0c1e5b] dark:text-white border border-[#0c1e5b]/10 dark:border-white/10 flex items-center justify-center shrink-0">
-                  <MapPin class="w-4 h-4 stroke-[2]" />
-                </div>
-                <div class="space-y-0.5">
-                  <h4 class="text-xs font-bold text-[#0c1e5b] dark:text-white">{{ t('Free Ta Khmau Lab Access') }}</h4>
-                  <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-snug">
-                    {{ t('Our workshop in Ta Khmau is 100% free. Come and join anytime in your free time — use open soldering benches and tools at no cost.') }}
-                  </p>
-                </div>
-              </div>
-
-              <!-- Benefit 3: Meet Pro Pilots & Mechanics -->
-              <div class="p-3.5 rounded-2xl bg-white/92 dark:bg-[#070e24]/90 border border-slate-200/90 dark:border-white/10 backdrop-blur-xl flex items-start gap-3 hover:border-slate-400 dark:hover:border-white/20 transition shadow-xs">
-                <div class="w-8 h-8 rounded-xl bg-[#0c1e5b]/5 dark:bg-white/10 text-[#0c1e5b] dark:text-white border border-[#0c1e5b]/10 dark:border-white/10 flex items-center justify-center shrink-0">
-                  <Wrench class="w-4 h-4 stroke-[2]" />
-                </div>
-                <div class="space-y-0.5">
-                  <h4 class="text-xs font-bold text-[#0c1e5b] dark:text-white">{{ t('Pro Config & Mechanic Team') }}</h4>
-                  <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-snug">
-                    {{ t('Bring your drone to configure Betaflight, tune rates, and discuss electronics directly with our professional pilots and mechanics.') }}
-                  </p>
-                </div>
-              </div>
-
-              <!-- Benefit 4: Find Flight Partners (Never Fly Alone) -->
-              <div class="p-3.5 rounded-2xl bg-white/92 dark:bg-[#070e24]/90 border border-slate-200/90 dark:border-white/10 backdrop-blur-xl flex items-start gap-3 hover:border-slate-400 dark:hover:border-white/20 transition shadow-xs">
-                <div class="w-8 h-8 rounded-xl bg-[#0c1e5b]/5 dark:bg-white/10 text-[#0c1e5b] dark:text-white border border-[#0c1e5b]/10 dark:border-white/10 flex items-center justify-center shrink-0">
-                  <Users class="w-4 h-4 stroke-[2]" />
-                </div>
-                <div class="space-y-0.5">
-                  <h4 class="text-xs font-bold text-[#0c1e5b] dark:text-white">{{ t('Have a Drone? Find Flight Buddies') }}</h4>
-                  <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-snug">
-                    {{ t('Have a drone but no partner to fly with? Come and join our group flights, meet local pilots, find spotters, and fly together safely.') }}
-                  </p>
-                </div>
-              </div>
-
-              <!-- Benefit 5: Beginners & Hobbyists Welcome (No Drone Needed) -->
-              <div class="p-3.5 rounded-2xl bg-white/92 dark:bg-[#070e24]/90 border border-slate-200/90 dark:border-white/10 backdrop-blur-xl flex items-start gap-3 hover:border-slate-400 dark:hover:border-white/20 transition shadow-xs">
-                <div class="w-8 h-8 rounded-xl bg-[#0c1e5b]/5 dark:bg-white/10 text-[#0c1e5b] dark:text-white border border-[#0c1e5b]/10 dark:border-white/10 flex items-center justify-center shrink-0">
-                  <Sparkles class="w-4 h-4 stroke-[2]" />
-                </div>
-                <div class="space-y-0.5">
-                  <h4 class="text-xs font-bold text-[#0c1e5b] dark:text-white">{{ t('No Drone Yet? You Can Still Join!') }}</h4>
-                  <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-snug">
-                    {{ t('New to drones or have a hobby curiosity without gear? You are 100% welcome! Hang out, spectate in goggles, try sims, and learn for free.') }}
-                  </p>
-                </div>
-              </div>
-
-              <!-- Benefit 6: Coordinated Airspace & Field Spares -->
-              <div class="p-3.5 rounded-2xl bg-white/92 dark:bg-[#070e24]/90 border border-slate-200/90 dark:border-white/10 backdrop-blur-xl flex items-start gap-3 hover:border-slate-400 dark:hover:border-white/20 transition shadow-xs">
-                <div class="w-8 h-8 rounded-xl bg-[#0c1e5b]/5 dark:bg-white/10 text-[#0c1e5b] dark:text-white border border-[#0c1e5b]/10 dark:border-white/10 flex items-center justify-center shrink-0">
-                  <Radio class="w-4 h-4 stroke-[2]" />
-                </div>
-                <div class="space-y-0.5">
-                  <h4 class="text-xs font-bold text-[#0c1e5b] dark:text-white">{{ t('Coordinated Airspace & Field Spares') }}</h4>
-                  <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-snug">
-                    {{ t('Zero video stomping with coordinated 5.8 GHz & HD channels, plus shared field toolkits and spare hardware so you never get grounded.') }}
+                  <h4 class="text-xs font-bold text-[#0c1e5b] dark:text-white flex flex-wrap gap-x-[0.22em]">
+                    <span
+                      v-for="(word, wIdx) in t(benefit.titleKey).split(' ')"
+                      :key="wIdx"
+                      class="stretch-snap-word"
+                      :style="{ animationDelay: `${310 + bIdx * 70 + wIdx * 28}ms` }"
+                    >
+                      {{ word }}
+                    </span>
+                  </h4>
+                  <p
+                    class="stretch-snap-line text-[11px] text-slate-500 dark:text-slate-400 leading-snug"
+                    :style="{ animationDelay: `${380 + bIdx * 70}ms` }"
+                  >
+                    {{ t(benefit.descKey) }}
                   </p>
                 </div>
               </div>
             </div>
             <!-- Bottom action banner -->
-            <div class="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div
+              class="stretch-snap-line pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+              style="animation-delay: 640ms"
+            >
               <span class="text-[11px] text-slate-400 dark:text-slate-500 font-mono">
                 {{ t('Open to Tiny Whoop, 3.5" cinewhoop, 5" freestyle & long-range.') }}
               </span>
@@ -410,19 +428,37 @@
       </section>
 
       <!-- SECTION 5: AERO STORE & LAB SUPPLY (Drone Ended in Middle, Clean Store Display Without Overlap) -->
-      <section id="store" class="pt-10 sm:pt-16 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-8 max-w-[1240px] mx-auto">
+      <section
+        id="store"
+        ref="storeSectionRef"
+        class="pt-10 sm:pt-16 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-8 max-w-[1240px] mx-auto"
+        :class="{ 'is-visible': storeVisible }"
+      >
 
         <div class="w-full space-y-8 sm:space-y-10 relative z-10">
           <!-- Section Header: What Aero Store Is & Does -->
           <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3 sm:gap-4 pb-4 border-b border-slate-200 dark:border-white/10">
             <div>
-              <div class="text-[10px] font-mono tracking-widest uppercase text-slate-400 dark:text-slate-500">
+              <div
+                class="stretch-snap-line text-[10px] font-mono tracking-widest uppercase text-slate-400 dark:text-slate-500"
+                style="animation-delay: 20ms"
+              >
                 {{ t('03 // HARDWARE & LAB SUPPLY') }}
               </div>
-              <h2 class="text-xl sm:text-3xl lg:text-4xl font-black text-[#0c1e5b] dark:text-white">
-                {{ t('Aero Store & Hardware Lab') }}
+              <h2 class="text-xl sm:text-3xl lg:text-4xl font-black text-[#0c1e5b] dark:text-white flex flex-wrap gap-x-[0.26em]">
+                <span
+                  v-for="(word, wIdx) in storeTitleWords"
+                  :key="wIdx"
+                  class="stretch-snap-word"
+                  :style="{ animationDelay: `${60 + wIdx * 65}ms` }"
+                >
+                  {{ word }}
+                </span>
               </h2>
-              <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1 max-w-2xl">
+              <p
+                class="stretch-snap-line text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1 max-w-2xl"
+                style="animation-delay: 240ms"
+              >
                 {{ t("Cambodia's dedicated hardware hub for BNF FPV quads, robotics lab kits, custom 3D TPU parts, and hands-on bench tuning.") }}
               </p>
             </div>
@@ -735,11 +771,57 @@ const { t } = useI18n()
 
 const canvasRef = ref(null)
 const footerRef = ref(null)
+const sessionsSectionRef = ref(null)
+const benefitsSectionRef = ref(null)
+const storeSectionRef = ref(null)
+const sessionsVisible = ref(false)
+const benefitsVisible = ref(false)
+const storeVisible = ref(false)
 const loadingProgress = ref(0)
 const currentYear = new Date().getFullYear()
 const toastMessage = ref('')
 const middleTextState = ref('before') // 'before' | 'active' | 'after'
 const middleTextTwoState = ref('before') // 'before' | 'active' | 'after'
+
+// ----------------------------------------------------
+// JITTER STRETCH-SNAP TEXT DATA (SESSIONS, BENEFITS, STORE)
+// ----------------------------------------------------
+const sessionsTitleWords = computed(() => (t('Weekend Flights') || 'Weekend Flights').split(' '))
+const benefitsTitleWords = computed(() => (t('What You Get When You Join') || 'What You Get When You Join').split(' '))
+const storeTitleWords = computed(() => (t('Aero Store & Hardware Lab') || 'Aero Store & Hardware Lab').split(' '))
+
+const memberBenefits = [
+  {
+    icon: Printer,
+    titleKey: 'Aero Print 3D Discounts',
+    descKey: 'Exclusive member discounts when you order 3D prints — custom TPU GoPro mounts, arm skids, antenna tubes, and drone armor.'
+  },
+  {
+    icon: MapPin,
+    titleKey: 'Free Ta Khmau Lab Access',
+    descKey: 'Our workshop in Ta Khmau is 100% free. Come and join anytime in your free time — use open soldering benches and tools at no cost.'
+  },
+  {
+    icon: Wrench,
+    titleKey: 'Pro Config & Mechanic Team',
+    descKey: 'Bring your drone to configure Betaflight, tune rates, and discuss electronics directly with our professional pilots and mechanics.'
+  },
+  {
+    icon: Users,
+    titleKey: 'Have a Drone? Find Flight Buddies',
+    descKey: 'Have a drone but no partner to fly with? Come and join our group flights, meet local pilots, find spotters, and fly together safely.'
+  },
+  {
+    icon: Sparkles,
+    titleKey: 'No Drone Yet? You Can Still Join!',
+    descKey: 'New to drones or have a hobby curiosity without gear? You are 100% welcome! Hang out, spectate in goggles, try sims, and learn for free.'
+  },
+  {
+    icon: Radio,
+    titleKey: 'Coordinated Airspace & Field Spares',
+    descKey: 'Zero video stomping with coordinated 5.8 GHz & HD channels, plus shared field toolkits and spare hardware so you never get grounded.'
+  }
+]
 
 // ----------------------------------------------------
 // JITTER CASCADING TEXT ANIMATION (FLY AS ONE)
@@ -1598,9 +1680,41 @@ onMounted(() => {
 
   window.addEventListener('resize', handleResize)
 
+  let sectionObserver = null
+  if ('IntersectionObserver' in window) {
+    sectionObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            if (entry.target === sessionsSectionRef.value) sessionsVisible.value = true
+            if (entry.target === benefitsSectionRef.value) benefitsVisible.value = true
+            if (entry.target === storeSectionRef.value) storeVisible.value = true
+          } else {
+            const rect = entry.boundingClientRect
+            const completelyOut = rect.bottom < -40 || rect.top > window.innerHeight + 40
+            if (completelyOut) {
+              if (entry.target === sessionsSectionRef.value) sessionsVisible.value = false
+              if (entry.target === benefitsSectionRef.value) benefitsVisible.value = false
+              if (entry.target === storeSectionRef.value) storeVisible.value = false
+            }
+          }
+        })
+      },
+      { threshold: 0.08 }
+    )
+    if (sessionsSectionRef.value) sectionObserver.observe(sessionsSectionRef.value)
+    if (benefitsSectionRef.value) sectionObserver.observe(benefitsSectionRef.value)
+    if (storeSectionRef.value) sectionObserver.observe(storeSectionRef.value)
+  } else {
+    sessionsVisible.value = true
+    benefitsVisible.value = true
+    storeVisible.value = true
+  }
+
   onUnmounted(() => {
     window.removeEventListener('scroll', onScroll)
     window.removeEventListener('resize', handleResize)
+    if (sectionObserver) sectionObserver.disconnect()
     if (animationFrameId) cancelAnimationFrame(animationFrameId)
     if (renderer) renderer.dispose()
   })
@@ -1610,5 +1724,100 @@ onMounted(() => {
 <style scoped>
 .aero-fly-root {
   min-height: 100vh;
+}
+
+/* Jitter Stretch-Snap Text Motion Style */
+.stretch-snap-word {
+  display: inline-block;
+  opacity: 0;
+  transform-origin: left bottom;
+  will-change: transform, opacity;
+}
+
+.stretch-snap-line {
+  opacity: 0;
+  transform-origin: left center;
+  will-change: transform, opacity;
+}
+
+.stretch-snap-card {
+  opacity: 0;
+  transform-origin: center bottom;
+  will-change: transform, opacity;
+}
+
+.is-visible .stretch-snap-word {
+  animation: stretchSnapWord 0.72s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.is-visible .stretch-snap-line {
+  animation: stretchSnapLine 0.64s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.is-visible .stretch-snap-card {
+  animation: stretchSnapCard 0.68s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes stretchSnapWord {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scaleX(1.38) scaleY(0.72);
+    letter-spacing: 0.06em;
+  }
+  52% {
+    opacity: 1;
+    transform: translateY(-2px) scaleX(0.95) scaleY(1.06);
+    letter-spacing: -0.01em;
+  }
+  78% {
+    opacity: 1;
+    transform: translateY(1px) scaleX(1.02) scaleY(0.99);
+    letter-spacing: 0em;
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scaleX(1) scaleY(1);
+    letter-spacing: 0em;
+  }
+}
+
+@keyframes stretchSnapLine {
+  0% {
+    opacity: 0;
+    transform: translateX(-14px) scaleX(1.18) scaleY(0.86);
+  }
+  58% {
+    opacity: 1;
+    transform: translateX(2px) scaleX(0.98) scaleY(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scaleX(1) scaleY(1);
+  }
+}
+
+@keyframes stretchSnapCard {
+  0% {
+    opacity: 0;
+    transform: translateY(22px) scaleX(1.06) scaleY(0.92);
+  }
+  58% {
+    opacity: 1;
+    transform: translateY(-2px) scaleX(0.99) scaleY(1.015);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scaleX(1) scaleY(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stretch-snap-word,
+  .stretch-snap-line,
+  .stretch-snap-card {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
 }
 </style>
