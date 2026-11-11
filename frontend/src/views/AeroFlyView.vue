@@ -1732,6 +1732,7 @@ onMounted(() => {
 
   window.addEventListener('resize', handleResize)
   updateAllSnaps()
+  requestAnimationFrame(updateAllSnaps)
 
   onUnmounted(() => {
     window.removeEventListener('scroll', onScroll)
@@ -1767,15 +1768,18 @@ onMounted(() => {
   will-change: transform, opacity;
 }
 
-.is-visible .stretch-snap-word {
+.is-visible .stretch-snap-word,
+.stretch-snap-word.is-visible {
   animation: stretchSnapWord 0.72s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-.is-visible .stretch-snap-line {
+.is-visible .stretch-snap-line,
+.stretch-snap-line.is-visible {
   animation: stretchSnapLine 0.64s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-.is-visible .stretch-snap-card {
+.is-visible .stretch-snap-card,
+.stretch-snap-card.is-visible {
   animation: stretchSnapCard 0.68s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
