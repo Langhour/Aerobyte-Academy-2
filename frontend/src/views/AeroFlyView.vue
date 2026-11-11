@@ -78,9 +78,7 @@
       <!-- SECTION 2: GATHERINGS (Drone flies to LEFT on desktop, centered aloft on mobile) -->
       <section
         id="sessions"
-        ref="sessionsSectionRef"
         class="pt-4 sm:pt-10 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-8 max-w-[1240px] mx-auto"
-        :class="{ 'is-visible': sessionsVisible }"
       >
         <div class="w-full grid lg:grid-cols-12 gap-6 lg:gap-12 items-center">
           <!-- Left 5 cols: Completely clear open air for 3D drone flying on the left -->
@@ -88,7 +86,11 @@
 
           <!-- Right 7 cols: Content & Text on the right -->
           <div class="lg:col-span-7 space-y-4 sm:space-y-5">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 pb-3 border-b border-slate-200 dark:border-white/10">
+            <div
+              v-snap="'sessions-hdr'"
+              :class="{ 'is-visible': snapVisible['sessions-hdr'] }"
+              class="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 pb-3 border-b border-slate-200 dark:border-white/10"
+            >
               <div>
                 <div
                   class="stretch-snap-line text-[10px] font-mono tracking-widest uppercase text-slate-400 dark:text-slate-500"
@@ -101,7 +103,7 @@
                     v-for="(word, wIdx) in sessionsTitleWords"
                     :key="wIdx"
                     class="stretch-snap-word"
-                    :style="{ animationDelay: `${60 + wIdx * 80}ms` }"
+                    :style="{ animationDelay: `${50 + wIdx * 80}ms` }"
                   >
                     {{ word }}
                   </span>
@@ -109,33 +111,39 @@
               </div>
               <span
                 class="stretch-snap-line text-[10px] sm:text-[11px] font-mono text-emerald-600 dark:text-[#5df0a8] font-bold self-start sm:self-auto"
-                style="animation-delay: 200ms"
+                style="animation-delay: 170ms"
               >
                 {{ t('● SKY CLEAR · 8 KM/H') }}
               </span>
             </div>
 
             <!-- Minimal Stats Line -->
-            <div class="flex flex-wrap items-center gap-3 sm:gap-6 text-[11px] sm:text-xs font-mono text-slate-500 dark:text-slate-400 py-0.5">
-              <span class="stretch-snap-line" style="animation-delay: 180ms"><strong>140+</strong> {{ t('Pilots') }}</span>
-              <span class="stretch-snap-line" style="animation-delay: 220ms">•</span>
-              <span class="stretch-snap-line" style="animation-delay: 250ms"><strong>5.8 GHz</strong> {{ t('Band') }}</span>
-              <span class="stretch-snap-line" style="animation-delay: 290ms">•</span>
-              <span class="stretch-snap-line" style="animation-delay: 320ms"><strong>{{ t('Weekly') }}</strong> {{ t('Gatherings') }}</span>
+            <div
+              v-snap="'sessions-stats'"
+              :class="{ 'is-visible': snapVisible['sessions-stats'] }"
+              class="flex flex-wrap items-center gap-3 sm:gap-6 text-[11px] sm:text-xs font-mono text-slate-500 dark:text-slate-400 py-0.5"
+            >
+              <span class="stretch-snap-line" style="animation-delay: 20ms"><strong>140+</strong> {{ t('Pilots') }}</span>
+              <span class="stretch-snap-line" style="animation-delay: 60ms">•</span>
+              <span class="stretch-snap-line" style="animation-delay: 100ms"><strong>5.8 GHz</strong> {{ t('Band') }}</span>
+              <span class="stretch-snap-line" style="animation-delay: 140ms">•</span>
+              <span class="stretch-snap-line" style="animation-delay: 180ms"><strong>{{ t('Weekly') }}</strong> {{ t('Gatherings') }}</span>
             </div>
 
             <!-- Ultra-Short Sessions List -->
             <div class="space-y-2.5 sm:space-y-3">
               <div
-                v-for="(session, sIdx) in flightSessions"
+                v-for="session in flightSessions"
                 :key="session.id"
+                v-snap="`session-${session.id}`"
+                :class="{ 'is-visible': snapVisible[`session-${session.id}`] }"
                 class="stretch-snap-card p-3.5 sm:p-4 rounded-2xl bg-white/92 dark:bg-[#070e24]/90 border border-slate-200/90 dark:border-white/10 backdrop-blur-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 hover:border-slate-400 dark:hover:border-white/20 transition-colors shadow-xs"
-                :style="{ animationDelay: `${260 + sIdx * 95}ms` }"
+                style="animation-delay: 20ms"
               >
                 <div class="space-y-0.5">
                   <div
                     class="stretch-snap-line flex items-center gap-2 text-[10px] font-mono text-slate-400"
-                    :style="{ animationDelay: `${320 + sIdx * 95}ms` }"
+                    style="animation-delay: 70ms"
                   >
                     <span class="uppercase font-bold text-slate-600 dark:text-slate-300">{{ session.category }}</span>
                     <span>·</span>
@@ -146,14 +154,14 @@
                       v-for="(word, wIdx) in session.title.split(' ')"
                       :key="wIdx"
                       class="stretch-snap-word"
-                      :style="{ animationDelay: `${340 + sIdx * 95 + wIdx * 35}ms` }"
+                      :style="{ animationDelay: `${90 + wIdx * 35}ms` }"
                     >
                       {{ word }}
                     </span>
                   </h3>
                   <p
                     class="stretch-snap-line text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1.5"
-                    :style="{ animationDelay: `${410 + sIdx * 95}ms` }"
+                    style="animation-delay: 170ms"
                   >
                     <MapPin class="w-3.5 h-3.5 text-[#0c1e5b] dark:text-white shrink-0" />
                     <span>{{ session.location }}</span>
@@ -163,7 +171,7 @@
                 <div class="flex items-center justify-between sm:justify-end gap-3 shrink-0 pt-1 sm:pt-0 border-t sm:border-t-0 border-slate-100 dark:border-white/5">
                   <span
                     class="stretch-snap-line text-[10px] sm:text-[11px] font-mono text-slate-400"
-                    :style="{ animationDelay: `${420 + sIdx * 95}ms` }"
+                    style="animation-delay: 180ms"
                   >
                     {{ session.attendees.length }} {{ t('attending') }}
                   </span>
@@ -258,14 +266,16 @@
 
       <section
         id="benefits"
-        ref="benefitsSectionRef"
         class="pt-4 sm:pt-10 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-8 max-w-[1240px] mx-auto"
-        :class="{ 'is-visible': benefitsVisible }"
       >
         <div class="w-full grid lg:grid-cols-12 gap-6 lg:gap-12 items-center">
           <!-- Left 7 cols: Content & Text on the left -->
           <div class="lg:col-span-7 space-y-4 sm:space-y-5">
-            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-1.5 pb-3 border-b border-slate-200 dark:border-white/10">
+            <div
+              v-snap="'benefits-hdr'"
+              :class="{ 'is-visible': snapVisible['benefits-hdr'] }"
+              class="flex flex-col sm:flex-row sm:items-end justify-between gap-1.5 pb-3 border-b border-slate-200 dark:border-white/10"
+            >
               <div>
                 <div
                   class="stretch-snap-line text-[10px] font-mono tracking-widest uppercase text-slate-400 dark:text-slate-500"
@@ -278,7 +288,7 @@
                     v-for="(word, wIdx) in benefitsTitleWords"
                     :key="wIdx"
                     class="stretch-snap-word"
-                    :style="{ animationDelay: `${60 + wIdx * 65}ms` }"
+                    :style="{ animationDelay: `${50 + wIdx * 60}ms` }"
                   >
                     {{ word }}
                   </span>
@@ -286,15 +296,17 @@
               </div>
               <span
                 class="stretch-snap-line text-[10px] sm:text-[11px] font-mono text-emerald-600 dark:text-[#5df0a8] font-bold self-start sm:self-auto"
-                style="animation-delay: 320ms"
+                style="animation-delay: 260ms"
               >
                 {{ t('● 100% FREE COMMUNITY') }}
               </span>
             </div>
 
             <p
+              v-snap="'benefits-intro'"
+              :class="{ 'is-visible': snapVisible['benefits-intro'] }"
               class="stretch-snap-line text-xs text-slate-600 dark:text-[#9aa6c4]"
-              style="animation-delay: 240ms"
+              style="animation-delay: 30ms"
             >
               {{ t("Join Cambodia's open FPV collective. Everything you need to build, tune, and fly safely with active pilots.") }}
             </p>
@@ -304,8 +316,10 @@
               <div
                 v-for="(benefit, bIdx) in memberBenefits"
                 :key="benefit.titleKey"
+                v-snap="`benefit-${bIdx}`"
+                :class="{ 'is-visible': snapVisible[`benefit-${bIdx}`] }"
                 class="stretch-snap-card p-3.5 rounded-2xl bg-white/92 dark:bg-[#070e24]/90 border border-slate-200/90 dark:border-white/10 backdrop-blur-xl flex items-start gap-3 hover:border-slate-400 dark:hover:border-white/20 transition-colors shadow-xs"
-                :style="{ animationDelay: `${260 + bIdx * 70}ms` }"
+                :style="{ animationDelay: `${(bIdx % 2) * 80}ms` }"
               >
                 <div class="w-8 h-8 rounded-xl bg-[#0c1e5b]/5 dark:bg-white/10 text-[#0c1e5b] dark:text-white border border-[#0c1e5b]/10 dark:border-white/10 flex items-center justify-center shrink-0">
                   <component :is="benefit.icon" class="w-4 h-4 stroke-[2]" />
@@ -316,14 +330,14 @@
                       v-for="(word, wIdx) in t(benefit.titleKey).split(' ')"
                       :key="wIdx"
                       class="stretch-snap-word"
-                      :style="{ animationDelay: `${310 + bIdx * 70 + wIdx * 28}ms` }"
+                      :style="{ animationDelay: `${(bIdx % 2) * 80 + 50 + wIdx * 28}ms` }"
                     >
                       {{ word }}
                     </span>
                   </h4>
                   <p
                     class="stretch-snap-line text-[11px] text-slate-500 dark:text-slate-400 leading-snug"
-                    :style="{ animationDelay: `${380 + bIdx * 70}ms` }"
+                    :style="{ animationDelay: `${(bIdx % 2) * 80 + 130}ms` }"
                   >
                     {{ t(benefit.descKey) }}
                   </p>
@@ -332,8 +346,10 @@
             </div>
             <!-- Bottom action banner -->
             <div
+              v-snap="'benefits-cta'"
+              :class="{ 'is-visible': snapVisible['benefits-cta'] }"
               class="stretch-snap-line pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
-              style="animation-delay: 640ms"
+              style="animation-delay: 40ms"
             >
               <span class="text-[11px] text-slate-400 dark:text-slate-500 font-mono">
                 {{ t('Open to Tiny Whoop, 3.5" cinewhoop, 5" freestyle & long-range.') }}
@@ -430,14 +446,16 @@
       <!-- SECTION 5: AERO STORE & LAB SUPPLY (Drone Ended in Middle, Clean Store Display Without Overlap) -->
       <section
         id="store"
-        ref="storeSectionRef"
         class="pt-10 sm:pt-16 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-8 max-w-[1240px] mx-auto"
-        :class="{ 'is-visible': storeVisible }"
       >
 
         <div class="w-full space-y-8 sm:space-y-10 relative z-10">
           <!-- Section Header: What Aero Store Is & Does -->
-          <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3 sm:gap-4 pb-4 border-b border-slate-200 dark:border-white/10">
+          <div
+            v-snap="'store-hdr'"
+            :class="{ 'is-visible': snapVisible['store-hdr'] }"
+            class="flex flex-col sm:flex-row sm:items-end justify-between gap-3 sm:gap-4 pb-4 border-b border-slate-200 dark:border-white/10"
+          >
             <div>
               <div
                 class="stretch-snap-line text-[10px] font-mono tracking-widest uppercase text-slate-400 dark:text-slate-500"
@@ -739,7 +757,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
+import { ref, reactive, computed, watch, onMounted, onUnmounted } from 'vue'
 import * as THREE from 'three'
 import {
   Printer,
@@ -771,12 +789,44 @@ const { t } = useI18n()
 
 const canvasRef = ref(null)
 const footerRef = ref(null)
-const sessionsSectionRef = ref(null)
-const benefitsSectionRef = ref(null)
-const storeSectionRef = ref(null)
-const sessionsVisible = ref(false)
-const benefitsVisible = ref(false)
-const storeVisible = ref(false)
+const snapTargets = new Map()
+const snapVisible = reactive({})
+
+function updateSingleSnap(el, key) {
+  const vh = window.innerHeight || document.documentElement.clientHeight || 800
+  const rect = el.getBoundingClientRect()
+  const inView = rect.top < vh * 0.90 && rect.bottom > vh * 0.08
+  const outOfView = rect.bottom <= 0 || rect.top >= vh
+  if (inView) {
+    snapVisible[key] = true
+  } else if (outOfView) {
+    snapVisible[key] = false
+  }
+}
+
+function updateAllSnaps() {
+  snapTargets.forEach((key, el) => {
+    updateSingleSnap(el, key)
+  })
+}
+
+const vSnap = {
+  mounted(el, binding) {
+    if (binding.value) {
+      snapTargets.set(el, binding.value)
+      updateSingleSnap(el, binding.value)
+    }
+  },
+  updated(el, binding) {
+    if (binding.value) {
+      snapTargets.set(el, binding.value)
+    }
+  },
+  unmounted(el) {
+    snapTargets.delete(el)
+  }
+}
+
 const loadingProgress = ref(0)
 const currentYear = new Date().getFullYear()
 const toastMessage = ref('')
@@ -1555,6 +1605,7 @@ onMounted(() => {
     const delta = Math.abs(curScroll - lastScrollPos)
     lastScrollPos = curScroll
     scrollSpeed = Math.max(scrollSpeed, Math.min(delta * 0.95, 55.0))
+    updateAllSnaps()
   }
 
   window.addEventListener('scroll', onScroll, { passive: true })
@@ -1676,45 +1727,15 @@ onMounted(() => {
     camera.updateProjectionMatrix()
     renderer.setSize(width, height)
     composer.setSize(width, height)
+    updateAllSnaps()
   }
 
   window.addEventListener('resize', handleResize)
-
-  let sectionObserver = null
-  if ('IntersectionObserver' in window) {
-    sectionObserver = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            if (entry.target === sessionsSectionRef.value) sessionsVisible.value = true
-            if (entry.target === benefitsSectionRef.value) benefitsVisible.value = true
-            if (entry.target === storeSectionRef.value) storeVisible.value = true
-          } else {
-            const rect = entry.boundingClientRect
-            const completelyOut = rect.bottom < -40 || rect.top > window.innerHeight + 40
-            if (completelyOut) {
-              if (entry.target === sessionsSectionRef.value) sessionsVisible.value = false
-              if (entry.target === benefitsSectionRef.value) benefitsVisible.value = false
-              if (entry.target === storeSectionRef.value) storeVisible.value = false
-            }
-          }
-        })
-      },
-      { threshold: 0.08 }
-    )
-    if (sessionsSectionRef.value) sectionObserver.observe(sessionsSectionRef.value)
-    if (benefitsSectionRef.value) sectionObserver.observe(benefitsSectionRef.value)
-    if (storeSectionRef.value) sectionObserver.observe(storeSectionRef.value)
-  } else {
-    sessionsVisible.value = true
-    benefitsVisible.value = true
-    storeVisible.value = true
-  }
+  updateAllSnaps()
 
   onUnmounted(() => {
     window.removeEventListener('scroll', onScroll)
     window.removeEventListener('resize', handleResize)
-    if (sectionObserver) sectionObserver.disconnect()
     if (animationFrameId) cancelAnimationFrame(animationFrameId)
     if (renderer) renderer.dispose()
   })
