@@ -16,6 +16,7 @@ const ProfileInformationView = () => import('../views/ProfileInformationView.vue
 const TermsOfUseView = () => import('../views/TermsOfUseView.vue')
 const PrivacyPolicyView = () => import('../views/PrivacyPolicyView.vue')
 const AeroPrintView = () => import('../views/AeroPrintView.vue')
+const AeroPrintUploadView = () => import('../views/AeroPrintUploadView.vue')
 const AeroFlyView = () => import('../views/AeroFlyView.vue')
 const AeroStoreView = () => import('../views/AeroStoreView.vue')
 const ProductDetailView = () => import('../views/ProductDetailView.vue')
@@ -27,6 +28,7 @@ const router = createRouter({
     { path: '/questions', name: 'questions', component: QuestionsView },
     { path: '/courses', name: 'courses', component: ExploreCoursesView },
     { path: '/print', name: 'print', component: AeroPrintView },
+    { path: '/print/upload', name: 'print-upload', component: AeroPrintUploadView, alias: ['/print/quote'] },
     { path: '/fly', name: 'fly', component: AeroFlyView },
     { path: '/store', redirect: { path: '/fly', query: { tab: 'store' } } },
     { path: '/store/:id', name: 'ProductDetail', component: ProductDetailView, props: true, alias: ['/product/:id'] },

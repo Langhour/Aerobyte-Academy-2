@@ -1,566 +1,635 @@
 <template>
-  <div class="min-h-screen bg-slate-50 dark:bg-slate-950 pb-20 transition-colors">
-    <!-- Top Hero / Banner -->
-    <header class="border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 py-6 sm:py-8">
-      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div class="flex items-center gap-3.5">
-            <div class="p-2 rounded-xl bg-navy-50 dark:bg-slate-800 border border-navy-100 dark:border-slate-700 shrink-0">
-              <img
-                src="/assets/brand/aero-print.png"
-                alt="Aero Print Logo"
-                class="h-10 sm:h-12 w-auto object-contain dark:invert"
-              />
-            </div>
-            <div>
-              <div class="flex items-center gap-2">
-                <h1 class="text-xl sm:text-2xl font-black tracking-tight text-navy-900 dark:text-white">
-                  Aero Print
-                </h1>
-                <span class="inline-flex items-center rounded-full bg-navy-50 dark:bg-slate-800 px-2.5 py-0.5 text-[11px] font-bold text-navy-900 dark:text-indigo-300">{{ t('Instant 3D Quote') }}</span>
-              </div>
-              <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">
-                {{ t('Instant Online 3D Printing Quotation & Rapid Prototyping Service in Cambodia') }}
-              </p>
-            </div>
+  <div class="min-h-screen bg-[#FAFAFA] dark:bg-[#05060B] text-[#111112] dark:text-white transition-colors pb-16">
+
+    <!-- Floating Produck-Style Sticky Navigation Sub-Bar -->
+    <div class="sticky top-4 z-30 mx-auto max-w-6xl px-4 sm:px-6 pt-4 pointer-events-none">
+      <nav
+        aria-label="Creality K2 Plus Section Navigation"
+        class="pointer-events-auto mx-auto flex items-center justify-between gap-4 rounded-full border border-black/[0.06] dark:border-white/10 bg-white/85 dark:bg-[#111112]/85 backdrop-blur-md px-3 sm:px-5 py-2 shadow-lg shadow-black/[0.04]"
+      >
+        <div class="flex items-center gap-2.5 pl-1">
+          <span class="flex h-8 w-8 items-center justify-center rounded-xl bg-[#FF5E0E] text-white shadow-sm shadow-[#FF5E0E]/40">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" />
+            </svg>
+          </span>
+          <span class="text-sm sm:text-base font-bold tracking-tight text-[#111112] dark:text-white">
+            Aero Print <span class="hidden sm:inline font-medium text-[#696969] dark:text-white/55">• K2 Plus</span>
+          </span>
+        </div>
+
+        <div class="hidden md:flex items-center gap-6 text-xs font-semibold text-[#575757] dark:text-white/75">
+          <a href="#features" class="hover:text-[#FF5E0E] transition">{{ t('Features') }}</a>
+          <a href="#technology" class="hover:text-[#FF5E0E] transition">{{ t('Technology') }}</a>
+          <a href="#specs" class="hover:text-[#FF5E0E] transition">{{ t('Specs') }}</a>
+          <a href="#faq" class="hover:text-[#FF5E0E] transition">F.A.Q</a>
+        </div>
+
+        <router-link
+          to="/print/upload"
+          class="inline-flex items-center gap-1.5 rounded-full bg-[#FF5E0E] hover:bg-[#FF764D] px-4 sm:px-5 py-2 text-xs font-bold text-white shadow-[0_8px_22px_rgba(255,94,14,0.45)] active:scale-[0.98] transition"
+        >
+          <span>{{ t('Drop 3D File') }}</span>
+          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+          </svg>
+        </router-link>
+      </nav>
+    </div>
+
+    <!-- SECTION 1: Hero Section -->
+    <section class="relative overflow-hidden pt-10 sm:pt-14 pb-12 sm:pb-16 px-4 sm:px-6">
+      <!-- Subtle Studio Glow Behind Printer -->
+      <div
+        aria-hidden="true"
+        class="pointer-events-none absolute left-1/2 top-44 -translate-x-1/2 h-80 w-[520px] rounded-full bg-[#FF5E0E]/[0.08] dark:bg-[#FF5E0E]/[0.14] blur-[100px]"
+      ></div>
+
+      <div class="relative mx-auto max-w-5xl text-center">
+        <!-- Glassmorphic Badge -->
+        <div class="inline-flex items-center gap-2 rounded-full border border-black/[0.06] dark:border-white/15 bg-white/80 dark:bg-white/10 backdrop-blur-md px-4 py-1.5 text-xs font-medium text-[#111112] dark:text-white shadow-xs">
+          <span class="text-[#FF5E0E]">✦</span>
+          <span>Creality K2 Plus • {{ t('Industrial & Powerful') }}</span>
+        </div>
+
+        <h1 class="mt-5 text-4xl sm:text-5xl lg:text-[64px] font-bold tracking-[-0.03em] leading-[1.08] text-[#111112] dark:text-white">
+          {{ t('Precision Printing in Every Layer') }}
+        </h1>
+
+        <p class="mt-4 mx-auto max-w-2xl text-base sm:text-lg text-[#575757] dark:text-white/70 leading-relaxed">
+          {{ t('600 mm/s hyper-speed CoreXY motion, 16-color smart filament automation, and a massive 350³ mm heated chamber.') }}
+        </p>
+
+        <!-- Action Buttons -->
+        <div class="mt-7 flex flex-wrap items-center justify-center gap-3.5">
+          <router-link
+            to="/print/upload"
+            class="inline-flex items-center gap-2 rounded-full bg-[#FF5E0E] hover:bg-[#FF764D] px-7 py-3.5 text-sm font-bold text-white shadow-[0_10px_25px_rgba(255,94,14,0.45)] active:scale-[0.99] transition"
+          >
+            <span>{{ t('Drop Your 3D File') }}</span>
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.4">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+            </svg>
+          </router-link>
+
+          <a
+            href="#specs"
+            class="inline-flex items-center gap-2 rounded-full border border-black/[0.08] dark:border-white/15 bg-white dark:bg-white/5 px-6 py-3.5 text-sm font-semibold text-[#111112] dark:text-white hover:border-[#FF5E0E] transition"
+          >
+            {{ t('Explore K2 Plus Specs') }}
+          </a>
+        </div>
+
+        <!-- Centered Creality K2 Plus Hero Product Render with Floating Callouts -->
+        <div class="relative mx-auto mt-10 max-w-2xl">
+          <div class="rounded-[32px] overflow-hidden border border-black/[0.05] dark:border-white/10 bg-[#FAFAFA] dark:bg-[#111112] shadow-2xl shadow-black/[0.06]">
+            <img
+              src="/assets/print/k2-plus-hero.jpg"
+              alt="Creality K2 Plus 3D Printer with CFS Multi-Color System"
+              class="w-full h-auto object-cover"
+            />
           </div>
 
-          <!-- Quick Lab Status Badge -->
-          <div class="flex items-center gap-2 self-start sm:self-auto rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-1.5 text-xs text-slate-600 dark:text-slate-300">
-            <span class="relative flex h-2 w-2">
-              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-            </span>
-            <span class="font-semibold text-slate-700 dark:text-slate-200">{{ t('Lab Status: Ready') }}</span>
+          <!-- Floating Glassmorphic Callout Left -->
+          <div class="hidden sm:flex items-center gap-2.5 absolute -left-4 lg:-left-10 top-1/4 rounded-full border border-black/[0.06] dark:border-white/15 bg-white/85 dark:bg-[#18181B]/85 backdrop-blur-md px-4 py-2 shadow-lg">
+            <span class="h-2.5 w-2.5 rounded-full bg-[#FF5E0E]"></span>
+            <span class="text-xs font-semibold text-[#111112] dark:text-white">{{ t('350 × 350 × 350 mm Build') }}</span>
+          </div>
 
+          <!-- Floating Glassmorphic Callout Right -->
+          <div class="hidden sm:flex items-center gap-2.5 absolute -right-4 lg:-right-10 bottom-1/4 rounded-full border border-black/[0.06] dark:border-white/15 bg-white/85 dark:bg-[#18181B]/85 backdrop-blur-md px-4 py-2 shadow-lg">
+            <span class="h-2.5 w-2.5 rounded-full bg-emerald-500"></span>
+            <span class="text-xs font-semibold text-[#111112] dark:text-white">{{ t('Up to 16 Colors CFS') }}</span>
           </div>
         </div>
       </div>
-    </header>
+    </section>
 
-    <!-- Main Quotation Tool Container (2-Column JLC3DP Style) -->
-    <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-6 sm:mt-8">
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-start">
-        
-        <!-- LEFT COLUMN: File Upload & Customization Options (8 Cols) -->
-        <div class="lg:col-span-8 space-y-6">
-
-          <!-- 1. 3D File Upload Area -->
-          <section class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6 shadow-xs">
-            <div class="flex items-center justify-between mb-4">
-              <div class="flex items-center gap-2.5">
-                <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-navy-900 dark:bg-indigo-600 text-white font-bold text-xs">
-                  1
-                </span>
-                <h2 class="text-base sm:text-lg font-bold text-navy-900 dark:text-white">
-                  {{ t('Upload 3D CAD Files') }}
-                </h2>
-              </div>
-              <span class="text-xs text-slate-400 dark:text-slate-500">.STL, .STP, .STEP, .OBJ, .3MF</span>
+    <!-- SECTION 2: 3-Feature Bento Grid (Hero Highlights) -->
+    <section id="features" class="mx-auto max-w-6xl px-4 sm:px-6 pb-12 sm:pb-16">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div class="rounded-[28px] border border-black/[0.05] dark:border-white/10 bg-white dark:bg-[#111112] p-7 sm:p-8 shadow-xs flex flex-col justify-between">
+          <div>
+            <span class="inline-flex items-center rounded-full bg-[#F3F4F6] dark:bg-white/10 px-3 py-1 text-xs font-semibold text-[#575757] dark:text-white/75">
+              {{ t('Hyper-Speed CoreXY') }}
+            </span>
+            <div class="mt-4 text-3xl sm:text-4xl font-bold tracking-tight text-[#111112] dark:text-white">
+              600 mm/s
             </div>
-
-            <!-- Drag & Drop Zone -->
-            <div
-              @dragover.prevent="isDragging = true"
-              @dragleave.prevent="isDragging = false"
-              @drop.prevent="handleFileDrop"
-              class="relative rounded-xl border-2 border-dashed transition-all p-6 sm:p-8 text-center cursor-pointer"
-              :class="isDragging
-                ? 'border-navy-800 dark:border-indigo-500 bg-navy-50/50 dark:bg-slate-800/40'
-                : 'border-slate-300 dark:border-slate-700 hover:border-navy-600 dark:hover:border-indigo-400 bg-slate-50/50 dark:bg-slate-800/40'"
-              @click="triggerFileInput"
-            >
-              <input
-                ref="fileInputRef"
-                type="file"
-                multiple
-                accept=".stl,.stp,.step,.obj,.3mf"
-                class="hidden"
-                @change="handleFileInputChange"
-              />
-
-              <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-navy-50 dark:bg-slate-800 text-navy-900 dark:text-indigo-300 mb-3 text-2xl">
-                📁
-              </div>
-              <p class="text-sm sm:text-base font-bold text-navy-900 dark:text-white">
-                Drag and drop your 3D models here, or <span class="text-navy-900 dark:text-indigo-400 underline font-semibold">{{ t('browse files') }}</span>
-              </p>
-              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1.5">
-                Max file size: 50MB per file. Multi-part assemblies supported.
-              </p>
-            </div>
-
-            <!-- Demo Model Presets (Quick Test) -->
-            <div class="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800">
-              <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-2.5">
-                No 3D file yet? Try a sample model to test instant quote:
-              </p>
-              <div class="flex flex-wrap gap-2">
-                <button
-                  v-for="sample in sampleModels"
-                  :key="sample.id"
-                  type="button"
-                  @click="loadSampleModel(sample)"
-                  class="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-1.5 text-xs font-medium text-slate-700 dark:text-slate-200 hover:border-navy-600 hover:text-navy-900 dark:hover:text-indigo-300 transition cursor-pointer"
-                >
-                  <span>{{ sample.icon }}</span>
-                  <span>{{ sample.name }}</span>
-                </button>
-              </div>
-            </div>
-
-            <!-- Uploaded Files List -->
-            <div v-if="files.length > 0" class="mt-5 space-y-3">
-              <div
-                v-for="(f, idx) in files"
-                :key="f.id"
-                class="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-3.5 sm:p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xs"
-              >
-                <div class="flex items-center gap-3 min-w-0">
-                  <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-navy-50 dark:bg-slate-800 text-navy-900 dark:text-indigo-300 font-bold text-xs uppercase">
-                    3D
-                  </div>
-                  <div class="min-w-0">
-                    <p class="truncate text-xs sm:text-sm font-bold text-navy-900 dark:text-white">{{ f.name }}</p>
-                    <p class="text-[11px] text-slate-400">
-                      {{ f.sizeStr }} • {{ f.dimensions.x }}×{{ f.dimensions.y }}×{{ f.dimensions.z }} mm • Est. Vol: {{ f.volumeCm3 }} cm³
-                    </p>
-                  </div>
-                </div>
-
-                <!-- Quantity Counter & Delete -->
-                <div class="flex items-center gap-4 self-end sm:self-auto shrink-0">
-                  <div class="flex items-center border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden">
-                    <button
-                      type="button"
-                      @click="decreaseQty(idx)"
-                      class="px-2.5 py-1 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 text-sm font-bold"
-                    >
-                      -
-                    </button>
-                    <span class="px-3 py-1 text-xs font-bold text-navy-900 dark:text-white min-w-[2rem] text-center">
-                      {{ f.quantity }}
-                    </span>
-                    <button
-                      type="button"
-                      @click="increaseQty(idx)"
-                      class="px-2.5 py-1 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 text-sm font-bold"
-                    >
-                      +
-                    </button>
-                  </div>
-
-                  <button
-                    type="button"
-                    @click="removeFile(idx)"
-                    class="text-xs text-rose-500 hover:text-rose-600 font-semibold p-1 hover:bg-rose-50 dark:hover:bg-rose-950/30 rounded"
-                  >
-                    Delete
-                  </button>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <!-- 2. Manufacturing Technology (FDM, SLA, SLS) -->
-          <section class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6 shadow-xs">
-            <div class="flex items-center gap-2.5 mb-4">
-              <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-navy-900 dark:bg-indigo-600 text-white font-bold text-xs">
-                2
-              </span>
-              <h2 class="text-base sm:text-lg font-bold text-navy-900 dark:text-white">
-                {{ t('Select Printing Technology') }}
-              </h2>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <button
-                v-for="tech in technologies"
-                :key="tech.id"
-                type="button"
-                @click="selectedTech = tech.id"
-                class="rounded-xl border-2 p-4 text-left transition-all cursor-pointer relative"
-                :class="selectedTech === tech.id
-                  ? 'border-navy-900 dark:border-indigo-500 bg-navy-50/60 dark:bg-slate-800 ring-2 ring-navy-900/20 dark:ring-indigo-500/30'
-                  : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-white dark:bg-slate-800/60'"
-              >
-                <div class="flex items-center justify-between mb-1.5">
-                  <span class="text-sm font-black text-navy-900 dark:text-white">{{ tech.name }}</span>
-                  <span class="text-xs font-bold text-navy-900 dark:text-indigo-300">{{ tech.badge }}</span>
-                </div>
-                <p class="text-[11px] font-medium text-slate-500 dark:text-slate-400 leading-snug">
-                  {{ tech.desc }}
-                </p>
-                <div class="mt-3 text-[10px] text-slate-400 flex items-center gap-1.5">
-                  <span>Precision: {{ tech.precision }}</span>
-                </div>
-              </button>
-            </div>
-          </section>
-
-          <!-- 3. Material Selection -->
-          <section class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6 shadow-xs">
-            <div class="flex items-center justify-between mb-4">
-              <div class="flex items-center gap-2.5">
-                <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-navy-900 dark:bg-indigo-600 text-white font-bold text-xs">
-                  3
-                </span>
-                <h2 class="text-base sm:text-lg font-bold text-navy-900 dark:text-white">
-                  {{ t('Material') }}
-                </h2>
-              </div>
-              <span class="text-xs text-navy-900 dark:text-indigo-300 font-bold">
-                {{ currentMaterials.length }} Options available
-              </span>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <button
-                v-for="mat in currentMaterials"
-                :key="mat.id"
-                type="button"
-                @click="selectedMaterial = mat.id"
-                class="rounded-xl border-2 p-3.5 text-left transition-all cursor-pointer"
-                :class="selectedMaterial === mat.id
-                  ? 'border-navy-900 dark:border-indigo-500 bg-navy-50/60 dark:bg-slate-800 ring-2 ring-navy-900/20 dark:ring-indigo-500/30'
-                  : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-white dark:bg-slate-800/60'"
-              >
-                <div class="flex items-center justify-between">
-                  <span class="text-xs sm:text-sm font-bold text-navy-900 dark:text-white">{{ mat.name }}</span>
-                  <span class="text-[11px] font-semibold text-slate-500 dark:text-slate-400">{{ mat.priceTag }}</span>
-                </div>
-                <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
-                  {{ mat.description }}
-                </p>
-                <div class="mt-2 flex flex-wrap gap-1.5">
-                  <span
-                    v-for="tag in mat.tags"
-                    :key="tag"
-                    class="rounded bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 text-[10px] font-medium text-slate-600 dark:text-slate-300"
-                  >
-                    {{ tag }}
-                  </span>
-                </div>
-              </button>
-            </div>
-          </section>
-
-          <!-- 4. Color, Infill & Layer Resolution -->
-          <section class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6 shadow-xs space-y-6">
-            <div class="flex items-center gap-2.5">
-              <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-navy-900 dark:bg-indigo-600 text-white font-bold text-xs">
-                4
-              </span>
-              <h2 class="text-base sm:text-lg font-bold text-navy-900 dark:text-white">
-                {{ t('Specifications & Color') }}
-              </h2>
-            </div>
-
-            <!-- Color Palette -->
-            <div>
-              <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-2.5 uppercase tracking-wider">{{ t('Color') }}</label>
-              <div class="flex flex-wrap gap-2.5">
-                <button
-                  v-for="color in colors"
-                  :key="color.name"
-                  type="button"
-                  @click="selectedColor = color.name"
-                  class="flex items-center gap-2 rounded-xl border-2 px-3 py-1.5 text-xs font-semibold transition cursor-pointer"
-                  :class="selectedColor === color.name
-                    ? 'border-navy-900 dark:border-indigo-500 bg-navy-50/70 dark:bg-slate-800 text-navy-900 dark:text-white ring-2 ring-navy-900/20 dark:ring-indigo-500/30 font-bold shadow-xs'
-                    : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:border-slate-300'"
-                >
-                  <span class="h-3.5 w-3.5 rounded-full border border-slate-300 shadow-xs shrink-0" :style="{ backgroundColor: color.hex }"></span>
-                  <span>{{ color.name }}</span>
-                </button>
-              </div>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-2">
-              <!-- Infill Density -->
-              <div>
-                <div class="flex justify-between items-center mb-1.5">
-                  <label class="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
-                    Infill Density
-                  </label>
-                  <span class="text-xs font-bold text-navy-900 dark:text-indigo-300">{{ selectedInfill }}%</span>
-                </div>
-                <div class="grid grid-cols-4 gap-1.5">
-                  <button
-                    v-for="inf in [20, 40, 70, 100]"
-                    :key="inf"
-                    type="button"
-                    @click="selectedInfill = inf"
-                    class="rounded-xl border-2 py-2 text-xs font-bold transition text-center cursor-pointer"
-                    :class="selectedInfill === inf
-                      ? 'border-navy-900 dark:border-indigo-500 bg-navy-50/70 dark:bg-slate-800 text-navy-900 dark:text-white ring-2 ring-navy-900/20 dark:ring-indigo-500/30 font-extrabold shadow-xs'
-                      : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:border-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700/50'"
-                  >
-                    {{ inf }}%
-                  </button>
-                </div>
-                <p class="text-[10px] text-slate-400 mt-1">
-                  {{ selectedInfill === 100 ? '100% Solid for maximum strength.' : `${selectedInfill}% ideal for standard structural parts.` }}
-                </p>
-              </div>
-
-              <!-- Layer Resolution -->
-              <div>
-                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 uppercase tracking-wider">
-                  Layer Height
-                </label>
-                <div class="grid grid-cols-3 gap-1.5">
-                  <button
-                    v-for="res in layerHeights"
-                    :key="res.val"
-                    type="button"
-                    @click="selectedLayerHeight = res.val"
-                    class="rounded-xl border-2 py-2 px-1 text-center transition cursor-pointer"
-                    :class="selectedLayerHeight === res.val
-                      ? 'border-navy-900 dark:border-indigo-500 bg-navy-50/70 dark:bg-slate-800 text-navy-900 dark:text-white ring-2 ring-navy-900/20 dark:ring-indigo-500/30 font-extrabold shadow-xs'
-                      : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:border-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700/50'"
-                  >
-                    <div class="text-xs font-bold" :class="selectedLayerHeight === res.val ? 'text-navy-900 dark:text-white font-extrabold' : 'text-slate-700 dark:text-slate-200'">{{ res.val }}</div>
-                    <div class="text-[9px]" :class="selectedLayerHeight === res.val ? 'text-navy-700 dark:text-indigo-300 font-semibold' : 'text-slate-400'">{{ res.label }}</div>
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <!-- Post-Processing Options -->
-            <div class="pt-2">
-              <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-2 uppercase tracking-wider">
-                Post-Processing & Finishing
-              </label>
-              <div class="space-y-2">
-                <label
-                  v-for="opt in postProcessOptions"
-                  :key="opt.id"
-                  :class="selectedPostProcess.includes(opt.id) ? 'border-navy-900 dark:border-indigo-500 bg-navy-50/50 dark:bg-slate-800 ring-1 ring-navy-900/20 dark:ring-indigo-500/30' : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/80'"
-                  class="flex items-center justify-between p-3 rounded-xl border cursor-pointer transition"
-                >
-                  <div class="flex items-center gap-3">
-                    <input
-                      type="checkbox"
-                      :value="opt.id"
-                      v-model="selectedPostProcess"
-                      class="h-4 w-4 rounded border-slate-300 text-navy-900 focus:ring-navy-900 dark:focus:ring-indigo-500"
-                    />
-                    <div>
-                      <p class="text-xs font-bold text-navy-900 dark:text-white">{{ opt.name }}</p>
-                      <p class="text-[11px] text-slate-400">{{ opt.desc }}</p>
-                    </div>
-                  </div>
-                  <span class="text-xs font-bold text-slate-700 dark:text-slate-300">+${{ opt.price }}</span>
-                </label>
-              </div>
-            </div>
-          </section>
+            <p class="mt-2.5 text-sm text-[#575757] dark:text-white/65 leading-relaxed">
+              {{ t('Closed-loop FOC step-servo motors and 30,000 mm/s² acceleration print prototypes at 5× standard speed.') }}
+            </p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-black/[0.05] dark:border-white/10 text-xs font-semibold text-[#FF5E0E]">
+            0.1mm Active Input Shaping
+          </div>
         </div>
 
-        <!-- RIGHT COLUMN: Instant Quotation Summary (4 Cols, Sticky) -->
-        <div class="lg:col-span-4 lg:sticky lg:top-20 space-y-5">
-          <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6 shadow-lg shadow-slate-900/5">
-            <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4">
-              <h3 class="text-lg font-bold text-navy-900 dark:text-white">
-                {{ t('Quotation Summary') }}
-              </h3>
-              <span class="inline-flex items-center rounded-md bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 text-xs font-bold text-emerald-700 dark:text-emerald-300">
-                Instant Calc
+        <div class="rounded-[28px] border border-black/[0.05] dark:border-white/10 bg-white dark:bg-[#111112] p-7 sm:p-8 shadow-xs flex flex-col justify-between">
+          <div>
+            <span class="inline-flex items-center rounded-full bg-[#F3F4F6] dark:bg-white/10 px-3 py-1 text-xs font-semibold text-[#575757] dark:text-white/75">
+              {{ t('Industrial Build Volume') }}
+            </span>
+            <div class="mt-4 text-3xl sm:text-4xl font-bold tracking-tight text-[#111112] dark:text-white">
+              350³ mm
+            </div>
+            <p class="mt-2.5 text-sm text-[#575757] dark:text-white/65 leading-relaxed">
+              {{ t('Build full FPV drone frames, robotic arms, and large enclosures in a single seamless print.') }}
+            </p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-black/[0.05] dark:border-white/10 text-xs font-semibold text-[#FF5E0E]">
+            Matrix Die-Cast Frame
+          </div>
+        </div>
+
+        <div class="rounded-[28px] border border-black/[0.05] dark:border-white/10 bg-white dark:bg-[#111112] p-7 sm:p-8 shadow-xs flex flex-col justify-between">
+          <div>
+            <span class="inline-flex items-center rounded-full bg-[#F3F4F6] dark:bg-white/10 px-3 py-1 text-xs font-semibold text-[#575757] dark:text-white/75">
+              {{ t('Smart Multi-Color') }}
+            </span>
+            <div class="mt-4 text-3xl sm:text-4xl font-bold tracking-tight text-[#111112] dark:text-white">
+              16 Colors
+            </div>
+            <p class="mt-2.5 text-sm text-[#575757] dark:text-white/65 leading-relaxed">
+              {{ t('Creality Filament System handles automatic spool switching, RFID detection, and sealed dry storage.') }}
+            </p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-black/[0.05] dark:border-white/10 text-xs font-semibold text-[#FF5E0E]">
+            Auto-Refill & Breakage Sensor
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: Royal Blue Interactive Use-Case Showcase Banner -->
+    <section class="mx-auto max-w-6xl px-4 sm:px-6 pb-12 sm:pb-16">
+      <div
+        class="rounded-[32px] p-7 sm:p-12 text-white relative overflow-hidden shadow-xl"
+        style="background: linear-gradient(135deg, #1034A6 0%, #051036 100%);"
+      >
+        <div class="mx-auto max-w-2xl text-center">
+          <h2 class="text-3xl sm:text-4xl lg:text-[42px] font-bold tracking-[-0.02em] leading-tight">
+            {{ t('Build Without Limits on Creality K2 Plus') }}
+          </h2>
+          <p class="mt-3 text-sm sm:text-base text-white/75">
+            {{ t('From carbon-reinforced FPV frames to multi-color student robotics assemblies, Creality K2 Plus turns CAD into flight-ready parts.') }}
+          </p>
+        </div>
+
+        <!-- Active Showcase Panel -->
+        <div class="mt-8 grid grid-cols-1 lg:grid-cols-12 gap-6 items-center rounded-[24px] border border-white/15 bg-black/25 backdrop-blur-md p-4 sm:p-6">
+          <div class="lg:col-span-7 overflow-hidden rounded-2xl aspect-[16/10] bg-black/40">
+            <img
+              :src="activeMode.image"
+              :alt="activeMode.title"
+              class="w-full h-full object-cover transition-all duration-500"
+            />
+          </div>
+          <div class="lg:col-span-5 space-y-4 px-1">
+            <span class="inline-flex items-center rounded-full bg-white/15 border border-white/20 px-3 py-1 text-xs font-semibold text-[#C5E0F2]">
+              {{ activeMode.tag }}
+            </span>
+            <h3 class="text-2xl font-bold text-white">{{ activeMode.title }}</h3>
+            <p class="text-sm text-white/75 leading-relaxed">{{ activeMode.description }}</p>
+            <div class="pt-2 flex flex-wrap gap-2">
+              <span
+                v-for="pill in activeMode.specs"
+                :key="pill"
+                class="rounded-full bg-white/10 px-3 py-1 text-xs font-medium text-white/90"
+              >
+                {{ pill }}
               </span>
             </div>
+          </div>
+        </div>
 
-            <!-- Parameters Overview -->
-            <div class="mt-4 space-y-2.5 text-xs">
-              <div class="flex justify-between text-slate-500 dark:text-slate-400">
-                <span>{{ t('Technology') }}</span>
-                <span class="font-bold text-navy-900 dark:text-white">{{ currentTechName }}</span>
-              </div>
-              <div class="flex justify-between text-slate-500 dark:text-slate-400">
-                <span>{{ t('Material') }}</span>
-                <span class="font-bold text-navy-900 dark:text-white">{{ currentMaterialName }}</span>
-              </div>
-              <div class="flex justify-between text-slate-500 dark:text-slate-400">
-                <span>Color</span>
-                <span class="font-bold text-navy-900 dark:text-white">{{ selectedColor }}</span>
-              </div>
-              <div class="flex justify-between text-slate-500 dark:text-slate-400">
-                <span>{{ t('Infill / Layer') }}</span>
-                <span class="font-bold text-navy-900 dark:text-white">{{ selectedInfill }}% / {{ selectedLayerHeight }}</span>
-              </div>
-              <div class="flex justify-between text-slate-500 dark:text-slate-400">
-                <span>{{ t('Total Parts') }}</span>
-                <span class="font-bold text-navy-900 dark:text-white">{{ totalPartCount }} pcs</span>
-              </div>
-              <div class="flex justify-between text-slate-500 dark:text-slate-400">
-                <span>{{ t('Est. Material Weight') }}</span>
-                <span class="font-bold text-navy-900 dark:text-white">{{ totalWeightGrams }} g</span>
-              </div>
+        <!-- 3 Circular Switcher Controls (Produck Style) -->
+        <div class="mt-7 flex items-center justify-center gap-3.5">
+          <button
+            v-for="(mode, idx) in showcaseModes"
+            :key="mode.id"
+            type="button"
+            @click="selectedModeIndex = idx"
+            class="group flex items-center gap-2.5 rounded-full p-1.5 pr-4 border transition cursor-pointer"
+            :class="selectedModeIndex === idx
+              ? 'border-[#FF5E0E] bg-white text-[#111112] shadow-lg'
+              : 'border-white/25 bg-white/10 text-white hover:bg-white/20'"
+          >
+            <img
+              :src="mode.image"
+              :alt="mode.label"
+              class="h-8 w-8 rounded-full object-cover border border-black/10"
+            />
+            <span class="text-xs font-bold">{{ mode.label }}</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 4: Dual Hardware Tech Showcase (CFS & 350°C Heated Chamber) -->
+    <section id="technology" class="mx-auto max-w-6xl px-4 sm:px-6 pb-12 sm:pb-16">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Left Card: Multi-Color CFS -->
+        <div class="rounded-[28px] border border-black/[0.06] dark:border-white/10 bg-white dark:bg-[#111112] p-7 sm:p-9 flex flex-col justify-between shadow-xs">
+          <div>
+            <span class="inline-flex items-center rounded-full bg-[#F3F4F6] dark:bg-white/10 px-3.5 py-1 text-xs font-semibold text-[#575757] dark:text-white/80">
+              {{ t('Automated Filament Switching') }}
+            </span>
+            <h3 class="mt-4 text-2xl sm:text-3xl font-bold tracking-tight text-[#111112] dark:text-white">
+              {{ t('16-Color Smart CFS Unit') }}
+            </h3>
+            <p class="mt-2.5 text-sm sm:text-base text-[#575757] dark:text-white/65 leading-relaxed">
+              {{ t('Seal out Cambodia humidity while switching effortlessly between colors or dissolvable support materials with zero manual spool swapping.') }}
+            </p>
+          </div>
+
+          <div class="my-6 overflow-hidden rounded-2xl border border-black/[0.05] dark:border-white/10 bg-[#FAFAFA] dark:bg-black/40 aspect-[16/10]">
+            <img
+              src="/assets/print/k2-plus-cfs.jpg"
+              alt="Creality K2 Plus CFS 4-Spool Multi-Color System"
+              class="w-full h-full object-cover"
+            />
+          </div>
+
+          <div class="flex flex-wrap gap-2">
+            <span class="rounded-full bg-[#F3F4F6] dark:bg-white/10 px-3 py-1 text-xs font-medium text-[#111112] dark:text-white/85">Up to 16 Colors</span>
+            <span class="rounded-full bg-[#F3F4F6] dark:bg-white/10 px-3 py-1 text-xs font-medium text-[#111112] dark:text-white/85">RFID Spool Sync</span>
+            <span class="rounded-full bg-[#F3F4F6] dark:bg-white/10 px-3 py-1 text-xs font-medium text-[#111112] dark:text-white/85">Active Moisture Seal</span>
+          </div>
+        </div>
+
+        <!-- Right Card: 350°C Unicorn Nozzle + Heated Chamber -->
+        <div class="rounded-[28px] border border-black/[0.06] dark:border-white/10 bg-white dark:bg-[#111112] p-7 sm:p-9 flex flex-col justify-between shadow-xs">
+          <div>
+            <span class="inline-flex items-center rounded-full bg-[#F3F4F6] dark:bg-white/10 px-3.5 py-1 text-xs font-semibold text-[#575757] dark:text-white/80">
+              {{ t('Aerospace Composite Ready') }}
+            </span>
+            <h3 class="mt-4 text-2xl sm:text-3xl font-bold tracking-tight text-[#111112] dark:text-white">
+              {{ t('350°C Nozzle & 60°C Chamber') }}
+            </h3>
+            <p class="mt-2.5 text-sm sm:text-base text-[#575757] dark:text-white/65 leading-relaxed">
+              {{ t('An actively heated build chamber and hardened tri-metal Unicorn nozzle unlock strong ABS, ASA, and PA-CF carbon-fiber nylon parts.') }}
+            </p>
+          </div>
+
+          <div class="my-6 overflow-hidden rounded-2xl border border-black/[0.05] dark:border-white/10 bg-[#0B0D14] aspect-[16/10]">
+            <img
+              src="/assets/print/k2-plus-extruder.jpg"
+              alt="Creality K2 Plus High-Temp Direct Drive Extruder"
+              class="w-full h-full object-cover"
+            />
+          </div>
+
+          <div class="flex flex-wrap gap-2">
+            <span class="rounded-full bg-[#F3F4F6] dark:bg-white/10 px-3 py-1 text-xs font-medium text-[#111112] dark:text-white/85">350°C Unicorn Nozzle</span>
+            <span class="rounded-full bg-[#F3F4F6] dark:bg-white/10 px-3 py-1 text-xs font-medium text-[#111112] dark:text-white/85">60°C Heated Box</span>
+            <span class="rounded-full bg-[#F3F4F6] dark:bg-white/10 px-3 py-1 text-xs font-medium text-[#111112] dark:text-white/85">PA-CF Carbon Ready</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 5: High-Velocity Prototyping Spotlight -->
+    <section class="mx-auto max-w-4xl px-4 sm:px-6 py-10 sm:py-14 text-center">
+      <div class="inline-flex items-center gap-2 rounded-full border border-black/[0.06] dark:border-white/15 bg-white dark:bg-white/10 px-4 py-1.5 text-xs font-medium text-[#575757] dark:text-white/80">
+        <span class="h-2 w-2 rounded-full bg-[#FF5E0E]"></span>
+        <span>{{ t('Speed that keeps innovation moving') }}</span>
+      </div>
+
+      <h2 class="mt-4 text-3xl sm:text-4xl lg:text-[44px] font-bold tracking-[-0.02em] text-[#111112] dark:text-white">
+        {{ t('From CAD Upload to Ready Parts in Hours') }}
+      </h2>
+
+      <p class="mt-3 mx-auto max-w-xl text-base text-[#575757] dark:text-white/70">
+        {{ t('Upload your STL or STEP model and our Creality K2 Plus prints crisp structural parts up to 5× faster — without layer ringing.') }}
+      </p>
+
+      <div class="mt-7">
+        <router-link
+          to="/print/upload"
+          class="inline-flex items-center gap-2 rounded-full bg-[#FF5E0E] hover:bg-[#FF764D] px-7 py-3.5 text-sm font-bold text-white shadow-[0_10px_25px_rgba(255,94,14,0.45)] transition"
+        >
+          <span>{{ t('Upload 3D File & Quote') }}</span>
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+          </svg>
+        </router-link>
+      </div>
+    </section>
+
+    <!-- SECTION 6: Asymmetric Specs Bento Grid ("More Than Just a 3D Printer") -->
+    <section id="specs" class="mx-auto max-w-6xl px-4 sm:px-6 pb-12 sm:pb-16">
+      <div class="text-center mb-8">
+        <h2 class="text-3xl sm:text-4xl font-bold tracking-[-0.02em] text-[#111112] dark:text-white">
+          {{ t('More Than Just a 3D Printer') }}
+        </h2>
+        <p class="mt-2 text-sm sm:text-base text-[#575757] dark:text-white/65">
+          {{ t('Every subsystem of the Creality K2 Plus is built for repeatable accuracy.') }}
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="lg:col-span-2 rounded-[24px] border border-black/[0.05] dark:border-white/10 bg-[#05060B] text-white p-6 sm:p-7 flex flex-col justify-between">
+          <span class="text-xs font-bold uppercase tracking-wider text-[#FF5E0E]">Dual AI Guard</span>
+          <div class="mt-6">
+            <h3 class="text-xl font-bold">Chamber & Nozzle AI Cameras</h3>
+            <p class="mt-2 text-sm text-white/70">Automatic flow-rate calibration and real-time spaghetti failure protection keep long overnight prints worry-free.</p>
+          </div>
+        </div>
+
+        <div class="rounded-[24px] border border-black/[0.05] dark:border-white/10 bg-white dark:bg-[#111112] p-6 flex flex-col justify-between">
+          <span class="text-2xl">⚡</span>
+          <div class="mt-5">
+            <h3 class="text-lg font-bold text-[#111112] dark:text-white">40 mm³/s High Flow</h3>
+            <p class="mt-1.5 text-xs text-[#575757] dark:text-white/65">Unicorn quick-swap nozzle with titanium alloy throat for clean fast extrusion.</p>
+          </div>
+        </div>
+
+        <div class="rounded-[24px] border border-black/[0.05] dark:border-white/10 bg-white dark:bg-[#111112] p-6 flex flex-col justify-between">
+          <span class="text-2xl">📐</span>
+          <div class="mt-5">
+            <h3 class="text-lg font-bold text-[#111112] dark:text-white">Auto Tilt & Mesh</h3>
+            <p class="mt-1.5 text-xs text-[#575757] dark:text-white/65">Dual independent Z-motors level the 350mm PEI plate automatically every print.</p>
+          </div>
+        </div>
+
+        <div class="rounded-[24px] border border-black/[0.05] dark:border-white/10 bg-white dark:bg-[#111112] p-6 flex flex-col justify-between">
+          <span class="text-2xl">🛡️</span>
+          <div class="mt-5">
+            <h3 class="text-lg font-bold text-[#111112] dark:text-white">Matrix Alloy Frame</h3>
+            <p class="mt-1.5 text-xs text-[#575757] dark:text-white/65">Aerospace die-cast chassis eliminates vibration at 30,000 mm/s² acceleration.</p>
+          </div>
+        </div>
+
+        <div class="rounded-[24px] border border-black/[0.05] dark:border-white/10 bg-white dark:bg-[#111112] p-6 flex flex-col justify-between">
+          <span class="text-2xl">🌡️</span>
+          <div class="mt-5">
+            <h3 class="text-lg font-bold text-[#111112] dark:text-white">120°C Bed + 60°C Box</h3>
+            <p class="mt-1.5 text-xs text-[#575757] dark:text-white/65">Active enclosure heater eliminates warping on large ABS & ASA parts.</p>
+          </div>
+        </div>
+
+        <div class="lg:col-span-2 rounded-[24px] border border-black/[0.05] dark:border-white/10 bg-white dark:bg-[#111112] p-6 sm:p-7 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-[#FF5E0E]">Instant Quotation</span>
+            <h3 class="mt-1.5 text-xl font-bold text-[#111112] dark:text-white">Start From $0.08 / cm³</h3>
+            <p class="mt-1 text-xs text-[#575757] dark:text-white/65">PLA, PETG, TPU 95A, ABS, ASA & PA-CF Nylon ready in Phnom Penh.</p>
+          </div>
+          <router-link
+            to="/print/upload"
+            class="shrink-0 inline-flex items-center justify-center rounded-full bg-[#FF5E0E] hover:bg-[#FF764D] px-5 py-2.5 text-xs font-bold text-white shadow-[0_8px_20px_rgba(255,94,14,0.4)] transition"
+          >
+            {{ t('Drop Your File') }}
+          </router-link>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 7: Dark Workshop Lifestyle Banner -->
+    <section class="mx-auto max-w-6xl px-4 sm:px-6 pb-12 sm:pb-16">
+      <div class="relative rounded-[30px] overflow-hidden min-h-[380px] sm:min-h-[430px] flex flex-col justify-between p-7 sm:p-12 text-white border border-white/10">
+        <img
+          src="/assets/print/k2-plus-workshop.jpg"
+          alt="Creality K2 Plus in AeroByte Robotics & Drone Lab"
+          class="absolute inset-0 w-full h-full object-cover"
+        />
+        <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/45 to-black/55"></div>
+
+        <div class="relative z-10 flex flex-col items-start">
+          <span class="inline-flex items-center gap-1.5 rounded-full bg-white/12 backdrop-blur-md border border-white/20 px-3.5 py-1 text-xs font-semibold text-white">
+            ✓ {{ t('Flagship Lab Hardware') }}
+          </span>
+          <h2 class="mt-4 max-w-xl text-3xl sm:text-4xl font-bold tracking-tight">
+            {{ t('Built for Drones, Robotics & Real Prototypes') }}
+          </h2>
+          <p class="mt-2 text-sm text-white/75 max-w-md">
+            {{ t('Precision hardware tuned daily by AeroByte Academy lab engineers.') }}
+          </p>
+        </div>
+
+        <div class="relative z-10 mt-8 max-w-md rounded-2xl border border-white/15 bg-black/55 backdrop-blur-md p-4 sm:p-5">
+          <p class="text-sm font-bold text-white">✦ Matrix Frame • ±0.1mm Tolerance</p>
+          <p class="mt-1 text-xs text-white/75">Closed-loop step-servo motion guarantees bolt-ready alignment for motor mounts and enclosures.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 8: Pricing Overview, Key Specs & Testimonials Carousel + Extruder Detail Card -->
+    <section class="mx-auto max-w-6xl px-4 sm:px-6 pb-12 sm:pb-16">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+        <!-- Left Info + Carousel -->
+        <div class="lg:col-span-6 flex flex-col justify-between space-y-6">
+          <div>
+            <span class="inline-flex items-center gap-1.5 rounded-full border border-black/[0.08] dark:border-white/15 bg-white dark:bg-white/10 px-3.5 py-1 text-xs font-semibold text-[#111112] dark:text-white">
+              <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+              {{ t('Available Now') }}
+            </span>
+
+            <div class="mt-4 flex flex-wrap items-baseline justify-between gap-2">
+              <h2 class="text-3xl sm:text-4xl font-bold tracking-tight text-[#111112] dark:text-white">Creality K2 Plus</h2>
+              <span class="text-xl sm:text-2xl font-bold text-[#FF5E0E]">$0.08 / cm³</span>
             </div>
 
-            <!-- Cost Breakdown -->
-            <div class="mt-5 border-t border-slate-100 dark:border-slate-800 pt-4 space-y-2 text-xs">
-              <div class="flex justify-between text-slate-500 dark:text-slate-400">
-                <span>{{ t('Base Machine Setup') }}</span>
-                <span>${{ baseFee.toFixed(2) }}</span>
-              </div>
-              <div class="flex justify-between text-slate-500 dark:text-slate-400">
-                <span>{{ t('Material & Runtime') }}</span>
-                <span>${{ materialCost.toFixed(2) }}</span>
-              </div>
-              <div v-if="postProcessCost > 0" class="flex justify-between text-slate-500 dark:text-slate-400">
-                <span>{{ t('Post-Processing') }}</span>
-                <span>${{ postProcessCost.toFixed(2) }}</span>
-              </div>
-              <div v-if="quantityDiscount > 0" class="flex justify-between text-emerald-600 font-medium">
-                <span>{{ t('Volume Discount') }}</span>
-                <span>-${{ quantityDiscount.toFixed(2) }}</span>
-              </div>
+            <div class="mt-2.5 flex items-center gap-2">
+              <div class="flex items-center text-[#FF5E0E] text-sm tracking-tight">★★★★★</div>
+              <span class="text-xs font-medium text-[#575757] dark:text-white/65">4.9 / 5 • {{ t('Cambodia Maker Lab') }}</span>
             </div>
 
-            <!-- Grand Total -->
-            <div class="mt-5 border-t-2 border-slate-200 dark:border-slate-700 pt-4">
-              <div class="flex items-baseline justify-between">
-                <span class="text-xs uppercase tracking-wider font-bold text-slate-400">{{ t('Estimated Total') }}</span>
-                <div class="text-right">
-                  <div class="text-2xl sm:text-3xl font-black text-navy-900 dark:text-white">
-                    ${{ finalPriceUsd }}
-                  </div>
-                  <div class="text-xs font-semibold text-slate-500 dark:text-slate-400 mt-0.5">
-                    ≈ {{ finalPriceKhr }} KHR
-                  </div>
+            <p class="mt-4 text-sm sm:text-base text-[#575757] dark:text-white/70 leading-relaxed">
+              {{ t('Skip weeks of international shipping. Drop your 3D CAD files directly to our K2 Plus queue for rapid delivery or Phnom Penh lab pickup.') }}
+            </p>
+
+            <div class="mt-6">
+              <router-link
+                to="/print/upload"
+                class="block w-full sm:w-auto sm:inline-flex items-center justify-center gap-2 rounded-full bg-[#FF5E0E] hover:bg-[#FF764D] px-8 py-4 text-sm font-bold text-white shadow-[0_10px_25px_rgba(255,94,14,0.45)] transition text-center"
+              >
+                <span>{{ t('Upload Your File & Quote Now') }}</span>
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.4">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                </svg>
+              </router-link>
+            </div>
+
+            <!-- Two Quick Spec Pills -->
+            <div class="mt-5 grid grid-cols-2 gap-3">
+              <div class="rounded-2xl border border-black/[0.06] dark:border-white/10 bg-white dark:bg-[#111112] px-4 py-3 flex items-center gap-3">
+                <span class="text-lg">📦</span>
+                <span class="text-xs font-bold text-[#111112] dark:text-white">350×350×350 mm</span>
+              </div>
+              <div class="rounded-2xl border border-black/[0.06] dark:border-white/10 bg-white dark:bg-[#111112] px-4 py-3 flex items-center gap-3">
+                <span class="text-lg">🎨</span>
+                <span class="text-xs font-bold text-[#111112] dark:text-white">16-Color CFS</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Interactive Testimonials Carousel -->
+          <div class="rounded-[24px] border border-black/[0.06] dark:border-white/10 bg-white dark:bg-[#111112] p-6">
+            <div class="flex items-center justify-between mb-3">
+              <div class="flex items-center gap-3">
+                <div class="flex h-10 w-10 items-center justify-center rounded-full bg-[#FF5E0E]/15 text-[#FF5E0E] font-bold text-sm">
+                  {{ currentReview.initials }}
+                </div>
+                <div>
+                  <p class="text-sm font-bold text-[#111112] dark:text-white">{{ currentReview.author }}</p>
+                  <p class="text-[11px] text-[#696969] dark:text-white/55">{{ currentReview.role }} • ★ {{ currentReview.rating }}</p>
                 </div>
               </div>
+              <div class="flex items-center gap-1.5">
+                <button
+                  type="button"
+                  @click="prevReview"
+                  aria-label="Previous review"
+                  class="h-8 w-8 rounded-full border border-black/10 dark:border-white/15 flex items-center justify-center text-xs font-bold text-[#111112] dark:text-white hover:border-[#FF5E0E] cursor-pointer"
+                >
+                  ←
+                </button>
+                <button
+                  type="button"
+                  @click="nextReview"
+                  aria-label="Next review"
+                  class="h-8 w-8 rounded-full border border-black/10 dark:border-white/15 flex items-center justify-center text-xs font-bold text-[#111112] dark:text-white hover:border-[#FF5E0E] cursor-pointer"
+                >
+                  →
+                </button>
+              </div>
             </div>
-
-
-
-            <!-- Action Buttons -->
-            <div class="mt-5 space-y-2.5">
-              <button
-                type="button"
-                @click="openOrderModal = true"
-                class="w-full rounded-xl bg-navy-900 hover:bg-navy-800 dark:bg-indigo-600 dark:hover:bg-indigo-500 text-white font-extrabold py-3.5 px-4 text-sm shadow-md shadow-navy-950/20 active:scale-[0.99] transition flex items-center justify-center gap-2 cursor-pointer"
-              >
-                <span>🚀</span>
-                <span>{{ t('Submit Print Order') }}</span>
-              </button>
-
-              <a
-                :href="telegramDirectLink"
-                target="_blank"
-                rel="noopener"
-                class="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold py-2.5 px-4 text-xs transition flex items-center justify-center gap-2"
-              >
-                <span>💬</span>
-                <span>{{ t('Direct Quote via Telegram') }}</span>
-              </a>
-            </div>
-
-            <p class="text-[10px] text-center text-slate-400 mt-3">
-              Need custom CNC, metal casting, or bulk quotation? Contact our engineering lab directly.
+            <p class="text-sm text-[#575757] dark:text-white/75 leading-relaxed">
+              "{{ currentReview.quote }}"
             </p>
           </div>
         </div>
 
-      </div>
-    </main>
-
-    <!-- Order Submission Modal -->
-    <div
-      v-if="openOrderModal"
-      class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 backdrop-blur-xs p-4"
-    >
-      <div class="relative w-full max-w-lg rounded-2xl bg-white dark:bg-slate-900 p-6 shadow-2xl border border-slate-200 dark:border-slate-800">
-        <div class="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
-          <div class="flex items-center gap-2">
-            <span class="text-xl">🖨️</span>
-            <h3 class="text-lg font-bold text-navy-900 dark:text-white">{{ t('Submit 3D Print Request') }}</h3>
-          </div>
-          <button
-            type="button"
-            @click="openOrderModal = false"
-            class="text-slate-400 hover:text-slate-600 text-xl font-bold p-1 cursor-pointer"
-          >
-            ✕
-          </button>
-        </div>
-
-        <div v-if="orderSubmitted" class="py-8 text-center space-y-3">
-          <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 text-2xl font-bold">
-            ✓
-          </div>
-          <h4 class="text-xl font-bold text-navy-900 dark:text-white">{{ t('Quote Request Received!') }}</h4>
-          <p class="text-xs text-slate-500 max-w-xs mx-auto">
-            Our Aero Print lab engineers will review your 3D files and contact you on Telegram / Phone within 2 hours.
-          </p>
-          <button
-            type="button"
-            @click="openOrderModal = false; orderSubmitted = false"
-            class="mt-4 rounded-xl bg-navy-900 dark:bg-indigo-600 text-white font-bold px-6 py-2.5 text-xs"
-          >
-            Close
-          </button>
-        </div>
-
-        <form v-else @submit.prevent="submitPrintOrder" class="mt-4 space-y-3.5">
-          <div>
-            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">{{ t('Your Full Name') }}</label>
-            <input
-              v-model="orderForm.name"
-              type="text"
-              required
-              placeholder="e.g. Sokha Chan"
-              class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:outline-navy-900 dark:focus:outline-indigo-500"
+        <!-- Right Exploded Extruder Showcase Card -->
+        <div class="lg:col-span-6 rounded-[30px] border border-black/[0.06] dark:border-white/10 bg-[#0B0D14] text-white p-6 sm:p-8 flex flex-col justify-between overflow-hidden">
+          <div class="overflow-hidden rounded-2xl aspect-[4/3]">
+            <img
+              src="/assets/print/k2-plus-extruder.jpg"
+              alt="Creality K2 Plus Unicorn Direct-Drive Cutaway"
+              class="w-full h-full object-cover"
             />
           </div>
-
-          <div class="grid grid-cols-2 gap-3">
-            <div>
-              <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">{{ t('Phone Number') }}</label>
-              <input
-                v-model="orderForm.phone"
-                type="tel"
-                required
-                placeholder="012 345 678"
-                class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:outline-navy-900 dark:focus:outline-indigo-500"
-              />
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">{{ t('Telegram Handle') }}</label>
-              <input
-                v-model="orderForm.telegram"
-                type="text"
-                placeholder="@username"
-                class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:outline-navy-900 dark:focus:outline-indigo-500"
-              />
-            </div>
+          <div class="mt-6">
+            <span class="text-xs font-bold uppercase tracking-wider text-[#FF5E0E]">Direct-Drive Precision</span>
+            <h3 class="mt-1.5 text-2xl font-bold">Unicorn Quick-Swap Tri-Metal Nozzle</h3>
+            <p class="mt-2 text-sm text-white/70 leading-relaxed">
+              Hardened steel tip meets high-conductivity copper alloy up to 350°C — engineered for clean overhangs and industrial composites.
+            </p>
           </div>
-
-          <div>
-            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">{{ t('Delivery / Notes (Optional)') }}</label>
-            <textarea
-              v-model="orderForm.notes"
-              rows="2"
-              placeholder="Pick up at AeroByte Academy Lab, or deliver in Phnom Penh..."
-              class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:outline-navy-900 dark:focus:outline-indigo-500"
-            ></textarea>
-          </div>
-
-          <div class="rounded-xl bg-slate-50 dark:bg-slate-800/60 p-3 text-xs text-slate-600 dark:text-slate-300 flex justify-between">
-            <span>Estimated Quote:</span>
-            <span class="font-black text-navy-900 dark:text-white">${{ finalPriceUsd }} ({{ totalPartCount }} parts)</span>
-          </div>
-
-          <button
-            type="submit"
-            class="w-full rounded-xl bg-navy-900 hover:bg-navy-800 dark:bg-indigo-600 dark:hover:bg-indigo-500 text-white font-bold py-3 text-xs shadow-md shadow-navy-950/20 transition cursor-pointer"
-          >
-            Confirm & Send to Lab Engineers
-          </button>
-        </form>
+        </div>
       </div>
-    </div>
+    </section>
+
+    <!-- SECTION 9: 6-Feature Dark Photo Bento Grid -->
+    <section class="mx-auto max-w-6xl px-4 sm:px-6 pb-12 sm:pb-16">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div
+          v-for="item in photoGridFeatures"
+          :key="item.title"
+          class="rounded-[24px] bg-[#0B0D14] text-white p-7 border border-white/10 relative overflow-hidden"
+        >
+          <div class="absolute -right-6 -top-6 h-28 w-28 rounded-full bg-[#FF5E0E]/15 blur-2xl"></div>
+          <span class="text-xs font-bold text-[#FF5E0E] uppercase tracking-wider">{{ item.badge }}</span>
+          <h3 class="mt-3 text-xl font-bold">{{ item.title }}</h3>
+          <p class="mt-2 text-sm text-white/70 leading-relaxed">{{ item.desc }}</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 10: FAQ Accordion (Produck Interactive Highlight Style) -->
+    <section id="faq" class="mx-auto max-w-6xl px-4 sm:px-6 pb-12 sm:pb-16">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <div class="lg:col-span-5 lg:sticky lg:top-24">
+          <div class="inline-flex items-center gap-2 rounded-full border border-black/[0.06] dark:border-white/15 bg-white dark:bg-white/10 px-3.5 py-1 text-xs font-semibold text-[#111112] dark:text-white">
+            <span>💡</span>
+            <span>F.A.Q</span>
+          </div>
+          <h2 class="mt-4 text-3xl sm:text-4xl font-bold tracking-tight text-[#111112] dark:text-white">
+            {{ t('Everything You Need to Know About Creality K2 Plus') }}
+          </h2>
+          <p class="mt-3 text-sm sm:text-base text-[#575757] dark:text-white/65">
+            {{ t('Supported CAD file formats, build dimensions, material strengths, and turnaround timings.') }}
+          </p>
+          <div class="mt-6">
+            <router-link
+              to="/print/upload"
+              class="inline-flex items-center gap-2 rounded-full bg-[#FF5E0E] hover:bg-[#FF764D] px-6 py-3 text-xs font-bold text-white shadow-[0_8px_20px_rgba(255,94,14,0.4)] transition"
+            >
+              {{ t('Drop Your 3D File Now') }}
+            </router-link>
+          </div>
+        </div>
+
+        <div class="lg:col-span-7 space-y-3">
+          <div
+            v-for="(faq, idx) in faqs"
+            :key="faq.q"
+            class="rounded-[20px] border bg-white dark:bg-[#111112] transition-all overflow-hidden"
+            :class="openFaqIndex === idx
+              ? 'border-[#FF5E0E] shadow-sm'
+              : 'border-black/[0.07] dark:border-white/10'"
+          >
+            <button
+              type="button"
+              @click="toggleFaq(idx)"
+              class="w-full px-6 py-4.5 flex items-center justify-between gap-4 text-left cursor-pointer"
+            >
+              <span
+                class="text-sm sm:text-base font-semibold transition-colors"
+                :class="openFaqIndex === idx ? 'text-[#FF5E0E]' : 'text-[#111112] dark:text-white'"
+              >
+                {{ faq.q }}
+              </span>
+              <svg
+                class="w-4 h-4 shrink-0 transition-transform duration-200"
+                :class="openFaqIndex === idx ? 'rotate-180 text-[#FF5E0E]' : 'text-[#575757] dark:text-white/60'"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2.2"
+              >
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+              </svg>
+            </button>
+            <div v-show="openFaqIndex === idx" class="px-6 pb-5 text-sm text-[#575757] dark:text-white/70 leading-relaxed">
+              {{ faq.a }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 11: Dark Final CTA Card -->
+    <section class="mx-auto max-w-6xl px-4 sm:px-6">
+      <div
+        class="rounded-[30px] p-8 sm:p-14 text-white flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8 border border-white/10 shadow-2xl"
+        style="background: linear-gradient(90deg, #000000 0%, #161618 100%);"
+      >
+        <div class="max-w-xl">
+          <span class="inline-flex items-center rounded-full bg-white/12 border border-white/20 px-3.5 py-1 text-xs font-semibold text-white">
+            ✓ {{ t('Instant Print Queue') }}
+          </span>
+          <h2 class="mt-4 text-3xl sm:text-4xl font-bold tracking-tight">
+            {{ t('Ready to Print on Creality K2 Plus?') }}
+          </h2>
+          <p class="mt-3 text-sm sm:text-base text-white/75 leading-relaxed">
+            {{ t('Drop your STL, STEP, OBJ, or 3MF files into our uploader to calculate price instantly and queue your prototype.') }}
+          </p>
+        </div>
+
+        <router-link
+          to="/print/upload"
+          class="shrink-0 inline-flex items-center gap-2.5 rounded-full bg-[#FF5E0E] hover:bg-[#FF764D] px-8 py-4 text-sm font-bold text-white shadow-[0_10px_25px_rgba(255,94,14,0.45)] transition"
+        >
+          <span>{{ t('Go to 3D File Upload') }}</span>
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+          </svg>
+        </router-link>
+      </div>
+    </section>
+
   </div>
 </template>
 
@@ -570,235 +639,138 @@ import { useI18n } from '../i18n'
 
 const { t } = useI18n()
 
-// Sample presets for instant testing
-const sampleModels = [
-  { id: 'drone-mount', name: 'FPV Motor Mount', icon: '🚁', sizeStr: '1.2 MB', dimensions: { x: 45, y: 45, z: 12 }, volumeCm3: 14.5, quantity: 4 },
-  { id: 'sensor-case', name: 'ESP32 Sensor Case', icon: '📦', sizeStr: '2.8 MB', dimensions: { x: 75, y: 50, z: 24 }, volumeCm3: 32.0, quantity: 1 },
-  { id: 'arm-gear', name: 'Robotic Servo Gear', icon: '⚙️', sizeStr: '980 KB', dimensions: { x: 35, y: 35, z: 8 }, volumeCm3: 8.2, quantity: 2 },
-]
-
-// State: Uploaded files
-const files = ref([
+// Section 3 Interactive Use-Case Switcher
+const selectedModeIndex = ref(0)
+const showcaseModes = [
   {
-    id: 1,
-    name: 'Drone_Arm_V2_Reinforced.stl',
-    sizeStr: '3.4 MB',
-    dimensions: { x: 120, y: 35, z: 18 },
-    volumeCm3: 28.5,
-    quantity: 2,
+    id: 'workshop',
+    label: 'FPV & Drones',
+    tag: 'Aerospace Carbon Composites',
+    title: 'Crash-Proof Motor Mounts & Drone Frames',
+    description: 'Print high-stiffness PA-CF carbon-fiber frames, TPU vibration dampers, and custom GoPro cages inside the heated 60°C chamber.',
+    image: '/assets/print/k2-plus-workshop.jpg',
+    specs: ['PA-CF Carbon Nylon', 'TPU 95A Shock Mounts', '350mm Bed Size']
+  },
+  {
+    id: 'cfs',
+    label: '16-Color CFS',
+    tag: 'Automated Spool System',
+    title: 'Multi-Color Enclosures & Robotics Parts',
+    description: 'Combine brand logos, color-coded wiring channels, and dissolvable supports seamlessly using up to four chained CFS units.',
+    image: '/assets/print/k2-plus-cfs.jpg',
+    specs: ['Up to 16 Colors', 'RFID Auto-Detect', 'Humidity Controlled']
+  },
+  {
+    id: 'extruder',
+    label: 'Mechanical Precision',
+    tag: '350°C Direct-Drive Core',
+    title: 'Functional Gears, Brackets & Tooling',
+    description: 'Closed-loop step-servo motors eliminate ringing at 600 mm/s so planetary gears and bolt patterns assemble straight off the build plate.',
+    image: '/assets/print/k2-plus-extruder.jpg',
+    specs: ['600 mm/s CoreXY', '±0.1mm Tolerance', 'Unicorn 350°C Nozzle']
   }
-])
-
-const isDragging = ref(false)
-const fileInputRef = ref(null)
-
-function triggerFileInput() {
-  fileInputRef.value?.click()
-}
-
-function handleFileInputChange(e) {
-  const selectedFiles = Array.from(e.target.files || [])
-  for (const f of selectedFiles) {
-    files.value.push({
-      id: Date.now() + Math.random(),
-      name: f.name,
-      sizeStr: `${(f.size / (1024 * 1024)).toFixed(1)} MB`,
-      dimensions: {
-        x: Math.floor(Math.random() * 80 + 30),
-        y: Math.floor(Math.random() * 60 + 20),
-        z: Math.floor(Math.random() * 40 + 10)
-      },
-      volumeCm3: parseFloat((Math.random() * 25 + 10).toFixed(1)),
-      quantity: 1,
-    })
-  }
-}
-
-function handleFileDrop(e) {
-  isDragging.value = false
-  const droppedFiles = Array.from(e.dataTransfer?.files || [])
-  for (const f of droppedFiles) {
-    files.value.push({
-      id: Date.now() + Math.random(),
-      name: f.name,
-      sizeStr: `${(f.size / (1024 * 1024)).toFixed(1)} MB`,
-      dimensions: {
-        x: Math.floor(Math.random() * 80 + 30),
-        y: Math.floor(Math.random() * 60 + 20),
-        z: Math.floor(Math.random() * 40 + 10)
-      },
-      volumeCm3: parseFloat((Math.random() * 25 + 10).toFixed(1)),
-      quantity: 1,
-    })
-  }
-}
-
-function loadSampleModel(sample) {
-  files.value.push({
-    id: Date.now() + Math.random(),
-    name: `${sample.name}.stl`,
-    sizeStr: sample.sizeStr,
-    dimensions: { ...sample.dimensions },
-    volumeCm3: sample.volumeCm3,
-    quantity: sample.quantity,
-  })
-}
-
-function increaseQty(index) {
-  files.value[index].quantity++
-}
-
-function decreaseQty(index) {
-  if (files.value[index].quantity > 1) {
-    files.value[index].quantity--
-  }
-}
-
-function removeFile(index) {
-  files.value.splice(index, 1)
-}
-
-// 2. Technologies
-const selectedTech = ref('fdm')
-const technologies = [
-  { id: 'fdm', name: 'FDM / FFF', badge: 'Most Affordable', desc: 'Ideal for functional parts, drone bodies & rapid prototypes.', precision: '±0.2mm' },
-  { id: 'sla', name: 'SLA Resin', badge: 'Ultra Precision', desc: 'Smooth injection-mold surface finish for fine details.', precision: '±0.05mm' },
-  { id: 'sls', name: 'SLS Nylon', badge: 'Industrial Grade', desc: 'No support structures. Strong functional mechanical gears.', precision: '±0.1mm' },
 ]
 
-// 3. Materials
-const selectedMaterial = ref('pla')
-const materialsByTech = {
-  fdm: [
-    { id: 'pla', name: 'Standard PLA', priceTag: '$0.08 / cm³', description: 'Affordable, rigid, high precision for prototypes.', tags: ['Rigid', 'Eco-friendly', 'Clean Detail'] },
-    { id: 'petg', name: 'Tough PETG', priceTag: '$0.11 / cm³', description: 'Impact resistant, heat-resistant (75°C), drone parts.', tags: ['Durable', 'Waterproof', 'Impact'] },
-    { id: 'abs', name: 'ABS / ASA', priceTag: '$0.13 / cm³', description: 'Thermal resistance (95°C), outdoors, automotive grade.', tags: ['High Temp', 'UV Resistant'] },
-    { id: 'tpu', name: 'TPU Flexible (95A)', priceTag: '$0.16 / cm³', description: 'Rubber-like flexible filament for bumpers & dampeners.', tags: ['Elastic', 'Shock Absorbing'] },
-    { id: 'cf-nylon', name: 'Carbon Fiber Nylon', priceTag: '$0.28 / cm³', description: 'Ultra-lightweight aerospace rigidity & strength.', tags: ['Extreme Stiff', 'Pro Racing'] },
-  ],
-  sla: [
-    { id: 'sla-std', name: 'Standard Resin (White/Gray)', priceTag: '$0.18 / cm³', description: 'Glass-smooth surface finish, flawless presentation.', tags: ['0.05mm Layers', 'Ultra Smooth'] },
-    { id: 'sla-tough', name: 'Engineering Tough Resin', priceTag: '$0.25 / cm³', description: 'ABS-like mechanical resilience and snap-fits.', tags: ['Impact Tough', 'Drillable'] },
-    { id: 'sla-clear', name: 'Optical Clear Resin', priceTag: '$0.29 / cm³', description: 'Translucent light pipes, fluidics & lenses.', tags: ['Transparent', 'Polished'] },
-  ],
-  sls: [
-    { id: 'sls-pa12', name: 'Nylon PA12', priceTag: '$0.35 / cm³', description: 'Industrial production end-use parts, isotropic strength.', tags: ['Supportless', 'Engineered'] },
-  ]
+const activeMode = computed(() => showcaseModes[selectedModeIndex.value])
+
+// Section 8 Testimonials Carousel
+const reviewIndex = ref(0)
+const reviews = [
+  {
+    initials: 'SD',
+    author: 'Sokha D.',
+    role: 'FPV Drone Builder • Phnom Penh',
+    rating: '5.0/5',
+    quote: 'Printed a custom 5-inch Cinewhoop guard and TPU GoPro mount on the K2 Plus. Bolt holes lined up dead-on and arrived the next day.'
+  },
+  {
+    initials: 'DV',
+    author: 'Dara V.',
+    role: 'Robotics Engineering Student',
+    rating: '4.9/5',
+    quote: 'Uploading our STEP gears took 30 seconds and the 16-color CFS printed clear assembly labels right onto our robot chassis.'
+  },
+  {
+    initials: 'MK',
+    author: 'Maly K.',
+    role: 'Product Prototyper',
+    rating: '4.9/5',
+    quote: 'Having a 350mm chamber locally saved our capstone project — no 3-week overseas wait and super clean matte finish.'
+  }
+]
+
+const currentReview = computed(() => reviews[reviewIndex.value])
+function prevReview() {
+  reviewIndex.value = (reviewIndex.value - 1 + reviews.length) % reviews.length
+}
+function nextReview() {
+  reviewIndex.value = (reviewIndex.value + 1) % reviews.length
 }
 
-const currentMaterials = computed(() => {
-  return materialsByTech[selectedTech.value] || materialsByTech.fdm
-})
-
-// Auto sync material when tech changes
-const currentTechName = computed(() => {
-  return technologies.find(t => t.id === selectedTech.value)?.name || 'FDM'
-})
-
-const currentMaterialName = computed(() => {
-  return currentMaterials.value.find(m => m.id === selectedMaterial.value)?.name || currentMaterials.value[0]?.name || 'PLA'
-})
-
-// 4. Color, Infill, Layer Resolution
-const selectedColor = ref('Jet Black')
-const colors = [
-  { name: 'Jet Black', hex: '#18181b' },
-  { name: 'Pure White', hex: '#f8fafc' },
-  { name: 'Cyber Gray', hex: '#64748b' },
-  { name: 'Aero Orange', hex: '#f97316' },
-  { name: 'Royal Navy', hex: '#1e3a8a' },
-  { name: 'Clear Translucent', hex: '#e2e8f0' },
+// Section 9: 6-Feature Visual Grid
+const photoGridFeatures = [
+  {
+    badge: '01 • File Upload',
+    title: 'Instant CAD Dropzone',
+    desc: 'Drag and drop .STL, .STP, .STEP, .OBJ, or .3MF assemblies straight from Fusion 360 or SolidWorks.'
+  },
+  {
+    badge: '02 • Transparent Quote',
+    title: 'Live KHR & USD Pricing',
+    desc: 'See exact weight, base setup, material rates, and bulk discounts update dynamically in real time.'
+  },
+  {
+    badge: '03 • Smart CFS',
+    title: 'Multi-Color Sequencing',
+    desc: 'Highlight safety zones, logos, or tactile labels with automated multi-filament purging.'
+  },
+  {
+    badge: '04 • Fast Turnaround',
+    title: 'Phnom Penh Lab Pickup',
+    desc: 'Rapid local production in our Ta Khmau engineering lab with express courier delivery available.'
+  },
+  {
+    badge: '05 • Composites',
+    title: '350°C Carbon-Fiber Parts',
+    desc: 'Heat-resistant PA-CF and ABS enclosures engineered for outdoor tropical sun and drone motors.'
+  },
+  {
+    badge: '06 • AI Quality',
+    title: 'Dual AI Flow Inspection',
+    desc: 'Live optical monitoring and pre-slice engineer checks ensure every part arrives clean and strong.'
+  }
 ]
 
-const selectedInfill = ref(20)
-const selectedLayerHeight = ref('0.20mm')
-const layerHeights = [
-  { val: '0.12mm', label: 'Fine Detail' },
-  { val: '0.20mm', label: 'Balanced' },
-  { val: '0.28mm', label: 'Rapid Prototype' },
+// Section 10: Interactive FAQ Accordion
+const openFaqIndex = ref(0)
+const faqs = [
+  {
+    q: 'What 3D CAD file formats can I drop into the uploader?',
+    a: 'We support .STL, .STP, .STEP, .OBJ, and .3MF files. STEP assemblies are great for smooth curved industrial components, while STL and 3MF are ready for instant slicing.'
+  },
+  {
+    q: 'How large can a single 3D print be on the Creality K2 Plus?',
+    a: 'The Creality K2 Plus offers a massive 350 × 350 × 350 mm single-piece build volume, allowing full multi-rotor frames, oversized robotics brackets, and full-scale enclosures without splitting parts.'
+  },
+  {
+    q: 'Can I request multi-color printing on my model?',
+    a: 'Yes! Using the Creality Filament System (CFS), we can print multi-color accents, logos, and dual-material breakaway supports on the file upload page by selecting CFS Multi-Color.'
+  },
+  {
+    q: 'Which materials are best for FPV drones and outdoor robotics?',
+    a: 'For rigid motor arms and electronics plates, we recommend PA-CF Carbon Fiber Nylon or ABS/ASA printed inside the 60°C heated chamber. For shock-absorbing mounts, choose TPU 95A.'
+  },
+  {
+    q: 'How fast is the turnaround in Cambodia?',
+    a: 'Most single-color PLA/PETG/TPU prototypes are ready for pickup or Phnom Penh delivery within 24 to 48 hours thanks to the K2 Plus 600 mm/s CoreXY speed.'
+  },
+  {
+    q: 'How is the final price calculated?',
+    a: 'On our upload page, you receive an instant baseline quote calculated from estimated volume, material tier, infill percentage, and post-processing, with volume discounts for 5+ parts.'
+  }
 ]
 
-const selectedPostProcess = ref([])
-const postProcessOptions = [
-  { id: 'support-clean', name: 'Standard Clean & De-burr', desc: 'Support material cleanly removed & flush cut', price: 0 },
-  { id: 'sanding', name: 'Precision Sanding & Matte Finish', desc: 'Hand-finished to remove layer lines on visual faces', price: 3 },
-  { id: 'brass-inserts', name: 'Heat-set Threaded Brass Inserts', desc: 'M3 / M4 brass nuts melted into mounting holes', price: 4 },
-]
-
-// 5. Reactive Instant Price Calculation
-const totalPartCount = computed(() => {
-  return files.value.reduce((acc, f) => acc + (f.quantity || 1), 0)
-})
-
-const totalVolumeCm3 = computed(() => {
-  return files.value.reduce((acc, f) => acc + (f.volumeCm3 * (f.quantity || 1)), 0)
-})
-
-const totalWeightGrams = computed(() => {
-  // Density ~1.24 g/cm3 with infill adjustment
-  const infillMultiplier = 0.2 + (selectedInfill.value / 100) * 0.8
-  const weight = totalVolumeCm3.value * 1.24 * infillMultiplier
-  return Math.max(5, Math.round(weight))
-})
-
-const baseFee = computed(() => {
-  if (files.value.length === 0) return 0
-  return selectedTech.value === 'sla' ? 4.50 : 2.50
-})
-
-const materialCost = computed(() => {
-  if (files.value.length === 0) return 0
-  let rate = 0.10
-  if (selectedTech.value === 'sla') rate = 0.22
-  if (selectedTech.value === 'sls') rate = 0.35
-  if (selectedMaterial.value === 'cf-nylon') rate = 0.30
-  if (selectedMaterial.value === 'tpu') rate = 0.18
-  return totalVolumeCm3.value * rate
-})
-
-const postProcessCost = computed(() => {
-  return selectedPostProcess.value.reduce((acc, id) => {
-    const opt = postProcessOptions.find(o => o.id === id)
-    return acc + (opt ? opt.price : 0)
-  }, 0)
-})
-
-const quantityDiscount = computed(() => {
-  if (totalPartCount.value >= 10) return (materialCost.value + baseFee.value) * 0.15
-  if (totalPartCount.value >= 5) return (materialCost.value + baseFee.value) * 0.08
-  return 0
-})
-
-const finalPriceUsd = computed(() => {
-  if (files.value.length === 0) return '0.00'
-  const total = Math.max(3.00, baseFee.value + materialCost.value + postProcessCost.value - quantityDiscount.value)
-  return total.toFixed(2)
-})
-
-const finalPriceKhr = computed(() => {
-  const usd = parseFloat(finalPriceUsd.value)
-  return Math.round(usd * 4100).toLocaleString('en-US')
-})
-
-// Telegram direct message link
-const telegramDirectLink = computed(() => {
-  const msg = encodeURIComponent(
-    `Hello AeroByte! I would like a 3D print quote:\n• Tech: ${currentTechName.value}\n• Material: ${currentMaterialName.value}\n• Color: ${selectedColor.value}\n• Infill: ${selectedInfill.value}%\n• Parts: ${totalPartCount.value} pcs\n• Est. Quote: $${finalPriceUsd.value}`
-  )
-  return `https://t.me/aerobyte?text=${msg}`
-})
-
-// Order Submission Modal State
-const openOrderModal = ref(false)
-const orderSubmitted = ref(false)
-const orderForm = ref({
-  name: '',
-  phone: '',
-  telegram: '',
-  notes: ''
-})
-
-function submitPrintOrder() {
-  orderSubmitted.value = true
+function toggleFaq(index) {
+  openFaqIndex.value = openFaqIndex.value === index ? -1 : index
 }
 </script>
