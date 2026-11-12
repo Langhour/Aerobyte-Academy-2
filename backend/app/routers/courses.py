@@ -6,6 +6,28 @@ from app.content_store import find_course, list_published_courses
 
 router = APIRouter(prefix="/api/courses", tags=["Courses"])
 
+CATEGORY_KEYWORD_ALIASES = {
+    "iot": ("iot", "internet of things"),
+    "fpv drones": ("fpv", "drone"),
+    "3d printing & cad": ("3d", "cad", "blender", "printer"),
+    "pcb design": ("pcb", "board design"),
+    "python & coding": ("python", "micropython", "coding", "stem"),
+    "data science & ai": ("data scientist", "data analytics", "artificial intelligence"),
+}
+
+
+def _course_matches_categories(course: Course, cat_set: set[str]) -> bool:
+    course_cat = (course.category or "").lower().strip()
+    if course_cat in cat_set:
+        return True
+    haystack = f"{course.title} {course.short_description} {course_cat}".lower()
+    for cat in cat_set:
+        keywords = CATEGORY_KEYWORD_ALIASES.get(cat)
+        if keywords and any(kw in haystack for kw in keywords):
+            return True
+    return False
+
+
 @router.get("", response_model=PaginatedCourseResponse)
 def get_courses(
     search: Optional[str] = Query(None),
@@ -21,8 +43,8 @@ def get_courses(
         q = search.lower().strip()
         filtered = [c for c in filtered if q in c.title.lower() or q in c.short_description.lower() or q in c.category.lower()]
     if categories:
-        cat_set = {c.lower() for c in categories}
-        filtered = [c for c in filtered if c.category.lower() in cat_set]
+        cat_set = {c.lower().strip() for c in categories}
+        filtered = [c for c in filtered if _course_matches_categories(c, cat_set)]
     if levels:
         lvl_set = {l.lower() for l in levels}
         filtered = [c for c in filtered if c.level and c.level.lower() in lvl_set]

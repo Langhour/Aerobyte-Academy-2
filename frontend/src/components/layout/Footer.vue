@@ -1,7 +1,7 @@
 <template>
   <footer class="mt-12 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 transition-colors relative z-20">
     <div
-      class="mx-auto grid max-w-[1408px] grid-cols-1 gap-8 px-4 py-8 sm:px-8 sm:py-12 md:grid-cols-2 lg:grid-cols-[1.2fr_1fr_1fr_1fr] lg:gap-12 lg:px-10 lg:py-14"
+      class="mx-auto grid max-w-[1408px] grid-cols-1 gap-8 px-4 py-8 sm:px-8 sm:py-12 md:grid-cols-2 lg:grid-cols-[1.2fr_0.9fr_1.2fr_1fr] lg:gap-12 lg:px-10 lg:py-14"
     >
       <section>
         <RouterLink
@@ -31,7 +31,7 @@
 
       <section>
         <h2 class="text-sm font-extrabold text-navy-900 dark:text-white">{{ t('Categories') }}</h2>
-        <nav class="mt-5 flex flex-col items-start gap-3 text-sm text-slate-600 dark:text-slate-400" :aria-label="t('Course categories')">
+        <nav class="mt-5 grid grid-cols-2 gap-x-6 gap-y-3 text-sm text-slate-600 dark:text-slate-400" :aria-label="t('Course categories')">
           <RouterLink
             v-for="category in categories"
             :key="category"
@@ -77,7 +77,18 @@ import { onMounted, reactive } from 'vue'
 import { useLanguage } from '../../i18n'
 import { siteSettingsService } from '../../services/api'
 
-const categories = ['Robotics', 'Mechanical', 'IoT', 'Electronics', 'ROS']
+const categories = [
+  'Robotics',
+  'Mechanical',
+  'IoT',
+  'Electronics',
+  'ROS',
+  'FPV Drones',
+  '3D Printing & CAD',
+  'PCB Design',
+  'Python & Coding',
+  'Data Science & AI',
+]
 const { t } = useLanguage()
 const siteSettings = reactive({ footer_description: '', contact_email: '', contact_phone: '' })
 

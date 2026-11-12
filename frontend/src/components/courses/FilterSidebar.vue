@@ -144,7 +144,18 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue', 'change', 'reset'])
 
-const categoryOptions = ['Robotics', 'Mechanical', 'IoT', 'Electronics', 'ROS']
+const categoryOptions = [
+  'Robotics',
+  'Mechanical',
+  'IoT',
+  'Electronics',
+  'ROS',
+  'FPV Drones',
+  '3D Printing & CAD',
+  'PCB Design',
+  'Python & Coding',
+  'Data Science & AI',
+]
 const languageOptions = ['English', 'Khmer']
 const priceOptions = [
   { label: 'All', value: 'all' },
