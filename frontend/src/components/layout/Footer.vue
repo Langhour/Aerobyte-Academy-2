@@ -20,10 +20,7 @@
         <h2 class="text-sm font-extrabold text-navy-900 dark:text-white">{{ t('Navigation') }}</h2>
         <nav class="mt-5 flex flex-col items-start gap-3 text-sm text-slate-600 dark:text-slate-400" :aria-label="t('Footer navigation')">
           <RouterLink to="/courses" class="transition hover:text-navy-900 dark:hover:text-white">{{ t('Courses') }}</RouterLink>
-          <RouterLink to="/store" class="transition hover:text-navy-900 dark:hover:text-white flex items-center gap-1.5 font-semibold text-navy-900 dark:text-white">
-            <span>{{ t('Aero Store') }}</span>
-            <span class="px-1.5 py-0.2 rounded text-[10px] bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300 font-bold">New</span>
-          </RouterLink>
+          <RouterLink to="/store" class="transition hover:text-navy-900 dark:hover:text-white">{{ t('Aero Store') }}</RouterLink>
           <RouterLink to="/print" class="transition hover:text-navy-900 dark:hover:text-white">{{ t('Aero Print') }}</RouterLink>
           <RouterLink to="/fly" class="transition hover:text-navy-900 dark:hover:text-white">{{ t('Aero Fly') }}</RouterLink>
           <RouterLink to="/questions" class="transition hover:text-navy-900 dark:hover:text-white">{{ t('Questions') }}</RouterLink>
