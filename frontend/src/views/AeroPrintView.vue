@@ -735,14 +735,49 @@ const marqueeLogos = [
 
 // ------------------------------------------------------------
 // Bidirectional Scroll-Triggered Text Reveal Directive (v-reveal)
-// Supports both scroll-down and scroll-up re-animations without edge flicker
+// Observes stationary mask wrappers & adds a viewport reconciliation guard
+// so scrolling back UP never traps masked headings off-screen.
 // ------------------------------------------------------------
-const observerTargets = new WeakMap()
+const targetToTrigger = new WeakMap()
+const triggerToTargets = new WeakMap()
+const trackedTargets = new Set()
 let enterObserver = null
 let exitObserver = null
+let scrollCheckRaf = 0
 
 function prefersReducedMotion() {
   return typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+}
+
+function revealElement(el) {
+  if (!el || el.classList.contains('is-revealed')) return
+  const delay = Number(el.dataset.revealDelay || 0)
+  // If reset happened on this same frame, flush layout before animating in
+  if (el.style.transitionDuration === '0ms') {
+    void el.offsetHeight
+    el.style.transitionDuration = ''
+  }
+  el.style.transitionDelay = delay ? `${delay}ms` : ''
+  el.classList.add('is-revealed')
+}
+
+function reconcileVisibleReveals() {
+  scrollCheckRaf = 0
+  if (typeof window === 'undefined') return
+  const vh = window.innerHeight || document.documentElement.clientHeight
+  trackedTargets.forEach((el) => {
+    if (el.classList.contains('is-revealed')) return
+    const triggerEl = targetToTrigger.get(el) || el
+    const rect = triggerEl.getBoundingClientRect()
+    if (rect.height > 0 && rect.bottom > 12 && rect.top < vh - 12) {
+      revealElement(el)
+    }
+  })
+}
+
+function scheduleRevealReconcile() {
+  if (scrollCheckRaf || typeof window === 'undefined') return
+  scrollCheckRaf = requestAnimationFrame(reconcileVisibleReveals)
 }
 
 function getEnterObserver() {
@@ -751,20 +786,11 @@ function getEnterObserver() {
     (entries) => {
       entries.forEach((entry) => {
         if (!entry.isIntersecting) return
-        const el = entry.target
-        if (el.classList.contains('is-revealed')) return
-
-        const delay = Number(el.dataset.revealDelay || 0)
-        // If reset happened on this same frame, flush layout before animating in
-        if (el.style.transitionDuration === '0ms') {
-          void el.offsetHeight
-          el.style.transitionDuration = ''
-        }
-        el.style.transitionDelay = delay ? `${delay}ms` : ''
-        el.classList.add('is-revealed')
+        const targets = triggerToTargets.get(entry.target)
+        targets?.forEach((el) => revealElement(el))
       })
     },
-    { threshold: 0.05, rootMargin: '0px 0px -24px 0px' }
+    { threshold: 0.01, rootMargin: '0px 0px -16px 0px' }
   )
   return enterObserver
 }
@@ -775,27 +801,28 @@ function getExitObserver() {
     (entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) return
-        const el = entry.target
-        const wasRevealed = el.classList.contains('is-revealed')
-
-        // Completely off-screen (>40px outside viewport): snap-reset and aim direction for re-entry
-        el.style.transitionDuration = '0ms'
-        el.style.transitionDelay = '0ms'
-        if (wasRevealed) {
-          el.classList.remove('is-revealed')
-        }
-
-        // If element is above the viewport, prepare it to glide down when scrolling UP
-        if (entry.boundingClientRect.bottom <= 0) {
-          el.classList.add('reveal-from-top')
-        } else {
-          el.classList.remove('reveal-from-top')
-        }
-
-        requestAnimationFrame(() => {
-          if (!el.classList.contains('is-revealed')) {
-            el.style.transitionDuration = ''
+        const targets = triggerToTargets.get(entry.target)
+        const exitedAbove = entry.boundingClientRect.bottom <= 0
+        targets?.forEach((el) => {
+          const wasRevealed = el.classList.contains('is-revealed')
+          el.style.transitionDuration = '0ms'
+          el.style.transitionDelay = '0ms'
+          if (wasRevealed) {
+            el.classList.remove('is-revealed')
           }
+
+          // If element is above the viewport, prepare it to glide down when scrolling UP
+          if (exitedAbove) {
+            el.classList.add('reveal-from-top')
+          } else {
+            el.classList.remove('reveal-from-top')
+          }
+
+          requestAnimationFrame(() => {
+            if (!el.classList.contains('is-revealed')) {
+              el.style.transitionDuration = ''
+            }
+          })
         })
       })
     },
@@ -829,16 +856,31 @@ const vReveal = {
       })
     }
 
-    // Keep observing all elements (including immediate Hero) so scrolling back UP replays motion
-    getEnterObserver().observe(el)
-    getExitObserver().observe(el)
-    observerTargets.set(el, true)
+    // Observe the stationary wrapper for masked elements so ±105% translation never clips IO rect to 0px
+    const triggerEl = variant === 'mask' && el.parentElement ? el.parentElement : el
+    let set = triggerToTargets.get(triggerEl)
+    if (!set) {
+      set = new Set()
+      triggerToTargets.set(triggerEl, set)
+      getEnterObserver().observe(triggerEl)
+      getExitObserver().observe(triggerEl)
+    }
+    set.add(el)
+    targetToTrigger.set(el, triggerEl)
+    trackedTargets.add(el)
   },
   unmounted(el) {
-    if (observerTargets.has(el)) {
-      enterObserver?.unobserve(el)
-      exitObserver?.unobserve(el)
-      observerTargets.delete(el)
+    trackedTargets.delete(el)
+    const triggerEl = targetToTrigger.get(el)
+    if (!triggerEl) return
+    targetToTrigger.delete(el)
+    const set = triggerToTargets.get(triggerEl)
+    if (!set) return
+    set.delete(el)
+    if (set.size === 0) {
+      triggerToTargets.delete(triggerEl)
+      enterObserver?.unobserve(triggerEl)
+      exitObserver?.unobserve(triggerEl)
     }
   }
 }
@@ -880,6 +922,9 @@ function animateCount(targetRef, targetVal, duration = 1100) {
 }
 
 onMounted(() => {
+  window.addEventListener('scroll', scheduleRevealReconcile, { passive: true })
+  window.addEventListener('resize', scheduleRevealReconcile, { passive: true })
+
   if (prefersReducedMotion() || !bentoStatsRef.value) return
   displaySpeed.value = 0
   displayVolume.value = 0
@@ -895,7 +940,7 @@ onMounted(() => {
         animateCount(displayColors, 16, 900)
       }
     },
-    { threshold: 0.15 }
+    { threshold: 0.05 }
   )
 
   statsExitObserver = new IntersectionObserver(
@@ -916,6 +961,13 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
+  window.removeEventListener('scroll', scheduleRevealReconcile)
+  window.removeEventListener('resize', scheduleRevealReconcile)
+  if (scrollCheckRaf) {
+    cancelAnimationFrame(scrollCheckRaf)
+    scrollCheckRaf = 0
+  }
+  trackedTargets.clear()
   enterObserver?.disconnect()
   enterObserver = null
   exitObserver?.disconnect()
