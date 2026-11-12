@@ -55,10 +55,10 @@
       </div>
     </section>
 
-    <!-- KINETIC SPEC TICKER MARQUEE -->
+    <!-- KINETIC BRAND LOGO MARQUEE -->
     <div
       v-reveal="{ variant: 'fade', delay: 100 }"
-      class="border-y border-black/[0.06] dark:border-white/10 bg-white/80 dark:bg-[#111217]/80 backdrop-blur-sm py-3.5 overflow-hidden select-none"
+      class="border-y border-black/[0.06] dark:border-white/10 bg-white/80 dark:bg-[#111217]/80 backdrop-blur-sm py-3.5 sm:py-4 overflow-hidden select-none"
     >
       <div class="marquee-track flex w-max items-center">
         <div
@@ -68,18 +68,29 @@
           :aria-hidden="half === 2"
         >
           <div
-            v-for="repeat in 2"
+            v-for="repeat in 3"
             :key="`${half}-${repeat}`"
-            class="flex shrink-0 items-center gap-8 sm:gap-12 pr-8 sm:pr-12 text-xs font-semibold uppercase tracking-[0.18em] text-[#575757] dark:text-white/65"
+            class="flex shrink-0 items-center gap-10 sm:gap-16 pr-10 sm:pr-16"
           >
-            <span
-              v-for="spec in marqueeSpecs"
-              :key="spec"
-              class="inline-flex items-center gap-3 whitespace-nowrap"
+            <RouterLink
+              v-for="brand in marqueeLogos"
+              :key="`${half}-${repeat}-${brand.name}`"
+              :to="brand.to"
+              :aria-label="brand.name"
+              :tabindex="half === 2 ? -1 : 0"
+              class="inline-flex shrink-0 items-center justify-center opacity-85 hover:opacity-100 transition duration-200 hover:scale-[1.04]"
             >
-              <span class="h-1.5 w-1.5 rounded-full bg-navy-900 dark:bg-blue-400"></span>
-              <span>{{ t(spec) }}</span>
-            </span>
+              <img
+                :src="brand.src"
+                :alt="brand.name"
+                loading="lazy"
+                :class="[
+                  'w-auto object-contain select-none pointer-events-none',
+                  brand.heightClass,
+                  brand.darkClass
+                ]"
+              />
+            </RouterLink>
           </div>
         </div>
       </div>
@@ -691,13 +702,35 @@ import { useI18n } from '../i18n'
 
 const { t } = useI18n()
 
-const marqueeSpecs = [
-  '600 mm/s CoreXY',
-  '16-Color Smart CFS',
-  '350×350×350 mm Volume',
-  '350°C Tri-Metal Nozzle',
-  '60°C Heated Chamber',
-  '±0.1 mm Precision'
+const marqueeLogos = [
+  {
+    name: 'AeroByte Academy',
+    src: '/aerobyte-logo-tight.png',
+    to: '/courses',
+    heightClass: 'h-8 sm:h-10',
+    darkClass: ''
+  },
+  {
+    name: 'Aero Print',
+    src: '/assets/brand/aero-print.png',
+    to: '/print',
+    heightClass: 'h-9 sm:h-11',
+    darkClass: 'dark:invert dark:hue-rotate-180'
+  },
+  {
+    name: 'Aero Store',
+    src: '/assets/brand/aero-store.png',
+    to: '/store',
+    heightClass: 'h-9 sm:h-11',
+    darkClass: 'dark:invert dark:hue-rotate-180'
+  },
+  {
+    name: 'Aero Fly',
+    src: '/assets/brand/aero-fly.png',
+    to: '/fly',
+    heightClass: 'h-9 sm:h-11',
+    darkClass: 'dark:invert dark:hue-rotate-180'
+  }
 ]
 
 // ------------------------------------------------------------
@@ -1088,9 +1121,9 @@ function toggleFaq(index) {
   filter: blur(0);
 }
 
-/* Continuous Kinetic Spec Ticker */
+/* Continuous Kinetic Brand Logo Ticker */
 .marquee-track {
-  animation: print-marquee 42s linear infinite;
+  animation: print-marquee 32s linear infinite;
 }
 
 .marquee-track:hover {
