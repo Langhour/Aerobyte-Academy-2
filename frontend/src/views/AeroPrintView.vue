@@ -28,7 +28,7 @@
         >
           <router-link
             to="/print/upload"
-            class="group inline-flex items-center gap-2 rounded-full bg-[#FF5E0E] hover:bg-[#FF764D] px-8 py-3.5 text-sm font-bold text-white shadow-[0_10px_25px_rgba(255,94,14,0.38)] active:scale-[0.99] transition"
+            class="group inline-flex items-center gap-2 rounded-full bg-navy-900 hover:bg-navy-800 dark:bg-navy-600 dark:hover:bg-navy-800 px-8 py-3.5 text-sm font-bold text-white shadow-[0_10px_25px_rgba(16,42,73,0.3)] active:scale-[0.99] transition"
           >
             <span>{{ t('Drop Your 3D File') }}</span>
             <svg class="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
@@ -77,7 +77,7 @@
               :key="spec"
               class="inline-flex items-center gap-3 whitespace-nowrap"
             >
-              <span class="h-1.5 w-1.5 rounded-full bg-[#FF5E0E]"></span>
+              <span class="h-1.5 w-1.5 rounded-full bg-navy-900 dark:bg-blue-400"></span>
               <span>{{ t(spec) }}</span>
             </span>
           </div>
@@ -357,14 +357,14 @@
           </div>
           <div class="mt-6 flex items-baseline justify-between">
             <h3 class="text-2xl font-bold text-[#111112] dark:text-white">Creality K2 Plus</h3>
-            <span class="text-base font-bold text-[#FF5E0E]">$0.08 / cm³</span>
+            <span class="text-base font-bold text-navy-900 dark:text-blue-300">$0.08 / cm³</span>
           </div>
           <p class="mt-2 text-sm text-[#575757] dark:text-white/65">
             {{ t('Upload your CAD files for instant pricing and local Phnom Penh printing.') }}
           </p>
           <router-link
             to="/print/upload"
-            class="group/btn mt-6 w-full inline-flex items-center justify-center gap-2 rounded-full bg-[#FF5E0E] hover:bg-[#FF764D] px-6 py-3.5 text-sm font-bold text-white shadow-[0_10px_25px_rgba(255,94,14,0.38)] transition"
+            class="group/btn mt-6 w-full inline-flex items-center justify-center gap-2 rounded-full bg-navy-900 hover:bg-navy-800 dark:bg-navy-600 dark:hover:bg-navy-800 px-6 py-3.5 text-sm font-bold text-white shadow-[0_10px_25px_rgba(16,42,73,0.3)] transition"
           >
             <span>{{ t('Drop Your 3D File') }}</span>
             <svg class="w-4 h-4 transition-transform duration-300 group-hover/btn:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
@@ -429,7 +429,7 @@
               </h2>
               <span
                 v-reveal="{ variant: 'up', delay: 140 }"
-                class="text-xl font-bold text-[#FF5E0E]"
+                class="text-xl font-bold text-navy-900 dark:text-blue-300"
               >
                 From $0.08 / cm³
               </span>
@@ -439,7 +439,7 @@
               v-reveal="{ variant: 'up', delay: 180 }"
               class="mt-2.5 flex items-center gap-2"
             >
-              <span class="text-[#FF5E0E] text-sm">★★★★★</span>
+              <span class="text-navy-900 dark:text-blue-300 text-sm">★★★★★</span>
               <span class="text-xs font-medium text-[#575757] dark:text-white/65">4.9 / 5 • {{ t('Cambodia Maker Lab') }}</span>
             </div>
 
@@ -588,7 +588,7 @@
           >
             <router-link
               to="/print/upload"
-              class="group inline-flex items-center gap-2 rounded-full bg-[#FF5E0E] hover:bg-[#FF764D] px-6 py-3 text-xs font-bold text-white shadow-[0_8px_20px_rgba(255,94,14,0.35)] transition"
+              class="group inline-flex items-center gap-2 rounded-full bg-navy-900 hover:bg-navy-800 dark:bg-navy-600 dark:hover:bg-navy-800 px-6 py-3 text-xs font-bold text-white shadow-[0_8px_20px_rgba(16,42,73,0.28)] transition"
             >
               <span>{{ t('Drop Your 3D File') }}</span>
               <svg class="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
@@ -605,7 +605,7 @@
             v-reveal="{ variant: 'up', delay: idx * 60 }"
             class="rounded-[20px] border bg-white dark:bg-[#111217] transition-all overflow-hidden"
             :class="openFaqIndex === idx
-              ? 'border-[#FF5E0E]/60 shadow-[0_6px_20px_rgba(0,0,0,0.03)]'
+              ? 'border-navy-900/50 dark:border-blue-400/50 shadow-[0_6px_20px_rgba(0,0,0,0.03)]'
               : 'border-black/[0.06] dark:border-white/10 hover:border-black/15 dark:hover:border-white/20'"
           >
             <button
@@ -615,13 +615,13 @@
             >
               <span
                 class="text-sm sm:text-base font-semibold transition-colors"
-                :class="openFaqIndex === idx ? 'text-[#FF5E0E]' : 'text-[#111112] dark:text-white'"
+                :class="openFaqIndex === idx ? 'text-navy-900 dark:text-blue-300' : 'text-[#111112] dark:text-white'"
               >
                 {{ faq.q }}
               </span>
               <svg
                 class="w-4 h-4 shrink-0 transition-transform duration-300"
-                :class="openFaqIndex === idx ? 'rotate-180 text-[#FF5E0E]' : 'text-[#575757] dark:text-white/60'"
+                :class="openFaqIndex === idx ? 'rotate-180 text-navy-900 dark:text-blue-300' : 'text-[#575757] dark:text-white/60'"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -671,7 +671,7 @@
         >
           <router-link
             to="/print/upload"
-            class="group inline-flex items-center gap-2 rounded-full bg-[#FF5E0E] hover:bg-[#FF764D] px-8 py-4 text-sm font-bold text-white shadow-[0_10px_25px_rgba(255,94,14,0.4)] transition"
+            class="group inline-flex items-center gap-2 rounded-full bg-navy-800 hover:bg-navy-600 border border-white/15 px-8 py-4 text-sm font-bold text-white shadow-[0_10px_25px_rgba(16,42,73,0.45)] transition"
           >
             <span>{{ t('Go to 3D File Upload') }}</span>
             <svg class="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
@@ -701,29 +701,74 @@ const marqueeSpecs = [
 ]
 
 // ------------------------------------------------------------
-// Scroll-Triggered Text & Section Reveal Directive (v-reveal)
+// Bidirectional Scroll-Triggered Text Reveal Directive (v-reveal)
+// Supports both scroll-down and scroll-up re-animations without edge flicker
 // ------------------------------------------------------------
 const observerTargets = new WeakMap()
-let revealObserver = null
+let enterObserver = null
+let exitObserver = null
 
 function prefersReducedMotion() {
   return typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
 }
 
-function getRevealObserver() {
-  if (revealObserver) return revealObserver
-  revealObserver = new IntersectionObserver(
+function getEnterObserver() {
+  if (enterObserver) return enterObserver
+  enterObserver = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('is-revealed')
-          revealObserver.unobserve(entry.target)
+        if (!entry.isIntersecting) return
+        const el = entry.target
+        if (el.classList.contains('is-revealed')) return
+
+        const delay = Number(el.dataset.revealDelay || 0)
+        // If reset happened on this same frame, flush layout before animating in
+        if (el.style.transitionDuration === '0ms') {
+          void el.offsetHeight
+          el.style.transitionDuration = ''
         }
+        el.style.transitionDelay = delay ? `${delay}ms` : ''
+        el.classList.add('is-revealed')
       })
     },
-    { threshold: 0.06, rootMargin: '0px 0px -16px 0px' }
+    { threshold: 0.05, rootMargin: '0px 0px -24px 0px' }
   )
-  return revealObserver
+  return enterObserver
+}
+
+function getExitObserver() {
+  if (exitObserver) return exitObserver
+  exitObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) return
+        const el = entry.target
+        const wasRevealed = el.classList.contains('is-revealed')
+
+        // Completely off-screen (>40px outside viewport): snap-reset and aim direction for re-entry
+        el.style.transitionDuration = '0ms'
+        el.style.transitionDelay = '0ms'
+        if (wasRevealed) {
+          el.classList.remove('is-revealed')
+        }
+
+        // If element is above the viewport, prepare it to glide down when scrolling UP
+        if (entry.boundingClientRect.bottom <= 0) {
+          el.classList.add('reveal-from-top')
+        } else {
+          el.classList.remove('reveal-from-top')
+        }
+
+        requestAnimationFrame(() => {
+          if (!el.classList.contains('is-revealed')) {
+            el.style.transitionDuration = ''
+          }
+        })
+      })
+    },
+    { threshold: 0, rootMargin: '40px 0px 40px 0px' }
+  )
+  return exitObserver
 }
 
 const vReveal = {
@@ -733,37 +778,54 @@ const vReveal = {
     const variant = opts.variant ?? 'up'
 
     el.classList.add('reveal-base', `reveal-${variant}`)
+    el.dataset.revealDelay = String(delay)
     if (delay) {
       el.style.transitionDelay = `${delay}ms`
     }
 
-    if (prefersReducedMotion() || opts.immediate) {
+    if (prefersReducedMotion()) {
+      el.classList.add('is-revealed')
+      return
+    }
+
+    if (opts.immediate) {
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
           el.classList.add('is-revealed')
         })
       })
-    } else {
-      getRevealObserver().observe(el)
     }
+
+    // Keep observing all elements (including immediate Hero) so scrolling back UP replays motion
+    getEnterObserver().observe(el)
+    getExitObserver().observe(el)
     observerTargets.set(el, true)
   },
   unmounted(el) {
-    if (revealObserver && observerTargets.has(el)) {
-      revealObserver.unobserve(el)
+    if (observerTargets.has(el)) {
+      enterObserver?.unobserve(el)
+      exitObserver?.unobserve(el)
+      observerTargets.delete(el)
     }
   }
 }
 
 // ------------------------------------------------------------
-// Section 2 Animated Hardware Telemetry Counters
+// Section 2 Bidirectional Hardware Telemetry Counters
 // ------------------------------------------------------------
 const bentoStatsRef = ref(null)
 const displaySpeed = ref(600)
 const displayVolume = ref(350)
 const displayColors = ref(16)
-let statsObserver = null
+let statsEnterObserver = null
+let statsExitObserver = null
+let statsPlaying = false
 const activeCountRafs = []
+
+function cancelStatsRafs() {
+  activeCountRafs.forEach((id) => cancelAnimationFrame(id))
+  activeCountRafs.length = 0
+}
 
 function animateCount(targetRef, targetVal, duration = 1100) {
   const startTime = performance.now()
@@ -790,32 +852,46 @@ onMounted(() => {
   displayVolume.value = 0
   displayColors.value = 0
 
-  statsObserver = new IntersectionObserver(
+  statsEnterObserver = new IntersectionObserver(
     (entries) => {
-      if (entries.some((e) => e.isIntersecting)) {
+      if (entries.some((e) => e.isIntersecting) && !statsPlaying) {
+        statsPlaying = true
+        cancelStatsRafs()
         animateCount(displaySpeed, 600, 1200)
         animateCount(displayVolume, 350, 1100)
         animateCount(displayColors, 16, 900)
-        statsObserver?.disconnect()
-        statsObserver = null
       }
     },
-    { threshold: 0.2 }
+    { threshold: 0.15 }
   )
-  statsObserver.observe(bentoStatsRef.value)
+
+  statsExitObserver = new IntersectionObserver(
+    (entries) => {
+      if (entries.some((e) => !e.isIntersecting) && statsPlaying) {
+        statsPlaying = false
+        cancelStatsRafs()
+        displaySpeed.value = 0
+        displayVolume.value = 0
+        displayColors.value = 0
+      }
+    },
+    { threshold: 0, rootMargin: '40px 0px 40px 0px' }
+  )
+
+  statsEnterObserver.observe(bentoStatsRef.value)
+  statsExitObserver.observe(bentoStatsRef.value)
 })
 
 onUnmounted(() => {
-  if (revealObserver) {
-    revealObserver.disconnect()
-    revealObserver = null
-  }
-  if (statsObserver) {
-    statsObserver.disconnect()
-    statsObserver = null
-  }
-  activeCountRafs.forEach((id) => cancelAnimationFrame(id))
-  activeCountRafs.length = 0
+  enterObserver?.disconnect()
+  enterObserver = null
+  exitObserver?.disconnect()
+  exitObserver = null
+  statsEnterObserver?.disconnect()
+  statsEnterObserver = null
+  statsExitObserver?.disconnect()
+  statsExitObserver = null
+  cancelStatsRafs()
 })
 
 // Section 3 Interactive Hardware Mode Switcher
@@ -983,10 +1059,18 @@ function toggleFaq(index) {
   transform: translateY(105%);
 }
 
+.reveal-mask.reveal-from-top {
+  transform: translateY(-105%);
+}
+
 .reveal-up {
   opacity: 0;
   transform: translateY(26px);
   filter: blur(4px);
+}
+
+.reveal-up.reveal-from-top {
+  transform: translateY(-26px);
 }
 
 .reveal-scale {

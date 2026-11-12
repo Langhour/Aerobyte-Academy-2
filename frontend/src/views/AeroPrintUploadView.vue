@@ -7,7 +7,7 @@
           <div class="flex flex-col gap-2">
             <router-link
               to="/print"
-              class="inline-flex w-fit items-center gap-2 rounded-full border border-black/[0.08] dark:border-white/15 bg-[#F3F4F6] dark:bg-white/5 px-3.5 py-1 text-xs font-semibold text-[#111112] dark:text-white/90 hover:border-[#FF5E0E] hover:text-[#FF5E0E] transition"
+              class="inline-flex w-fit items-center gap-2 rounded-full border border-black/[0.08] dark:border-white/15 bg-[#F3F4F6] dark:bg-white/5 px-3.5 py-1 text-xs font-semibold text-[#111112] dark:text-white/90 hover:border-navy-900 hover:text-navy-900 dark:hover:border-blue-400 dark:hover:text-blue-400 transition"
             >
               <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
@@ -19,8 +19,8 @@
               <h1 class="text-2xl sm:text-3xl font-bold tracking-[-0.02em] text-[#111112] dark:text-white">
                 {{ t('Drop Your 3D CAD Files') }}
               </h1>
-              <span class="inline-flex items-center gap-1.5 rounded-full bg-[#FF5E0E]/10 border border-[#FF5E0E]/20 px-3 py-0.5 text-xs font-semibold text-[#FF5E0E]">
-                <span class="h-1.5 w-1.5 rounded-full bg-[#FF5E0E]"></span>
+              <span class="inline-flex items-center gap-1.5 rounded-full bg-navy-900/10 dark:bg-blue-400/15 border border-navy-900/20 dark:border-blue-400/30 px-3 py-0.5 text-xs font-semibold text-navy-900 dark:text-blue-300">
+                <span class="h-1.5 w-1.5 rounded-full bg-navy-900 dark:bg-blue-400"></span>
                 Creality K2 Plus • {{ t('Instant 3D Quote') }}
               </span>
             </div>
@@ -52,7 +52,7 @@
           <section class="rounded-[24px] border border-black/[0.06] dark:border-white/10 bg-white dark:bg-[#111112] p-5 sm:p-7 shadow-sm">
             <div class="flex items-center justify-between mb-4">
               <div class="flex items-center gap-3">
-                <span class="flex h-7 w-7 items-center justify-center rounded-full bg-[#FF5E0E] text-white font-bold text-xs shadow-sm shadow-[#FF5E0E]/30">
+                <span class="flex h-7 w-7 items-center justify-center rounded-full bg-navy-900 dark:bg-navy-600 text-white font-bold text-xs shadow-sm shadow-navy-900/25">
                   1
                 </span>
                 <h2 class="text-base sm:text-lg font-bold text-[#111112] dark:text-white">
@@ -72,8 +72,8 @@
               @click="triggerFileInput"
               class="relative rounded-[20px] border-2 border-dashed transition-all p-7 sm:p-10 text-center cursor-pointer group"
               :class="isDragging
-                ? 'border-[#FF5E0E] bg-[#FF5E0E]/[0.06] scale-[1.01]'
-                : 'border-black/15 dark:border-white/15 hover:border-[#FF5E0E] bg-[#FAFAFA] dark:bg-white/[0.02] hover:bg-[#FF5E0E]/[0.03]'"
+                ? 'border-navy-900 dark:border-blue-400 bg-navy-900/[0.06] dark:bg-blue-500/10 scale-[1.01]'
+                : 'border-black/15 dark:border-white/15 hover:border-navy-900 dark:hover:border-blue-400 bg-[#FAFAFA] dark:bg-white/[0.02] hover:bg-navy-50/70 dark:hover:bg-white/[0.04]'"
             >
               <input
                 ref="fileInputRef"
@@ -84,7 +84,7 @@
                 @change="handleFileInputChange"
               />
 
-              <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-[#FF5E0E]/10 text-[#FF5E0E] mb-4 group-hover:scale-105 transition-transform">
+              <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-navy-900/10 dark:bg-blue-400/15 text-navy-900 dark:text-blue-300 mb-4 group-hover:scale-105 transition-transform">
                 <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
                 </svg>
@@ -97,7 +97,7 @@
               </p>
 
               <div class="mt-5">
-                <span class="inline-flex items-center gap-2 rounded-full bg-[#FF5E0E] hover:bg-[#FF764D] px-6 py-2.5 text-xs font-bold text-white shadow-[0_10px_25px_rgba(255,94,14,0.35)] transition">
+                <span class="inline-flex items-center gap-2 rounded-full bg-navy-900 hover:bg-navy-800 dark:bg-navy-600 dark:hover:bg-navy-800 px-6 py-2.5 text-xs font-bold text-white shadow-[0_10px_25px_rgba(16,42,73,0.28)] transition">
                   {{ t('Select 3D Files') }}
                 </span>
               </div>
@@ -114,7 +114,7 @@
                   :key="sample.id"
                   type="button"
                   @click="loadSampleModel(sample)"
-                  class="inline-flex items-center gap-1.5 rounded-full border border-black/[0.08] dark:border-white/15 bg-white dark:bg-white/5 px-3 py-1.5 text-xs font-semibold text-[#111112] dark:text-white hover:border-[#FF5E0E] hover:text-[#FF5E0E] transition cursor-pointer"
+                  class="inline-flex items-center gap-1.5 rounded-full border border-black/[0.08] dark:border-white/15 bg-white dark:bg-white/5 px-3 py-1.5 text-xs font-semibold text-[#111112] dark:text-white hover:border-navy-900 hover:text-navy-900 dark:hover:border-blue-400 dark:hover:text-blue-300 transition cursor-pointer"
                 >
                   <svg class="w-3.5 h-3.5 text-[#575757] dark:text-white/65" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" />
@@ -132,7 +132,7 @@
                 class="rounded-2xl border border-black/[0.07] dark:border-white/10 bg-[#FAFAFA] dark:bg-white/[0.03] p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3"
               >
                 <div class="flex items-center gap-3.5 min-w-0">
-                  <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#FF5E0E]/15 text-[#FF5E0E] font-bold text-xs uppercase">
+                  <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-navy-900/10 dark:bg-blue-400/15 text-navy-900 dark:text-blue-300 font-bold text-xs uppercase">
                     3D
                   </div>
                   <div class="min-w-0">
@@ -180,7 +180,7 @@
           <!-- 2. Manufacturing Technology (K2 Plus FDM, SLA, SLS) -->
           <section class="rounded-[24px] border border-black/[0.06] dark:border-white/10 bg-white dark:bg-[#111112] p-5 sm:p-7 shadow-sm">
             <div class="flex items-center gap-3 mb-4">
-              <span class="flex h-7 w-7 items-center justify-center rounded-full bg-[#FF5E0E] text-white font-bold text-xs shadow-sm shadow-[#FF5E0E]/30">
+              <span class="flex h-7 w-7 items-center justify-center rounded-full bg-navy-900 dark:bg-navy-600 text-white font-bold text-xs shadow-sm shadow-navy-900/25">
                 2
               </span>
               <h2 class="text-base sm:text-lg font-bold text-[#111112] dark:text-white">
@@ -196,14 +196,14 @@
                 @click="selectTechnology(tech.id)"
                 class="rounded-2xl border p-4 text-left transition-all cursor-pointer relative"
                 :class="selectedTech === tech.id
-                  ? 'border-[#FF5E0E] bg-[#FF5E0E]/[0.05] ring-2 ring-[#FF5E0E]/20'
+                  ? 'border-navy-900 dark:border-blue-400 bg-navy-50/70 dark:bg-blue-500/10 ring-2 ring-navy-900/15 dark:ring-blue-400/25'
                   : 'border-black/[0.07] dark:border-white/10 hover:border-black/20 dark:hover:border-white/25 bg-[#FAFAFA] dark:bg-white/[0.02]'"
               >
                 <div class="flex items-center justify-between gap-2 mb-1.5">
                   <span class="text-sm font-bold text-[#111112] dark:text-white">{{ tech.name }}</span>
                   <span
                     class="rounded-full px-2 py-0.5 text-[10px] font-bold"
-                    :class="selectedTech === tech.id ? 'bg-[#FF5E0E] text-white' : 'bg-black/5 dark:bg-white/10 text-[#575757] dark:text-white/75'"
+                    :class="selectedTech === tech.id ? 'bg-navy-900 dark:bg-blue-500 text-white' : 'bg-black/5 dark:bg-white/10 text-[#575757] dark:text-white/75'"
                   >
                     {{ tech.badge }}
                   </span>
@@ -222,14 +222,14 @@
           <section class="rounded-[24px] border border-black/[0.06] dark:border-white/10 bg-white dark:bg-[#111112] p-5 sm:p-7 shadow-sm">
             <div class="flex items-center justify-between mb-4">
               <div class="flex items-center gap-3">
-                <span class="flex h-7 w-7 items-center justify-center rounded-full bg-[#FF5E0E] text-white font-bold text-xs shadow-sm shadow-[#FF5E0E]/30">
+                <span class="flex h-7 w-7 items-center justify-center rounded-full bg-navy-900 dark:bg-navy-600 text-white font-bold text-xs shadow-sm shadow-navy-900/25">
                   3
                 </span>
                 <h2 class="text-base sm:text-lg font-bold text-[#111112] dark:text-white">
                   {{ t('Material') }}
                 </h2>
               </div>
-              <span class="text-xs font-bold text-[#FF5E0E]">
+              <span class="text-xs font-bold text-navy-900 dark:text-blue-300">
                 {{ currentMaterials.length }} {{ t('Options available') }}
               </span>
             </div>
@@ -242,12 +242,12 @@
                 @click="selectedMaterial = mat.id"
                 class="rounded-2xl border p-4 text-left transition-all cursor-pointer"
                 :class="selectedMaterial === mat.id
-                  ? 'border-[#FF5E0E] bg-[#FF5E0E]/[0.05] ring-2 ring-[#FF5E0E]/20'
+                  ? 'border-navy-900 dark:border-blue-400 bg-navy-50/70 dark:bg-blue-500/10 ring-2 ring-navy-900/15 dark:ring-blue-400/25'
                   : 'border-black/[0.07] dark:border-white/10 hover:border-black/20 dark:hover:border-white/25 bg-[#FAFAFA] dark:bg-white/[0.02]'"
               >
                 <div class="flex items-center justify-between gap-2">
                   <span class="text-xs sm:text-sm font-bold text-[#111112] dark:text-white">{{ mat.name }}</span>
-                  <span class="text-[11px] font-bold" :class="selectedMaterial === mat.id ? 'text-[#FF5E0E]' : 'text-[#575757] dark:text-white/60'">
+                  <span class="text-[11px] font-bold" :class="selectedMaterial === mat.id ? 'text-navy-900 dark:text-blue-300' : 'text-[#575757] dark:text-white/60'">
                     {{ mat.priceTag }}
                   </span>
                 </div>
@@ -270,7 +270,7 @@
           <!-- 4. Color, Infill & Layer Resolution -->
           <section class="rounded-[24px] border border-black/[0.06] dark:border-white/10 bg-white dark:bg-[#111112] p-5 sm:p-7 shadow-sm space-y-6">
             <div class="flex items-center gap-3">
-              <span class="flex h-7 w-7 items-center justify-center rounded-full bg-[#FF5E0E] text-white font-bold text-xs shadow-sm shadow-[#FF5E0E]/30">
+              <span class="flex h-7 w-7 items-center justify-center rounded-full bg-navy-900 dark:bg-navy-600 text-white font-bold text-xs shadow-sm shadow-navy-900/25">
                 4
               </span>
               <h2 class="text-base sm:text-lg font-bold text-[#111112] dark:text-white">
@@ -291,7 +291,7 @@
                   @click="selectedColor = color.name"
                   class="flex items-center gap-2 rounded-full border px-3.5 py-2 text-xs font-semibold transition cursor-pointer"
                   :class="selectedColor === color.name
-                    ? 'border-[#FF5E0E] bg-[#FF5E0E]/[0.08] text-[#111112] dark:text-white ring-2 ring-[#FF5E0E]/20 font-bold'
+                    ? 'border-navy-900 dark:border-blue-400 bg-navy-50/75 dark:bg-blue-500/15 text-[#111112] dark:text-white ring-2 ring-navy-900/15 dark:ring-blue-400/25 font-bold'
                     : 'border-black/[0.08] dark:border-white/15 bg-[#FAFAFA] dark:bg-white/5 text-[#575757] dark:text-white/75 hover:border-black/20'"
                 >
                   <span
@@ -310,7 +310,7 @@
                   <label class="text-xs font-bold text-[#575757] dark:text-white/70 uppercase tracking-wider">
                     {{ t('Infill Density') }}
                   </label>
-                  <span class="text-xs font-bold text-[#FF5E0E]">{{ selectedInfill }}%</span>
+                  <span class="text-xs font-bold text-navy-900 dark:text-blue-300">{{ selectedInfill }}%</span>
                 </div>
                 <div class="grid grid-cols-4 gap-2">
                   <button
@@ -320,7 +320,7 @@
                     @click="selectedInfill = inf"
                     class="rounded-xl border py-2 text-xs font-bold transition text-center cursor-pointer"
                     :class="selectedInfill === inf
-                      ? 'border-[#FF5E0E] bg-[#FF5E0E]/[0.08] text-[#FF5E0E] ring-2 ring-[#FF5E0E]/20'
+                      ? 'border-navy-900 dark:border-blue-400 bg-navy-50/75 dark:bg-blue-500/15 text-navy-900 dark:text-blue-300 ring-2 ring-navy-900/15 dark:ring-blue-400/25'
                       : 'border-black/[0.08] dark:border-white/15 bg-[#FAFAFA] dark:bg-white/5 text-[#575757] dark:text-white/75 hover:border-black/20'"
                   >
                     {{ inf }}%
@@ -344,11 +344,11 @@
                     @click="selectedLayerHeight = res.val"
                     class="rounded-xl border py-2 px-1 text-center transition cursor-pointer"
                     :class="selectedLayerHeight === res.val
-                      ? 'border-[#FF5E0E] bg-[#FF5E0E]/[0.08] ring-2 ring-[#FF5E0E]/20'
+                      ? 'border-navy-900 dark:border-blue-400 bg-navy-50/75 dark:bg-blue-500/15 ring-2 ring-navy-900/15 dark:ring-blue-400/25'
                       : 'border-black/[0.08] dark:border-white/15 bg-[#FAFAFA] dark:bg-white/5 hover:border-black/20'"
                   >
-                    <div class="text-xs font-bold" :class="selectedLayerHeight === res.val ? 'text-[#FF5E0E]' : 'text-[#111112] dark:text-white'">{{ res.val }}</div>
-                    <div class="text-[10px]" :class="selectedLayerHeight === res.val ? 'text-[#FF5E0E]/85 font-semibold' : 'text-[#696969] dark:text-white/50'">{{ res.label }}</div>
+                    <div class="text-xs font-bold" :class="selectedLayerHeight === res.val ? 'text-navy-900 dark:text-blue-300' : 'text-[#111112] dark:text-white'">{{ res.val }}</div>
+                    <div class="text-[10px]" :class="selectedLayerHeight === res.val ? 'text-navy-800 dark:text-blue-300/85 font-semibold' : 'text-[#696969] dark:text-white/50'">{{ res.label }}</div>
                   </button>
                 </div>
               </div>
@@ -364,7 +364,7 @@
                   v-for="opt in postProcessOptions"
                   :key="opt.id"
                   :class="selectedPostProcess.includes(opt.id)
-                    ? 'border-[#FF5E0E] bg-[#FF5E0E]/[0.05] ring-1 ring-[#FF5E0E]/25'
+                    ? 'border-navy-900 dark:border-blue-400 bg-navy-50/60 dark:bg-blue-500/10 ring-1 ring-navy-900/20 dark:ring-blue-400/25'
                     : 'border-black/[0.07] dark:border-white/10 bg-[#FAFAFA] dark:bg-white/[0.02] hover:border-black/20'"
                   class="flex items-center justify-between p-3.5 rounded-2xl border cursor-pointer transition"
                 >
@@ -373,7 +373,7 @@
                       type="checkbox"
                       :value="opt.id"
                       v-model="selectedPostProcess"
-                      class="h-4 w-4 rounded border-slate-300 text-[#FF5E0E] focus:ring-[#FF5E0E] accent-[#FF5E0E]"
+                      class="h-4 w-4 rounded border-slate-300 text-navy-900 dark:text-blue-400 focus:ring-navy-900 dark:focus:ring-blue-400 accent-[#102a49]"
                     />
                     <div>
                       <p class="text-xs font-bold text-[#111112] dark:text-white">{{ opt.name }}</p>
@@ -471,7 +471,7 @@
               <button
                 type="button"
                 @click="openOrderModal = true"
-                class="w-full rounded-full bg-[#FF5E0E] hover:bg-[#FF764D] text-white font-bold py-3.5 px-5 text-sm shadow-[0_10px_25px_rgba(255,94,14,0.4)] active:scale-[0.99] transition flex items-center justify-center gap-2 cursor-pointer"
+                class="w-full rounded-full bg-navy-900 hover:bg-navy-800 dark:bg-navy-600 dark:hover:bg-navy-800 text-white font-bold py-3.5 px-5 text-sm shadow-[0_10px_25px_rgba(16,42,73,0.3)] active:scale-[0.99] transition flex items-center justify-center gap-2 cursor-pointer"
               >
                 <span>{{ t('Submit Print Order') }}</span>
               </button>
@@ -480,7 +480,7 @@
                 :href="telegramDirectLink"
                 target="_blank"
                 rel="noopener"
-                class="w-full rounded-full border border-black/10 dark:border-white/15 bg-[#FAFAFA] dark:bg-white/5 hover:border-[#FF5E0E] text-[#111112] dark:text-white font-bold py-3 px-4 text-xs transition flex items-center justify-center gap-2"
+                class="w-full rounded-full border border-black/10 dark:border-white/15 bg-[#FAFAFA] dark:bg-white/5 hover:border-navy-900 dark:hover:border-blue-400 text-[#111112] dark:text-white font-bold py-3 px-4 text-xs transition flex items-center justify-center gap-2"
               >
                 <span>{{ t('Direct Quote via Telegram') }}</span>
               </a>
@@ -525,7 +525,7 @@
           <button
             type="button"
             @click="openOrderModal = false; orderSubmitted = false"
-            class="mt-4 rounded-full bg-[#FF5E0E] hover:bg-[#FF764D] text-white font-bold px-7 py-2.5 text-xs shadow-[0_8px_20px_rgba(255,94,14,0.35)] cursor-pointer"
+            class="mt-4 rounded-full bg-navy-900 hover:bg-navy-800 dark:bg-navy-600 dark:hover:bg-navy-800 text-white font-bold px-7 py-2.5 text-xs shadow-[0_8px_20px_rgba(16,42,73,0.28)] cursor-pointer"
           >
             {{ t('Done') }}
           </button>
@@ -539,7 +539,7 @@
               type="text"
               required
               placeholder="e.g. Sokha Chan"
-              class="w-full rounded-xl border border-black/15 dark:border-white/15 bg-[#FAFAFA] dark:bg-white/5 px-3.5 py-2.5 text-xs text-[#111112] dark:text-white focus:outline-none focus:border-[#FF5E0E]"
+              class="w-full rounded-xl border border-black/15 dark:border-white/15 bg-[#FAFAFA] dark:bg-white/5 px-3.5 py-2.5 text-xs text-[#111112] dark:text-white focus:outline-none focus:border-navy-900 dark:focus:border-blue-400"
             />
           </div>
 
@@ -551,7 +551,7 @@
                 type="tel"
                 required
                 placeholder="012 345 678"
-                class="w-full rounded-xl border border-black/15 dark:border-white/15 bg-[#FAFAFA] dark:bg-white/5 px-3.5 py-2.5 text-xs text-[#111112] dark:text-white focus:outline-none focus:border-[#FF5E0E]"
+                class="w-full rounded-xl border border-black/15 dark:border-white/15 bg-[#FAFAFA] dark:bg-white/5 px-3.5 py-2.5 text-xs text-[#111112] dark:text-white focus:outline-none focus:border-navy-900 dark:focus:border-blue-400"
               />
             </div>
             <div>
@@ -560,7 +560,7 @@
                 v-model="orderForm.telegram"
                 type="text"
                 placeholder="@username"
-                class="w-full rounded-xl border border-black/15 dark:border-white/15 bg-[#FAFAFA] dark:bg-white/5 px-3.5 py-2.5 text-xs text-[#111112] dark:text-white focus:outline-none focus:border-[#FF5E0E]"
+                class="w-full rounded-xl border border-black/15 dark:border-white/15 bg-[#FAFAFA] dark:bg-white/5 px-3.5 py-2.5 text-xs text-[#111112] dark:text-white focus:outline-none focus:border-navy-900 dark:focus:border-blue-400"
               />
             </div>
           </div>
@@ -571,7 +571,7 @@
               v-model="orderForm.notes"
               rows="2"
               placeholder="Pick up at AeroByte Academy Lab, or deliver in Phnom Penh..."
-              class="w-full rounded-xl border border-black/15 dark:border-white/15 bg-[#FAFAFA] dark:bg-white/5 px-3.5 py-2.5 text-xs text-[#111112] dark:text-white focus:outline-none focus:border-[#FF5E0E]"
+              class="w-full rounded-xl border border-black/15 dark:border-white/15 bg-[#FAFAFA] dark:bg-white/5 px-3.5 py-2.5 text-xs text-[#111112] dark:text-white focus:outline-none focus:border-navy-900 dark:focus:border-blue-400"
             ></textarea>
           </div>
 
@@ -582,7 +582,7 @@
 
           <button
             type="submit"
-            class="w-full rounded-full bg-[#FF5E0E] hover:bg-[#FF764D] text-white font-bold py-3.5 text-xs shadow-[0_10px_25px_rgba(255,94,14,0.35)] transition cursor-pointer"
+            class="w-full rounded-full bg-navy-900 hover:bg-navy-800 dark:bg-navy-600 dark:hover:bg-navy-800 text-white font-bold py-3.5 text-xs shadow-[0_10px_25px_rgba(16,42,73,0.3)] transition cursor-pointer"
           >
             {{ t('Confirm & Send to Lab Engineers') }}
           </button>
