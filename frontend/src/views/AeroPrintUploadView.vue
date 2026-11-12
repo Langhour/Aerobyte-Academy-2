@@ -12,7 +12,7 @@
               <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
               </svg>
-              <span>{{ t('Back to Creality K2 Plus') }}</span>
+              <span>{{ t('Back to Aero Print') }}</span>
             </router-link>
 
             <div class="flex flex-wrap items-center gap-2.5">
@@ -21,7 +21,7 @@
               </h1>
               <span class="inline-flex items-center gap-1.5 rounded-full bg-navy-900/10 dark:bg-blue-400/15 border border-navy-900/20 dark:border-blue-400/30 px-3 py-0.5 text-xs font-semibold text-navy-900 dark:text-blue-300">
                 <span class="h-1.5 w-1.5 rounded-full bg-navy-900 dark:bg-blue-400"></span>
-                Creality K2 Plus • {{ t('Instant 3D Quote') }}
+                Aero Print • {{ t('Instant 3D Quote') }}
               </span>
             </div>
             <p class="text-xs sm:text-sm text-[#575757] dark:text-white/65">
@@ -177,7 +177,7 @@
             </div>
           </section>
 
-          <!-- 2. Manufacturing Technology (K2 Plus FDM, SLA, SLS) -->
+          <!-- 2. Manufacturing Technology (Industrial FDM, SLA, SLS) -->
           <section class="rounded-[24px] border border-black/[0.06] dark:border-white/10 bg-white dark:bg-[#111112] p-5 sm:p-7 shadow-sm">
             <div class="flex items-center gap-3 mb-4">
               <span class="flex h-7 w-7 items-center justify-center rounded-full bg-navy-900 dark:bg-navy-600 text-white font-bold text-xs shadow-sm shadow-navy-900/25">
@@ -281,7 +281,7 @@
             <!-- Color Palette (Including CFS Multi-Color) -->
             <div>
               <label class="block text-xs font-bold text-[#575757] dark:text-white/70 mb-2.5 uppercase tracking-wider">
-                {{ t('Color') }} • {{ t('K2 Plus CFS Ready') }}
+                {{ t('Color') }} • {{ t('Multi-Color Ready') }}
               </label>
               <div class="flex flex-wrap gap-2.5">
                 <button
@@ -402,10 +402,6 @@
             <!-- Parameters Overview -->
             <div class="mt-4 space-y-2.5 text-xs">
               <div class="flex justify-between text-[#575757] dark:text-white/60">
-                <span>{{ t('Printer') }}</span>
-                <span class="font-bold text-[#111112] dark:text-white">Creality K2 Plus</span>
-              </div>
-              <div class="flex justify-between text-[#575757] dark:text-white/60">
                 <span>{{ t('Technology') }}</span>
                 <span class="font-bold text-[#111112] dark:text-white">{{ currentTechName }}</span>
               </div>
@@ -487,7 +483,7 @@
             </div>
 
             <p class="text-[11px] text-center text-[#696969] dark:text-white/50 mt-4 leading-relaxed">
-              {{ t('Need multi-color CFS sequencing or bulk engineering runs? Send your files and our Ta Khmau lab engineers will inspect slices before printing.') }}
+              {{ t('Need multi-color sequencing or bulk engineering runs? Send your files and our Ta Khmau lab engineers will inspect slices before printing.') }}
             </p>
           </div>
         </div>
@@ -503,7 +499,7 @@
         <div class="flex items-center justify-between pb-4 border-b border-black/[0.06] dark:border-white/10">
           <div>
             <h3 class="text-lg font-bold text-[#111112] dark:text-white">{{ t('Submit 3D Print Request') }}</h3>
-            <p class="text-xs text-[#696969] dark:text-white/55 mt-0.5">Creality K2 Plus Lab Queue</p>
+            <p class="text-xs text-[#696969] dark:text-white/55 mt-0.5">Aero Print Lab Queue</p>
           </div>
           <button
             type="button"
@@ -679,7 +675,7 @@ function removeFile(index) {
 // 2. Technologies
 const selectedTech = ref('fdm')
 const technologies = [
-  { id: 'fdm', name: 'Creality K2 Plus (FDM)', badge: 'Flagship CoreXY', desc: '600 mm/s hyper-speed, 350³mm chamber & 16-color CFS multi-material.', precision: '±0.1mm' },
+  { id: 'fdm', name: 'Industrial CoreXY (FDM)', badge: 'Fast Prototyping', desc: 'High-speed multi-material CoreXY printing up to 350³mm build volume.', precision: '±0.1mm' },
   { id: 'sla', name: 'SLA Resin', badge: 'Ultra Precision', desc: 'Smooth injection-mold surface finish for fine micro-details.', precision: '±0.05mm' },
   { id: 'sls', name: 'SLS Nylon', badge: 'Industrial Grade', desc: 'Support-free laser sintered nylon for complex mechanical gears.', precision: '±0.1mm' },
 ]
@@ -688,11 +684,11 @@ const technologies = [
 const selectedMaterial = ref('pla')
 const materialsByTech = {
   fdm: [
-    { id: 'pla', name: 'Hyper PLA', priceTag: '$0.08 / cm³', description: 'Crisp high-speed prototypes tuned for K2 Plus 600mm/s motion.', tags: ['High Speed', 'Clean Detail'] },
+    { id: 'pla', name: 'Hyper PLA', priceTag: '$0.08 / cm³', description: 'Crisp high-speed prototypes with clean surface detail.', tags: ['High Speed', 'Clean Detail'] },
     { id: 'petg', name: 'Tough PETG', priceTag: '$0.11 / cm³', description: 'Impact & water resistant functional mounts for FPV drones.', tags: ['Durable', 'Waterproof'] },
     { id: 'abs', name: 'ABS / ASA (60°C Chamber)', priceTag: '$0.13 / cm³', description: 'Actively heated enclosure for warp-free outdoor & thermal parts.', tags: ['Heated Chamber', 'UV Safe'] },
     { id: 'tpu', name: 'TPU Flexible (95A)', priceTag: '$0.16 / cm³', description: 'Shock-absorbing GoPro mounts, drone skids & rubber bumpers.', tags: ['Elastic', 'Crash-Proof'] },
-    { id: 'cf-nylon', name: 'PA-CF Carbon Fiber', priceTag: '$0.28 / cm³', description: '350°C Unicorn nozzle aerospace rigidity for structural frames.', tags: ['Extreme Stiff', '350°C Printed'] },
+    { id: 'cf-nylon', name: 'PA-CF Carbon Fiber', priceTag: '$0.28 / cm³', description: '350°C high-temp nozzle aerospace rigidity for structural frames.', tags: ['Extreme Stiff', '350°C Printed'] },
   ],
   sla: [
     { id: 'sla-std', name: 'Standard Resin (White/Gray)', priceTag: '$0.18 / cm³', description: 'Glass-smooth surface finish, flawless presentation.', tags: ['0.05mm Layers', 'Ultra Smooth'] },
@@ -717,7 +713,7 @@ function selectTechnology(techId) {
 }
 
 const currentTechName = computed(() => {
-  return technologies.find(t => t.id === selectedTech.value)?.name || 'Creality K2 Plus (FDM)'
+  return technologies.find(t => t.id === selectedTech.value)?.name || 'Industrial CoreXY (FDM)'
 })
 
 const currentMaterialName = computed(() => {
@@ -732,7 +728,7 @@ const colors = [
   { name: 'Cyber Gray', hex: '#64748b' },
   { name: 'Aero Orange', hex: '#FF5E0E' },
   { name: 'Royal Navy', hex: '#1034A6' },
-  { name: 'CFS Multi-Color (Up to 16)', hex: '#FF5E0E', gradient: 'linear-gradient(135deg, #FF5E0E, #1034A6, #18181b)' },
+  { name: 'Multi-Color (Up to 16)', hex: '#FF5E0E', gradient: 'linear-gradient(135deg, #FF5E0E, #1034A6, #18181b)' },
 ]
 
 const selectedInfill = ref(20)
@@ -809,7 +805,7 @@ const finalPriceKhr = computed(() => {
 // Telegram direct message link
 const telegramDirectLink = computed(() => {
   const msg = encodeURIComponent(
-    `Hello AeroByte! I would like a Creality K2 Plus 3D print quote:\n• Tech: ${currentTechName.value}\n• Material: ${currentMaterialName.value}\n• Color: ${selectedColor.value}\n• Infill: ${selectedInfill.value}%\n• Parts: ${totalPartCount.value} pcs\n• Est. Quote: $${finalPriceUsd.value}`
+    `Hello AeroByte! I would like an Aero Print 3D quote:\n• Tech: ${currentTechName.value}\n• Material: ${currentMaterialName.value}\n• Color: ${selectedColor.value}\n• Infill: ${selectedInfill.value}%\n• Parts: ${totalPartCount.value} pcs\n• Est. Quote: $${finalPriceUsd.value}`
   )
   return `https://t.me/aerobyte?text=${msg}`
 })

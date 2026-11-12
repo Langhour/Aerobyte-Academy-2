@@ -18,7 +18,7 @@
             v-reveal="{ variant: 'mask', immediate: true, delay: 160 }"
             class="text-base sm:text-lg font-medium text-[#575757] dark:text-white/70"
           >
-            {{ t('Creality K2 Plus • 600 mm/s CoreXY & 16-Color CFS') }}
+            {{ t('Aero Print • High-Speed CoreXY, SLA & Multi-Color Lab') }}
           </p>
         </div>
 
@@ -45,7 +45,7 @@
       >
         <img
           src="/assets/print/k2-plus-portal-hero.jpg"
-          alt="Creality K2 Plus 3D Printer inside Architectural Studio"
+          alt="Aero Print 3D Printing Lab inside Architectural Studio"
           class="w-full h-full object-cover object-center opacity-95 dark:opacity-85"
         />
         <div aria-hidden="true" class="pointer-events-none absolute inset-x-0 top-0 h-16 sm:h-24 bg-gradient-to-b from-[#F8F9FA] via-[#F8F9FA]/60 to-transparent dark:from-[#090A0F] dark:via-[#090A0F]/60"></div>
@@ -129,7 +129,7 @@
           <div class="lg:col-span-7 w-full overflow-hidden rounded-[24px] bg-[#0B0D14] aspect-[16/9]">
             <img
               src="/assets/print/k2-plus-extruder.jpg"
-              alt="Creality K2 Plus High-Speed Direct Drive Extruder"
+              alt="High-Speed Direct Drive Extruder"
               class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
             />
           </div>
@@ -179,7 +179,7 @@
                 v-reveal="{ variant: 'mask', delay: 260 }"
                 class="text-2xl sm:text-3xl font-bold tracking-tight text-[#111112] dark:text-white tabular-nums"
               >
-                {{ displayColors }}-Color Smart CFS
+                {{ displayColors }}-Color Filament Hub
               </h3>
             </div>
             <p
@@ -264,7 +264,7 @@
                 v-reveal="{ variant: 'mask', delay: 140 }"
                 class="text-2xl font-bold tracking-tight text-[#111112] dark:text-white"
               >
-                {{ t('16-Color Smart CFS Unit') }}
+                {{ t('16-Color Smart Filament Hub') }}
               </h3>
             </div>
             <p
@@ -277,7 +277,7 @@
           <div class="mt-7 w-full overflow-hidden rounded-[22px] aspect-[16/10] bg-[#F8F9FA] dark:bg-black/30">
             <img
               src="/assets/print/k2-plus-cfs.jpg"
-              alt="Creality K2 Plus CFS Multi-Color Unit"
+              alt="Automated Multi-Color Filament Hub"
               class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
             />
           </div>
@@ -306,7 +306,7 @@
           <div class="mt-7 w-full overflow-hidden rounded-[22px] aspect-[16/10] bg-[#0B0D14]">
             <img
               src="/assets/print/k2-plus-extruder.jpg"
-              alt="Creality K2 Plus 350C Nozzle"
+              alt="High-Temperature 350C Nozzle"
               class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
             />
           </div>
@@ -322,14 +322,14 @@
             v-reveal="{ variant: 'mask', delay: 40 }"
             class="text-3xl sm:text-4xl font-bold tracking-[-0.02em] text-[#111112] dark:text-white"
           >
-            {{ t('More Than Just a 3D Printer') }}
+            {{ t('Engineered for Industrial Precision') }}
           </h2>
         </div>
         <p
           v-reveal="{ variant: 'up', delay: 140 }"
           class="mt-2.5 text-sm sm:text-base text-[#575757] dark:text-white/65"
         >
-          {{ t('Every subsystem of the Creality K2 Plus is built for repeatable accuracy.') }}
+          {{ t('Every printer in our Aero Print lab is calibrated for repeatable accuracy.') }}
         </p>
       </div>
 
@@ -362,12 +362,12 @@
           <div class="w-full overflow-hidden rounded-[22px] bg-[#F8F9FA] dark:bg-black/30 aspect-[4/3]">
             <img
               src="/assets/print/k2-plus-hero.jpg"
-              alt="Creality K2 Plus"
+              alt="Aero Print Industrial 3D Printer"
               class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
             />
           </div>
           <div class="mt-6 flex items-baseline justify-between">
-            <h3 class="text-2xl font-bold text-[#111112] dark:text-white">Creality K2 Plus</h3>
+            <h3 class="text-2xl font-bold text-[#111112] dark:text-white">{{ t('Aero Print Service') }}</h3>
             <span class="text-base font-bold text-navy-900 dark:text-blue-300">$0.08 / cm³</span>
           </div>
           <p class="mt-2 text-sm text-[#575757] dark:text-white/65">
@@ -394,7 +394,7 @@
       >
         <img
           src="/assets/print/k2-plus-workshop.jpg"
-          alt="Creality K2 Plus in AeroByte Robotics & Drone Lab"
+          alt="AeroByte Robotics & Drone 3D Printing Lab"
           class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-[1.04]"
         />
         <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"></div>
@@ -436,7 +436,7 @@
                 v-reveal="{ variant: 'mask', delay: 100 }"
                 class="text-3xl sm:text-4xl font-bold tracking-tight text-[#111112] dark:text-white"
               >
-                Creality K2 Plus
+                {{ t('Aero Print Lab') }}
               </h2>
               <span
                 v-reveal="{ variant: 'up', delay: 140 }"
@@ -476,7 +476,7 @@
                 <svg class="w-4 h-4 shrink-0 text-[#575757] dark:text-white/75" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M6.429 9.75L2.25 12l4.179 2.25m0-4.5l5.571 3 5.571-3m-11.142 0L2.25 7.5 12 2.25l9.75 5.25-4.179 2.25m0 0L21.75 12l-4.179 2.25m0 0l4.179 2.25L12 21.75 2.25 16.5l4.179-2.25m11.142 0l-5.571 3-5.571-3" />
                 </svg>
-                <span class="text-xs font-bold text-[#111112] dark:text-white">16-Color CFS</span>
+                <span class="text-xs font-bold text-[#111112] dark:text-white">16-Color Hub</span>
               </div>
             </div>
           </div>
@@ -535,7 +535,7 @@
           <div class="overflow-hidden rounded-[24px] w-full aspect-[4/3] bg-[#0B0D14]">
             <img
               src="/assets/print/k2-plus-extruder.jpg"
-              alt="Creality K2 Plus Unicorn Extruder Cutaway"
+              alt="High-Flow Tri-Metal Extruder Cutaway"
               class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
             />
           </div>
@@ -667,7 +667,7 @@
             v-reveal="{ variant: 'mask', delay: 140 }"
             class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight"
           >
-            {{ t('Ready to Print on Creality K2 Plus?') }}
+            {{ t('Ready to Print Your 3D Project?') }}
           </h2>
         </div>
         <p
@@ -991,7 +991,7 @@ const showcaseModes = [
   },
   {
     id: 'cfs',
-    label: '16-Color CFS',
+    label: '16-Color Hub',
     title: 'Effortless 16-Color Automation',
     description: 'Smart RFID spool detection and sealed dry storage handle complex multi-color parts.',
     image: '/assets/print/k2-plus-cfs.jpg'
@@ -1000,7 +1000,7 @@ const showcaseModes = [
     id: 'extruder',
     label: 'High-Temp Core',
     title: '350°C Direct-Drive Precision',
-    description: 'Unicorn tri-metal nozzle lays crisp gears and mounting holes accurate to ±0.1mm.',
+    description: 'Hardened tri-metal nozzle lays crisp gears and mounting holes accurate to ±0.1mm.',
     image: '/assets/print/k2-plus-extruder.jpg'
   }
 ]
@@ -1015,7 +1015,7 @@ const uniformSpecs = [
   },
   {
     title: '40 mm³/s High Flow Nozzle',
-    desc: 'Hardened tri-metal Unicorn nozzle extrudes composites cleanly at high speed.',
+    desc: 'Hardened high-flow tri-metal nozzle extrudes composites cleanly at high speed.',
     iconPath: 'M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z'
   },
   {
@@ -1043,12 +1043,12 @@ const reviews = [
   {
     author: 'Sokha D.',
     role: 'FPV Drone Builder',
-    quote: 'Printed a custom 5-inch Cinewhoop guard and TPU mount on the K2 Plus. Every bolt hole lined up cleanly.'
+    quote: 'Printed a custom 5-inch Cinewhoop guard and TPU mount with Aero Print. Every bolt hole lined up cleanly.'
   },
   {
     author: 'Dara V.',
     role: 'Robotics Student',
-    quote: 'Uploading our STEP gears took seconds and the 16-color CFS printed clean labels right on our robot chassis.'
+    quote: 'Uploading our STEP gears took seconds and the multi-color system printed clean labels right on our robot chassis.'
   },
   {
     author: 'Maly K.',
@@ -1109,7 +1109,7 @@ const faqs = [
   },
   {
     q: 'Can I request multi-color 3D printing?',
-    a: 'Yes. Select CFS Multi-Color on the upload page to automate multi-color branding, labels, or supports.'
+    a: 'Yes. Select Multi-Color on the upload page to automate multi-color branding, labels, or supports.'
   },
   {
     q: 'Which material is best for drone frames and outdoor parts?',
