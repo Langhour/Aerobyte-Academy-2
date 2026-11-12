@@ -1,109 +1,129 @@
 <template>
-  <div class="min-h-screen bg-[#FAFAFA] dark:bg-[#05060B] text-[#111112] dark:text-white transition-colors pb-16">
+  <div class="min-h-screen bg-[#FAFAFA] dark:bg-[#05060B] text-[#111112] dark:text-white transition-colors pb-16 relative">
 
-    <!-- Floating Produck-Style Sticky Navigation Sub-Bar -->
-    <div class="sticky top-4 z-30 mx-auto max-w-6xl px-4 sm:px-6 pt-4 pointer-events-none">
-      <nav
-        aria-label="Creality K2 Plus Section Navigation"
-        class="pointer-events-auto mx-auto flex items-center justify-between gap-4 rounded-full border border-black/[0.06] dark:border-white/10 bg-white/85 dark:bg-[#111112]/85 backdrop-blur-md px-3 sm:px-5 py-2 shadow-lg shadow-black/[0.04]"
-      >
-        <div class="flex items-center gap-2.5 pl-1">
-          <span class="flex h-8 w-8 items-center justify-center rounded-xl bg-[#FF5E0E] text-white shadow-sm shadow-[#FF5E0E]/40">
-            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" />
-            </svg>
-          </span>
-          <span class="text-sm sm:text-base font-bold tracking-tight text-[#111112] dark:text-white">
-            Aero Print <span class="hidden sm:inline font-medium text-[#696969] dark:text-white/55">• K2 Plus</span>
-          </span>
+    <!-- Subtle Ambient Top Backdrop for Lower Canvas -->
+    <div
+      aria-hidden="true"
+      class="pointer-events-none fixed inset-0 opacity-0 dark:opacity-100 transition-opacity duration-300"
+      style="background: radial-gradient(65% 40% at 50% 0%, rgba(16, 52, 166, 0.16) 0%, rgba(255, 94, 14, 0.06) 45%, transparent 80%);"
+    ></div>
+
+    <!-- HERO WRAPPER WITH PRODUCK ARCHITECTURAL PORTAL BACKDROP -->
+    <div class="relative overflow-hidden">
+      <!-- Full-Bleed Produck Architectural Daylight Portal Image -->
+      <div aria-hidden="true" class="pointer-events-none absolute inset-0 flex justify-center">
+        <div class="relative w-full max-w-[1680px] h-full">
+          <img
+            src="/assets/print/k2-plus-portal-hero.jpg"
+            alt=""
+            class="w-full h-full object-cover object-[50%_72%] sm:object-[50%_78%] opacity-95 dark:opacity-80"
+          />
+          <!-- Top fade so Navbar pill & Headline pop cleanly in both modes -->
+          <div class="absolute inset-x-0 top-0 h-56 sm:h-64 bg-gradient-to-b from-[#FAFAFA] via-[#FAFAFA]/80 to-transparent dark:from-[#05060B] dark:via-[#05060B]/80"></div>
+          <!-- Bottom fade melting architectural floor seamlessly into #FAFAFA canvas -->
+          <div class="absolute inset-x-0 bottom-0 h-24 sm:h-32 bg-gradient-to-t from-[#FAFAFA] via-[#FAFAFA]/65 to-transparent dark:from-[#05060B] dark:via-[#05060B]/70"></div>
+          <!-- Left / Right subtle feather edges for ultra-wide monitors -->
+          <div class="hidden xl:block absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-[#FAFAFA] to-transparent dark:from-[#05060B]"></div>
+          <div class="hidden xl:block absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-[#FAFAFA] to-transparent dark:from-[#05060B]"></div>
         </div>
+      </div>
 
-        <div class="hidden md:flex items-center gap-6 text-xs font-semibold text-[#575757] dark:text-white/75">
-          <a href="#features" class="hover:text-[#FF5E0E] transition">{{ t('Features') }}</a>
-          <a href="#technology" class="hover:text-[#FF5E0E] transition">{{ t('Technology') }}</a>
-          <a href="#specs" class="hover:text-[#FF5E0E] transition">{{ t('Specs') }}</a>
-          <a href="#faq" class="hover:text-[#FF5E0E] transition">F.A.Q</a>
-        </div>
-
-        <router-link
-          to="/print/upload"
-          class="inline-flex items-center gap-1.5 rounded-full bg-[#FF5E0E] hover:bg-[#FF764D] px-4 sm:px-5 py-2 text-xs font-bold text-white shadow-[0_8px_22px_rgba(255,94,14,0.45)] active:scale-[0.98] transition"
+      <!-- Floating Produck-Style Sticky Navigation Sub-Bar -->
+      <div class="sticky top-4 z-30 mx-auto max-w-6xl px-4 sm:px-6 pt-4 pointer-events-none">
+        <nav
+          aria-label="Creality K2 Plus Section Navigation"
+          class="pointer-events-auto mx-auto flex items-center justify-between gap-4 rounded-full border border-black/[0.06] dark:border-white/15 bg-white/80 dark:bg-[#111112]/80 backdrop-blur-md px-3 sm:px-5 py-2 shadow-lg shadow-black/[0.05]"
         >
-          <span>{{ t('Drop 3D File') }}</span>
-          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.4">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-          </svg>
-        </router-link>
-      </nav>
-    </div>
+          <div class="flex items-center gap-2.5 pl-1">
+            <span class="flex h-8 w-8 items-center justify-center rounded-xl bg-[#FF5E0E] text-white shadow-sm shadow-[#FF5E0E]/40">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" />
+              </svg>
+            </span>
+            <span class="text-sm sm:text-base font-bold tracking-tight text-[#111112] dark:text-white">
+              Aero Print <span class="hidden sm:inline font-medium text-[#696969] dark:text-white/55">• K2 Plus</span>
+            </span>
+          </div>
 
-    <!-- SECTION 1: Hero Section -->
-    <section class="relative overflow-hidden pt-10 sm:pt-14 pb-12 sm:pb-16 px-4 sm:px-6">
-      <!-- Subtle Studio Glow Behind Printer -->
-      <div
-        aria-hidden="true"
-        class="pointer-events-none absolute left-1/2 top-44 -translate-x-1/2 h-80 w-[520px] rounded-full bg-[#FF5E0E]/[0.08] dark:bg-[#FF5E0E]/[0.14] blur-[100px]"
-      ></div>
+          <div class="hidden md:flex items-center gap-6 text-xs font-semibold text-[#575757] dark:text-white/75">
+            <a href="#features" class="hover:text-[#FF5E0E] transition">{{ t('Features') }}</a>
+            <a href="#technology" class="hover:text-[#FF5E0E] transition">{{ t('Technology') }}</a>
+            <a href="#specs" class="hover:text-[#FF5E0E] transition">{{ t('Specs') }}</a>
+            <a href="#faq" class="hover:text-[#FF5E0E] transition">F.A.Q</a>
+          </div>
 
-      <div class="relative mx-auto max-w-5xl text-center">
-        <!-- Glassmorphic Badge -->
-        <div class="inline-flex items-center gap-2 rounded-full border border-black/[0.06] dark:border-white/15 bg-white/80 dark:bg-white/10 backdrop-blur-md px-4 py-1.5 text-xs font-medium text-[#111112] dark:text-white shadow-xs">
-          <span class="text-[#FF5E0E]">✦</span>
-          <span>Creality K2 Plus • {{ t('Industrial & Powerful') }}</span>
-        </div>
-
-        <h1 class="mt-5 text-4xl sm:text-5xl lg:text-[64px] font-bold tracking-[-0.03em] leading-[1.08] text-[#111112] dark:text-white">
-          {{ t('Precision Printing in Every Layer') }}
-        </h1>
-
-        <p class="mt-4 mx-auto max-w-2xl text-base sm:text-lg text-[#575757] dark:text-white/70 leading-relaxed">
-          {{ t('600 mm/s hyper-speed CoreXY motion, 16-color smart filament automation, and a massive 350³ mm heated chamber.') }}
-        </p>
-
-        <!-- Action Buttons -->
-        <div class="mt-7 flex flex-wrap items-center justify-center gap-3.5">
           <router-link
             to="/print/upload"
-            class="inline-flex items-center gap-2 rounded-full bg-[#FF5E0E] hover:bg-[#FF764D] px-7 py-3.5 text-sm font-bold text-white shadow-[0_10px_25px_rgba(255,94,14,0.45)] active:scale-[0.99] transition"
+            class="inline-flex items-center gap-1.5 rounded-full bg-[#FF5E0E] hover:bg-[#FF764D] px-4 sm:px-5 py-2 text-xs font-bold text-white shadow-[0_8px_22px_rgba(255,94,14,0.45)] active:scale-[0.98] transition"
           >
-            <span>{{ t('Drop Your 3D File') }}</span>
-            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.4">
+            <span>{{ t('Drop 3D File') }}</span>
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.4">
               <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
             </svg>
           </router-link>
-
-          <a
-            href="#specs"
-            class="inline-flex items-center gap-2 rounded-full border border-black/[0.08] dark:border-white/15 bg-white dark:bg-white/5 px-6 py-3.5 text-sm font-semibold text-[#111112] dark:text-white hover:border-[#FF5E0E] transition"
-          >
-            {{ t('Explore K2 Plus Specs') }}
-          </a>
-        </div>
-
-        <!-- Centered Creality K2 Plus Hero Product Render with Floating Callouts -->
-        <div class="relative mx-auto mt-10 max-w-2xl">
-          <div class="rounded-[32px] overflow-hidden border border-black/[0.05] dark:border-white/10 bg-[#FAFAFA] dark:bg-[#111112] shadow-2xl shadow-black/[0.06]">
-            <img
-              src="/assets/print/k2-plus-hero.jpg"
-              alt="Creality K2 Plus 3D Printer with CFS Multi-Color System"
-              class="w-full h-auto object-cover"
-            />
-          </div>
-
-          <!-- Floating Glassmorphic Callout Left -->
-          <div class="hidden sm:flex items-center gap-2.5 absolute -left-4 lg:-left-10 top-1/4 rounded-full border border-black/[0.06] dark:border-white/15 bg-white/85 dark:bg-[#18181B]/85 backdrop-blur-md px-4 py-2 shadow-lg">
-            <span class="h-2.5 w-2.5 rounded-full bg-[#FF5E0E]"></span>
-            <span class="text-xs font-semibold text-[#111112] dark:text-white">{{ t('350 × 350 × 350 mm Build') }}</span>
-          </div>
-
-          <!-- Floating Glassmorphic Callout Right -->
-          <div class="hidden sm:flex items-center gap-2.5 absolute -right-4 lg:-right-10 bottom-1/4 rounded-full border border-black/[0.06] dark:border-white/15 bg-white/85 dark:bg-[#18181B]/85 backdrop-blur-md px-4 py-2 shadow-lg">
-            <span class="h-2.5 w-2.5 rounded-full bg-emerald-500"></span>
-            <span class="text-xs font-semibold text-[#111112] dark:text-white">{{ t('Up to 16 Colors CFS') }}</span>
-          </div>
-        </div>
+        </nav>
       </div>
-    </section>
+
+      <!-- SECTION 1: Hero Content Over Architectural Sky Portal -->
+      <section class="relative z-10 pt-10 sm:pt-12 pb-10 sm:pb-14 px-4 sm:px-6">
+        <div class="relative mx-auto max-w-5xl text-center">
+          <!-- Glassmorphic Badge -->
+          <div class="inline-flex items-center gap-2 rounded-full border border-black/[0.06] dark:border-white/15 bg-white/80 dark:bg-[#111112]/75 backdrop-blur-md px-4 py-1.5 text-xs font-medium text-[#111112] dark:text-white shadow-xs">
+            <span class="text-[#FF5E0E]">✦</span>
+            <span>Creality K2 Plus • {{ t('Industrial & Powerful') }}</span>
+          </div>
+
+          <h1 class="mt-5 text-4xl sm:text-5xl lg:text-[64px] font-bold tracking-[-0.03em] leading-[1.08] text-[#111112] dark:text-white drop-shadow-[0_1px_16px_rgba(255,255,255,0.65)] dark:drop-shadow-[0_2px_18px_rgba(0,0,0,0.65)]">
+            {{ t('Precision Printing in Every Layer') }}
+          </h1>
+
+          <p class="mt-4 mx-auto max-w-2xl text-base sm:text-lg text-[#575757] dark:text-white/85 leading-relaxed">
+            {{ t('600 mm/s hyper-speed CoreXY motion, 16-color smart filament automation, and a massive 350³ mm heated chamber.') }}
+          </p>
+
+          <!-- Action Buttons -->
+          <div class="mt-7 flex flex-wrap items-center justify-center gap-3.5">
+            <router-link
+              to="/print/upload"
+              class="inline-flex items-center gap-2 rounded-full bg-[#FF5E0E] hover:bg-[#FF764D] px-7 py-3.5 text-sm font-bold text-white shadow-[0_10px_25px_rgba(255,94,14,0.45)] active:scale-[0.99] transition"
+            >
+              <span>{{ t('Drop Your 3D File') }}</span>
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.4">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+              </svg>
+            </router-link>
+
+            <a
+              href="#specs"
+              class="inline-flex items-center gap-2 rounded-full border border-black/[0.08] dark:border-white/20 bg-white/85 dark:bg-[#111112]/75 backdrop-blur-md px-6 py-3.5 text-sm font-semibold text-[#111112] dark:text-white hover:border-[#FF5E0E] transition shadow-xs"
+            >
+              {{ t('Explore K2 Plus Specs') }}
+            </a>
+          </div>
+
+          <!-- Open Stage Window Revealing the Creality K2 Plus Inside the Sunlit Arch Portal -->
+          <div class="relative mx-auto h-[320px] sm:h-[430px] lg:h-[520px] max-w-4xl">
+            <img
+              src="/assets/print/k2-plus-portal-hero.jpg"
+              alt="Creality K2 Plus 3D Printer inside Architectural Studio"
+              class="sr-only"
+            />
+
+            <!-- Floating Glassmorphic Callout Left -->
+            <div class="hidden sm:flex items-center gap-2.5 absolute left-4 lg:left-6 top-1/3 rounded-full border border-black/[0.06] dark:border-white/15 bg-white/80 dark:bg-[#111112]/80 backdrop-blur-xl px-4 py-2 shadow-[0_10px_30px_rgba(0,0,0,0.06)]">
+              <span class="h-2.5 w-2.5 rounded-full bg-[#FF5E0E]"></span>
+              <span class="text-xs font-semibold text-[#111112] dark:text-white">{{ t('350 × 350 × 350 mm Build') }}</span>
+            </div>
+
+            <!-- Floating Glassmorphic Callout Right -->
+            <div class="hidden sm:flex items-center gap-2.5 absolute right-4 lg:right-6 bottom-1/4 rounded-full border border-black/[0.06] dark:border-white/15 bg-white/80 dark:bg-[#111112]/80 backdrop-blur-xl px-4 py-2 shadow-[0_10px_30px_rgba(0,0,0,0.06)]">
+              <span class="h-2.5 w-2.5 rounded-full bg-emerald-500"></span>
+              <span class="text-xs font-semibold text-[#111112] dark:text-white">{{ t('Up to 16 Colors CFS') }}</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
 
     <!-- SECTION 2: 3-Feature Bento Grid (Hero Highlights) -->
     <section id="features" class="mx-auto max-w-6xl px-4 sm:px-6 pb-12 sm:pb-16">
@@ -329,9 +349,11 @@
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="lg:col-span-2 rounded-[24px] border border-black/[0.05] dark:border-white/10 bg-[#05060B] text-white p-6 sm:p-7 flex flex-col justify-between">
-          <span class="text-xs font-bold uppercase tracking-wider text-[#FF5E0E]">Dual AI Guard</span>
-          <div class="mt-6">
+        <div class="lg:col-span-2 rounded-[24px] border border-black/[0.05] dark:border-white/10 bg-[#05060B] text-white p-6 sm:p-7 flex flex-col justify-between relative overflow-hidden">
+          <div aria-hidden="true" class="pointer-events-none absolute -right-10 -top-12 h-48 w-48 rounded-full bg-[#FF5E0E]/20 blur-3xl"></div>
+          <div aria-hidden="true" class="pointer-events-none absolute -left-8 -bottom-10 h-40 w-40 rounded-full bg-[#1034A6]/25 blur-3xl"></div>
+          <span class="relative z-10 text-xs font-bold uppercase tracking-wider text-[#FF5E0E]">Dual AI Guard</span>
+          <div class="relative z-10 mt-6">
             <h3 class="text-xl font-bold">Chamber & Nozzle AI Cameras</h3>
             <p class="mt-2 text-sm text-white/70">Automatic flow-rate calibration and real-time spaghetti failure protection keep long overnight prints worry-free.</p>
           </div>
