@@ -55,7 +55,7 @@
               {{ t('Step-servo motion prints strong engineering prototypes up to 5× faster.') }}
             </p>
           </div>
-          <div class="lg:col-span-7 overflow-hidden rounded-[24px] bg-[#0B0D14] aspect-[16/9]">
+          <div class="lg:col-span-7 w-full overflow-hidden rounded-[24px] bg-[#0B0D14] aspect-[16/9]">
             <img
               src="/assets/print/k2-plus-extruder.jpg"
               alt="Creality K2 Plus High-Speed Direct Drive Extruder"
@@ -112,7 +112,7 @@
           </p>
         </div>
 
-        <div class="mt-8 overflow-hidden rounded-[24px] aspect-[16/9] max-h-[500px] bg-[#F3F4F6] dark:bg-black/40">
+        <div class="mt-8 w-full h-[240px] sm:h-[400px] lg:h-[500px] overflow-hidden rounded-[24px] bg-[#F3F4F6] dark:bg-black/40">
           <img
             :src="activeMode.image"
             :alt="activeMode.title"
@@ -150,7 +150,7 @@
               {{ t('Zero manual spool swaps with automatic moisture protection.') }}
             </p>
           </div>
-          <div class="mt-7 overflow-hidden rounded-[22px] aspect-[16/10] bg-[#F8F9FA] dark:bg-black/30">
+          <div class="mt-7 w-full overflow-hidden rounded-[22px] aspect-[16/10] bg-[#F8F9FA] dark:bg-black/30">
             <img
               src="/assets/print/k2-plus-cfs.jpg"
               alt="Creality K2 Plus CFS Multi-Color Unit"
@@ -168,7 +168,7 @@
               {{ t('Warp-free ABS, ASA, and carbon-fiber PA-CF structural prints.') }}
             </p>
           </div>
-          <div class="mt-7 overflow-hidden rounded-[22px] aspect-[16/10] bg-[#0B0D14]">
+          <div class="mt-7 w-full overflow-hidden rounded-[22px] aspect-[16/10] bg-[#0B0D14]">
             <img
               src="/assets/print/k2-plus-extruder.jpg"
               alt="Creality K2 Plus 350C Nozzle"
@@ -212,7 +212,7 @@
 
         <!-- Right Sticky Hardware Summary Card (Produck Pattern) -->
         <div class="lg:col-span-5 lg:sticky lg:top-24 rounded-[32px] border border-black/[0.06] dark:border-white/10 bg-white dark:bg-[#111217] p-8 shadow-[0_10px_30px_rgba(0,0,0,0.03)]">
-          <div class="overflow-hidden rounded-[22px] bg-[#F8F9FA] dark:bg-black/30 aspect-[4/3]">
+          <div class="w-full overflow-hidden rounded-[22px] bg-[#F8F9FA] dark:bg-black/30 aspect-[4/3]">
             <img
               src="/assets/print/k2-plus-hero.jpg"
               alt="Creality K2 Plus"
@@ -368,50 +368,69 @@
       </div>
     </section>
 
-    <!-- SECTION 9: Minimal Neutral FAQ Accordion -->
+    <!-- SECTION 9: Minimal 2-Column Produck FAQ Accordion -->
     <section id="faq" class="mx-auto max-w-[1160px] px-6 pb-16 sm:pb-24">
-      <div class="mx-auto max-w-2xl text-center mb-10">
-        <div class="inline-flex items-center gap-2 rounded-full border border-black/[0.06] dark:border-white/15 bg-white dark:bg-white/5 px-3.5 py-1 text-xs font-medium text-[#575757] dark:text-white/80">
-          <svg class="w-3.5 h-3.5 text-[#575757] dark:text-white/75" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z" />
-          </svg>
-          <span>F.A.Q</span>
-        </div>
-        <h2 class="mt-4 text-3xl sm:text-4xl font-bold tracking-tight text-[#111112] dark:text-white">
-          {{ t('Everything You Need to Know') }}
-        </h2>
-      </div>
-
-      <div class="mx-auto max-w-3xl space-y-3">
-        <div
-          v-for="(faq, idx) in faqs"
-          :key="faq.q"
-          class="rounded-[20px] border bg-white dark:bg-[#111217] transition-all overflow-hidden"
-          :class="openFaqIndex === idx
-            ? 'border-black/20 dark:border-white/25 shadow-sm'
-            : 'border-black/[0.06] dark:border-white/10'"
-        >
-          <button
-            type="button"
-            @click="toggleFaq(idx)"
-            class="w-full px-6 py-4.5 flex items-center justify-between gap-4 text-left cursor-pointer"
-          >
-            <span class="text-sm sm:text-base font-semibold text-[#111112] dark:text-white">
-              {{ faq.q }}
-            </span>
-            <svg
-              class="w-4 h-4 shrink-0 text-[#575757] dark:text-white/60 transition-transform duration-200"
-              :class="{ 'rotate-180': openFaqIndex === idx }"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-start">
+        <div class="lg:col-span-5 lg:sticky lg:top-24">
+          <div class="inline-flex items-center gap-2 rounded-full border border-black/[0.06] dark:border-white/15 bg-white dark:bg-white/5 px-3.5 py-1.5 text-xs font-medium text-[#575757] dark:text-white/80">
+            <svg class="w-3.5 h-3.5 text-[#575757] dark:text-white/75" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z" />
             </svg>
-          </button>
-          <div v-show="openFaqIndex === idx" class="px-6 pb-5 text-sm text-[#575757] dark:text-white/70 leading-relaxed">
-            {{ faq.a }}
+            <span>F.A.Q</span>
+          </div>
+          <h2 class="mt-4 text-3xl sm:text-4xl font-bold tracking-[-0.02em] text-[#111112] dark:text-white leading-tight">
+            {{ t('Everything You Need to Know') }}
+          </h2>
+          <p class="mt-3 text-sm sm:text-base text-[#575757] dark:text-white/65">
+            {{ t('Drop your STL or STEP files for an instant online quote.') }}
+          </p>
+          <div class="mt-6">
+            <router-link
+              to="/print/upload"
+              class="inline-flex items-center gap-2 rounded-full bg-[#FF5E0E] hover:bg-[#FF764D] px-6 py-3 text-xs font-bold text-white shadow-[0_8px_20px_rgba(255,94,14,0.35)] transition"
+            >
+              <span>{{ t('Drop Your 3D File') }}</span>
+              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+              </svg>
+            </router-link>
+          </div>
+        </div>
+
+        <div class="lg:col-span-7 space-y-3.5">
+          <div
+            v-for="(faq, idx) in faqs"
+            :key="faq.q"
+            class="rounded-[20px] border bg-white dark:bg-[#111217] transition-all overflow-hidden"
+            :class="openFaqIndex === idx
+              ? 'border-[#FF5E0E]/60 shadow-[0_6px_20px_rgba(0,0,0,0.03)]'
+              : 'border-black/[0.06] dark:border-white/10 hover:border-black/15 dark:hover:border-white/20'"
+          >
+            <button
+              type="button"
+              @click="toggleFaq(idx)"
+              class="w-full px-6 py-5 flex items-center justify-between gap-4 text-left cursor-pointer"
+            >
+              <span
+                class="text-sm sm:text-base font-semibold transition-colors"
+                :class="openFaqIndex === idx ? 'text-[#FF5E0E]' : 'text-[#111112] dark:text-white'"
+              >
+                {{ faq.q }}
+              </span>
+              <svg
+                class="w-4 h-4 shrink-0 transition-transform duration-200"
+                :class="openFaqIndex === idx ? 'rotate-180 text-[#FF5E0E]' : 'text-[#575757] dark:text-white/60'"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+              </svg>
+            </button>
+            <div v-show="openFaqIndex === idx" class="px-6 pb-5 pt-0 text-sm text-[#575757] dark:text-white/70 leading-relaxed">
+              {{ faq.a }}
+            </div>
           </div>
         </div>
       </div>
@@ -455,7 +474,7 @@ const showcaseModes = [
   {
     id: 'workshop',
     label: 'FPV & Drones',
-    title: 'Built for Drones & Real Prototypes',
+    title: 'Aerospace Lab Workflow',
     description: 'Carbon-fiber frames and shock-absorbing mounts printed locally inside a 60°C chamber.',
     image: '/assets/print/k2-plus-workshop.jpg'
   },
