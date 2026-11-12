@@ -1679,6 +1679,7 @@ export const khmerTranslations = {
   "Drop 3D File": "ទម្លាក់ឯកសារ 3D",
   "Industrial & Powerful": "កម្រិតឧស្សាហកម្ម & ថាមពលខ្លាំង",
   "Precision Printing in Every Layer": "ការបោះពុម្ពច្បាស់លាស់គ្រប់ស្រទាប់",
+  "Creality K2 Plus • 600 mm/s CoreXY & 16-Color CFS": "Creality K2 Plus • ល្បឿន CoreXY 600 mm/s & ពណ៌ឆ្លាតវៃ 16 ពណ៌",
   "600 mm/s hyper-speed CoreXY motion, 16-color smart filament automation, and a massive 350³ mm heated chamber.": "ល្បឿនលឿនដល់ 600 mm/s ប្រព័ន្ធពណ៌ឆ្លាតវៃ 16 ពណ៌ និងបន្ទប់កម្តៅធំទូលាយទំហំ 350³ mm។",
   "Drop Your 3D File": "ទម្លាក់ឯកសារ 3D របស់អ្នក",
   "Explore K2 Plus Specs": "ស្វែងយល់ពីលក្ខណៈ K2 Plus",
