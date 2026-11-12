@@ -116,7 +116,9 @@
                   @click="loadSampleModel(sample)"
                   class="inline-flex items-center gap-1.5 rounded-full border border-black/[0.08] dark:border-white/15 bg-white dark:bg-white/5 px-3 py-1.5 text-xs font-semibold text-[#111112] dark:text-white hover:border-[#FF5E0E] hover:text-[#FF5E0E] transition cursor-pointer"
                 >
-                  <span>{{ sample.icon }}</span>
+                  <svg class="w-3.5 h-3.5 text-[#575757] dark:text-white/65" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" />
+                  </svg>
                   <span>{{ sample.name }}</span>
                 </button>
               </div>
@@ -598,9 +600,9 @@ const { t } = useI18n()
 
 // Sample presets for instant testing
 const sampleModels = [
-  { id: 'drone-mount', name: 'FPV Motor Mount', icon: '🚁', sizeStr: '1.2 MB', dimensions: { x: 45, y: 45, z: 12 }, volumeCm3: 14.5, quantity: 4 },
-  { id: 'sensor-case', name: 'ESP32 Sensor Case', icon: '📦', sizeStr: '2.8 MB', dimensions: { x: 75, y: 50, z: 24 }, volumeCm3: 32.0, quantity: 1 },
-  { id: 'arm-gear', name: 'Robotic Servo Gear', icon: '⚙️', sizeStr: '980 KB', dimensions: { x: 35, y: 35, z: 8 }, volumeCm3: 8.2, quantity: 2 },
+  { id: 'drone-mount', name: 'FPV Motor Mount', sizeStr: '1.2 MB', dimensions: { x: 45, y: 45, z: 12 }, volumeCm3: 14.5, quantity: 4 },
+  { id: 'sensor-case', name: 'ESP32 Sensor Case', sizeStr: '2.8 MB', dimensions: { x: 75, y: 50, z: 24 }, volumeCm3: 32.0, quantity: 1 },
+  { id: 'arm-gear', name: 'Robotic Servo Gear', sizeStr: '980 KB', dimensions: { x: 35, y: 35, z: 8 }, volumeCm3: 8.2, quantity: 2 },
 ]
 
 // State: Uploaded files

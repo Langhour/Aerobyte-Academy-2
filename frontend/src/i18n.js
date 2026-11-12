@@ -1740,6 +1740,15 @@ export const khmerTranslations = {
   "Need multi-color CFS sequencing or bulk engineering runs? Send your files and our Ta Khmau lab engineers will inspect slices before printing.": "ត្រូវការបោះពុម្ពពហុពណ៌ CFS ឬចំនួនច្រើន? ផ្ញើឯកសារមក វិស្វករតាខ្មៅយើងនឹងពិនិត្យជូនមុនពេលបោះពុម្ព។",
   "Estimated Quote": "តម្លៃប៉ាន់ស្មាន",
   "Confirm & Send to Lab Engineers": "បញ្ជាក់ និងផ្ញើទៅវិស្វករ Lab",
+  "Step-servo motion prints strong engineering prototypes up to 5× faster.": "ម៉ូទ័រ step-servo បោះពុម្ពគំរូវិស្វកម្មបានលឿនជាងមុន ៥ ដង។",
+  "Print full drone frames and robotics parts in one seamless piece.": "បោះពុម្ពគ្រោងដ្រូន និងគ្រឿងរ៉ូបូតទាំងមូលក្នុងការបោះពុម្ពតែមួយលើក។",
+  "Automated RFID spool switching inside a sealed dry enclosure.": "ការផ្លាស់ប្តូរសរសៃជ័រ RFID ដោយស្វ័យប្រវត្តិក្នុងប្រអប់ស្ងួតជិតល្អ។",
+  "Zero manual spool swaps with automatic moisture protection.": "មិនបាច់ដូរសរសៃជ័រដោយដៃ ជាមួយការការពារសំណើមស្វ័យប្រវត្តិ។",
+  "Warp-free ABS, ASA, and carbon-fiber PA-CF structural prints.": "បោះពុម្ព ABS, ASA និងសរសៃកាបូន PA-CF ដោយគ្មានការវៀចខូចទ្រង់ទ្រាយ។",
+  "Upload your CAD files for instant pricing and local Phnom Penh printing.": "ផ្ទុកឡើងឯកសារ CAD ដើម្បីមើលតម្លៃភ្លាមៗ និងបោះពុម្ពនៅភ្នំពេញ។",
+  "Skip weeks of international shipping with instant Phnom Penh CAD printing.": "មិនបាច់រង់ចាំការដឹកជញ្ជូនពីបរទេស ជាមួយសេវាកម្មបោះពុម្ពភ្លាមៗនៅភ្នំពេញ។",
+  "Everything You Need to Know": "អ្វីៗគ្រប់យ៉ាងដែលអ្នកត្រូវដឹង",
+  "Drop your STL or STEP files for an instant online quote.": "ទម្លាក់ឯកសារ STL ឬ STEP ដើម្បីគណនាតម្លៃអនឡាញភ្លាមៗ។",
 }
 
 export function getCourseLocalized(course, field) {
