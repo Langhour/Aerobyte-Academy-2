@@ -1120,8 +1120,8 @@ const faqs = [
     a: 'Most single-color PLA, PETG, and TPU prototypes ship or are ready for pickup within 24–48 hours.'
   },
   {
-    q: 'How is the instant price calculated?',
-    a: 'Our quote summary calculates part volume, material tier, infill percentage, and bulk discounts live.'
+    q: 'How do I get a price quote for my 3D CAD files?',
+    a: 'Simply drop your 3D CAD files and share your Telegram contact on our upload page. Our lab engineers review your geometry and message you the price quote directly.'
   }
 ]
 
