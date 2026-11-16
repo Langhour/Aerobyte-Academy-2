@@ -1,3 +1,4 @@
+<!-- AeroByte Academy - User Profile & Account Management with Terms of Use & Privacy Policy views -->
 <template>
   <div class="bg-slate-50 dark:bg-slate-950 min-h-screen transition-colors">
     <section class="border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 transition-colors">
