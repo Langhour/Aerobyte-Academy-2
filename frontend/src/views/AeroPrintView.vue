@@ -366,12 +366,11 @@
               class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
             />
           </div>
-          <div class="mt-6 flex items-baseline justify-between">
+          <div class="mt-6">
             <h3 class="text-2xl font-bold text-[#111112] dark:text-white">{{ t('Aero Print Service') }}</h3>
-            <span class="text-base font-bold text-navy-900 dark:text-blue-300">$0.08 / cm³</span>
           </div>
           <p class="mt-2 text-sm text-[#575757] dark:text-white/65">
-            {{ t('Upload your CAD files for instant pricing and local Phnom Penh printing.') }}
+            {{ t('Drop your 3D CAD files and share your Telegram contact for a direct quote.') }}
           </p>
           <router-link
             to="/print/upload"
@@ -431,19 +430,13 @@
               {{ t('Available Now') }}
             </span>
 
-            <div class="mt-4 flex items-baseline justify-between gap-2 overflow-hidden py-1 -my-1">
+            <div class="mt-4 overflow-hidden py-1 -my-1">
               <h2
                 v-reveal="{ variant: 'mask', delay: 100 }"
                 class="text-3xl sm:text-4xl font-bold tracking-tight text-[#111112] dark:text-white"
               >
                 {{ t('Aero Print Lab') }}
               </h2>
-              <span
-                v-reveal="{ variant: 'up', delay: 140 }"
-                class="text-xl font-bold text-navy-900 dark:text-blue-300"
-              >
-                From $0.08 / cm³
-              </span>
             </div>
 
             <div
@@ -674,7 +667,7 @@
           v-reveal="{ variant: 'up', delay: 220 }"
           class="mt-3.5 mx-auto max-w-xl text-sm sm:text-base text-white/70"
         >
-          {{ t('Drop your STL or STEP files for an instant online quote.') }}
+          {{ t('Drop your STL or STEP files and connect with our lab on Telegram.') }}
         </p>
         <div
           v-reveal="{ variant: 'up', delay: 300 }"
