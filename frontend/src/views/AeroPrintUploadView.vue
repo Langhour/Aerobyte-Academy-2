@@ -25,7 +25,7 @@
               </span>
             </div>
             <p class="text-xs sm:text-sm text-[#575757] dark:text-white/65">
-              {{ t('Drop your CAD files and your Telegram contact. Our lab engineers will inspect your models and message you the custom price quote.') }}
+              {{ t('Drop your 3D CAD files and enter your Telegram contact. Our admin will inspect your models and text you directly on Telegram with the price quote.') }}
             </p>
           </div>
 
@@ -103,33 +103,12 @@
               </div>
             </div>
 
-            <!-- Sample Presets Bar -->
-            <div class="mt-5 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 rounded-2xl border border-black/[0.05] dark:border-white/10 bg-[#FAFAFA] dark:bg-white/[0.03] px-4 py-3">
-              <span class="text-xs font-medium text-[#575757] dark:text-white/70">
-                {{ t('No CAD file ready? Test instant quoting with a sample part:') }}
-              </span>
-              <div class="flex flex-wrap gap-2">
-                <button
-                  v-for="sample in sampleModels"
-                  :key="sample.id"
-                  type="button"
-                  @click="loadSampleModel(sample)"
-                  class="inline-flex items-center gap-1.5 rounded-full border border-black/[0.08] dark:border-white/15 bg-white dark:bg-white/5 px-3 py-1.5 text-xs font-semibold text-[#111112] dark:text-white hover:border-navy-900 hover:text-navy-900 dark:hover:border-blue-400 dark:hover:text-blue-300 transition cursor-pointer"
-                >
-                  <svg class="w-3.5 h-3.5 text-[#575757] dark:text-white/65" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" />
-                  </svg>
-                  <span>{{ sample.name }}</span>
-                </button>
-              </div>
-            </div>
-
             <!-- Uploaded Files List -->
             <div v-if="files.length > 0" class="mt-5 space-y-3">
               <div
                 v-for="(f, idx) in files"
                 :key="f.id"
-                class="rounded-2xl border border-black/[0.07] dark:border-white/10 bg-[#FAFAFA] dark:bg-white/[0.03] p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3"
+                class="rounded-2xl border border-black/[0.07] dark:border-white/10 bg-[#FAFAFA] dark:bg-white/[0.03] p-4 flex items-center justify-between gap-3"
               >
                 <div class="flex items-center gap-3.5 min-w-0">
                   <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-navy-900/10 dark:bg-blue-400/15 text-navy-900 dark:text-blue-300 font-bold text-xs uppercase">
@@ -137,48 +116,28 @@
                   </div>
                   <div class="min-w-0">
                     <p class="truncate text-xs sm:text-sm font-bold text-[#111112] dark:text-white">{{ f.name }}</p>
-                    <p class="text-[11px] text-[#696969] dark:text-white/55">
-                      {{ f.sizeStr }} • {{ f.dimensions.x }}×{{ f.dimensions.y }}×{{ f.dimensions.z }} mm • {{ t('Est. Vol') }}: {{ f.volumeCm3 }} cm³
-                    </p>
+                    <div class="flex items-center gap-2 mt-0.5">
+                      <span class="text-[11px] text-[#696969] dark:text-white/55 font-mono">{{ f.sizeStr }}</span>
+                      <span class="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-semibold px-2 py-0.5">
+                        <span class="h-1 w-1 rounded-full bg-emerald-500"></span>
+                        {{ t('Ready to submit') }}
+                      </span>
+                    </div>
                   </div>
                 </div>
 
-                <!-- Quantity Counter & Delete -->
-                <div class="flex items-center gap-3 self-end sm:self-auto shrink-0">
-                  <div class="flex items-center border border-black/[0.08] dark:border-white/15 bg-white dark:bg-[#18181B] rounded-full overflow-hidden">
-                    <button
-                      type="button"
-                      @click="decreaseQty(idx)"
-                      class="px-3 py-1 text-[#575757] dark:text-white/75 hover:bg-black/5 dark:hover:bg-white/10 text-sm font-bold cursor-pointer"
-                    >
-                      −
-                    </button>
-                    <span class="px-3 py-1 text-xs font-bold text-[#111112] dark:text-white min-w-[2rem] text-center">
-                      {{ f.quantity }}
-                    </span>
-                    <button
-                      type="button"
-                      @click="increaseQty(idx)"
-                      class="px-3 py-1 text-[#575757] dark:text-white/75 hover:bg-black/5 dark:hover:bg-white/10 text-sm font-bold cursor-pointer"
-                    >
-                      +
-                    </button>
-                  </div>
-
-                  <button
-                    type="button"
-                    @click="removeFile(idx)"
-                    class="text-xs text-rose-500 hover:text-rose-600 font-semibold px-2.5 py-1.5 hover:bg-rose-50 dark:hover:bg-rose-950/30 rounded-full cursor-pointer transition"
-                  >
-                    {{ t('Delete') }}
-                  </button>
-                </div>
+                <!-- Remove File Button -->
+                <button
+                  type="button"
+                  @click="removeFile(idx)"
+                  class="shrink-0 text-xs text-rose-500 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 px-3 py-1.5 rounded-full font-semibold transition cursor-pointer flex items-center gap-1.5"
+                >
+                  <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                  <span>{{ t('Delete') }}</span>
+                </button>
               </div>
-            </div>
-
-            <!-- Empty file warning if any -->
-            <div v-else class="mt-4 rounded-xl border border-dashed border-black/10 dark:border-white/10 p-4 text-center text-xs text-[#696969] dark:text-white/50">
-              {{ t('No CAD files uploaded yet. Select files or click a sample part above.') }}
             </div>
           </section>
 
@@ -190,10 +149,10 @@
               </span>
               <div>
                 <h2 class="text-base sm:text-lg font-bold text-[#111112] dark:text-white">
-                  {{ t('Your Telegram Contact & Details') }}
+                  {{ t('Your Telegram Contact') }}
                 </h2>
                 <p class="text-xs text-[#575757] dark:text-white/65 mt-0.5">
-                  {{ t('Tell us how to reach you. We will inspect your 3D CAD files and message you our price quote directly on Telegram.') }}
+                  {{ t('Enter your Telegram username, phone number, or drop your QR code. Our admin will text you directly on Telegram with your price quote.') }}
                 </p>
               </div>
             </div>
@@ -351,7 +310,7 @@
             <div class="mt-4 space-y-2.5 text-xs">
               <div class="flex justify-between items-center text-[#575757] dark:text-white/60">
                 <span>{{ t('Files Attached') }}</span>
-                <span class="font-bold text-[#111112] dark:text-white">{{ files.length }} file(s) • {{ totalPartCount }} pcs</span>
+                <span class="font-bold text-[#111112] dark:text-white">{{ files.length }} {{ files.length === 1 ? 'file' : 'files' }}</span>
               </div>
 
               <!-- Mini file list -->
@@ -362,7 +321,7 @@
                   class="flex items-center justify-between rounded-lg bg-[#FAFAFA] dark:bg-white/[0.03] px-2.5 py-1.5 text-[11px]"
                 >
                   <span class="truncate font-medium text-[#111112] dark:text-white max-w-[180px]">{{ f.name }}</span>
-                  <span class="font-bold text-navy-900 dark:text-blue-300">×{{ f.quantity }}</span>
+                  <span class="font-mono text-[10px] font-semibold text-navy-900 dark:text-blue-300">{{ f.sizeStr }}</span>
                 </div>
               </div>
 
@@ -386,14 +345,14 @@
             <div class="mt-5 rounded-2xl bg-navy-50/70 dark:bg-white/[0.03] border border-navy-900/10 dark:border-white/10 p-4 space-y-2.5">
               <p class="text-xs font-bold text-navy-900 dark:text-blue-300 flex items-center gap-1.5">
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a.75.75 0 01-.874-.954 6.027 6.027 0 00.702-2.316C3.805 16.29 3 14.256 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
                 </svg>
-                <span>How You Get Your Price</span>
+                <span>{{ t('How You Get Your Price') }}</span>
               </p>
-              <ul class="text-[11px] text-[#575757] dark:text-white/65 space-y-1.5 leading-relaxed">
-                <li>• <strong>1. Drop 3D file & contact:</strong> Submit your CAD files and your Telegram info.</li>
-                <li>• <strong>2. Lab inspection:</strong> Engineers slice the geometry & verify wall thickness.</li>
-                <li>• <strong>3. Custom quote:</strong> We message your Telegram directly with exact price and delivery time.</li>
+              <ul class="text-[11px] text-[#575757] dark:text-white/65 space-y-2 leading-relaxed">
+                <li>• <strong>1. {{ t('Drop your 3D CAD files') }}:</strong> {{ t('Upload your 3D models here.') }}</li>
+                <li>• <strong>2. {{ t('Leave your Telegram') }}:</strong> {{ t('Provide your username, phone, or QR code.') }}</li>
+                <li>• <strong>3. {{ t('Admin texts you on Telegram') }}:</strong> {{ t('Our admin reviews your file and texts you the price quote directly on Telegram.') }}</li>
               </ul>
             </div>
 
@@ -459,7 +418,7 @@
           </div>
           <h4 class="text-xl font-bold text-[#111112] dark:text-white">{{ t('Quote Request Received!') }}</h4>
           <p class="text-xs text-[#575757] dark:text-white/65 max-w-sm mx-auto leading-relaxed">
-            {{ t('Our Aero Print lab engineers will inspect your 3D files and contact you on Telegram within 2 hours with your custom price and print timeline.') }}
+            {{ t('Our admin has received your CAD files and will text you directly on Telegram with your price quote.') }}
           </p>
 
           <div class="rounded-2xl bg-[#FAFAFA] dark:bg-white/5 border border-black/[0.06] dark:border-white/10 p-3.5 text-xs text-left text-[#575757] dark:text-white/75 space-y-2 max-w-sm mx-auto mt-4">
@@ -477,7 +436,7 @@
             </div>
             <div class="flex justify-between">
               <span>Files Submitted:</span>
-              <span class="font-bold text-[#111112] dark:text-white">{{ files.length }} file(s) ({{ totalPartCount }} parts)</span>
+              <span class="font-bold text-[#111112] dark:text-white">{{ files.length }} {{ files.length === 1 ? 'file' : 'files' }}</span>
             </div>
             <div v-if="qrPreviewUrl" class="flex justify-between items-center text-emerald-600 font-bold">
               <span>Telegram QR Code:</span>
@@ -518,28 +477,8 @@ import { printOrderService } from '../services/api'
 
 const { t } = useI18n()
 
-// Sample presets for instant testing
-const sampleModels = [
-  { id: 'drone-mount', name: 'FPV Motor Mount', sizeStr: '1.2 MB', dimensions: { x: 45, y: 45, z: 12 }, volumeCm3: 14.5, quantity: 4 },
-  { id: 'sensor-case', name: 'ESP32 Sensor Case', sizeStr: '2.8 MB', dimensions: { x: 75, y: 50, z: 24 }, volumeCm3: 32.0, quantity: 1 },
-  { id: 'arm-gear', name: 'Robotic Servo Gear', sizeStr: '980 KB', dimensions: { x: 35, y: 35, z: 8 }, volumeCm3: 8.2, quantity: 2 },
-]
-
-// State: Uploaded files
-const initialSampleBlob = new Blob(['solid Drone_Arm_V2_Reinforced\nendsolid Drone_Arm_V2_Reinforced\n'], { type: 'model/stl' })
-const initialSampleFile = new File([initialSampleBlob], 'Drone_Arm_V2_Reinforced.stl', { type: 'model/stl' })
-
-const files = ref([
-  {
-    id: 1,
-    name: 'Drone_Arm_V2_Reinforced.stl',
-    file: initialSampleFile,
-    sizeStr: '3.4 MB',
-    dimensions: { x: 120, y: 35, z: 18 },
-    volumeCm3: 28.5,
-    quantity: 2,
-  }
-])
+// State: Uploaded files - starts empty so users only drop their own files
+const files = ref([])
 
 const isDragging = ref(false)
 const fileInputRef = ref(null)
@@ -550,18 +489,12 @@ function triggerFileInput() {
 
 function appendFiles(fileList) {
   for (const f of fileList) {
+    const sizeInMb = f.size ? (f.size / (1024 * 1024)).toFixed(2) : '1.0'
     files.value.push({
       id: Date.now() + Math.random(),
       name: f.name,
       file: f,
-      sizeStr: `${Math.max(0.1, f.size / (1024 * 1024)).toFixed(1)} MB`,
-      dimensions: {
-        x: Math.floor(Math.random() * 80 + 30),
-        y: Math.floor(Math.random() * 60 + 20),
-        z: Math.floor(Math.random() * 40 + 10)
-      },
-      volumeCm3: parseFloat((Math.random() * 25 + 10).toFixed(1)),
-      quantity: 1,
+      sizeStr: `${sizeInMb} MB`,
     })
   }
   validationError.value = ''
@@ -577,39 +510,12 @@ function handleFileDrop(e) {
   appendFiles(Array.from(e.dataTransfer?.files || []))
 }
 
-function loadSampleModel(sample) {
-  const dummyContent = `solid ${sample.name}\nfacet normal 0 0 1\nouter loop\nvertex 0 0 0\nvertex 10 0 0\nvertex 0 10 0\nendloop\nendfacet\nendsolid ${sample.name}\n`
-  const dummyBlob = new Blob([dummyContent], { type: 'model/stl' })
-  const syntheticFile = new File([dummyBlob], `${sample.name}.stl`, { type: 'model/stl' })
-
-  files.value.push({
-    id: Date.now() + Math.random(),
-    name: `${sample.name}.stl`,
-    file: syntheticFile,
-    sizeStr: sample.sizeStr,
-    dimensions: { ...sample.dimensions },
-    volumeCm3: sample.volumeCm3,
-    quantity: sample.quantity,
-  })
-  validationError.value = ''
-}
-
-function increaseQty(index) {
-  files.value[index].quantity++
-}
-
-function decreaseQty(index) {
-  if (files.value[index].quantity > 1) {
-    files.value[index].quantity--
-  }
-}
-
 function removeFile(index) {
   files.value.splice(index, 1)
 }
 
 const totalPartCount = computed(() => {
-  return files.value.reduce((acc, f) => acc + (f.quantity || 1), 0)
+  return files.value.length
 })
 
 // Telegram QR Code upload state
@@ -689,9 +595,6 @@ async function submitPrintOrder() {
     const metaList = files.value.map(f => ({
       name: f.name,
       sizeStr: f.sizeStr,
-      dimensions: f.dimensions,
-      volumeCm3: f.volumeCm3,
-      quantity: f.quantity,
     }))
 
     formData.append('order_data', JSON.stringify({
@@ -739,7 +642,7 @@ async function submitPrintOrder() {
 
 // Telegram direct message link
 const telegramDirectLink = computed(() => {
-  const fileListText = files.value.map(f => `• ${f.name} (Qty: ${f.quantity})`).join('\n')
+  const fileListText = files.value.map(f => `• ${f.name} (${f.sizeStr})`).join('\n')
   const orderIdText = submittedOrder.value?.order_number ? `\n• Order ID: ${submittedOrder.value.order_number}` : ''
   const contactText = orderForm.value.telegram ? `\n• My Telegram / Phone: ${orderForm.value.telegram}` : ''
   const nameText = orderForm.value.name ? `\n• Name: ${orderForm.value.name}` : ''
@@ -747,7 +650,7 @@ const telegramDirectLink = computed(() => {
   const qrText = qrFile.value ? `\n• (I have also attached my Telegram QR code)` : ''
 
   const msg = encodeURIComponent(
-    `Hello AeroByte Maker Lab! 👋\nI would like a 3D printing price quote for my CAD files:${orderIdText}${nameText}${contactText}\n\nFiles (${totalPartCount.value} parts total):\n${fileListText || '• CAD models'}${notesText}${qrText}\n\nPlease inspect the slicing and tell me the price. Thank you!`
+    `Hello AeroByte Maker Lab! 👋\nI dropped my 3D CAD files for printing:${orderIdText}${nameText}${contactText}\n\nFiles (${files.value.length} file(s)):\n${fileListText || '• CAD models'}${notesText}${qrText}\n\nPlease inspect the files and text me the price on Telegram. Thank you!`
   )
   return `https://t.me/aerobyte168?text=${msg}`
 })

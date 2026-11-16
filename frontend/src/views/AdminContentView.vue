@@ -2958,7 +2958,57 @@
         <!-- ======================================================== -->
         <!-- SECTION: AERO PRINT CONTROL CENTER                       -->
         <!-- ======================================================== -->
-        <section v-else-if="activeSection === 'aeroprint'" class="w-full pb-8 space-y-6">
+        <!-- AERO PRINT: RATES, FLEET & CUSTOMER CAD ORDERS             -->
+        <!-- ======================================================== -->
+        <section v-else-if="activeSection === 'aeroprint' || activeSection === 'aeroprint_fleet'" class="w-full pb-8 space-y-6">
+          <!-- Aero Print Sub-Navigation Module Tabs -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-3">
+            <div class="flex items-center gap-2">
+              <button
+                type="button"
+                @click="activeSection = 'aeroprint'"
+                class="px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 cursor-pointer"
+                :class="activeSection === 'aeroprint'
+                  ? 'bg-navy-900 dark:bg-indigo-600 text-white shadow-xs'
+                  : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-navy-900 dark:hover:text-white border border-slate-200 dark:border-slate-800'"
+              >
+                <Layers class="w-4 h-4" />
+                <span>{{ t('Material Pricing Rates') }}</span>
+              </button>
+
+              <button
+                type="button"
+                @click="activeSection = 'aeroprint_fleet'"
+                class="px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 cursor-pointer relative"
+                :class="activeSection === 'aeroprint_fleet'
+                  ? 'bg-navy-900 dark:bg-indigo-600 text-white shadow-xs'
+                  : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-navy-900 dark:hover:text-white border border-slate-200 dark:border-slate-800'"
+              >
+                <Sliders class="w-4 h-4" />
+                <span>{{ t('Printer Fleet & Orders') }}</span>
+                <span
+                  v-if="pendingPrintOrdersCount > 0"
+                  class="ml-1 px-1.5 py-0.5 rounded-full text-[10px] font-black"
+                  :class="activeSection === 'aeroprint_fleet' ? 'bg-amber-400 text-navy-900' : 'bg-amber-500 text-white'"
+                >
+                  {{ pendingPrintOrdersCount }}
+                </span>
+              </button>
+            </div>
+
+            <!-- Refresh Orders Button -->
+            <button
+              type="button"
+              @click="fetchPrintOrders"
+              :disabled="isLoadingPrintOrders"
+              class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer transition disabled:opacity-50"
+              title="Refresh Orders"
+            >
+              <RefreshCw class="w-3.5 h-3.5" :class="{ 'animate-spin': isLoadingPrintOrders }" />
+              <span class="hidden sm:inline">{{ t('Refresh Orders') }}</span>
+            </button>
+          </div>
+
           <!-- Top KPI / Overview Banner -->
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 sm:p-5 shadow-card flex items-center gap-3.5">
@@ -2985,18 +3035,21 @@
 
             <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 sm:p-5 shadow-card flex items-center gap-3.5">
               <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-900/40">
-                <Clock class="w-5 h-5" />
+                <Box class="w-5 h-5" />
               </div>
               <div>
-                <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">{{ t('Standard Turnaround') }}</p>
-                <p class="text-base font-extrabold text-navy-900 dark:text-white mt-0.5">24–48 Hours</p>
-                <p class="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold">Fast Dispatch Lab</p>
+                <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">{{ t('Active Customer Orders') }}</p>
+                <p class="text-xl font-extrabold text-navy-900 dark:text-white mt-0.5">{{ printOrdersList.length }} Orders</p>
+                <p class="text-[11px] text-amber-600 dark:text-amber-400 font-semibold">{{ pendingPrintOrdersCount }} Pending Review</p>
               </div>
             </div>
           </div>
 
-          <!-- Material Pricing Rates ($/g) Card -->
-          <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6 shadow-card space-y-4">
+          <!-- Material Pricing Rates ($/g) Card (Shown on Rates tab) -->
+          <div
+            v-if="activeSection === 'aeroprint'"
+            class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6 shadow-card space-y-4"
+          >
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-4">
               <div>
                 <h3 class="text-base sm:text-lg font-extrabold text-navy-900 dark:text-white">{{ t('Material Pricing Rates') }}</h3>
@@ -3106,7 +3159,7 @@
           </div>
 
           <!-- Printer Hardware Fleet Status Card -->
-          <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6 shadow-card space-y-4">
+          <div id="admin-aeroprint-fleet" class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6 shadow-card space-y-4">
             <div class="border-b border-slate-100 dark:border-slate-800 pb-3">
               <h3 class="text-base font-extrabold text-navy-900 dark:text-white">{{ t('Printer Fleet Status') }}</h3>
               <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{{ t('Live status of active 3D printers in the Ta Khmau hardware lab.') }}</p>
@@ -3144,9 +3197,22 @@
 
           <!-- Print Inquiries & Custom Orders Log Card -->
           <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6 shadow-card space-y-4">
-            <div class="border-b border-slate-100 dark:border-slate-800 pb-3">
-              <h3 class="text-base font-extrabold text-navy-900 dark:text-white">{{ t('Print Orders & Inquiries') }}</h3>
-              <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{{ t('Review customer 3D print quote submissions and update production status.') }}</p>
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-3">
+              <div>
+                <h3 class="text-base font-extrabold text-navy-900 dark:text-white flex items-center gap-2">
+                  <span>{{ t('Customer Print Inquiries & Dropped Files') }}</span>
+                  <span class="px-2 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 text-[11px] font-black border border-blue-200/50">
+                    {{ printOrdersList.length }}
+                  </span>
+                </h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{{ t('Review user-dropped 3D CAD files, view customer details, and download models directly.') }}</p>
+              </div>
+
+              <div class="flex items-center gap-2">
+                <span class="text-xs text-slate-400 dark:text-slate-500 hidden sm:inline">
+                  {{ pendingPrintOrdersCount }} pending review
+                </span>
+              </div>
             </div>
 
             <div class="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-800">
@@ -3154,8 +3220,8 @@
                 <thead>
                   <tr class="bg-slate-50/80 dark:bg-slate-800/50 text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-800">
                     <th class="py-3 px-4">ID</th>
-                    <th class="py-3 px-4">{{ t('Customer') }}</th>
-                    <th class="py-3 px-4">{{ t('Specification') }}</th>
+                    <th class="py-3 px-4">{{ t('Customer & Contact') }}</th>
+                    <th class="py-3 px-4">{{ t('Dropped Files & Specs') }}</th>
                     <th class="py-3 px-4 text-center">{{ t('Weight') }}</th>
                     <th class="py-3 px-4 text-center">{{ t('Est. Price') }}</th>
                     <th class="py-3 px-4 text-center">{{ t('Status') }}</th>
@@ -3168,22 +3234,57 @@
                     :key="order.id"
                     class="hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition"
                   >
-                    <td class="py-3 px-4 font-mono font-bold text-slate-500 dark:text-slate-400">{{ order.id }}</td>
-                    <td class="py-3 px-4">
-                      <p class="font-bold text-navy-900 dark:text-white">{{ order.customer }}</p>
-                      <p class="text-[10px] text-slate-400 font-mono">{{ order.phone }}</p>
+                    <!-- Order ID & Date -->
+                    <td class="py-3.5 px-4 font-mono font-bold text-slate-700 dark:text-slate-200">
+                      <span>{{ order.order_number || order.id }}</span>
+                      <p class="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5 font-sans font-normal">
+                        {{ formatTimeAgo(order.created_at || order.date) }}
+                      </p>
                     </td>
-                    <td class="py-3 px-4">
-                      <p class="font-semibold text-slate-700 dark:text-slate-200">{{ order.part }}</p>
-                      <p class="text-[10px] text-slate-500 dark:text-slate-400">{{ order.material }}</p>
+
+                    <!-- Customer Contact & Telegram -->
+                    <td class="py-3.5 px-4">
+                      <p class="font-bold text-navy-900 dark:text-white">{{ order.customer_name || order.customer }}</p>
+                      <div class="flex flex-wrap items-center gap-1.5 mt-0.5">
+                        <span class="text-[10px] text-slate-500 dark:text-slate-400 font-mono">{{ order.telegram || order.phone }}</span>
+                        <span
+                          v-if="order.qr_file_url"
+                          class="inline-flex items-center gap-1 px-1.5 py-0.2 rounded bg-emerald-50 dark:bg-emerald-950/50 text-[9px] font-bold text-emerald-600 dark:text-emerald-400 border border-emerald-200/50"
+                        >
+                          📷 QR Attached
+                        </span>
+                      </div>
                     </td>
-                    <td class="py-3 px-4 text-center font-mono font-semibold text-slate-600 dark:text-slate-300">
+
+                    <!-- Dropped 3D Files & Specification -->
+                    <td class="py-3.5 px-4">
+                      <p class="font-semibold text-slate-700 dark:text-slate-200 truncate max-w-[200px]" :title="order.part">
+                        {{ order.part }}
+                      </p>
+                      <div class="flex items-center gap-2 mt-0.5">
+                        <span class="text-[10px] text-slate-500 dark:text-slate-400">{{ order.material }}</span>
+                        <span
+                          v-if="order.files && order.files.length"
+                          class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/60 text-[10px] font-bold text-blue-600 dark:text-blue-400 border border-blue-200/50"
+                        >
+                          <Box class="w-2.5 h-2.5" />
+                          <span>{{ order.files.length }} {{ order.files.length === 1 ? 'file' : 'files' }}</span>
+                        </span>
+                      </div>
+                    </td>
+
+                    <!-- Weight -->
+                    <td class="py-3.5 px-4 text-center font-mono font-semibold text-slate-600 dark:text-slate-300">
                       {{ order.weight }}
                     </td>
-                    <td class="py-3 px-4 text-center font-bold text-emerald-600 dark:text-emerald-400">
-                      ${{ order.price.toFixed(2) }}
+
+                    <!-- Price -->
+                    <td class="py-3.5 px-4 text-center font-bold text-emerald-600 dark:text-emerald-400">
+                      ${{ (order.price || order.estimated_price || 0).toFixed(2) }}
                     </td>
-                    <td class="py-3 px-4 text-center">
+
+                    <!-- Status Dropdown -->
+                    <td class="py-3.5 px-4 text-center">
                       <select
                         :value="order.status"
                         @change="updateOrderStatus(order, $event.target.value)"
@@ -3193,17 +3294,42 @@
                         <option value="In Production">{{ t('In Production') }}</option>
                         <option value="Ready for Pickup">{{ t('Ready for Pickup') }}</option>
                         <option value="Completed">{{ t('Completed') }}</option>
+                        <option value="Cancelled">{{ t('Cancelled') }}</option>
                       </select>
                     </td>
-                    <td class="py-3 px-4 text-right">
-                      <button
-                        type="button"
-                        @click="deletePrintOrder(order.id)"
-                        class="p-1 rounded-lg text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/40 transition cursor-pointer"
-                        :title="t('Delete')"
-                      >
-                        <Trash2 class="w-3.5 h-3.5" />
-                      </button>
+
+                    <!-- Action Buttons: Details Modal, Direct Download, Delete -->
+                    <td class="py-3.5 px-4 text-right">
+                      <div class="flex items-center justify-end gap-1.5">
+                        <button
+                          type="button"
+                          @click="openPrintOrderDetails(order)"
+                          class="px-2.5 py-1.5 rounded-lg bg-navy-50 hover:bg-navy-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-navy-900 dark:text-slate-200 font-bold text-[11px] flex items-center gap-1.5 transition cursor-pointer"
+                          :title="t('View customer details and download dropped files')"
+                        >
+                          <Eye class="w-3.5 h-3.5 text-navy-800 dark:text-blue-400" />
+                          <span>{{ t('Details') }}</span>
+                        </button>
+
+                        <a
+                          v-if="order.files && order.files[0]"
+                          :href="getPrintFileDownloadUrl(order.files[0])"
+                          :download="order.files[0].original_name"
+                          class="p-1.5 rounded-lg text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 border border-emerald-200/50 dark:border-emerald-800/50 transition cursor-pointer"
+                          :title="'Download ' + order.files[0].original_name"
+                        >
+                          <Download class="w-3.5 h-3.5" />
+                        </a>
+
+                        <button
+                          type="button"
+                          @click="deletePrintOrder(order.id)"
+                          class="p-1.5 rounded-lg text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/40 transition cursor-pointer"
+                          :title="t('Delete')"
+                        >
+                          <Trash2 class="w-3.5 h-3.5" />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 </tbody>
@@ -3225,6 +3351,222 @@
     @crop="onCropperApply"
     @use-original="onCropperUseOriginal"
   />
+
+  <!-- Modal: Print Order Details & Dropped 3D CAD Files -->
+  <div
+    v-if="printOrderModalOpen && selectedPrintOrder"
+    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-950/65 dark:bg-black/75 backdrop-blur-xs"
+  >
+    <div class="relative w-full max-w-2xl max-h-[90vh] flex flex-col rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden">
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 px-6 py-4 bg-slate-50/50 dark:bg-slate-800/40">
+        <div class="flex items-center gap-3">
+          <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-navy-900/10 dark:bg-blue-400/15 text-navy-900 dark:text-blue-400 font-black">
+            <Box class="w-5 h-5" />
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h3 class="text-base font-extrabold text-navy-900 dark:text-white">
+                {{ selectedPrintOrder.order_number || selectedPrintOrder.id }}
+              </h3>
+              <span
+                class="px-2 py-0.5 rounded-full text-[10px] font-bold"
+                :class="{
+                  'bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300': selectedPrintOrder.status === 'Pending Review',
+                  'bg-blue-100 text-blue-800 dark:bg-blue-950/60 dark:text-blue-300': selectedPrintOrder.status === 'In Production',
+                  'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300': selectedPrintOrder.status === 'Ready for Pickup' || selectedPrintOrder.status === 'Completed',
+                  'bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-300': selectedPrintOrder.status === 'Cancelled',
+                }"
+              >
+                {{ t(selectedPrintOrder.status) }}
+              </span>
+            </div>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+              {{ t('Customer 3D Print Quote Submission') }} • {{ formatTimeAgo(selectedPrintOrder.created_at || selectedPrintOrder.date) }}
+            </p>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          @click="printOrderModalOpen = false"
+          class="p-2 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer transition"
+        >
+          <X class="w-5 h-5" />
+        </button>
+      </div>
+
+      <!-- Modal Body (Scrollable) -->
+      <div class="overflow-y-auto p-6 space-y-5 text-xs">
+        <!-- Customer Info & Contact Card -->
+        <div class="rounded-xl border border-slate-200 dark:border-slate-800 p-4 bg-slate-50/50 dark:bg-slate-800/30 space-y-3">
+          <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+            {{ t('Customer Information') }}
+          </h4>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <span class="block text-[11px] text-slate-500 dark:text-slate-400">{{ t('Customer Name') }}</span>
+              <p class="font-bold text-navy-900 dark:text-white mt-0.5 text-sm">
+                {{ selectedPrintOrder.customer_name || selectedPrintOrder.customer || 'Anonymous' }}
+              </p>
+            </div>
+            <div>
+              <span class="block text-[11px] text-slate-500 dark:text-slate-400">{{ t('Telegram Handle / Phone') }}</span>
+              <div class="flex items-center gap-1.5 mt-0.5">
+                <p class="font-bold text-navy-900 dark:text-white font-mono">
+                  {{ selectedPrintOrder.telegram || selectedPrintOrder.phone || 'N/A' }}
+                </p>
+                <a
+                  v-if="selectedPrintOrder.telegram && selectedPrintOrder.telegram.includes('@')"
+                  :href="'https://t.me/' + selectedPrintOrder.telegram.replace('@', '')"
+                  target="_blank"
+                  rel="noopener"
+                  class="text-[10px] font-bold text-blue-600 hover:text-blue-700 dark:text-blue-400 underline inline-flex items-center gap-0.5"
+                >
+                  <span>Chat</span>
+                  <ExternalLink class="w-3 h-3" />
+                </a>
+              </div>
+            </div>
+            <div>
+              <span class="block text-[11px] text-slate-500 dark:text-slate-400">{{ t('Submitted On') }}</span>
+              <p class="font-medium text-slate-700 dark:text-slate-300 mt-0.5">
+                {{ formatCambodiaTime(selectedPrintOrder.created_at || selectedPrintOrder.date) }}
+              </p>
+            </div>
+          </div>
+
+          <!-- Customer Telegram QR Code (if dropped) -->
+          <div v-if="selectedPrintOrder.qr_file_url" class="pt-3 border-t border-slate-200 dark:border-slate-700/60">
+            <span class="block text-[11px] font-bold text-emerald-600 dark:text-emerald-400 mb-2">
+              📷 {{ t('Customer Dropped Telegram QR Code (Scan to Connect):') }}
+            </span>
+            <div class="flex items-center gap-4">
+              <a :href="selectedPrintOrder.qr_file_url" target="_blank" rel="noopener" class="h-28 w-28 rounded-xl border border-black/10 dark:border-white/15 bg-white p-1.5 shadow-sm overflow-hidden flex items-center justify-center hover:scale-105 transition-transform" title="Click to view full QR code">
+                <img :src="selectedPrintOrder.qr_file_url" alt="Telegram QR Code" class="h-full w-full object-contain" />
+              </a>
+              <div class="space-y-1">
+                <p class="font-bold text-xs text-navy-900 dark:text-white">Scan with Telegram Camera</p>
+                <p class="text-[11px] text-slate-500 dark:text-slate-400">Open Telegram on your phone and scan to start a direct message thread with this customer.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Customer Project Notes & Requirements -->
+          <div v-if="selectedPrintOrder.notes" class="pt-3 border-t border-slate-200 dark:border-slate-700/60">
+            <span class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-1">
+              📝 {{ t('Customer Notes & Instructions:') }}
+            </span>
+            <div class="rounded-lg bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200/70 dark:border-amber-900/40 p-3 text-xs text-amber-900 dark:text-amber-200 leading-relaxed font-mono">
+              {{ selectedPrintOrder.notes }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Dropped 3D CAD Files Section -->
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 flex items-center gap-1.5">
+              <FileCode class="w-4 h-4 text-blue-500" />
+              <span>{{ t('Dropped 3D CAD Files') }} ({{ selectedPrintOrder.files?.length || 1 }})</span>
+            </h4>
+            <span class="text-[11px] text-slate-500 dark:text-slate-400">
+              Total Parts: <strong>{{ selectedPrintOrder.total_parts || 1 }}</strong>
+            </span>
+          </div>
+
+          <div v-if="selectedPrintOrder.files && selectedPrintOrder.files.length" class="space-y-2.5">
+            <div
+              v-for="(file, idx) in selectedPrintOrder.files"
+              :key="idx"
+              class="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs hover:border-navy-300 dark:hover:border-indigo-500 transition"
+            >
+              <div class="flex items-center gap-3 min-w-0">
+                <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-900/40 font-mono font-bold text-xs">
+                  .3D
+                </div>
+                <div class="min-w-0">
+                  <p class="font-bold text-navy-900 dark:text-white truncate text-xs" :title="file.original_name">
+                    {{ file.original_name }}
+                  </p>
+                  <div class="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                    <span class="font-mono font-semibold">{{ file.size_str || 'N/A' }}</span>
+                    <span>•</span>
+                    <span>Qty: <strong class="text-navy-900 dark:text-white">{{ file.quantity || 1 }}</strong></span>
+                    <span v-if="file.dimensions">•</span>
+                    <span v-if="file.dimensions" class="font-mono">{{ file.dimensions.x }}×{{ file.dimensions.y }}×{{ file.dimensions.z }} mm</span>
+                    <span v-if="file.volume_cm3">•</span>
+                    <span v-if="file.volume_cm3">{{ file.volume_cm3 }} cm³</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Download CAD File Button -->
+              <a
+                :href="getPrintFileDownloadUrl(file)"
+                :download="file.original_name"
+                class="shrink-0 px-3.5 py-2 rounded-xl bg-navy-900 hover:bg-navy-800 dark:bg-indigo-600 dark:hover:bg-indigo-500 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-xs transition cursor-pointer"
+              >
+                <Download class="w-3.5 h-3.5" />
+                <span>{{ t('Download 3D File') }}</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Fallback if order has no explicit files list -->
+          <div v-else class="rounded-xl border border-dashed border-slate-200 dark:border-slate-800 p-4 text-center">
+            <p class="text-xs text-slate-500 dark:text-slate-400">
+              {{ selectedPrintOrder.part || 'Custom 3D CAD Part' }}
+            </p>
+          </div>
+        </div>
+
+        <!-- Production Status & Price Bar -->
+        <div class="rounded-xl border border-slate-200 dark:border-slate-800 p-4 bg-slate-50/50 dark:bg-slate-800/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <span class="block text-[11px] text-slate-500 dark:text-slate-400">{{ t('Estimated Pricing') }}</span>
+            <p class="text-lg font-extrabold text-emerald-600 dark:text-emerald-400 mt-0.5">
+              ${{ (selectedPrintOrder.price || selectedPrintOrder.estimated_price || 0).toFixed(2) }}
+            </p>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <label class="text-xs font-bold text-slate-700 dark:text-slate-300">{{ t('Update Status:') }}</label>
+            <select
+              :value="selectedPrintOrder.status"
+              @change="updateOrderStatus(selectedPrintOrder, $event.target.value)"
+              class="text-xs font-bold rounded-xl px-3 py-2 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none cursor-pointer"
+            >
+              <option value="Pending Review">{{ t('Pending Review') }}</option>
+              <option value="In Production">{{ t('In Production') }}</option>
+              <option value="Ready for Pickup">{{ t('Ready for Pickup') }}</option>
+              <option value="Completed">{{ t('Completed') }}</option>
+              <option value="Cancelled">{{ t('Cancelled') }}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="border-t border-slate-100 dark:border-slate-800 px-6 py-3.5 bg-slate-50/50 dark:bg-slate-800/40 flex items-center justify-between">
+        <button
+          type="button"
+          @click="deletePrintOrder(selectedPrintOrder.id)"
+          class="text-xs text-red-600 dark:text-red-400 hover:text-red-700 font-semibold px-3 py-1.5 hover:bg-red-50 dark:hover:bg-red-950/40 rounded-xl transition cursor-pointer"
+        >
+          {{ t('Delete Order') }}
+        </button>
+
+        <button
+          type="button"
+          @click="printOrderModalOpen = false"
+          class="px-5 py-2 rounded-xl bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-800 dark:text-white font-bold text-xs transition cursor-pointer"
+        >
+          {{ t('Close') }}
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- Modal: Add / Edit Flight Session -->
   <div
@@ -5521,6 +5863,8 @@ watch(activeSection, (sec) => {
     loadLogsData()
   } else if (sec === 'users') {
     loadUsersData()
+  } else if (sec && sec.startsWith('aeroprint')) {
+    fetchPrintOrders()
   }
 })
 
@@ -5825,6 +6169,7 @@ onMounted(() => {
   checkSession().then(() => {
     lastKnownEnrollmentIds = new Set((enrollments.value || []).map(e => e.enrollment_id))
     lastKnownPaymentIds = new Set((payments.value || []).map(p => `${p.transaction_id || p.enrollment_id}-${p.status}`))
+    fetchPrintOrders()
   })
   if (activeSection.value === 'logs') {
     loadLogsData()

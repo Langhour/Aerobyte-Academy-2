@@ -5,16 +5,16 @@
         <nav aria-label="Breadcrumb" class="text-xs font-medium text-slate-500 dark:text-slate-400">
           <RouterLink to="/courses" class="transition hover:text-navy-900 dark:hover:text-white">Home</RouterLink>
           <span class="mx-2 text-slate-300 dark:text-slate-600" aria-hidden="true">/</span>
-          <span class="text-navy-900 dark:text-white font-semibold">{{ t('Profile information') }}</span>
+          <span class="text-navy-900 dark:text-white font-semibold">{{ activeSectionTitle }}</span>
         </nav>
         <div class="mt-5 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p class="text-xs font-bold uppercase tracking-[0.16em] text-navy-600 dark:text-indigo-400">{{ t('Your account') }}</p>
             <h1 class="mt-2 text-3xl font-extrabold tracking-tight text-navy-900 dark:text-white sm:text-4xl">
-              {{ t('Profile information') }}
+              {{ activeSectionTitle }}
             </h1>
             <p class="mt-2 max-w-2xl text-sm leading-6 text-slate-500 dark:text-slate-400">
-              {{ t('Keep your contact and learning details up to date so we can make your AeroByte experience more personal.') }}
+              {{ activeSectionDescription }}
             </p>
           </div>
           <span
@@ -270,7 +270,7 @@
         </section>
 
         <!-- MY ORDERS SECTION -->
-        <section v-if="activeSection === 'orders'" class="space-y-5">
+        <section v-else-if="activeSection === 'orders'" class="space-y-5">
           <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <h2 class="text-xl font-extrabold text-navy-900 dark:text-white">{{ t('My orders') }}</h2>
@@ -493,6 +493,53 @@
             </div>
           </section>
 
+          <!-- Terms & Policies Card in Settings -->
+          <section class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs transition-colors">
+            <div class="flex items-center gap-3 border-b border-slate-100 dark:border-slate-800/80 px-5 py-5 sm:px-7">
+              <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-navy-50 dark:bg-slate-800 text-navy-800 dark:text-slate-200">
+                <Scale class="h-5 w-5" aria-hidden="true" />
+              </span>
+              <div>
+                <h3 class="text-sm font-bold text-navy-900 dark:text-slate-100">{{ t('Terms & Policies') }}</h3>
+                <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">{{ t('Review the agreements that govern your account and data privacy.') }}</p>
+              </div>
+            </div>
+            <div class="grid gap-3 p-5 sm:grid-cols-2 sm:p-7">
+              <button
+                type="button"
+                @click="selectSection('terms')"
+                class="flex items-center justify-between rounded-xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/50 dark:bg-slate-800/40 p-4 text-left transition hover:border-navy-800 dark:hover:border-indigo-500 hover:bg-white dark:hover:bg-slate-800 cursor-pointer"
+              >
+                <div class="flex items-center gap-3">
+                  <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-navy-50 dark:bg-slate-800 text-navy-800 dark:text-indigo-400">
+                    <Scale class="h-4 w-4" />
+                  </span>
+                  <div>
+                    <span class="text-xs font-bold text-navy-900 dark:text-white block">{{ t('Terms of use') }}</span>
+                    <span class="text-[11px] text-slate-400 dark:text-slate-500 block mt-0.5">{{ t('Student agreements & lab safety') }}</span>
+                  </div>
+                </div>
+                <ArrowRight class="h-4 w-4 text-slate-400 shrink-0" />
+              </button>
+              <button
+                type="button"
+                @click="selectSection('privacy')"
+                class="flex items-center justify-between rounded-xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/50 dark:bg-slate-800/40 p-4 text-left transition hover:border-navy-800 dark:hover:border-indigo-500 hover:bg-white dark:hover:bg-slate-800 cursor-pointer"
+              >
+                <div class="flex items-center gap-3">
+                  <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400">
+                    <ShieldCheck class="h-4 w-4" />
+                  </span>
+                  <div>
+                    <span class="text-xs font-bold text-navy-900 dark:text-white block">{{ t('Privacy Policy') }}</span>
+                    <span class="text-[11px] text-slate-400 dark:text-slate-500 block mt-0.5">{{ t('How we handle and secure your data') }}</span>
+                  </div>
+                </div>
+                <ArrowRight class="h-4 w-4 text-slate-400 shrink-0" />
+              </button>
+            </div>
+          </section>
+
           <section class="rounded-2xl border border-red-200 dark:border-red-900/50 bg-white dark:bg-slate-900 p-5 sm:p-7">
             <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
@@ -511,6 +558,202 @@
               </button>
             </div>
           </section>
+        </section>
+
+        <!-- TERMS OF USE SECTION -->
+        <section v-else-if="activeSection === 'terms'" class="space-y-5">
+          <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <div class="inline-flex items-center gap-1.5 rounded-full border border-navy-100 bg-navy-50 px-3 py-1 text-xs font-bold text-navy-800 dark:border-indigo-900/60 dark:bg-indigo-950/40 dark:text-indigo-300 mb-2">
+                <Scale class="h-3.5 w-3.5" aria-hidden="true" />
+                <span>{{ t('Official AeroByte Academy Agreement') }}</span>
+              </div>
+              <h2 class="text-xl font-extrabold text-navy-900 dark:text-white sm:text-2xl">{{ t('Terms of use') }}</h2>
+              <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                {{ t('Review our terms, student commitments, and platform guidelines.') }}
+              </p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button
+                type="button"
+                @click="selectSection('privacy')"
+                class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:text-navy-900 dark:hover:text-white transition cursor-pointer"
+              >
+                <ShieldCheck class="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
+                <span>{{ t('Privacy Policy') }}</span>
+              </button>
+              <RouterLink
+                to="/terms"
+                class="inline-flex items-center gap-1.5 rounded-xl border border-navy-900 bg-navy-900 dark:border-indigo-600 dark:bg-indigo-600 px-3.5 py-2 text-xs font-semibold text-white shadow-2xs hover:bg-navy-800 dark:hover:bg-indigo-700 transition"
+              >
+                <span>{{ t('Open full page') }}</span>
+                <ExternalLink class="h-3.5 w-3.5 text-white/80" />
+              </RouterLink>
+            </div>
+          </div>
+
+          <!-- Highlight Banner -->
+          <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-gradient-to-r from-navy-50 via-white to-blue-50/40 dark:from-slate-900 dark:via-slate-900 dark:to-indigo-950/30 p-5 shadow-xs">
+            <div class="flex items-start gap-3.5">
+              <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-navy-900 text-white dark:bg-indigo-600 shadow-xs">
+                <FileText class="h-5 w-5" />
+              </span>
+              <div>
+                <h3 class="text-sm font-bold text-navy-900 dark:text-white">{{ t('Student Agreement & Guidelines') }}</h3>
+                <p class="mt-1 text-xs leading-relaxed text-slate-600 dark:text-slate-300">
+                  {{ t('Welcome to AeroByte Academy. By creating an account and enrolling in courses, you agree to comply with our academic standards, maker laboratory guidelines, and user agreement.') }}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="space-y-4">
+            <!-- 1. Acceptance -->
+            <article class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6 shadow-xs">
+              <div class="flex items-center gap-3 mb-3">
+                <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-navy-50 dark:bg-slate-800 text-navy-800 dark:text-indigo-400">
+                  <CheckCircle2 class="h-4 w-4" />
+                </span>
+                <h3 class="text-sm font-bold text-navy-900 dark:text-white">1. {{ t('Acceptance of Terms') }}</h3>
+              </div>
+              <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                {{ t('Welcome to AeroByte Academy. By creating an account, browsing our course catalog, registering for classes, or using our physical robotics maker labs in Phnom Penh, you agree to comply with and be bound by these Terms of Use.') }}
+              </p>
+            </article>
+
+            <!-- 2. Account Registration & Security -->
+            <article class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6 shadow-xs">
+              <div class="flex items-center gap-3 mb-3">
+                <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-navy-50 dark:bg-slate-800 text-navy-800 dark:text-indigo-400">
+                  <UserRound class="h-4 w-4" />
+                </span>
+                <h3 class="text-sm font-bold text-navy-900 dark:text-white">2. {{ t('Account Registration & Security') }}</h3>
+              </div>
+              <ul class="list-disc pl-5 space-y-1.5 text-xs sm:text-sm text-slate-600 dark:text-slate-300">
+                <li>{{ t('Provide accurate, current, and complete personal and contact information.') }}</li>
+                <li>{{ t('Maintain the confidentiality of your login credentials and password.') }}</li>
+                <li>{{ t('Promptly notify AeroByte Academy of any unauthorized access or security breach.') }}</li>
+                <li>{{ t('Ensure that course certificates and student credentials accurately represent the individual who completed the learning program.') }}</li>
+              </ul>
+            </article>
+
+            <!-- 3. Lab Safety -->
+            <article class="rounded-2xl border border-amber-200 dark:border-amber-900/60 bg-amber-50/40 dark:bg-amber-950/20 p-5 sm:p-6 shadow-xs">
+              <div class="flex items-center gap-3 mb-3">
+                <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-100 dark:bg-amber-900/50 text-amber-800 dark:text-amber-300">
+                  <ShieldCheck class="h-4 w-4" />
+                </span>
+                <h3 class="text-sm font-bold text-amber-950 dark:text-amber-200">3. {{ t('Lab Safety Guidelines & Equipment Use') }}</h3>
+              </div>
+              <p class="text-xs sm:text-sm text-amber-900/90 dark:text-amber-300/90 leading-relaxed mb-2">
+                {{ t('Hands-on engineering involves working directly with electrical circuits, microcontrollers, motors, actuators, and soldering stations. All enrolled students agree to follow instructor safety briefings, wear protective equipment, and handle robotics hardware with due care.') }}
+              </p>
+            </article>
+
+            <!-- 4. Tuition, Payment & Refunds -->
+            <article class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6 shadow-xs">
+              <div class="flex items-center gap-3 mb-3">
+                <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-navy-50 dark:bg-slate-800 text-navy-800 dark:text-indigo-400">
+                  <Scale class="h-4 w-4" />
+                </span>
+                <h3 class="text-sm font-bold text-navy-900 dark:text-white">4. {{ t('Tuition, Payment & Refund Policy') }}</h3>
+              </div>
+              <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                {{ t('Course registration is officially confirmed upon verified payment via KHQR or Bakong banking. Cancellation requests submitted 7+ days before cohort start receive a 100% full refund or complimentary cohort transfer.') }}
+              </p>
+            </article>
+          </div>
+        </section>
+
+        <!-- PRIVACY POLICY SECTION -->
+        <section v-else-if="activeSection === 'privacy'" class="space-y-5">
+          <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <div class="inline-flex items-center gap-1.5 rounded-full border border-emerald-100 bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-800 dark:border-emerald-900/60 dark:bg-emerald-950/40 dark:text-emerald-300 mb-2">
+                <Lock class="h-3.5 w-3.5" aria-hidden="true" />
+                <span>{{ t('We never sell your personal information') }}</span>
+              </div>
+              <h2 class="text-xl font-extrabold text-navy-900 dark:text-white sm:text-2xl">{{ t('Privacy Policy') }}</h2>
+              <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                {{ t('Learn how AeroByte Academy collects, safeguards, and handles your personal and learning data.') }}
+              </p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button
+                type="button"
+                @click="selectSection('terms')"
+                class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:text-navy-900 dark:hover:text-white transition cursor-pointer"
+              >
+                <Scale class="h-3.5 w-3.5 text-navy-800 dark:text-indigo-400" />
+                <span>{{ t('Terms of use') }}</span>
+              </button>
+              <RouterLink
+                to="/privacy"
+                class="inline-flex items-center gap-1.5 rounded-xl border border-emerald-700 bg-emerald-700 dark:border-emerald-600 dark:bg-emerald-600 px-3.5 py-2 text-xs font-semibold text-white shadow-2xs hover:bg-emerald-800 dark:hover:bg-emerald-700 transition"
+              >
+                <span>{{ t('Open full page') }}</span>
+                <ExternalLink class="h-3.5 w-3.5 text-white/80" />
+              </RouterLink>
+            </div>
+          </div>
+
+          <!-- Highlight Banner -->
+          <div class="rounded-2xl border border-emerald-200 dark:border-emerald-900/60 bg-gradient-to-r from-emerald-50/70 via-white to-emerald-50/30 dark:from-slate-900 dark:via-slate-900 dark:to-emerald-950/30 p-5 shadow-xs">
+            <div class="flex items-start gap-3.5">
+              <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-600 text-white shadow-xs">
+                <ShieldCheck class="h-5 w-5" />
+              </span>
+              <div>
+                <h3 class="text-sm font-bold text-emerald-950 dark:text-emerald-200">{{ t('Data Privacy & Student Trust') }}</h3>
+                <p class="mt-1 text-xs leading-relaxed text-slate-600 dark:text-slate-300">
+                  {{ t('Your contact details, qualification, course history, and learning progress are stored securely and used strictly for educational services, enrollment management, and certificate verification.') }}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="space-y-4">
+            <!-- 1. What Data We Collect -->
+            <article class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6 shadow-xs">
+              <div class="flex items-center gap-3 mb-3">
+                <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-navy-50 dark:bg-slate-800 text-navy-800 dark:text-indigo-400">
+                  <UserRound class="h-4 w-4" />
+                </span>
+                <h3 class="text-sm font-bold text-navy-900 dark:text-white">1. {{ t('Profile Information We Collect') }}</h3>
+              </div>
+              <ul class="list-disc pl-5 space-y-1.5 text-xs sm:text-sm text-slate-600 dark:text-slate-300">
+                <li><strong>{{ t('Identity & Contact') }}:</strong> {{ t('Full name, verified email address, phone number, and Telegram username for class communication.') }}</li>
+                <li><strong>{{ t('Learning Background') }}:</strong> {{ t('Date of birth, location, highest qualification, occupation, and prior coding experience.') }}</li>
+                <li><strong>{{ t('Course & Orders') }}:</strong> {{ t('Enrolled courses, payment receipts, hardware store orders, and certificate verification records.') }}</li>
+              </ul>
+            </article>
+
+            <!-- 2. Security & Encryption -->
+            <article class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6 shadow-xs">
+              <div class="flex items-center gap-3 mb-3">
+                <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-navy-50 dark:bg-slate-800 text-navy-800 dark:text-indigo-400">
+                  <Lock class="h-4 w-4" />
+                </span>
+                <h3 class="text-sm font-bold text-navy-900 dark:text-white">2. {{ t('Data Security & Encryption') }}</h3>
+              </div>
+              <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                {{ t('All data transmission between your browser and our servers is encrypted using modern TLS (HTTPS). Passwords are cryptographically hashed using PBKDF2 with unique salts, and session tokens are strictly scoped with HTTP-only, SameSite attributes.') }}
+              </p>
+            </article>
+
+            <!-- 3. Your Rights -->
+            <article class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6 shadow-xs">
+              <div class="flex items-center gap-3 mb-3">
+                <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-navy-50 dark:bg-slate-800 text-navy-800 dark:text-indigo-400">
+                  <CheckCircle2 class="h-4 w-4" />
+                </span>
+                <h3 class="text-sm font-bold text-navy-900 dark:text-white">3. {{ t('Your Control & Rights') }}</h3>
+              </div>
+              <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed mb-2">
+                {{ t('You retain full control over your personal profile. You can edit your profile details at any time, request a copy of your course records, or contact our support team at aerobyte.academy@gmail.com for assistance.') }}
+              </p>
+            </article>
+          </div>
         </section>
 
         <form v-else-if="isEditing" class="space-y-5" @submit.prevent="saveProfile">
@@ -892,6 +1135,48 @@
           <p class="px-1 text-xs leading-5 text-slate-500 dark:text-slate-400">
             {{ t('Your account details and profile information are securely saved to your account.') }}
           </p>
+
+          <!-- Terms & Privacy Trust Card for Profile information -->
+          <section class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-xs transition-colors">
+            <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div class="flex items-center gap-3">
+                <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300">
+                  <ShieldCheck class="h-5 w-5" aria-hidden="true" />
+                </span>
+                <div>
+                  <h3 class="text-xs font-bold text-navy-900 dark:text-white sm:text-sm">
+                    {{ t('Terms & Privacy for your Profile') }}
+                  </h3>
+                  <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                    {{ t('Your profile information is protected under our') }}
+                    <button type="button" @click="selectSection('terms')" class="font-semibold text-navy-800 dark:text-indigo-400 hover:underline cursor-pointer">
+                      {{ t('Terms of use') }}
+                    </button>
+                    {{ t('and') }}
+                    <button type="button" @click="selectSection('privacy')" class="font-semibold text-navy-800 dark:text-indigo-400 hover:underline cursor-pointer">
+                      {{ t('Privacy Policy') }}
+                    </button>.
+                  </p>
+                </div>
+              </div>
+              <div class="flex items-center gap-2 self-start sm:self-auto shrink-0">
+                <button
+                  type="button"
+                  @click="selectSection('terms')"
+                  class="rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition cursor-pointer"
+                >
+                  {{ t('Terms of use') }}
+                </button>
+                <button
+                  type="button"
+                  @click="selectSection('privacy')"
+                  class="rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition cursor-pointer"
+                >
+                  {{ t('Privacy Policy') }}
+                </button>
+              </div>
+            </div>
+          </section>
         </div>
       </div>
     </div>
@@ -951,10 +1236,14 @@ import {
   CalendarDays,
   Camera,
   Check,
+  CheckCircle2,
   ChevronDown,
   Code2,
+  ExternalLink,
+  FileText,
   GraduationCap,
   Globe2,
+  Lock,
   LogOut,
   Mail,
   MapPin,
@@ -962,6 +1251,7 @@ import {
   Pencil,
   Phone,
   RefreshCw,
+  Scale,
   Send,
   Settings,
   ShieldCheck,
@@ -981,7 +1271,31 @@ const accountSections = [
   { id: 'history', label: 'Course history', icon: BookOpen },
   { id: 'orders', label: 'My orders', icon: ShoppingBag },
   { id: 'settings', label: 'Settings', icon: Settings },
+  { id: 'terms', label: 'Terms of use', icon: Scale },
+  { id: 'privacy', label: 'Privacy Policy', icon: ShieldCheck },
 ]
+
+const activeSectionTitle = computed(() => {
+  switch (activeSection.value) {
+    case 'history': return t('Course history')
+    case 'orders': return t('My orders')
+    case 'settings': return t('Settings')
+    case 'terms': return t('Terms of use')
+    case 'privacy': return t('Privacy Policy')
+    default: return t('Profile information')
+  }
+})
+
+const activeSectionDescription = computed(() => {
+  switch (activeSection.value) {
+    case 'history': return t('Review your registrations and payment status.')
+    case 'orders': return t('Review your store purchases and hardware orders.')
+    case 'settings': return t('Manage your language and local profile preferences.')
+    case 'terms': return t('Review our terms, student commitments, and platform guidelines.')
+    case 'privacy': return t('Learn how AeroByte Academy collects, safeguards, and handles your personal and learning data.')
+    default: return t('Keep your contact and learning details up to date so we can make your AeroByte experience more personal.')
+  }
+})
 const emptyProfile = () => ({
   fullName: '',
   email: '',
@@ -1257,8 +1571,9 @@ onMounted(async () => {
   loadStoreOrders()
   window.addEventListener('storage', loadStoreOrders)
   window.addEventListener('aerobyte-orders-updated', loadStoreOrders)
-  if (router.currentRoute.value.query.section === 'orders') {
-    activeSection.value = 'orders'
+  const targetSection = router.currentRoute.value.query.section
+  if (['orders', 'history', 'settings', 'terms', 'privacy'].includes(targetSection)) {
+    activeSection.value = targetSection
   }
   document.addEventListener('click', handleDropdownClickOutside)
 })

@@ -1404,19 +1404,24 @@ def create_print_order(data: dict[str, Any]) -> dict[str, Any]:
         # Determine next order number if not provided
         order_num = data.get("order_number")
         if not order_num:
-            latest = connection.execute(
-                "SELECT order_number FROM print_orders ORDER BY rowid DESC LIMIT 1"
-            ).fetchone()
-            if latest and latest["order_number"].startswith("PR-"):
-                try:
-                    num_val = int(latest["order_number"].replace("PR-", "")) + 1
-                    order_num = f"PR-{num_val}"
-                except Exception:
-                    order_num = f"PR-{int(datetime.now().timestamp()) % 10000}"
-            else:
-                order_num = "PR-1025"
+            rows = connection.execute("SELECT order_number FROM print_orders").fetchall()
+            max_num = 1024
+            for r in rows:
+                on = r["order_number"]
+                if on.startswith("PR-"):
+                    try:
+                        max_num = max(max_num, int(on.replace("PR-", "")))
+                    except Exception:
+                        pass
+            order_num = f"PR-{max_num + 1}"
 
         order_id = data.get("id") or order_num
+        counter = 1
+        base_id = order_id
+        while connection.execute("SELECT 1 FROM print_orders WHERE id = ?", (order_id,)).fetchone():
+            counter += 1
+            order_id = f"{base_id}-{counter}"
+
         created_at = data.get("created_at") or datetime.now(CAMBODIA_TZ).isoformat()
         files_json = data.get("files_json")
         if isinstance(files_json, (list, dict)):
@@ -1445,7 +1450,7 @@ def create_print_order(data: dict[str, Any]) -> dict[str, Any]:
                 created_at,
             ),
         )
-        return get_print_order(order_id) or data
+    return get_print_order(order_id) or data
 
 
 def get_print_order(order_id: str) -> Optional[dict[str, Any]]:
