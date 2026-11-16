@@ -613,7 +613,7 @@ def link_google_user(user_id: str, google_sub: str) -> None:
 def find_user_by_id(user_id: str) -> Optional[dict[str, Any]]:
     with _connect() as connection:
         row = connection.execute(
-            "SELECT id, email, full_name, created_at, is_verified, avatar_url, google_sub, profile_json FROM users WHERE id = ?",
+            "SELECT * FROM users WHERE id = ?",
             (user_id,),
         ).fetchone()
     return dict(row) if row else None
