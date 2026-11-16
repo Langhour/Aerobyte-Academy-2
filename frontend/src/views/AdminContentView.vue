@@ -3283,19 +3283,21 @@
                       ${{ (order.price || order.estimated_price || 0).toFixed(2) }}
                     </td>
 
-                    <!-- Status Dropdown -->
-                    <td class="py-3.5 px-4 text-center">
-                      <select
-                        :value="order.status"
-                        @change="updateOrderStatus(order, $event.target.value)"
-                        class="text-[11px] font-bold rounded-lg px-2 py-1 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none cursor-pointer"
-                      >
-                        <option value="Pending Review">{{ t('Pending Review') }}</option>
-                        <option value="In Production">{{ t('In Production') }}</option>
-                        <option value="Ready for Pickup">{{ t('Ready for Pickup') }}</option>
-                        <option value="Completed">{{ t('Completed') }}</option>
-                        <option value="Cancelled">{{ t('Cancelled') }}</option>
-                      </select>
+                    <!-- Status Dropdown (CustomSelect with UX/UI) -->
+                    <td class="py-3 px-4 min-w-[160px] text-center">
+                      <CustomSelect
+                        size="sm"
+                        :model-value="order.status"
+                        :options="printOrderStatusOptions"
+                        :trigger-class="[
+                          'font-bold text-[11px] rounded-lg shadow-2xs',
+                          order.status === 'Pending Review' ? 'border-amber-300 bg-amber-50 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-700' :
+                          order.status === 'In Production' ? 'border-blue-300 bg-blue-50 text-blue-800 dark:bg-blue-950/60 dark:text-blue-300 dark:border-blue-700' :
+                          order.status === 'Ready for Pickup' || order.status === 'Completed' ? 'border-emerald-300 bg-emerald-50 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-700' :
+                          'border-slate-300 bg-slate-50 text-slate-800 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700'
+                        ]"
+                        @change="updateOrderStatus(order, $event)"
+                      />
                     </td>
 
                     <!-- Action Buttons: Details Modal, Direct Download, Delete -->
@@ -3531,18 +3533,22 @@
           </div>
 
           <div class="flex items-center gap-3">
-            <label class="text-xs font-bold text-slate-700 dark:text-slate-300">{{ t('Update Status:') }}</label>
-            <select
-              :value="selectedPrintOrder.status"
-              @change="updateOrderStatus(selectedPrintOrder, $event.target.value)"
-              class="text-xs font-bold rounded-xl px-3 py-2 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none cursor-pointer"
-            >
-              <option value="Pending Review">{{ t('Pending Review') }}</option>
-              <option value="In Production">{{ t('In Production') }}</option>
-              <option value="Ready for Pickup">{{ t('Ready for Pickup') }}</option>
-              <option value="Completed">{{ t('Completed') }}</option>
-              <option value="Cancelled">{{ t('Cancelled') }}</option>
-            </select>
+            <label class="text-xs font-bold text-slate-700 dark:text-slate-300 whitespace-nowrap">{{ t('Update Status:') }}</label>
+            <div class="w-48">
+              <CustomSelect
+                size="sm"
+                :model-value="selectedPrintOrder.status"
+                :options="printOrderStatusOptions"
+                :trigger-class="[
+                  'font-bold text-xs rounded-xl shadow-2xs',
+                  selectedPrintOrder.status === 'Pending Review' ? 'border-amber-300 bg-amber-50 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-700' :
+                  selectedPrintOrder.status === 'In Production' ? 'border-blue-300 bg-blue-50 text-blue-800 dark:bg-blue-950/60 dark:text-blue-300 dark:border-blue-700' :
+                  selectedPrintOrder.status === 'Ready for Pickup' || selectedPrintOrder.status === 'Completed' ? 'border-emerald-300 bg-emerald-50 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-700' :
+                  'border-slate-300 bg-slate-50 text-slate-800 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700'
+                ]"
+                @change="updateOrderStatus(selectedPrintOrder, $event)"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -3638,14 +3644,11 @@
           </div>
           <div>
             <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">{{ t('RSVP Status') }}</label>
-            <select
+            <CustomSelect
               v-model="sessionForm.status"
-              class="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-xs font-medium text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-navy-800 dark:focus:ring-indigo-500"
-            >
-              <option value="Open RSVP">{{ t('Open RSVP') }}</option>
-              <option value="Full">{{ t('Full') }}</option>
-              <option value="Completed">{{ t('Completed') }}</option>
-            </select>
+              :options="aeroFlyRsvpStatusOptions"
+              size="sm"
+            />
           </div>
         </div>
       </div>
@@ -4401,6 +4404,18 @@ const printOrdersList = ref(
 const pendingPrintOrdersCount = computed(() => {
   return (printOrdersList.value || []).filter((o) => o.status === 'Pending Review').length
 })
+const printOrderStatusOptions = computed(() => [
+  { value: 'Pending Review', label: t('Pending Review') },
+  { value: 'In Production', label: t('In Production') },
+  { value: 'Ready for Pickup', label: t('Ready for Pickup') },
+  { value: 'Completed', label: t('Completed') },
+  { value: 'Cancelled', label: t('Cancelled') },
+])
+const aeroFlyRsvpStatusOptions = computed(() => [
+  { value: 'Open RSVP', label: t('Open RSVP') },
+  { value: 'Full', label: t('Full') },
+  { value: 'Completed', label: t('Completed') },
+])
 const printOrderModalOpen = ref(false)
 const selectedPrintOrder = ref(null)
 const isLoadingPrintOrders = ref(false)
