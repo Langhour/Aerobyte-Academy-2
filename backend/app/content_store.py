@@ -555,8 +555,7 @@ def create_user(
 def find_user_by_email(email: str) -> Optional[dict[str, Any]]:
     with _connect() as connection:
         row = connection.execute(
-            "SELECT id, email, full_name, password_hash, created_at, is_verified, avatar_url, profile_json "
-            "FROM users WHERE email = ? COLLATE NOCASE",
+            "SELECT * FROM users WHERE email = ? COLLATE NOCASE",
             (email.strip().casefold(),),
         ).fetchone()
     return dict(row) if row else None
@@ -565,8 +564,7 @@ def find_user_by_email(email: str) -> Optional[dict[str, Any]]:
 def find_user_by_google_sub(google_sub: str) -> Optional[dict[str, Any]]:
     with _connect() as connection:
         row = connection.execute(
-            "SELECT id, email, full_name, password_hash, created_at, avatar_url, google_sub, profile_json "
-            "FROM users WHERE google_sub = ?",
+            "SELECT * FROM users WHERE google_sub = ?",
             (google_sub,),
         ).fetchone()
     return dict(row) if row else None
@@ -714,13 +712,29 @@ def update_user_profile(
 ) -> None:
     with _connect() as connection:
         updates = ["email = ?", "full_name = ?"]
-        params = [email.strip().casefold(), full_name.strip()]
+        params: list[Any] = [email.strip().casefold(), full_name.strip()]
         if avatar_url is not None:
             updates.append("avatar_url = ?")
             params.append(avatar_url.strip())
         if profile_data is not None:
             updates.append("profile_json = ?")
             params.append(json.dumps(profile_data, ensure_ascii=False))
+            for col in [
+                "phone",
+                "telegram",
+                "date_of_birth",
+                "gender",
+                "location",
+                "qualification",
+                "qualification_other",
+                "occupation",
+                "experience",
+            ]:
+                if col in profile_data:
+                    updates.append(f"{col} = ?")
+                    params.append(str(profile_data[col] or "").strip())
+        updates.append("updated_at = ?")
+        params.append(datetime.now(timezone.utc).isoformat())
         params.append(user_id)
         connection.execute(
             f"UPDATE users SET {', '.join(updates)} WHERE id = ?",
@@ -731,8 +745,8 @@ def update_user_profile(
 def update_user_avatar(user_id: str, avatar_url: str) -> None:
     with _connect() as connection:
         connection.execute(
-            "UPDATE users SET avatar_url = ? WHERE id = ?",
-            (avatar_url.strip(), user_id),
+            "UPDATE users SET avatar_url = ?, updated_at = ? WHERE id = ?",
+            (avatar_url.strip(), datetime.now(timezone.utc).isoformat(), user_id),
         )
 
 

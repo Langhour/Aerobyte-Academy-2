@@ -459,6 +459,23 @@ def update_profile(payload: AccountProfileUpdate, request: Request):
     if request.session.get("role") != "user":
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Sign-in required.")
     user_id = request.session.get("user_id", "")
+    current_user = find_user_by_id(user_id)
+    if current_user is None:
+        request.session.clear()
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Sign-in required.")
+
+    avatar_to_save: Optional[str] = None
+    if payload.avatar_url is not None:
+        raw_avatar = payload.avatar_url.strip()
+        if raw_avatar.startswith("data:") or raw_avatar.startswith("blob:"):
+            # Never store temporary data/blob URLs as persistent avatar URLs
+            avatar_to_save = current_user.get("avatar_url") or None
+        else:
+            avatar_to_save = raw_avatar
+    else:
+        # Preserve existing avatar if not provided
+        avatar_to_save = current_user.get("avatar_url") or None
+
     profile_data = {
         "phone": (payload.phone or "").strip()[:50],
         "telegram": (payload.telegram or "").strip()[:80],
@@ -474,7 +491,7 @@ def update_profile(payload: AccountProfileUpdate, request: Request):
             user_id,
             payload.email,
             payload.full_name,
-            payload.avatar_url,
+            avatar_to_save,
             profile_data=profile_data,
         )
     except IntegrityError as exc:
@@ -506,12 +523,25 @@ async def upload_avatar(
         "image/png": ".png",
         "image/webp": ".webp",
         "image/gif": ".gif",
+        "image/pjpeg": ".jpg",
+        "image/jfif": ".jpg",
+        "image/x-png": ".png",
     }
+    filename_lower = (avatar.filename or "").lower()
     if media_type not in allowed_types:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Only JPG, PNG, WEBP, or GIF images are allowed.",
-        )
+        if filename_lower.endswith((".jpg", ".jpeg", ".jfif", ".pjpeg")):
+            media_type = "image/jpeg"
+        elif filename_lower.endswith(".png"):
+            media_type = "image/png"
+        elif filename_lower.endswith(".webp"):
+            media_type = "image/webp"
+        elif filename_lower.endswith(".gif"):
+            media_type = "image/gif"
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Only JPG, PNG, WEBP, or GIF images are allowed.",
+            )
 
     contents = await avatar.read()
     if len(contents) > 5 * 1024 * 1024:
@@ -520,7 +550,7 @@ async def upload_avatar(
             detail="Avatar image size cannot exceed 5MB.",
         )
 
-    ext = allowed_types[media_type]
+    ext = allowed_types.get(media_type, ".png")
     file_hash = hashlib.sha256(contents).hexdigest()[:12]
     filename = f"avatar_{user_id}_{file_hash}{ext}"
 

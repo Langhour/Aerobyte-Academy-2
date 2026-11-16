@@ -1784,9 +1784,13 @@ async function confirmLogout() {
 
 function startEditing() {
   notice.value = ''
+  avatarLoadFailed.value = false
   qualificationDropdownOpen.value = false
   experienceDropdownOpen.value = false
   copyProfile(draft, profile)
+  if (!draft.avatarUrl && profile.avatarUrl) {
+    draft.avatarUrl = profile.avatarUrl
+  }
   isEditing.value = true
 }
 
@@ -1819,13 +1823,9 @@ async function handleAvatarChange(event) {
   avatarLoadFailed.value = false
   notice.value = ''
 
-  const reader = new FileReader()
-  reader.onload = (e) => {
-    const dataUrl = e.target.result
-    profile.avatarUrl = dataUrl
-    draft.avatarUrl = dataUrl
-  }
-  reader.readAsDataURL(file)
+  const previewUrl = URL.createObjectURL(file)
+  profile.avatarUrl = previewUrl
+  draft.avatarUrl = previewUrl
 
   try {
     const { data } = await accountService.uploadAvatar(file)
@@ -1835,6 +1835,7 @@ async function handleAvatarChange(event) {
       if (account.value) {
         account.value.avatar_url = data.avatar_url
       }
+      avatarLoadFailed.value = false
       const saved = JSON.parse(localStorage.getItem(storageKey.value) || '{}')
       saved.avatarUrl = data.avatar_url
       localStorage.setItem(storageKey.value, JSON.stringify(saved))
@@ -1845,14 +1846,12 @@ async function handleAvatarChange(event) {
     }
   } catch (error) {
     console.error('Failed to upload avatar to server:', error)
-    const saved = JSON.parse(localStorage.getItem(storageKey.value) || '{}')
-    saved.avatarUrl = profile.avatarUrl
-    localStorage.setItem(storageKey.value, JSON.stringify(saved))
-    window.dispatchEvent(new Event('aerobyte-profile-updated'))
-    window.dispatchEvent(new Event('aerobyte-auth-updated'))
-    notice.value = t('Profile photo saved in this browser.')
-    noticeType.value = 'success'
+    profile.avatarUrl = account.value?.avatar_url || ''
+    draft.avatarUrl = account.value?.avatar_url || ''
+    notice.value = error.response?.data?.detail || t('Failed to upload avatar image. Please try again.')
+    noticeType.value = 'error'
   } finally {
+    URL.revokeObjectURL(previewUrl)
     avatarUploading.value = false
     if (event.target) event.target.value = ''
   }
@@ -1892,11 +1891,27 @@ async function saveProfile() {
   if (nextProfile.occupation) {
     nextProfile.occupation = nextProfile.occupation.replace(/[0-9\u17E0-\u17E9]/g, '').trim()
   }
+
+  // Preserve existing avatar if not explicitly changed
+  if (!nextProfile.avatarUrl && profile.avatarUrl) {
+    nextProfile.avatarUrl = profile.avatarUrl
+  }
+  if (!nextProfile.avatarUrl && account.value?.avatar_url) {
+    nextProfile.avatarUrl = account.value.avatar_url
+  }
+
+  let avatarToSend = nextProfile.avatarUrl
+  if (avatarToSend && (avatarToSend.startsWith('data:') || avatarToSend.startsWith('blob:'))) {
+    avatarToSend = (profile.avatarUrl && !profile.avatarUrl.startsWith('data:') && !profile.avatarUrl.startsWith('blob:'))
+      ? profile.avatarUrl
+      : (account.value?.avatar_url || '')
+  }
+
   try {
     const { data } = await accountService.updateProfile({
       full_name: nextProfile.fullName,
       email: nextProfile.email,
-      avatar_url: nextProfile.avatarUrl,
+      avatar_url: avatarToSend,
       phone: nextProfile.phone,
       telegram: nextProfile.telegram,
       date_of_birth: nextProfile.dateOfBirth,
@@ -1934,6 +1949,7 @@ async function saveProfile() {
   }
 
   copyProfile(profile, nextProfile)
+  avatarLoadFailed.value = false
   window.dispatchEvent(new Event('aerobyte-profile-updated'))
   window.dispatchEvent(new Event('aerobyte-auth-updated'))
   isEditing.value = false
