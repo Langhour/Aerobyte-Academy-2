@@ -13,7 +13,7 @@ from starlette.middleware.sessions import SessionMiddleware
 from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
 
 from app.content_store import find_user_by_id, get_uploaded_file, initialize_content_store, log_visit_event
-from app.routers import accounts, admin, courses, enrollment, google_auth, public
+from app.routers import accounts, admin, courses, enrollment, google_auth, print_orders, public
 
 
 def _load_local_environment() -> None:
@@ -92,6 +92,7 @@ app.include_router(admin.router)
 app.include_router(public.router)
 app.include_router(accounts.router)
 app.include_router(google_auth.router)
+app.include_router(print_orders.router)
 
 upload_directory = Path(__file__).resolve().parents[1] / "data" / "uploads"
 upload_directory.mkdir(parents=True, exist_ok=True)

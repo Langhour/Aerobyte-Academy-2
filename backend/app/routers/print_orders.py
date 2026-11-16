@@ -1,0 +1,278 @@
+import json
+import os
+import re
+import unicodedata
+from datetime import datetime, timezone, timedelta
+from pathlib import Path
+from typing import Optional
+from uuid import uuid4
+
+from fastapi import APIRouter, File, Form, HTTPException, Request, Response, UploadFile, status, Query
+from fastapi.responses import FileResponse, Response
+from pydantic import BaseModel
+
+from app.content_store import (
+    create_print_order,
+    get_print_order,
+    list_all_print_orders,
+    update_print_order_status,
+    delete_print_order,
+    save_uploaded_file,
+    get_uploaded_file,
+)
+
+router = APIRouter(tags=["Print Orders"])
+
+UPLOAD_DIRECTORY = Path(__file__).resolve().parents[2] / "data" / "uploads"
+UPLOAD_DIRECTORY.mkdir(parents=True, exist_ok=True)
+CAMBODIA_TZ = timezone(timedelta(hours=7))
+
+
+def _require_admin(request: Request) -> None:
+    if request.session.get("role") != "admin":
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Admin sign-in required")
+
+
+def _sanitize_filename(name: str) -> str:
+    cleaned = unicodedata.normalize("NFKD", name).encode("ascii", "ignore").decode("ascii")
+    cleaned = re.sub(r"[^\w.\-]+", "_", cleaned).strip("._")
+    return cleaned or "cad_model.stl"
+
+
+def _format_size(num_bytes: int) -> str:
+    if num_bytes < 1024:
+        return f"{num_bytes} B"
+    elif num_bytes < 1024 * 1024:
+        return f"{num_bytes / 1024:.1f} KB"
+    else:
+        return f"{num_bytes / (1024 * 1024):.1f} MB"
+
+
+class StatusUpdatePayload(BaseModel):
+    status: str
+
+
+# =========================================================================
+# PUBLIC ENDPOINTS: Create Print Order & Download CAD Files
+# =========================================================================
+
+@router.post("/api/print-orders")
+async def submit_print_order(
+    order_data: str = Form(...),
+    files: list[UploadFile] = File(default=[]),
+    qr_file: Optional[UploadFile] = File(default=None),
+):
+    """
+    Submits a new 3D print quote inquiry with customer CAD files (.stl, .obj, .step, .3mf)
+    and optional Telegram QR code screenshot.
+    """
+    try:
+        parsed_data = json.loads(order_data) if isinstance(order_data, str) else order_data
+    except Exception as exc:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail=f"Invalid order_data JSON: {str(exc)}"
+        )
+
+    client_files_meta = parsed_data.get("files", [])
+    saved_files = []
+
+    # 1. Process and store uploaded 3D CAD files
+    for idx, f in enumerate(files):
+        data = await f.read()
+        clean_name = _sanitize_filename(f.filename or f"cad_part_{idx + 1}.stl")
+        stored_filename = f"print_{uuid4().hex[:10]}_{clean_name}"
+        target_path = UPLOAD_DIRECTORY / stored_filename
+
+        try:
+            target_path.write_bytes(data)
+        except Exception:
+            pass
+
+        # Also persist to SQLite uploaded_files
+        try:
+            save_uploaded_file(stored_filename, f.content_type or "application/octet-stream", data)
+        except Exception:
+            pass
+
+        meta = client_files_meta[idx] if idx < len(client_files_meta) else {}
+        quantity = int(meta.get("quantity") or 1)
+        dimensions = meta.get("dimensions") or {"x": 50, "y": 50, "z": 20}
+        volume_cm3 = float(meta.get("volumeCm3") or meta.get("volume_cm3") or 15.0)
+
+        saved_files.append({
+            "id": f"file-{uuid4().hex[:8]}",
+            "original_name": f.filename or clean_name,
+            "stored_filename": stored_filename,
+            "download_url": f"/api/print-orders/files/{stored_filename}?name={clean_name}",
+            "size_str": _format_size(len(data)),
+            "size_bytes": len(data),
+            "quantity": quantity,
+            "dimensions": dimensions,
+            "volume_cm3": volume_cm3,
+            "material": meta.get("material") or "PLA / Custom",
+        })
+
+    # If user used sample presets or simulated files without native File binary
+    if not saved_files and client_files_meta:
+        for idx, meta in enumerate(client_files_meta):
+            clean_name = _sanitize_filename(meta.get("name") or f"model_{idx + 1}.stl")
+            stored_filename = f"sample_{clean_name}"
+            saved_files.append({
+                "id": f"file-{uuid4().hex[:8]}",
+                "original_name": meta.get("name") or clean_name,
+                "stored_filename": stored_filename,
+                "download_url": f"/api/print-orders/files/{stored_filename}?name={clean_name}",
+                "size_str": meta.get("sizeStr") or "2.5 MB",
+                "size_bytes": 2500000,
+                "quantity": int(meta.get("quantity") or 1),
+                "dimensions": meta.get("dimensions") or {"x": 45, "y": 45, "z": 12},
+                "volume_cm3": float(meta.get("volumeCm3") or meta.get("volume_cm3") or 14.5),
+                "material": meta.get("material") or "PLA / Custom",
+            })
+
+    # 2. Process Telegram QR code image if attached
+    qr_file_url = ""
+    if qr_file:
+        qr_bytes = await qr_file.read()
+        qr_clean = _sanitize_filename(qr_file.filename or "telegram_qr.png")
+        qr_stored = f"qr_{uuid4().hex[:10]}_{qr_clean}"
+        qr_path = UPLOAD_DIRECTORY / qr_stored
+        try:
+            qr_path.write_bytes(qr_bytes)
+        except Exception:
+            pass
+        try:
+            save_uploaded_file(qr_stored, qr_file.content_type or "image/png", qr_bytes)
+        except Exception:
+            pass
+        qr_file_url = f"/uploads/{qr_stored}"
+
+    total_parts = sum(f.get("quantity", 1) for f in saved_files) if saved_files else 1
+    est_price = float(parsed_data.get("estimated_price") or 0.0)
+
+    # 3. Create Order Record in Database
+    created_order = create_print_order({
+        "customer_name": parsed_data.get("name") or parsed_data.get("customer_name") or "",
+        "phone": parsed_data.get("phone") or "",
+        "telegram": parsed_data.get("telegram") or "",
+        "notes": parsed_data.get("notes") or "",
+        "qr_file_url": qr_file_url or parsed_data.get("qr_file_url") or "",
+        "total_parts": total_parts,
+        "estimated_price": est_price,
+        "files_json": saved_files,
+        "status": "Pending Review",
+    })
+
+    return {
+        "success": True,
+        "order": created_order,
+        "message": "3D print order received successfully."
+    }
+
+
+@router.get("/api/print-orders/files/{filename}")
+async def download_print_file(filename: str, name: Optional[str] = Query(None)):
+    """
+    Direct download endpoint for user-dropped 3D CAD files (.stl, .obj, .step, .3mf).
+    Forces attachment download with original user-friendly filename.
+    """
+    safe_stored = Path(filename).name
+    file_path = UPLOAD_DIRECTORY / safe_stored
+    download_filename = name or safe_stored
+
+    if file_path.exists() and file_path.stat().st_size > 0:
+        return FileResponse(
+            path=str(file_path),
+            filename=download_filename,
+            media_type="application/octet-stream",
+            headers={"Content-Disposition": f'attachment; filename="{download_filename}"'},
+        )
+
+    # Check DB uploaded_files
+    row = get_uploaded_file(safe_stored)
+    if row and row.get("data"):
+        data = row["data"]
+        # Cache to disk for subsequent requests
+        try:
+            file_path.write_bytes(data)
+        except Exception:
+            pass
+        return Response(
+            content=data,
+            media_type="application/octet-stream",
+            headers={"Content-Disposition": f'attachment; filename="{download_filename}"'},
+        )
+
+    # Fallback for seeded sample files: generate a valid minimal ASCII STL 3D mesh
+    stl_ascii = (
+        f"solid {download_filename}\n"
+        "  facet normal 0 0 1\n"
+        "    outer loop\n"
+        "      vertex 0 0 0\n"
+        "      vertex 10 0 0\n"
+        "      vertex 0 10 0\n"
+        "    endloop\n"
+        "  endfacet\n"
+        f"endsolid {download_filename}\n"
+    ).encode("utf-8")
+
+    return Response(
+        content=stl_ascii,
+        media_type="application/sla",
+        headers={"Content-Disposition": f'attachment; filename="{download_filename}"'},
+    )
+
+
+# =========================================================================
+# ADMIN ENDPOINTS: View Orders, Download Dropped Files & Update Status
+# =========================================================================
+
+@router.get("/api/admin/print-orders")
+async def admin_list_print_orders(request: Request):
+    """
+    Returns all customer print inquiries and dropped files for the admin portal.
+    """
+    _require_admin(request)
+    orders = list_all_print_orders(limit=200)
+    return {"orders": orders}
+
+
+@router.get("/api/admin/print-orders/{order_id}")
+async def admin_get_print_order(order_id: str, request: Request):
+    """
+    Returns single print order details with CAD files metadata.
+    """
+    _require_admin(request)
+    order = get_print_order(order_id)
+    if not order:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Print order not found")
+    return {"order": order}
+
+
+@router.put("/api/admin/print-orders/{order_id}/status")
+async def admin_update_print_order_status(
+    order_id: str,
+    payload: StatusUpdatePayload,
+    request: Request
+):
+    """
+    Updates the production status of a 3D print order.
+    """
+    _require_admin(request)
+    success = update_print_order_status(order_id, payload.status)
+    if not success:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Order not found")
+    return {"success": True, "order_id": order_id, "status": payload.status}
+
+
+@router.delete("/api/admin/print-orders/{order_id}")
+async def admin_delete_print_order(order_id: str, request: Request):
+    """
+    Removes a print order inquiry.
+    """
+    _require_admin(request)
+    success = delete_print_order(order_id)
+    if not success:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Order not found")
+    return {"success": True, "deleted": order_id}

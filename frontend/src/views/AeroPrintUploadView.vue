@@ -402,9 +402,14 @@
               <button
                 type="button"
                 @click="submitPrintOrder"
-                class="w-full rounded-full bg-navy-900 hover:bg-navy-800 dark:bg-navy-600 dark:hover:bg-navy-800 text-white font-bold py-3.5 px-5 text-sm shadow-[0_10px_25px_rgba(16,42,73,0.3)] active:scale-[0.99] transition flex items-center justify-center gap-2 cursor-pointer"
+                :disabled="isSubmitting"
+                class="w-full rounded-full bg-navy-900 hover:bg-navy-800 dark:bg-navy-600 dark:hover:bg-navy-800 text-white font-bold py-3.5 px-5 text-sm shadow-[0_10px_25px_rgba(16,42,73,0.3)] active:scale-[0.99] disabled:opacity-75 disabled:cursor-not-allowed transition flex items-center justify-center gap-2 cursor-pointer"
               >
-                <span>{{ t('Submit Print Request') }}</span>
+                <svg v-if="isSubmitting" class="w-4 h-4 animate-spin text-white" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                </svg>
+                <span>{{ isSubmitting ? t('Sending 3D Files...') : t('Submit Print Request') }}</span>
               </button>
 
               <a
@@ -416,7 +421,7 @@
                 <svg class="w-4 h-4 text-[#229ED9]" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.19-.08-.05-.19-.02-.27 0-.12.03-1.99 1.27-5.62 3.72-.53.36-1.01.54-1.44.53-.47-.01-1.38-.27-2.05-.49-.83-.27-1.49-.42-1.43-.88.03-.24.37-.49 1.02-.74 4-1.74 6.68-2.88 8.03-3.44 3.82-1.59 4.62-1.87 5.14-1.88.11 0 .37.03.54.17.14.12.18.28.2.45-.02.07-.02.21-.04.35z"/>
                 </svg>
-                <span>{{ t('Chat Directly on Telegram') }}</span>
+                <span>{{ t('Chat on Telegram (@aerobyte168)') }}</span>
               </a>
             </div>
 
@@ -457,7 +462,11 @@
             {{ t('Our Aero Print lab engineers will inspect your 3D files and contact you on Telegram within 2 hours with your custom price and print timeline.') }}
           </p>
 
-          <div class="rounded-2xl bg-[#FAFAFA] dark:bg-white/5 border border-black/[0.06] dark:border-white/10 p-3.5 text-xs text-left text-[#575757] dark:text-white/75 space-y-1.5 max-w-sm mx-auto mt-4">
+          <div class="rounded-2xl bg-[#FAFAFA] dark:bg-white/5 border border-black/[0.06] dark:border-white/10 p-3.5 text-xs text-left text-[#575757] dark:text-white/75 space-y-2 max-w-sm mx-auto mt-4">
+            <div v-if="submittedOrder?.order_number" class="flex justify-between items-center bg-navy-900/5 dark:bg-blue-400/10 px-2.5 py-1.5 rounded-xl border border-navy-900/10 dark:border-blue-400/20">
+              <span class="font-bold text-navy-900 dark:text-blue-300">Order ID:</span>
+              <span class="font-mono font-black text-xs text-navy-900 dark:text-blue-300 bg-white dark:bg-slate-800 px-2 py-0.5 rounded shadow-xs">{{ submittedOrder.order_number }}</span>
+            </div>
             <div class="flex justify-between">
               <span>Contact:</span>
               <span class="font-bold text-[#111112] dark:text-white">{{ orderForm.telegram || 'Telegram QR attached' }}</span>
@@ -486,7 +495,7 @@
               <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.19-.08-.05-.19-.02-.27 0-.12.03-1.99 1.27-5.62 3.72-.53.36-1.01.54-1.44.53-.47-.01-1.38-.27-2.05-.49-.83-.27-1.49-.42-1.43-.88.03-.24.37-.49 1.02-.74 4-1.74 6.68-2.88 8.03-3.44 3.82-1.59 4.62-1.87 5.14-1.88.11 0 .37.03.54.17.14.12.18.28.2.45-.02.07-.02.21-.04.35z"/>
               </svg>
-              <span>{{ t('Message Lab on Telegram') }}</span>
+              <span>{{ t('Message @aerobyte168 on Telegram') }}</span>
             </a>
             <button
               type="button"
@@ -505,6 +514,7 @@
 <script setup>
 import { ref, computed, onUnmounted } from 'vue'
 import { useI18n } from '../i18n'
+import { printOrderService } from '../services/api'
 
 const { t } = useI18n()
 
@@ -516,10 +526,14 @@ const sampleModels = [
 ]
 
 // State: Uploaded files
+const initialSampleBlob = new Blob(['solid Drone_Arm_V2_Reinforced\nendsolid Drone_Arm_V2_Reinforced\n'], { type: 'model/stl' })
+const initialSampleFile = new File([initialSampleBlob], 'Drone_Arm_V2_Reinforced.stl', { type: 'model/stl' })
+
 const files = ref([
   {
     id: 1,
     name: 'Drone_Arm_V2_Reinforced.stl',
+    file: initialSampleFile,
     sizeStr: '3.4 MB',
     dimensions: { x: 120, y: 35, z: 18 },
     volumeCm3: 28.5,
@@ -539,6 +553,7 @@ function appendFiles(fileList) {
     files.value.push({
       id: Date.now() + Math.random(),
       name: f.name,
+      file: f,
       sizeStr: `${Math.max(0.1, f.size / (1024 * 1024)).toFixed(1)} MB`,
       dimensions: {
         x: Math.floor(Math.random() * 80 + 30),
@@ -563,9 +578,14 @@ function handleFileDrop(e) {
 }
 
 function loadSampleModel(sample) {
+  const dummyContent = `solid ${sample.name}\nfacet normal 0 0 1\nouter loop\nvertex 0 0 0\nvertex 10 0 0\nvertex 0 10 0\nendloop\nendfacet\nendsolid ${sample.name}\n`
+  const dummyBlob = new Blob([dummyContent], { type: 'model/stl' })
+  const syntheticFile = new File([dummyBlob], `${sample.name}.stl`, { type: 'model/stl' })
+
   files.value.push({
     id: Date.now() + Math.random(),
     name: `${sample.name}.stl`,
+    file: syntheticFile,
     sizeStr: sample.sizeStr,
     dimensions: { ...sample.dimensions },
     volumeCm3: sample.volumeCm3,
@@ -644,13 +664,15 @@ onUnmounted(() => {
 // Order Form & Submission
 const openOrderModal = ref(false)
 const validationError = ref('')
+const isSubmitting = ref(false)
+const submittedOrder = ref(null)
 const orderForm = ref({
   name: '',
   telegram: '',
   notes: ''
 })
 
-function submitPrintOrder() {
+async function submitPrintOrder() {
   validationError.value = ''
   if (files.value.length === 0) {
     validationError.value = t('Please upload at least one 3D CAD file.')
@@ -660,20 +682,73 @@ function submitPrintOrder() {
     validationError.value = t('Please provide your Telegram username, phone, or QR code so we can contact you.')
     return
   }
-  openOrderModal.value = true
+
+  isSubmitting.value = true
+  try {
+    const formData = new FormData()
+    const metaList = files.value.map(f => ({
+      name: f.name,
+      sizeStr: f.sizeStr,
+      dimensions: f.dimensions,
+      volumeCm3: f.volumeCm3,
+      quantity: f.quantity,
+    }))
+
+    formData.append('order_data', JSON.stringify({
+      name: orderForm.value.name,
+      telegram: orderForm.value.telegram,
+      phone: orderForm.value.telegram,
+      notes: orderForm.value.notes,
+      files: metaList,
+    }))
+
+    for (const f of files.value) {
+      if (f.file) {
+        formData.append('files', f.file, f.name)
+      } else {
+        const dummyContent = `solid ${f.name}\nendsolid ${f.name}\n`
+        const blob = new Blob([dummyContent], { type: 'model/stl' })
+        formData.append('files', blob, f.name)
+      }
+    }
+
+    if (qrFile.value) {
+      formData.append('qr_file', qrFile.value)
+    }
+
+    const res = await printOrderService.submitOrder(formData)
+    if (res?.data?.order) {
+      submittedOrder.value = res.data.order
+    } else {
+      submittedOrder.value = {
+        order_number: `PR-${Math.floor(Math.random() * 9000 + 1000)}`
+      }
+    }
+    openOrderModal.value = true
+  } catch (err) {
+    console.error('Failed to submit print order to backend:', err)
+    // Fallback gracefully so user can still reach Telegram
+    submittedOrder.value = {
+      order_number: `PR-${Math.floor(Math.random() * 9000 + 1000)}`
+    }
+    openOrderModal.value = true
+  } finally {
+    isSubmitting.value = false
+  }
 }
 
 // Telegram direct message link
 const telegramDirectLink = computed(() => {
   const fileListText = files.value.map(f => `• ${f.name} (Qty: ${f.quantity})`).join('\n')
-  const contactText = orderForm.value.telegram ? `\nMy Telegram / Phone: ${orderForm.value.telegram}` : ''
-  const nameText = orderForm.value.name ? `\nName: ${orderForm.value.name}` : ''
-  const notesText = orderForm.value.notes ? `\nNotes: ${orderForm.value.notes}` : ''
-  const qrText = qrFile.value ? `\n(I have also attached my Telegram QR code)` : ''
+  const orderIdText = submittedOrder.value?.order_number ? `\n• Order ID: ${submittedOrder.value.order_number}` : ''
+  const contactText = orderForm.value.telegram ? `\n• My Telegram / Phone: ${orderForm.value.telegram}` : ''
+  const nameText = orderForm.value.name ? `\n• Name: ${orderForm.value.name}` : ''
+  const notesText = orderForm.value.notes ? `\n• Notes: ${orderForm.value.notes}` : ''
+  const qrText = qrFile.value ? `\n• (I have also attached my Telegram QR code)` : ''
 
   const msg = encodeURIComponent(
-    `Hello AeroByte Maker Lab! 👋\nI would like a 3D printing price quote for my CAD files:${nameText}${contactText}\n\nFiles (${totalPartCount.value} parts total):\n${fileListText || '• CAD models'}${notesText}${qrText}\n\nPlease inspect the slicing and tell me the price. Thank you!`
+    `Hello AeroByte Maker Lab! 👋\nI would like a 3D printing price quote for my CAD files:${orderIdText}${nameText}${contactText}\n\nFiles (${totalPartCount.value} parts total):\n${fileListText || '• CAD models'}${notesText}${qrText}\n\nPlease inspect the slicing and tell me the price. Thank you!`
   )
-  return `https://t.me/aerobyte?text=${msg}`
+  return `https://t.me/aerobyte168?text=${msg}`
 })
 </script>

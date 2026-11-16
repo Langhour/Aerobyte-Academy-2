@@ -1785,6 +1785,8 @@ export const khmerTranslations = {
   "Message Lab on Telegram": "ផ្ញើសារទៅ Lab តាម Telegram",
   "How do I get a price quote for my 3D CAD files?": "តើខ្ញុំអាចទទួលបានតម្លៃសម្រាប់ឯកសារ 3D CAD យ៉ាងដូចម្តេច?",
   "Simply drop your 3D CAD files and share your Telegram contact on our upload page. Our lab engineers review your geometry and message you the price quote directly.": "គ្រាន់តែទម្លាក់ឯកសារ 3D CAD និងព័ត៌មាន Telegram របស់អ្នកនៅលើទំព័រផ្ទុកឡើង។ វិស្វករយើងនឹងពិនិត្យ និងផ្ញើតម្លៃជូនផ្ទាល់តាម Telegram។",
+  "Chat on Telegram (@aerobyte168)": "ជជែកតាម Telegram (@aerobyte168)",
+  "Message @aerobyte168 on Telegram": "ផ្ញើសារទៅ @aerobyte168 តាម Telegram",
 }
 
 export function getCourseLocalized(course, field) {

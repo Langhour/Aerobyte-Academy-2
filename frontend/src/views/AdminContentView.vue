@@ -3436,6 +3436,9 @@ import {
   CheckCheck,
   Inbox,
   AlertCircle,
+  Download,
+  Box,
+  FileCode,
 } from 'lucide-vue-next'
 import { useLanguage } from '../i18n'
 import { useTheme } from '../composables/useTheme'
@@ -3932,26 +3935,192 @@ function togglePrinterStatus(printer) {
 }
 
 const defaultPrintOrders = [
-  { id: 'PR-1024', customer: 'Sokha Rith', phone: '012 888 123', part: 'Custom Drone Canopy (GoPro Mount)', material: 'TPU Flexible (Black)', weight: '45g', price: 7.90, status: 'In Production', date: 'Today, 10:15 AM' },
-  { id: 'PR-1023', customer: 'Channa Keo', phone: '087 456 789', part: 'Robotics Gearbox Housing v2', material: 'PETG (Jet Black)', weight: '120g', price: 12.10, status: 'Ready for Pickup', date: 'Yesterday, 04:30 PM' },
-  { id: 'PR-1022', customer: 'Dara Vann', phone: '098 777 654', part: 'Miniature Prosthetic Joint', material: 'Tough Resin (Grey)', weight: '28g', price: 7.54, status: 'Completed', date: '04 Nov 2026' },
-  { id: 'PR-1021', customer: 'Vicheka Mean', phone: '010 333 999', part: 'Aerospace Sensor Bracket', material: 'PLA (Silver)', weight: '65g', price: 6.40, status: 'Pending Review', date: '03 Nov 2026' },
+  {
+    id: 'PR-1024',
+    order_number: 'PR-1024',
+    customer: 'Sokha Rith',
+    customer_name: 'Sokha Rith',
+    phone: '012 888 123',
+    telegram: '@sokharith',
+    notes: 'Need high impact resistance for drone racing crash protection.',
+    part: 'Custom Drone Canopy (GoPro Mount)',
+    material: 'TPU Flexible (Black)',
+    weight: '45g',
+    price: 7.90,
+    status: 'In Production',
+    date: 'Today, 10:15 AM',
+    created_at: '2026-11-16T10:15:00',
+    files: [
+      {
+        id: 'file-1',
+        original_name: 'Drone_Canopy_GoPro_Mount.stl',
+        stored_filename: 'sample_Drone_Canopy_GoPro_Mount.stl',
+        download_url: '/api/print-orders/files/sample_Drone_Canopy_GoPro_Mount.stl?name=Drone_Canopy_GoPro_Mount.stl',
+        size_str: '3.4 MB',
+        quantity: 2,
+        dimensions: { x: 120, y: 35, z: 18 },
+        volume_cm3: 28.5,
+        material: 'TPU Flexible (Black)',
+      },
+    ],
+  },
+  {
+    id: 'PR-1023',
+    order_number: 'PR-1023',
+    customer: 'Channa Keo',
+    customer_name: 'Channa Keo',
+    phone: '087 456 789',
+    telegram: '@channakeo',
+    notes: 'Please verify 0.2mm tolerance on planetary gear teeth.',
+    part: 'Robotics Gearbox Housing v2',
+    material: 'PETG (Jet Black)',
+    weight: '120g',
+    price: 12.10,
+    status: 'Ready for Pickup',
+    date: 'Yesterday, 04:30 PM',
+    created_at: '2026-11-15T16:30:00',
+    files: [
+      {
+        id: 'file-2',
+        original_name: 'Robotics_Gearbox_Housing_v2.step',
+        stored_filename: 'sample_Robotics_Gearbox_Housing_v2.step',
+        download_url: '/api/print-orders/files/sample_Robotics_Gearbox_Housing_v2.step?name=Robotics_Gearbox_Housing_v2.step',
+        size_str: '6.8 MB',
+        quantity: 1,
+        dimensions: { x: 95, y: 80, z: 45 },
+        volume_cm3: 54.0,
+        material: 'PETG (Jet Black)',
+      },
+    ],
+  },
+  {
+    id: 'PR-1022',
+    order_number: 'PR-1022',
+    customer: 'Dara Vann',
+    customer_name: 'Dara Vann',
+    phone: '098 777 654',
+    telegram: '@daravann',
+    notes: 'High detail resin SLA print for medical finger joint prototype.',
+    part: 'Miniature Prosthetic Joint',
+    material: 'Tough Resin (Grey)',
+    weight: '28g',
+    price: 7.54,
+    status: 'Completed',
+    date: '04 Nov 2026',
+    created_at: '2026-11-04T09:00:00',
+    files: [
+      {
+        id: 'file-3',
+        original_name: 'Prosthetic_Finger_Joint_Rig.stl',
+        stored_filename: 'sample_Prosthetic_Finger_Joint_Rig.stl',
+        download_url: '/api/print-orders/files/sample_Prosthetic_Finger_Joint_Rig.stl?name=Prosthetic_Finger_Joint_Rig.stl',
+        size_str: '1.9 MB',
+        quantity: 3,
+        dimensions: { x: 35, y: 20, z: 15 },
+        volume_cm3: 8.5,
+        material: 'Tough Resin (Grey)',
+      },
+    ],
+  },
+  {
+    id: 'PR-1021',
+    order_number: 'PR-1021',
+    customer: 'Vicheka Mean',
+    customer_name: 'Vicheka Mean',
+    phone: '010 333 999',
+    telegram: '@vicheka_m',
+    notes: 'Sensor clip mount for outdoor weather station.',
+    part: 'Aerospace Sensor Bracket',
+    material: 'PLA (Silver)',
+    weight: '65g',
+    price: 6.40,
+    status: 'Pending Review',
+    date: '03 Nov 2026',
+    created_at: '2026-11-03T11:20:00',
+    files: [
+      {
+        id: 'file-4',
+        original_name: 'Aerospace_Sensor_Bracket.stl',
+        stored_filename: 'sample_Aerospace_Sensor_Bracket.stl',
+        download_url: '/api/print-orders/files/sample_Aerospace_Sensor_Bracket.stl?name=Aerospace_Sensor_Bracket.stl',
+        size_str: '2.2 MB',
+        quantity: 1,
+        dimensions: { x: 60, y: 40, z: 25 },
+        volume_cm3: 18.2,
+        material: 'PLA (Silver)',
+      },
+    ],
+  },
 ]
 
 const printOrdersList = ref(
   JSON.parse(localStorage.getItem('aerobyte_admin_print_orders') || 'null') || defaultPrintOrders
 )
+const pendingPrintOrdersCount = computed(() => {
+  return (printOrdersList.value || []).filter((o) => o.status === 'Pending Review').length
+})
+const printOrderModalOpen = ref(false)
+const selectedPrintOrder = ref(null)
+const isLoadingPrintOrders = ref(false)
 
-function updateOrderStatus(order, newStatus) {
-  order.status = newStatus
-  localStorage.setItem('aerobyte_admin_print_orders', JSON.stringify(printOrdersList.value))
-  triggerSuccess(`${order.id} ${t('status set to')} ${newStatus}`)
+async function fetchPrintOrders() {
+  isLoadingPrintOrders.value = true
+  try {
+    const res = await adminService.getPrintOrders()
+    if (res?.data?.orders && res.data.orders.length > 0) {
+      printOrdersList.value = res.data.orders
+      localStorage.setItem('aerobyte_admin_print_orders', JSON.stringify(res.data.orders))
+    }
+  } catch (err) {
+    console.warn('Could not fetch print orders from backend, using cached state:', err)
+  } finally {
+    isLoadingPrintOrders.value = false
+  }
 }
 
-function deletePrintOrder(id) {
-  printOrdersList.value = printOrdersList.value.filter(o => o.id !== id)
+function openPrintOrderDetails(order) {
+  selectedPrintOrder.value = order
+  printOrderModalOpen.value = true
+}
+
+async function updateOrderStatus(order, newStatus) {
+  order.status = newStatus
+  if (selectedPrintOrder.value && selectedPrintOrder.value.id === order.id) {
+    selectedPrintOrder.value.status = newStatus
+  }
+  localStorage.setItem('aerobyte_admin_print_orders', JSON.stringify(printOrdersList.value))
+  triggerSuccess(`${order.order_number || order.id} ${t('status set to')} ${newStatus}`)
+  try {
+    await adminService.updatePrintOrderStatus(order.id, newStatus)
+  } catch (err) {
+    console.error('Failed to sync print order status with backend:', err)
+  }
+}
+
+async function deletePrintOrder(id) {
+  printOrdersList.value = printOrdersList.value.filter((o) => o.id !== id && o.order_number !== id)
+  if (selectedPrintOrder.value && (selectedPrintOrder.value.id === id || selectedPrintOrder.value.order_number === id)) {
+    printOrderModalOpen.value = false
+    selectedPrintOrder.value = null
+  }
   localStorage.setItem('aerobyte_admin_print_orders', JSON.stringify(printOrdersList.value))
   triggerSuccess(t('Print inquiry removed.'))
+  try {
+    await adminService.deletePrintOrder(id)
+  } catch (err) {
+    console.error('Failed to delete print order on backend:', err)
+  }
+}
+
+function getPrintFileDownloadUrl(file) {
+  if (file.download_url) {
+    return file.download_url.startsWith('http') || file.download_url.startsWith('/api')
+      ? file.download_url
+      : `/api${file.download_url}`
+  }
+  const cleanStored = file.stored_filename || file.name || 'cad_model.stl'
+  const cleanOriginal = file.original_name || file.name || 'cad_model.stl'
+  return `/api/print-orders/files/${encodeURIComponent(cleanStored)}?name=${encodeURIComponent(cleanOriginal)}`
 }
 
 function triggerSuccess(msg) {
@@ -4505,12 +4674,18 @@ function getModuleBadgeCount(moduleId) {
   if (moduleId === 'academy') {
     return pendingEnrollmentsCount.value + pendingPaymentsCount.value
   }
+  if (moduleId === 'print') {
+    return pendingPrintOrdersCount.value
+  }
   return 0
 }
 
 function getModuleBadgeColor(moduleId) {
   if (moduleId === 'academy' && pendingPaymentsCount.value > 0) {
     return 'bg-rose-100 dark:bg-rose-950/80 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800 animate-pulse'
+  }
+  if (moduleId === 'print' && pendingPrintOrdersCount.value > 0) {
+    return 'bg-amber-100 dark:bg-amber-950/80 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800'
   }
   return 'bg-amber-100 dark:bg-amber-950/80 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800'
 }
@@ -4523,8 +4698,7 @@ function selectSection(sectionId) {
     targetId = 'aerofly'
     scrollToId = 'admin-aerofly-config'
   } else if (sectionId === 'aeroprint_fleet') {
-    targetId = 'aeroprint'
-    scrollToId = 'admin-aeroprint-fleet'
+    targetId = 'aeroprint_fleet'
   }
 
   // Ensure the module containing target section is expanded
@@ -4532,7 +4706,7 @@ function selectSection(sectionId) {
     openModules.value.academy = true
   } else if (targetId === 'aerofly') {
     openModules.value.fly = true
-  } else if (targetId === 'aeroprint') {
+  } else if (targetId === 'aeroprint' || targetId === 'aeroprint_fleet') {
     openModules.value.print = true
   } else if (['users', 'logs', 'settings'].includes(targetId)) {
     openModules.value.settings = true

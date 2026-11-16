@@ -215,8 +215,45 @@ export const adminService = {
   updateOrderStatus(orderId, status) {
     return apiClient.put(`/admin/orders/${encodeURIComponent(orderId)}/status`, { status })
   },
+  getPrintOrders() {
+    return apiClient.get('/admin/print-orders')
+  },
+  getPrintOrder(id) {
+    return apiClient.get(`/admin/print-orders/${encodeURIComponent(id)}`)
+  },
+  updatePrintOrderStatus(id, status) {
+    return apiClient.put(`/admin/print-orders/${encodeURIComponent(id)}/status`, { status })
+  },
+  deletePrintOrder(id) {
+    return apiClient.delete(`/admin/print-orders/${encodeURIComponent(id)}`)
+  },
   getDatabaseStats() {
     return apiClient.get('/admin/database/stats')
+  },
+}
+
+export const printOrderService = {
+  submitOrder(formData) {
+    return apiClient.post('/print-orders', formData, {
+      headers: { 'Content-Type': undefined },
+    })
+  },
+  getAdminOrders() {
+    return apiClient.get('/admin/print-orders')
+  },
+  getAdminOrder(id) {
+    return apiClient.get(`/admin/print-orders/${encodeURIComponent(id)}`)
+  },
+  updateStatus(id, status) {
+    return apiClient.put(`/admin/print-orders/${encodeURIComponent(id)}/status`, { status })
+  },
+  deleteOrder(id) {
+    return apiClient.delete(`/admin/print-orders/${encodeURIComponent(id)}`)
+  },
+  getFileDownloadUrl(filename, originalName) {
+    const base = apiClient.defaults.baseURL || '/api'
+    const nameParam = originalName ? `?name=${encodeURIComponent(originalName)}` : ''
+    return `${base}/print-orders/files/${encodeURIComponent(filename)}${nameParam}`
   },
 }
 
