@@ -840,6 +840,7 @@ async function submitEnrollment() {
       }
       if (userEmail) localStorage.setItem(`aerobyte-profile:${userEmail}`, JSON.stringify(profileCache))
       if (accountId.value) localStorage.setItem(`aerobyte-profile:${accountId.value}`, JSON.stringify(profileCache))
+      localStorage.setItem('aerobyte-profile-current', JSON.stringify(profileCache))
       localStorage.setItem('aerobyte-profile', JSON.stringify(profileCache))
       window.dispatchEvent(new Event('aerobyte-profile-updated'))
 

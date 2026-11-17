@@ -181,7 +181,7 @@ def _public_user(user: dict[str, Any]) -> dict[str, Any]:
     occupation = user.get("occupation") or profile_data.get("occupation", "")
     experience = user.get("experience") or profile_data.get("experience", "")
 
-    # Auto-backfill from enrollments if user profile is missing contact details
+    # Auto-backfill in-memory from enrollments if user profile is missing contact details
     if not (phone and telegram and date_of_birth and location):
         user_email = (user.get("email") or "").strip().casefold()
         if user_email:
@@ -189,51 +189,22 @@ def _public_user(user: dict[str, Any]) -> dict[str, Any]:
                 enrollments = find_enrollments_by_email(user_email)
                 if enrollments:
                     latest = enrollments[0]
-                    needs_save = False
                     if not phone and latest.phone_number:
                         phone = latest.phone_number
-                        profile_data["phone"] = phone
-                        needs_save = True
                     if not telegram and latest.phone_telegram:
                         telegram = latest.phone_telegram
-                        profile_data["telegram"] = telegram
-                        needs_save = True
                     if not date_of_birth and latest.date_of_birth:
                         date_of_birth = latest.date_of_birth
-                        profile_data["date_of_birth"] = date_of_birth
-                        needs_save = True
                     if not gender and latest.gender:
                         gender = latest.gender
-                        profile_data["gender"] = gender
-                        needs_save = True
                     if not location and latest.address:
                         location = latest.address
-                        profile_data["location"] = location
-                        needs_save = True
                     if not qualification and latest.highest_qualification:
                         qualification = latest.highest_qualification
-                        profile_data["qualification"] = qualification
-                        needs_save = True
                     if not occupation and latest.current_occupation:
                         occupation = latest.current_occupation
-                        profile_data["occupation"] = occupation
-                        needs_save = True
                     if not experience and latest.coding_experience:
                         experience = latest.coding_experience
-                        profile_data["experience"] = experience
-                        needs_save = True
-
-                    if needs_save and user.get("id"):
-                        try:
-                            update_user_profile(
-                                user["id"],
-                                user["email"],
-                                user.get("full_name", ""),
-                                avatar_url=user.get("avatar_url"),
-                                profile_data=profile_data,
-                            )
-                        except Exception:
-                            pass
             except Exception:
                 pass
 
@@ -510,11 +481,18 @@ def complete_password_reset(payload: PasswordResetComplete):
 def get_session(request: Request):
     if request.session.get("role") != "user":
         return {"authenticated": False, "user": None}
-    user = find_user_by_id(request.session.get("user_id", ""))
-    if user is None:
-        request.session.clear()
+    user_id = request.session.get("user_id", "")
+    if not user_id:
         return {"authenticated": False, "user": None}
-    return {"authenticated": True, "user": _public_user(user)}
+    try:
+        user = find_user_by_id(user_id)
+        if user is None:
+            request.session.clear()
+            return {"authenticated": False, "user": None}
+        return {"authenticated": True, "user": _public_user(user)}
+    except Exception as exc:
+        logger.exception("Failed to get session for user %s: %s", user_id, exc)
+        return {"authenticated": False, "user": None}
 
 
 @router.put("/profile")

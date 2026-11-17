@@ -77,11 +77,14 @@ cookie_samesite = os.getenv("SESSION_COOKIE_SAMESITE", "lax").lower()
 if cookie_samesite not in ("lax", "strict", "none"):
     cookie_samesite = "lax"
 
+DEFAULT_SESSION_SECRET = "aerobyte-academy-session-secret-persistent-2025"
+session_secret = os.getenv("ADMIN_SESSION_SECRET", "").strip() or DEFAULT_SESSION_SECRET
+
 app.add_middleware(
     SessionMiddleware,
-    secret_key=os.getenv("ADMIN_SESSION_SECRET") or secrets.token_urlsafe(32),
+    secret_key=session_secret,
     session_cookie="aerobyte_admin",
-    max_age=8 * 60 * 60,
+    max_age=365 * 24 * 60 * 60,  # 1 year session lifetime for persistent sign-in
     same_site=cookie_samesite,
     https_only=os.getenv("ADMIN_COOKIE_SECURE", "false").casefold() == "true",
 )

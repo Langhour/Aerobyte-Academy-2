@@ -1290,7 +1290,8 @@ async function updateProfileName() {
     if (data.authenticated && !avatar) {
       try {
         const emailKey = data.user.email ? `aerobyte-profile:${data.user.email.toLowerCase()}` : null
-        const raw = (emailKey && localStorage.getItem(emailKey)) ||
+        const raw = localStorage.getItem('aerobyte-profile-current') ||
+                    (emailKey && localStorage.getItem(emailKey)) ||
                     localStorage.getItem(`aerobyte-profile:${data.user.id}`) ||
                     localStorage.getItem('aerobyte-profile')
         const saved = JSON.parse(raw || '{}')
@@ -1306,13 +1307,14 @@ async function updateProfileName() {
 
   } catch (error) {
 
-    console.error('Could not load the signed-in account for navigation:', error)
+    console.warn('Could not load the signed-in account for navigation:', error)
 
-    profileName.value = ''
-
-    profileEmail.value = ''
-
-    profileAvatar.value = ''
+    // Do not clear immediately on temporary network error if already loaded
+    if (!profileName.value) {
+      profileName.value = ''
+      profileEmail.value = ''
+      profileAvatar.value = ''
+    }
 
   }
 

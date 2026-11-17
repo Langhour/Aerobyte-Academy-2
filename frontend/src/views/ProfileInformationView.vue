@@ -1632,6 +1632,35 @@ function copyProfile(target, source) {
 }
 
 onMounted(async () => {
+  // 1. Instant local pre-hydration on tick 0 before any network request
+  try {
+    const findCached = () => {
+      const direct = localStorage.getItem('aerobyte-profile-current') || localStorage.getItem('aerobyte-profile')
+      if (direct) {
+        try {
+          const parsed = JSON.parse(direct)
+          if (parsed && (parsed.fullName || parsed.email || parsed.phone)) return parsed
+        } catch (_) {}
+      }
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i)
+        if (k && k.startsWith('aerobyte-profile:')) {
+          try {
+            const parsed = JSON.parse(localStorage.getItem(k) || '{}')
+            if (parsed && (parsed.fullName || parsed.email || parsed.phone)) return parsed
+          } catch (_) {}
+        }
+      }
+      return null
+    }
+    const localCached = findCached()
+    if (localCached) {
+      copyProfile(profile, localCached)
+      copyProfile(draft, localCached)
+    }
+  } catch (_) {}
+
+  // 2. Fetch authenticated session from server
   try {
     const { data } = await accountService.getSession()
     if (!data.authenticated) {
@@ -1646,77 +1675,81 @@ onMounted(async () => {
       await router.replace(pendingEnrollRedirect)
       return
     }
-  } catch (error) {
-    console.error('Could not load the signed-in account:', error)
-    notice.value = t('Unable to load your account. Please try again.')
-    noticeType.value = 'error'
-    return
-  }
 
-  let cached = {}
-  try {
-    const raw = (storageEmailKey.value && localStorage.getItem(storageEmailKey.value)) ||
-                (storageKey.value && localStorage.getItem(storageKey.value)) ||
-                localStorage.getItem('aerobyte-profile')
-    if (raw) {
-      cached = JSON.parse(raw)
-      copyProfile(profile, cached)
+    // Merge server data with local cache
+    let cached = {}
+    try {
+      const raw = (storageEmailKey.value && localStorage.getItem(storageEmailKey.value)) ||
+                  (storageKey.value && localStorage.getItem(storageKey.value)) ||
+                  localStorage.getItem('aerobyte-profile-current') ||
+                  localStorage.getItem('aerobyte-profile')
+      if (raw) {
+        cached = JSON.parse(raw)
+        copyProfile(profile, cached)
+      }
+    } catch (_) {}
+
+    // Server data takes precedence if present
+    if (account.value.name) profile.fullName = account.value.name
+    if (account.value.email) profile.email = account.value.email
+    if (account.value.avatar_url) profile.avatarUrl = account.value.avatar_url
+    if (account.value.phone) profile.phone = account.value.phone
+    if (account.value.telegram) profile.telegram = account.value.telegram
+    if (account.value.date_of_birth) profile.dateOfBirth = account.value.date_of_birth
+    if (account.value.gender) profile.gender = account.value.gender
+    if (account.value.location) profile.location = account.value.location
+    if (account.value.qualification) profile.qualification = account.value.qualification
+    if (account.value.qualification_other) profile.qualificationOther = account.value.qualification_other
+    if (account.value.occupation) profile.occupation = account.value.occupation
+    if (account.value.experience) profile.experience = account.value.experience
+
+    // If server had missing fields that were restored from local cache, auto-sync back to server!
+    const hasLocalRestore = (
+      (!account.value.phone && profile.phone) ||
+      (!account.value.telegram && profile.telegram) ||
+      (!account.value.date_of_birth && profile.dateOfBirth) ||
+      (!account.value.gender && profile.gender) ||
+      (!account.value.location && profile.location) ||
+      (!account.value.qualification && profile.qualification) ||
+      (!account.value.occupation && profile.occupation) ||
+      (!account.value.experience && profile.experience)
+    )
+    if (hasLocalRestore) {
+      accountService.updateProfile({
+        full_name: profile.fullName,
+        email: profile.email,
+        avatar_url: profile.avatarUrl,
+        phone: profile.phone,
+        telegram: profile.telegram,
+        date_of_birth: profile.dateOfBirth,
+        gender: profile.gender,
+        location: profile.location,
+        qualification: profile.qualification,
+        qualification_other: profile.qualificationOther,
+        occupation: profile.occupation,
+        experience: profile.experience,
+      }).catch((err) => console.warn('Background profile auto-sync failed:', err))
     }
-  } catch {
-    // fallback to server
+
+    // Save back to local storage under all keys
+    try {
+      localStorage.setItem('aerobyte-profile-current', JSON.stringify(profile))
+      if (storageEmailKey.value) localStorage.setItem(storageEmailKey.value, JSON.stringify(profile))
+      if (storageKey.value) localStorage.setItem(storageKey.value, JSON.stringify(profile))
+      localStorage.setItem('aerobyte-profile', JSON.stringify(profile))
+    } catch (_) {}
+
+    copyProfile(draft, profile)
+    loadCourseHistory()
+    loadStoreOrders()
+  } catch (error) {
+    console.warn('Could not load session from server, maintaining cached state:', error)
+    if (!profile.fullName && !profile.email) {
+      notice.value = t('Unable to load your account. Please try again.')
+      noticeType.value = 'error'
+    }
   }
 
-  // Server data takes precedence if present
-  if (account.value.name) profile.fullName = account.value.name
-  if (account.value.email) profile.email = account.value.email
-  if (account.value.avatar_url) {
-    profile.avatarUrl = account.value.avatar_url
-  }
-  if (account.value.phone) profile.phone = account.value.phone
-  if (account.value.telegram) profile.telegram = account.value.telegram
-  if (account.value.date_of_birth) profile.dateOfBirth = account.value.date_of_birth
-  if (account.value.location) profile.location = account.value.location
-  if (account.value.qualification) profile.qualification = account.value.qualification
-  if (account.value.qualification_other) profile.qualificationOther = account.value.qualification_other
-  if (account.value.occupation) profile.occupation = account.value.occupation
-  if (account.value.experience) profile.experience = account.value.experience
-
-  // If server had missing fields that were restored from local cache, auto-sync back to server!
-  const hasLocalRestore = (
-    (!account.value.phone && profile.phone) ||
-    (!account.value.telegram && profile.telegram) ||
-    (!account.value.date_of_birth && profile.dateOfBirth) ||
-    (!account.value.location && profile.location) ||
-    (!account.value.qualification && profile.qualification) ||
-    (!account.value.occupation && profile.occupation) ||
-    (!account.value.experience && profile.experience)
-  )
-  if (hasLocalRestore) {
-    accountService.updateProfile({
-      full_name: profile.fullName,
-      email: profile.email,
-      avatar_url: profile.avatarUrl,
-      phone: profile.phone,
-      telegram: profile.telegram,
-      date_of_birth: profile.dateOfBirth,
-      location: profile.location,
-      qualification: profile.qualification,
-      qualification_other: profile.qualificationOther,
-      occupation: profile.occupation,
-      experience: profile.experience,
-    }).catch((err) => console.warn('Background profile auto-sync failed:', err))
-  }
-
-  // Save back to local storage under both email and id keys
-  try {
-    if (storageEmailKey.value) localStorage.setItem(storageEmailKey.value, JSON.stringify(profile))
-    if (storageKey.value) localStorage.setItem(storageKey.value, JSON.stringify(profile))
-    localStorage.setItem('aerobyte-profile', JSON.stringify(profile))
-  } catch {}
-
-  copyProfile(draft, profile)
-  loadCourseHistory()
-  loadStoreOrders()
   window.addEventListener('storage', loadStoreOrders)
   window.addEventListener('aerobyte-orders-updated', loadStoreOrders)
   const targetSection = router.currentRoute.value.query.section
@@ -1790,7 +1823,10 @@ async function loadCourseHistory() {
 
 function clearLocalProfile() {
   try {
-    localStorage.removeItem(storageKey.value)
+    localStorage.removeItem('aerobyte-profile-current')
+    if (storageKey.value) localStorage.removeItem(storageKey.value)
+    if (storageEmailKey.value) localStorage.removeItem(storageEmailKey.value)
+    localStorage.removeItem('aerobyte-profile')
   } catch (error) {
     console.error('Could not clear saved profile:', error)
     notice.value = t('Could not clear profile information from this browser.')
@@ -1814,6 +1850,13 @@ async function confirmLogout() {
     logoutDialogOpen.value = false
     return
   }
+
+  try {
+    localStorage.removeItem('aerobyte-profile-current')
+    if (storageKey.value) localStorage.removeItem(storageKey.value)
+    if (storageEmailKey.value) localStorage.removeItem(storageEmailKey.value)
+    localStorage.removeItem('aerobyte-profile')
+  } catch (_) {}
 
   copyProfile(profile, emptyProfile())
   copyProfile(draft, emptyProfile())
@@ -1887,6 +1930,7 @@ async function handleAvatarChange(event) {
           localStorage.setItem(key, JSON.stringify(s))
         } catch (_) {}
       }
+      updateAvatarCache('aerobyte-profile-current')
       updateAvatarCache(storageEmailKey.value)
       updateAvatarCache(storageKey.value)
       updateAvatarCache('aerobyte-profile')
@@ -1932,6 +1976,7 @@ async function removeAvatar() {
       localStorage.setItem(key, JSON.stringify(s))
     } catch (_) {}
   }
+  clearAvatarCache('aerobyte-profile-current')
   clearAvatarCache(storageEmailKey.value)
   clearAvatarCache(storageKey.value)
   clearAvatarCache('aerobyte-profile')
@@ -1970,6 +2015,7 @@ async function saveProfile() {
       phone: nextProfile.phone,
       telegram: nextProfile.telegram,
       date_of_birth: nextProfile.dateOfBirth,
+      gender: nextProfile.gender,
       location: nextProfile.location,
       qualification: nextProfile.qualification,
       qualification_other: nextProfile.qualificationOther,
@@ -1985,6 +2031,7 @@ async function saveProfile() {
     if (data.user.phone !== undefined) nextProfile.phone = data.user.phone
     if (data.user.telegram !== undefined) nextProfile.telegram = data.user.telegram
     if (data.user.date_of_birth !== undefined) nextProfile.dateOfBirth = data.user.date_of_birth
+    if (data.user.gender !== undefined) nextProfile.gender = data.user.gender
     if (data.user.location !== undefined) nextProfile.location = data.user.location
     if (data.user.qualification !== undefined) nextProfile.qualification = data.user.qualification
     if (data.user.qualification_other !== undefined) nextProfile.qualificationOther = data.user.qualification_other
@@ -1998,6 +2045,7 @@ async function saveProfile() {
   }
 
   try {
+    localStorage.setItem('aerobyte-profile-current', JSON.stringify(nextProfile))
     if (storageEmailKey.value) localStorage.setItem(storageEmailKey.value, JSON.stringify(nextProfile))
     if (storageKey.value) localStorage.setItem(storageKey.value, JSON.stringify(nextProfile))
     localStorage.setItem('aerobyte-profile', JSON.stringify(nextProfile))

@@ -103,7 +103,7 @@ def _connect() -> Iterator[object]:
         connection.close()
 
 
-def _hydrate_user_profile_fields(u: dict[str, Any], connection: Optional[object] = None) -> None:
+def _hydrate_user_profile_fields(u: dict[str, Any], *args: Any, **kwargs: Any) -> None:
     raw_profile = u.get("profile_json") or "{}"
     profile_data = {}
     if isinstance(raw_profile, str):
@@ -124,53 +124,10 @@ def _hydrate_user_profile_fields(u: dict[str, Any], connection: Optional[object]
         "qualification_other",
         "occupation",
         "experience",
+        "avatar",
     ):
-        if not u.get(col):
-            val = profile_data.get(col, "")
-            if val:
-                u[col] = val
-
-    # If any key profile fields are empty, check if this user has any enrollments under their email
-    user_email = (u.get("email") or "").strip().casefold()
-    if user_email and not (u.get("phone") and u.get("telegram") and u.get("date_of_birth") and u.get("location")):
-        try:
-            def _scan(conn):
-                return conn.execute(
-                    "SELECT content_json FROM enrollments WHERE content_json LIKE ? ORDER BY rowid DESC",
-                    (f"%{user_email}%",),
-                ).fetchall()
-
-            if connection is not None:
-                enr_rows = _scan(connection)
-            else:
-                with _connect() as conn:
-                    enr_rows = _scan(conn)
-
-            for erow in enr_rows:
-                try:
-                    cdata = json.loads(erow["content_json"])
-                    if str(cdata.get("email", "")).strip().casefold() == user_email:
-                        if not u.get("phone") and cdata.get("phone_number"):
-                            u["phone"] = cdata["phone_number"]
-                        if not u.get("telegram") and cdata.get("phone_telegram"):
-                            u["telegram"] = cdata["phone_telegram"]
-                        if not u.get("date_of_birth") and cdata.get("date_of_birth"):
-                            u["date_of_birth"] = cdata["date_of_birth"]
-                        if not u.get("gender") and cdata.get("gender"):
-                            u["gender"] = cdata["gender"]
-                        if not u.get("location") and cdata.get("address"):
-                            u["location"] = cdata["address"]
-                        if not u.get("qualification") and cdata.get("highest_qualification"):
-                            u["qualification"] = cdata["highest_qualification"]
-                        if not u.get("occupation") and cdata.get("current_occupation"):
-                            u["occupation"] = cdata["current_occupation"]
-                        if not u.get("experience") and cdata.get("coding_experience"):
-                            u["experience"] = cdata["coding_experience"]
-                        break
-                except Exception:
-                    pass
-        except Exception:
-            pass
+        val = u.get(col) or profile_data.get(col, "")
+        u[col] = str(val or "").strip()
 
 
 def initialize_content_store() -> None:
