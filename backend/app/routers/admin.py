@@ -266,8 +266,15 @@ def admin_overview(request: Request):
     _require_admin(request)
     enrollments = list_enrollments()
     paid = [record for record in enrollments if record.status == "paid"]
+    store_orders = list_all_store_orders(limit=500)
+    store_rev = sum(
+        float(o.get("total") or 0.0)
+        for o in store_orders
+        if (o.get("status") or "").lower() in {"confirmed", "processing", "shipped", "completed"}
+    )
+    total_rev = round(sum(record.amount_due for record in paid) + store_rev, 2)
     return {
-        "total_revenue": round(sum(record.amount_due for record in paid), 2),
+        "total_revenue": total_rev,
         "active_enrollments": sum(record.enrollment_status == "confirmed" for record in enrollments),
         "pending_qr_scans": sum(record.status == "pending" for record in enrollments),
         "published_courses": sum(course.status == "published" for course in list_courses()),

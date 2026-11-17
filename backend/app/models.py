@@ -207,11 +207,11 @@ class SiteSettings(BaseModel):
     about_learning: str = "100%"
     about_mentors: str = "12+"
     about_projects: str = "500+"
-    contact_email: str = ""
-    contact_phone: str = ""
-    footer_description: str = ""
+    contact_email: str = "info@aerobyte.edu.kh"
+    contact_phone: str = "+855 12 888 168"
+    footer_description: str = "Pioneering robotics, IoT, and embedded systems education in Cambodia."
     merchant_qr_url: str = "/aba-qr.png"
-    merchant_bank_info: str = "ABA Bank: VIDHCHETRA KHEMARAK"
+    merchant_bank_info: str = "ABA Bank: VIDHCHETRA KHEMARAK (000 123 456)"
     payment_session_minutes: int = Field(default=15, ge=1, le=1440)
 
 

@@ -32,6 +32,24 @@ PRINT_ORDERS_BACKUP_PATH = Path(
         str(Path(__file__).resolve().parents[1] / "data" / "persistent_print_orders_backup.json"),
     )
 )
+ENROLLMENTS_BACKUP_PATH = Path(
+    os.getenv(
+        "AEROBYTE_ENROLLMENTS_BACKUP",
+        str(Path(__file__).resolve().parents[1] / "data" / "persistent_enrollments_backup.json"),
+    )
+)
+STORE_ORDERS_BACKUP_PATH = Path(
+    os.getenv(
+        "AEROBYTE_STORE_ORDERS_BACKUP",
+        str(Path(__file__).resolve().parents[1] / "data" / "persistent_store_orders_backup.json"),
+    )
+)
+SETTINGS_BACKUP_PATH = Path(
+    os.getenv(
+        "AEROBYTE_SETTINGS_BACKUP",
+        str(Path(__file__).resolve().parents[1] / "data" / "persistent_settings_backup.json"),
+    )
+)
 
 
 class _PostgresConnection:
@@ -540,6 +558,9 @@ def initialize_content_store() -> None:
         )
         _restore_users_from_disk(connection)
         _restore_print_orders_from_disk(connection)
+        _restore_enrollments_from_disk(connection)
+        _restore_store_orders_from_disk(connection)
+        _restore_settings_from_disk(connection)
 
 
 def _backup_users_to_disk() -> None:
@@ -626,6 +647,104 @@ def _restore_print_orders_from_disk(connection) -> None:
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 (order_id, order_number, customer_name, phone, telegram, notes, qr_file_url, total_parts, estimated_price, files_json, status, created_at, user_id, user_email, review_json),
+            )
+    except Exception:
+        pass
+
+
+def _backup_enrollments_to_disk() -> None:
+    try:
+        with _connect() as connection:
+            rows = connection.execute("SELECT content_json FROM enrollments ORDER BY rowid DESC").fetchall()
+            records = [json.loads(r["content_json"]) for r in rows if r["content_json"]]
+            ENROLLMENTS_BACKUP_PATH.parent.mkdir(parents=True, exist_ok=True)
+            with open(ENROLLMENTS_BACKUP_PATH, "w", encoding="utf-8") as f:
+                json.dump(records, f, indent=2, ensure_ascii=False)
+    except Exception:
+        pass
+
+
+def _restore_enrollments_from_disk(connection) -> None:
+    try:
+        if not ENROLLMENTS_BACKUP_PATH.exists():
+            return
+        with open(ENROLLMENTS_BACKUP_PATH, "r", encoding="utf-8") as f:
+            records = json.load(f)
+        for item in records:
+            enr_id = item.get("enrollment_id")
+            txn_id = item.get("transaction_id") or ""
+            if enr_id:
+                connection.execute(
+                    """
+                    INSERT INTO enrollments (enrollment_id, transaction_id, content_json)
+                    VALUES (?, ?, ?)
+                    ON CONFLICT(enrollment_id) DO UPDATE SET content_json = excluded.content_json
+                    """,
+                    (enr_id, txn_id, json.dumps(item, ensure_ascii=False)),
+                )
+    except Exception:
+        pass
+
+
+def _backup_store_orders_to_disk() -> None:
+    try:
+        with _connect() as connection:
+            rows = connection.execute("SELECT * FROM store_orders ORDER BY created_at DESC").fetchall()
+            orders = [dict(r) for r in rows]
+            STORE_ORDERS_BACKUP_PATH.parent.mkdir(parents=True, exist_ok=True)
+            with open(STORE_ORDERS_BACKUP_PATH, "w", encoding="utf-8") as f:
+                json.dump(orders, f, indent=2, ensure_ascii=False)
+    except Exception:
+        pass
+
+
+def _restore_store_orders_from_disk(connection) -> None:
+    try:
+        if not STORE_ORDERS_BACKUP_PATH.exists():
+            return
+        with open(STORE_ORDERS_BACKUP_PATH, "r", encoding="utf-8") as f:
+            orders = json.load(f)
+        for o in orders:
+            order_id = o.get("id")
+            if not order_id:
+                continue
+            cols = list(o.keys())
+            placeholders = ", ".join(["?"] * len(cols))
+            col_names = ", ".join(cols)
+            vals = [o[c] for c in cols]
+            connection.execute(
+                f"INSERT OR REPLACE INTO store_orders ({col_names}) VALUES ({placeholders})",
+                vals,
+            )
+    except Exception:
+        pass
+
+
+def _backup_settings_to_disk() -> None:
+    try:
+        with _connect() as connection:
+            row = connection.execute("SELECT content_json FROM site_settings WHERE id = 1").fetchone()
+            if row and row["content_json"]:
+                SETTINGS_BACKUP_PATH.parent.mkdir(parents=True, exist_ok=True)
+                with open(SETTINGS_BACKUP_PATH, "w", encoding="utf-8") as f:
+                    f.write(row["content_json"])
+    except Exception:
+        pass
+
+
+def _restore_settings_from_disk(connection) -> None:
+    try:
+        if not SETTINGS_BACKUP_PATH.exists():
+            return
+        with open(SETTINGS_BACKUP_PATH, "r", encoding="utf-8") as f:
+            raw = f.read().strip()
+        if raw:
+            connection.execute(
+                """
+                INSERT INTO site_settings (id, content_json) VALUES (1, ?)
+                ON CONFLICT(id) DO UPDATE SET content_json = excluded.content_json
+                """,
+                (raw,),
             )
     except Exception:
         pass
@@ -1099,6 +1218,7 @@ def save_enrollment(record: EnrollmentRecord) -> None:
             """,
             (record.enrollment_id, record.transaction_id, record.model_dump_json()),
         )
+    _backup_enrollments_to_disk()
 
 
 def list_coupons() -> list[Coupon]:
@@ -1145,7 +1265,29 @@ def get_site_settings() -> SiteSettings:
         row = connection.execute(
             "SELECT content_json FROM site_settings WHERE id = 1"
         ).fetchone()
-    return SiteSettings.model_validate_json(row["content_json"])
+    if not row or not row["content_json"]:
+        default_settings = SiteSettings()
+        save_site_settings(default_settings)
+        return default_settings
+
+    settings = SiteSettings.model_validate_json(row["content_json"])
+    defaults = SiteSettings()
+    updated = False
+    if not settings.contact_email:
+        settings.contact_email = defaults.contact_email
+        updated = True
+    if not settings.contact_phone:
+        settings.contact_phone = defaults.contact_phone
+        updated = True
+    if not settings.footer_description:
+        settings.footer_description = defaults.footer_description
+        updated = True
+    if not settings.merchant_bank_info:
+        settings.merchant_bank_info = defaults.merchant_bank_info
+        updated = True
+    if updated:
+        save_site_settings(settings)
+    return settings
 
 
 def save_site_settings(settings: SiteSettings) -> None:
@@ -1157,6 +1299,7 @@ def save_site_settings(settings: SiteSettings) -> None:
             """,
             (settings.model_dump_json(),),
         )
+    _backup_settings_to_disk()
 
 
 def log_admin_activity(action: str, details: str, created_at: str) -> None:

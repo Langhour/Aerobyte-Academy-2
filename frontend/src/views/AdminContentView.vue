@@ -436,6 +436,7 @@
                       v-for="tab in [
                         { id: 'all', label: t('All'), count: allNotifications.length },
                         { id: 'pending', label: t('Pending Action'), count: pendingActionsCount, urgent: true },
+                        { id: 'print', label: t('3D Prints'), count: allNotifications.filter(n => n.type === 'print').length },
                         { id: 'students', label: t('Students'), count: allNotifications.filter(n => n.type === 'enrollment').length },
                         { id: 'payments', label: t('Payments'), count: allNotifications.filter(n => n.type === 'payment').length },
                         { id: 'users', label: t('Accounts'), count: allNotifications.filter(n => n.type === 'user').length }
@@ -499,11 +500,17 @@
                               ? notif.isUrgent
                                 ? 'bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-800/60'
                                 : 'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-800/60'
-                              : 'bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 border-indigo-200 dark:border-indigo-800/60'
+                              : notif.type === 'print'
+                                ? 'bg-sky-50 dark:bg-sky-950/60 text-sky-600 dark:text-sky-400 border-sky-200 dark:border-sky-800/60'
+                                : notif.type === 'store'
+                                  ? 'bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-800/60'
+                                  : 'bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 border-indigo-200 dark:border-indigo-800/60'
                         ]"
                       >
                         <Users v-if="notif.type === 'enrollment'" class="w-4 h-4" />
                         <CreditCard v-else-if="notif.type === 'payment'" class="w-4 h-4" />
+                        <Printer v-else-if="notif.type === 'print'" class="w-4 h-4" />
+                        <ShoppingBag v-else-if="notif.type === 'store'" class="w-4 h-4" />
                         <UserCog v-else class="w-4 h-4" />
                       </div>
 
@@ -559,6 +566,13 @@
                       {{ t('Quick Navigation') }}
                     </span>
                     <div class="flex items-center gap-1.5">
+                      <button
+                        type="button"
+                        class="px-2 py-1 rounded text-[10px] font-bold text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 transition cursor-pointer"
+                        @click="selectSection('aeroprint'); notificationDropdownOpen = false"
+                      >
+                        {{ t('3D Prints') }}
+                      </button>
                       <button
                         type="button"
                         class="px-2 py-1 rounded text-[10px] font-bold text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 transition cursor-pointer"
@@ -3487,12 +3501,12 @@ const hoveredPoint = ref(null)
 
 const monthlyChartData = computed(() => {
   const months = [
-    { key: '2026-05', label: 'May', fullLabel: 'May 2026', revenue: 420, students: 4 },
     { key: '2026-06', label: 'Jun', fullLabel: 'Jun 2026', revenue: 890, students: 8 },
     { key: '2026-07', label: 'Jul', fullLabel: 'Jul 2026', revenue: 1450, students: 13 },
     { key: '2026-08', label: 'Aug', fullLabel: 'Aug 2026', revenue: 1980, students: 17 },
     { key: '2026-09', label: 'Sep', fullLabel: 'Sep 2026', revenue: 2650, students: 24 },
     { key: '2026-10', label: 'Oct', fullLabel: 'Oct 2026', revenue: 3120, students: 28 },
+    { key: '2026-11', label: 'Nov', fullLabel: 'Nov 2026', revenue: 3500, students: 32 },
   ]
 
   if (payments.value && payments.value.length > 0) {
@@ -3511,9 +3525,9 @@ const monthlyChartData = computed(() => {
       }
     }
 
-    const currentYm = '2026-10'
+    const currentYm = '2026-11'
     if (revenueByMonth[currentYm] !== undefined) {
-      months[5].revenue = Number(revenueByMonth[currentYm].toFixed(2))
+      months[5].revenue = Number(revenueByMonth[currentYm].toFixed(2)) + (storeRevenueTotal.value || 0)
     } else if (overview.value?.total_revenue) {
       months[5].revenue = Number(overview.value.total_revenue)
     }
@@ -3786,14 +3800,32 @@ const currentSection = computed(() => allSections.value.find((section) => sectio
 // ------------------------------------------
 // 3D PRINT ORDERS STATE & ACTIONS
 // ------------------------------------------
+const MOCK_ORDER_IDS = new Set(['PR-1021', 'PR-1022', 'PR-1023', 'PR-1024'])
+const MOCK_CUSTOMER_NAMES = new Set(['sokha rith', 'channa keo', 'dara vann', 'vicheka mean'])
+
+function isMockPrintOrder(o) {
+  if (!o) return true
+  const id = String(o.id || o.order_number || '').trim().toUpperCase()
+  const name = String(o.customer_name || '').trim().toLowerCase()
+  if (MOCK_ORDER_IDS.has(id)) return true
+  if (MOCK_CUSTOMER_NAMES.has(name)) return true
+  return false
+}
+
 function loadCachedPrintOrders() {
   const mergedMap = new Map()
+  let hasDirtyMock = false
+
   try {
     const adminRaw = localStorage.getItem('aerobyte_admin_print_orders')
     if (adminRaw) {
       const parsed = JSON.parse(adminRaw)
       if (Array.isArray(parsed)) {
         for (const o of parsed) {
+          if (isMockPrintOrder(o)) {
+            hasDirtyMock = true
+            continue
+          }
           if (o && (o.id || o.order_number)) mergedMap.set(o.order_number || o.id, o)
         }
       }
@@ -3806,6 +3838,10 @@ function loadCachedPrintOrders() {
       const parsed = JSON.parse(userRaw)
       if (Array.isArray(parsed)) {
         for (const o of parsed) {
+          if (isMockPrintOrder(o)) {
+            hasDirtyMock = true
+            continue
+          }
           if (o && (o.id || o.order_number)) {
             const key = o.order_number || o.id
             if (!mergedMap.has(key)) {
@@ -3817,7 +3853,13 @@ function loadCachedPrintOrders() {
     }
   } catch (_) {}
 
-  return Array.from(mergedMap.values())
+  const result = Array.from(mergedMap.values())
+  if (hasDirtyMock) {
+    try {
+      localStorage.setItem('aerobyte_admin_print_orders', JSON.stringify(result))
+    } catch (_) {}
+  }
+  return result
 }
 
 const printOrdersList = ref(loadCachedPrintOrders())
@@ -3839,37 +3881,20 @@ async function fetchPrintOrders() {
   isLoadingPrintOrders.value = true
   try {
     const res = await adminService.getPrintOrders()
-    const backendOrders = res?.data?.orders || []
+    const backendOrders = (res?.data?.orders || []).filter((o) => !isMockPrintOrder(o))
 
-    const localOrders = loadCachedPrintOrders()
-    const mergedMap = new Map()
-
-    // Add backend orders first
-    for (const o of backendOrders) {
-      if (o && (o.id || o.order_number)) {
-        mergedMap.set(o.order_number || o.id, o)
-      }
+    if (backendOrders.length > 0) {
+      printOrdersList.value = backendOrders
+      try {
+        localStorage.setItem('aerobyte_admin_print_orders', JSON.stringify(backendOrders))
+      } catch (_) {}
+    } else {
+      const localOrders = loadCachedPrintOrders().filter((o) => !isMockPrintOrder(o))
+      printOrdersList.value = localOrders
     }
-
-    // Merge any user orders submitted locally that aren't on backend yet
-    for (const o of localOrders) {
-      if (o && (o.id || o.order_number)) {
-        const key = o.order_number || o.id
-        if (!mergedMap.has(key)) {
-          mergedMap.set(key, o)
-        }
-      }
-    }
-
-    printOrdersList.value = Array.from(mergedMap.values())
-    try {
-      localStorage.setItem('aerobyte_admin_print_orders', JSON.stringify(printOrdersList.value))
-    } catch (_) {}
   } catch (err) {
     console.warn('Could not fetch print orders from backend, using cached state:', err)
-    if (printOrdersList.value.length === 0) {
-      printOrdersList.value = loadCachedPrintOrders()
-    }
+    printOrdersList.value = loadCachedPrintOrders().filter((o) => !isMockPrintOrder(o))
   } finally {
     isLoadingPrintOrders.value = false
   }
@@ -3939,11 +3964,11 @@ function emptySettings() {
     about_learning: '100%',
     about_mentors: '12+',
     about_projects: '500+',
-    contact_email: '',
-    contact_phone: '',
-    footer_description: '',
-    merchant_qr_url: '',
-    merchant_bank_info: '',
+    contact_email: 'info@aerobyte.edu.kh',
+    contact_phone: '+855 12 888 168',
+    footer_description: 'Pioneering robotics, IoT, and embedded systems education in Cambodia.',
+    merchant_qr_url: '/aba-qr.png',
+    merchant_bank_info: 'ABA Bank: VIDHCHETRA KHEMARAK (000 123 456)',
     payment_session_minutes: 15,
   }
 }
@@ -4564,6 +4589,11 @@ async function loadAdminData() {
     coupons.value = couponResult.data
     users.value = Array.isArray(usersResult?.data) ? usersResult.data : []
     Object.assign(settingsForm, emptySettings(), settingsResult.data)
+    if (!settingsForm.contact_email) settingsForm.contact_email = 'info@aerobyte.edu.kh'
+    if (!settingsForm.contact_phone) settingsForm.contact_phone = '+855 12 888 168'
+    if (!settingsForm.footer_description) settingsForm.footer_description = 'Pioneering robotics, IoT, and embedded systems education in Cambodia.'
+    if (!settingsForm.merchant_bank_info) settingsForm.merchant_bank_info = 'ABA Bank: VIDHCHETRA KHEMARAK (000 123 456)'
+    await Promise.allSettled([fetchPrintOrders(), fetchStoreOrders()])
   } catch (error) {
     errorMessage.value = errorDetail(error, t('Unable to load admin data.'))
     if (error.response?.status === 401) authenticated.value = false
@@ -5390,7 +5420,53 @@ const allNotifications = computed(() => {
     }
   }
 
-  // 3. User Accounts
+  // 3. 3D Print Orders
+  if (Array.isArray(printOrdersList.value)) {
+    for (const order of printOrdersList.value) {
+      if (isMockPrintOrder(order)) continue
+      const id = `prt-${order.order_number || order.id}-${order.status}`
+      const isPending = order.status === 'Pending Review'
+      const firstFileName = order.files?.[0]?.original_name || order.files?.[0]?.name || ''
+      list.push({
+        id,
+        type: 'print',
+        title: isPending ? t('Pending 3D Print Inquiry') : t('3D Print Order Update'),
+        subtitle: `${order.customer_name || t('Customer')} · ${order.order_number || order.id}`,
+        detail: `${firstFileName ? firstFileName + ' · ' : ''}${order.telegram || order.phone || ''}`,
+        timestamp: order.created_at || '',
+        badgeText: t(order.status || 'Pending Review'),
+        badgeType: isPending ? 'warning' : order.status === 'Completed' ? 'success' : 'neutral',
+        actionSection: 'aeroprint',
+        actionSearch: order.order_number || order.id,
+        read: readNotificationIds.value.has(id),
+        isUrgent: isPending
+      })
+    }
+  }
+
+  // 4. Store Hardware Orders
+  if (Array.isArray(storeOrdersList.value)) {
+    for (const order of storeOrdersList.value) {
+      const id = `sto-${order.id}-${order.status}`
+      const isPending = (order.status || '').toLowerCase() === 'pending'
+      list.push({
+        id,
+        type: 'store',
+        title: isPending ? t('Pending Store Order') : t('Store Order Update'),
+        subtitle: `${order.customer_name || t('Customer')} · ${order.id}`,
+        detail: `$${Number(order.total || 0).toFixed(2)} · ${order.phone || order.user_email || ''}`,
+        timestamp: order.created_at || order.date || '',
+        badgeText: t(order.status || 'Pending'),
+        badgeType: isPending ? 'warning' : 'success',
+        actionSection: 'dashboard',
+        actionSearch: order.id,
+        read: readNotificationIds.value.has(id),
+        isUrgent: isPending
+      })
+    }
+  }
+
+  // 5. User Accounts
   if (Array.isArray(users.value)) {
     for (const user of users.value) {
       const id = `usr-${user.user_id || user.id || user.email}`
@@ -5422,6 +5498,9 @@ const allNotifications = computed(() => {
 const filteredNotifications = computed(() => {
   if (notificationFilter.value === 'pending') {
     return allNotifications.value.filter(n => n.isUrgent)
+  }
+  if (notificationFilter.value === 'print') {
+    return allNotifications.value.filter(n => n.type === 'print')
   }
   if (notificationFilter.value === 'students') {
     return allNotifications.value.filter(n => n.type === 'enrollment')
@@ -5485,6 +5564,13 @@ function handleNotificationClick(notif) {
       paymentSearch.value = notif.actionSearch
     } else if (notif.actionSection === 'users' && notif.actionSearch) {
       userSearch.value = notif.actionSearch
+    } else if (notif.actionSection === 'aeroprint' && notif.actionSearch) {
+      const found = printOrdersList.value.find(
+        (o) => o.order_number === notif.actionSearch || o.id === notif.actionSearch
+      )
+      if (found) {
+        openPrintOrderDetails(found)
+      }
     }
   }
 }
