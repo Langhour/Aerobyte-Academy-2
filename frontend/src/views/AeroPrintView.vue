@@ -116,7 +116,7 @@
                 v-reveal="{ variant: 'mask', delay: 160 }"
                 class="text-3xl sm:text-4xl font-bold tracking-[-0.02em] text-[#111112] dark:text-white tabular-nums"
               >
-                {{ displaySpeed }} mm/s Precision
+                {{ displaySpeed }} {{ t('mm/s Precision') }}
               </h2>
             </div>
             <p
@@ -151,7 +151,7 @@
                 v-reveal="{ variant: 'mask', delay: 180 }"
                 class="text-2xl sm:text-3xl font-bold tracking-tight text-[#111112] dark:text-white tabular-nums"
               >
-                {{ displayVolume }}³ mm Volume
+                {{ displayVolume }}³ {{ t('mm Volume') }}
               </h3>
             </div>
             <p
@@ -179,7 +179,7 @@
                 v-reveal="{ variant: 'mask', delay: 260 }"
                 class="text-2xl sm:text-3xl font-bold tracking-tight text-[#111112] dark:text-white tabular-nums"
               >
-                {{ displayColors }}-Color Filament Hub
+                {{ displayColors }}{{ t('-Color Filament Hub') }}
               </h3>
             </div>
             <p
@@ -206,7 +206,7 @@
                 :key="activeMode.id"
                 class="text-3xl sm:text-4xl font-bold tracking-[-0.02em] text-[#111112] dark:text-white"
               >
-                {{ activeMode.title }}
+                {{ t(activeMode.title) }}
               </h2>
             </Transition>
           </div>
@@ -216,7 +216,7 @@
                 :key="activeMode.id"
                 class="text-sm sm:text-base text-[#575757] dark:text-white/65"
               >
-                {{ activeMode.description }}
+                {{ t(activeMode.description) }}
               </p>
             </Transition>
           </div>
@@ -245,7 +245,7 @@
               ? 'border-[#111112] dark:border-white bg-[#111112] dark:bg-white text-white dark:text-[#111112] scale-[1.03]'
               : 'border-black/[0.08] dark:border-white/15 bg-[#F8F9FA] dark:bg-white/5 text-[#575757] dark:text-white/75 hover:border-black/25'"
           >
-            {{ mode.label }}
+            {{ t(mode.label) }}
           </button>
         </div>
       </div>
@@ -348,8 +348,8 @@
               </svg>
             </div>
             <div>
-              <h3 class="text-lg font-bold text-[#111112] dark:text-white">{{ spec.title }}</h3>
-              <p class="mt-1 text-sm text-[#575757] dark:text-white/65">{{ spec.desc }}</p>
+              <h3 class="text-lg font-bold text-[#111112] dark:text-white">{{ t(spec.title) }}</h3>
+              <p class="mt-1 text-sm text-[#575757] dark:text-white/65">{{ t(spec.desc) }}</p>
             </div>
           </div>
         </div>
@@ -469,7 +469,7 @@
                 <svg class="w-4 h-4 shrink-0 text-[#575757] dark:text-white/75" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M6.429 9.75L2.25 12l4.179 2.25m0-4.5l5.571 3 5.571-3m-11.142 0L2.25 7.5 12 2.25l9.75 5.25-4.179 2.25m0 0L21.75 12l-4.179 2.25m0 0l4.179 2.25L12 21.75 2.25 16.5l4.179-2.25m11.142 0l-5.571 3-5.571-3" />
                 </svg>
-                <span class="text-xs font-bold text-[#111112] dark:text-white">16-Color Hub</span>
+                <span class="text-xs font-bold text-[#111112] dark:text-white">{{ t('16-Color Hub') }}</span>
               </div>
             </div>
           </div>
@@ -484,7 +484,7 @@
                 <Transition :name="reviewTransitionName" mode="out-in">
                   <div :key="reviewIndex">
                     <p class="text-sm font-bold text-[#111112] dark:text-white">{{ currentReview.author }}</p>
-                    <p class="text-xs text-[#696969] dark:text-white/55">{{ currentReview.role }}</p>
+                    <p class="text-xs text-[#696969] dark:text-white/55">{{ t(currentReview.role) }}</p>
                   </div>
                 </Transition>
               </div>
@@ -513,7 +513,7 @@
                   :key="reviewIndex"
                   class="text-sm text-[#575757] dark:text-white/75 leading-relaxed"
                 >
-                  "{{ currentReview.quote }}"
+                  "{{ t(currentReview.quote) }}"
                 </p>
               </Transition>
             </div>
@@ -552,8 +552,8 @@
           />
           <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-black/15"></div>
           <div class="relative z-10 transition-transform duration-300 ease-out group-hover:-translate-y-1">
-            <h3 class="text-lg font-bold text-white">{{ item.title }}</h3>
-            <p class="mt-1 text-xs sm:text-sm text-white/80">{{ item.desc }}</p>
+            <h3 class="text-lg font-bold text-white">{{ t(item.title) }}</h3>
+            <p class="mt-1 text-xs sm:text-sm text-white/80">{{ t(item.desc) }}</p>
           </div>
         </div>
       </div>
@@ -621,7 +621,7 @@
                 class="text-sm sm:text-base font-semibold transition-colors"
                 :class="openFaqIndex === idx ? 'text-navy-900 dark:text-blue-300' : 'text-[#111112] dark:text-white'"
               >
-                {{ faq.q }}
+                {{ t(faq.q) }}
               </span>
               <svg
                 class="w-4 h-4 shrink-0 transition-transform duration-300"
@@ -640,7 +640,7 @@
             >
               <div class="overflow-hidden">
                 <div class="px-6 pb-5 pt-0 text-sm text-[#575757] dark:text-white/70 leading-relaxed">
-                  {{ faq.a }}
+                  {{ t(faq.a) }}
                 </div>
               </div>
             </div>

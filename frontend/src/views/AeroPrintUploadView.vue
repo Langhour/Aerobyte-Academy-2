@@ -310,7 +310,7 @@
             <div class="mt-4 space-y-2.5 text-xs">
               <div class="flex justify-between items-center text-[#575757] dark:text-white/60">
                 <span>{{ t('Files Attached') }}</span>
-                <span class="font-bold text-[#111112] dark:text-white">{{ files.length }} {{ files.length === 1 ? 'file' : 'files' }}</span>
+                <span class="font-bold text-[#111112] dark:text-white">{{ files.length }} {{ files.length === 1 ? t('file') : t('files') }}</span>
               </div>
 
               <!-- Mini file list -->
@@ -329,14 +329,14 @@
               <div class="border-t border-black/[0.06] dark:border-white/10 pt-3 flex justify-between items-center text-[#575757] dark:text-white/60">
                 <span>{{ t('Telegram Contact') }}</span>
                 <span class="font-bold text-[#111112] dark:text-white max-w-[160px] truncate text-right">
-                  {{ orderForm.telegram || (qrPreviewUrl ? 'QR Attached' : 'Not provided yet') }}
+                  {{ orderForm.telegram || (qrPreviewUrl ? t('QR Attached') : t('Not provided yet')) }}
                 </span>
               </div>
 
               <div class="flex justify-between items-center text-[#575757] dark:text-white/60">
                 <span>{{ t('QR Code') }}</span>
                 <span :class="qrPreviewUrl ? 'text-emerald-600 font-bold' : 'text-[#696969] dark:text-white/50'">
-                  {{ qrPreviewUrl ? '✓ Attached' : 'Optional' }}
+                  {{ qrPreviewUrl ? t('✓ Attached') : t('Optional') }}
                 </span>
               </div>
             </div>
@@ -385,7 +385,7 @@
             </div>
 
             <p class="text-[11px] text-center text-[#696969] dark:text-white/50 mt-4 leading-relaxed">
-              📍 AeroByte Academy Maker Lab • Ta Khmau, Cambodia. Fast 24h turnarounds for prototypes, drones & robotics.
+              📍 {{ t('AeroByte Location') }} • {{ t('Ta Khmau, Cambodia. Fast 24h turnarounds for prototypes, drones & robotics.') }}
             </p>
           </div>
         </div>
@@ -401,7 +401,7 @@
         <div class="flex items-center justify-between pb-4 border-b border-black/[0.06] dark:border-white/10">
           <div>
             <h3 class="text-lg font-bold text-[#111112] dark:text-white">{{ t('Submit 3D Print Request') }}</h3>
-            <p class="text-xs text-[#696969] dark:text-white/55 mt-0.5">Aero Print Lab Queue</p>
+            <p class="text-xs text-[#696969] dark:text-white/55 mt-0.5">{{ t('Aero Print Lab Queue') }}</p>
           </div>
           <button
             type="button"
@@ -423,24 +423,24 @@
 
           <div class="rounded-2xl bg-[#FAFAFA] dark:bg-white/5 border border-black/[0.06] dark:border-white/10 p-3.5 text-xs text-left text-[#575757] dark:text-white/75 space-y-2 max-w-sm mx-auto mt-4">
             <div v-if="submittedOrder?.order_number" class="flex justify-between items-center bg-navy-900/5 dark:bg-blue-400/10 px-2.5 py-1.5 rounded-xl border border-navy-900/10 dark:border-blue-400/20">
-              <span class="font-bold text-navy-900 dark:text-blue-300">Order ID:</span>
+              <span class="font-bold text-navy-900 dark:text-blue-300">{{ t('Order ID:') }}</span>
               <span class="font-mono font-black text-xs text-navy-900 dark:text-blue-300 bg-white dark:bg-slate-800 px-2 py-0.5 rounded shadow-xs">{{ submittedOrder.order_number }}</span>
             </div>
             <div class="flex justify-between">
-              <span>Contact:</span>
-              <span class="font-bold text-[#111112] dark:text-white">{{ orderForm.telegram || 'Telegram QR attached' }}</span>
+              <span>{{ t('Contact:') }}</span>
+              <span class="font-bold text-[#111112] dark:text-white">{{ orderForm.telegram || (qrPreviewUrl ? t('QR Attached') : t('Not provided yet')) }}</span>
             </div>
             <div v-if="orderForm.name" class="flex justify-between">
-              <span>Name:</span>
+              <span>{{ t('Name:') }}</span>
               <span class="font-bold text-[#111112] dark:text-white">{{ orderForm.name }}</span>
             </div>
             <div class="flex justify-between">
-              <span>Files Submitted:</span>
-              <span class="font-bold text-[#111112] dark:text-white">{{ files.length }} {{ files.length === 1 ? 'file' : 'files' }}</span>
+              <span>{{ t('Files Submitted:') }}</span>
+              <span class="font-bold text-[#111112] dark:text-white">{{ files.length }} {{ files.length === 1 ? t('file') : t('files') }}</span>
             </div>
             <div v-if="qrPreviewUrl" class="flex justify-between items-center text-emerald-600 font-bold">
-              <span>Telegram QR Code:</span>
-              <span>✓ Attached for Scan</span>
+              <span>{{ t('Telegram QR Code:') }}</span>
+              <span>{{ t('✓ Attached for Scan') }}</span>
             </div>
           </div>
 
