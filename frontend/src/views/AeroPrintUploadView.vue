@@ -415,11 +415,30 @@
         </button>
 
         <div class="p-6 sm:p-8 text-center">
-          <!-- Animated Radiant Success Checkmark Hero -->
-          <div class="relative mx-auto mt-2 mb-4 flex h-16 w-16 items-center justify-center">
-            <span class="absolute inset-0 rounded-full bg-emerald-500/20 dark:bg-emerald-500/30 animate-ping opacity-60"></span>
-            <div class="relative flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-600 text-white shadow-lg shadow-emerald-500/25">
-              <CheckCircle2 class="h-9 w-9 stroke-[2.5]" />
+          <!-- Official UX/UI Design Success Icon (Green Squircle with Circle Checkmark) -->
+          <div class="mx-auto mt-2 mb-5 flex items-center justify-center">
+            <div class="flex h-[84px] w-[84px] items-center justify-center rounded-[26px] bg-gradient-to-b from-[#27C28C] to-[#12A777] shadow-[0_14px_28px_rgba(18,167,119,0.36)] transition-transform hover:scale-105 duration-200">
+              <svg
+                class="w-[52px] h-[52px]"
+                viewBox="0 0 96 96"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <circle
+                  cx="48"
+                  cy="48"
+                  r="23"
+                  stroke="white"
+                  stroke-width="5"
+                />
+                <path
+                  d="M38.5 48L45 54L57 41.5"
+                  stroke="white"
+                  stroke-width="5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
             </div>
           </div>
 
@@ -543,7 +562,6 @@ import { useRouter } from 'vue-router'
 import {
   ArrowRight,
   Box,
-  CheckCircle2,
   ExternalLink,
   Printer,
   Send,
@@ -659,12 +677,42 @@ const orderForm = ref({
 })
 
 function getCachedUserProfile() {
+  let uid = ''
+  let uemail = ''
+  let uname = ''
+  let utg = ''
+  let uphone = ''
+
+  try {
+    const rawSess = localStorage.getItem('aerobyte_user_session')
+    if (rawSess) {
+      const sess = JSON.parse(rawSess)
+      const u = sess.user || sess
+      if (u) {
+        uid = u.id || ''
+        uemail = u.email || ''
+        uname = u.name || u.full_name || ''
+        utg = u.telegram || ''
+        uphone = u.phone || ''
+      }
+    }
+  } catch (_) {}
+
   try {
     const raw = localStorage.getItem('aerobyte-profile-current') || localStorage.getItem('aerobyte-profile')
-    return raw ? JSON.parse(raw) : {}
-  } catch (_) {
-    return {}
-  }
+    if (raw) {
+      const p = JSON.parse(raw)
+      if (p) {
+        if (!uid && p.id) uid = p.id
+        if (!uemail && p.email) uemail = p.email
+        if (!uname && p.fullName) uname = p.fullName
+        if (!utg && p.telegram) utg = p.telegram
+        if (!uphone && p.phone) uphone = p.phone
+      }
+    }
+  } catch (_) {}
+
+  return { id: uid, email: uemail, fullName: uname, telegram: utg, phone: uphone }
 }
 
 onMounted(() => {

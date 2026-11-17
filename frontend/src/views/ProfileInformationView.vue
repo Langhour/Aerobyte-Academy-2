@@ -297,9 +297,26 @@
             </div>
           </div>
 
+          <!-- Loading Skeleton (Shows instantly while fetching initial orders) -->
+          <div v-if="printOrdersLoading && !printOrders.length && !storeOrders.length" class="space-y-4">
+            <div v-for="i in 2" :key="i" class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-xs animate-pulse space-y-4">
+              <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+                <div class="h-4 w-32 bg-slate-200 dark:bg-slate-700 rounded"></div>
+                <div class="h-5 w-24 bg-slate-200 dark:bg-slate-700 rounded-full"></div>
+              </div>
+              <div class="flex items-center gap-3">
+                <div class="h-10 w-10 bg-slate-200 dark:bg-slate-700 rounded-lg"></div>
+                <div class="space-y-2 flex-1">
+                  <div class="h-4 w-48 bg-slate-200 dark:bg-slate-700 rounded"></div>
+                  <div class="h-3 w-28 bg-slate-100 dark:bg-slate-800 rounded"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <!-- Empty Orders State -->
           <div
-            v-if="!printOrdersLoading && !printOrders.length && !storeOrders.length"
+            v-else-if="!printOrdersLoading && !printOrders.length && !storeOrders.length"
             class="rounded-2xl border border-dashed border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-6 py-12 text-center"
           >
             <span class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-navy-50 dark:bg-slate-800 text-navy-800 dark:text-slate-200">

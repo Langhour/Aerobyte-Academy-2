@@ -156,8 +156,9 @@ async def submit_print_order(
 
     # Detect user account context from session or payload
     session_uid = request.session.get("user_id") if request.session.get("role") == "user" else None
+    session_email = (request.session.get("email") or "").strip().lower() if request.session.get("role") == "user" else ""
     user_id = session_uid or parsed_data.get("user_id") or ""
-    user_email = (parsed_data.get("user_email") or parsed_data.get("email") or "").strip().lower()
+    user_email = session_email or (parsed_data.get("user_email") or parsed_data.get("email") or "").strip().lower()
     if user_id and not user_email:
         user = find_user_by_id(user_id)
         if user:
@@ -194,12 +195,13 @@ async def get_my_print_orders(
     name: Optional[str] = Query(None),
 ):
     session_uid = request.session.get("user_id") if request.session.get("role") == "user" else None
+    session_email = (request.session.get("email") or "").strip().lower() if request.session.get("role") == "user" else ""
     uid = session_uid or user_id
-    uemail = email
+    uemail = session_email or (email.strip().lower() if email else "")
     if uid and not uemail:
         user = find_user_by_id(uid)
         if user:
-            uemail = user.get("email", "")
+            uemail = (user.get("email") or "").strip().lower()
 
     orders = get_user_print_orders(
         user_id=uid,

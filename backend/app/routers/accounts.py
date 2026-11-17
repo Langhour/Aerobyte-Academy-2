@@ -769,13 +769,13 @@ def get_user_print_orders_endpoint(
     name: Optional[str] = None,
 ):
     user_id = request.session.get("user_id") if request.session.get("role") == "user" else None
-    user_email = ""
-    if user_id:
+    user_email = (request.session.get("email") or "").strip().lower() if request.session.get("role") == "user" else ""
+    if user_id and not user_email:
         user = find_user_by_id(user_id)
         if user:
-            user_email = user.get("email", "")
+            user_email = (user.get("email") or "").strip().lower()
     if not user_email and email:
-        user_email = email.strip()
+        user_email = email.strip().lower()
 
     orders = get_user_print_orders(
         user_id=user_id,
