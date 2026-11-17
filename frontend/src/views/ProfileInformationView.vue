@@ -1561,7 +1561,10 @@
                 />
               </button>
             </div>
-            <p class="text-sm font-bold text-navy-900 dark:text-white">
+            <p
+              class="text-sm font-bold transition-colors"
+              :class="(reviewRatingHover || reviewRating) > 0 ? 'text-navy-900 dark:text-white' : 'text-slate-400 dark:text-slate-500 font-medium'"
+            >
               {{ getRatingLabel(reviewRatingHover || reviewRating) }}
             </p>
           </div>
@@ -1631,9 +1634,9 @@
           </button>
           <button
             type="button"
-            :disabled="isSubmittingReview"
+            :disabled="isSubmittingReview || !reviewRating || reviewRating <= 0"
             @click="submitReviewHandler"
-            class="inline-flex items-center gap-1.5 rounded-xl bg-navy-900 dark:bg-indigo-600 hover:bg-navy-800 dark:hover:bg-indigo-700 px-5 py-2 text-xs font-bold text-white transition shadow-sm cursor-pointer disabled:opacity-50"
+            class="inline-flex items-center gap-1.5 rounded-xl bg-navy-900 dark:bg-indigo-600 hover:bg-navy-800 dark:hover:bg-indigo-700 px-5 py-2 text-xs font-bold text-white transition shadow-sm cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <RefreshCw v-if="isSubmittingReview" class="h-3.5 w-3.5 animate-spin" />
             <Star v-else class="h-3.5 w-3.5 fill-amber-400 text-amber-500" />
@@ -1907,7 +1910,7 @@ function isPrintOrderCompleted(order) {
 // 3D Print Order Review State & Methods
 const reviewModalOpen = ref(false)
 const reviewingOrder = ref(null)
-const reviewRating = ref(5)
+const reviewRating = ref(0)
 const reviewRatingHover = ref(0)
 const reviewComment = ref('')
 const reviewTags = ref([])
@@ -1924,6 +1927,7 @@ const availableReviewTags = [
 ]
 
 function getRatingLabel(rating) {
+  if (!rating || rating === 0) return t('Select your rating (1 to 5 stars)')
   if (rating >= 5) return t('Outstanding print quality!')
   if (rating === 4) return t('Very good')
   if (rating === 3) return t('Good quality')
@@ -1933,15 +1937,15 @@ function getRatingLabel(rating) {
 
 function openReviewModal(order) {
   reviewingOrder.value = order
-  if (order.review) {
-    reviewRating.value = Number(order.review.rating) || 5
+  if (order.review && order.review.rating) {
+    reviewRating.value = Number(order.review.rating) || 0
     reviewComment.value = order.review.comment || ''
     reviewTags.value = Array.isArray(order.review.tags) ? [...order.review.tags] : []
     reviewerName.value = order.review.reviewer_name || order.customer_name || profile.fullName || ''
   } else {
-    reviewRating.value = 5
+    reviewRating.value = 0
     reviewComment.value = ''
-    reviewTags.value = ['Clean layer lines', 'Strong & sturdy']
+    reviewTags.value = []
     reviewerName.value = order.customer_name || profile.fullName || account.value?.name || ''
   }
   reviewRatingHover.value = 0
@@ -1958,7 +1962,7 @@ function toggleReviewTag(tag) {
 }
 
 async function submitReviewHandler() {
-  if (!reviewingOrder.value) return
+  if (!reviewingOrder.value || !reviewRating.value || reviewRating.value <= 0) return
   isSubmittingReview.value = true
   const orderId = reviewingOrder.value.order_number || reviewingOrder.value.id
 

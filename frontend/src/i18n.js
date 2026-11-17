@@ -1921,6 +1921,7 @@ export const khmerTranslations = {
   "Your Review": "ការវាយតម្លៃរបស់អ្នក",
   "Review Your 3D Print Order": "វាយតម្លៃការបញ្ជាទិញព្រីន 3D របស់អ្នក",
   "Rating": "ពិន្ទុវាយតម្លៃ",
+  "Select your rating (1 to 5 stars)": "សូមជ្រើសរើសពិន្ទុរបស់អ្នក (ផ្កាយ 1 ដល់ 5)",
   "Outstanding print quality!": "គុណភាពព្រីនល្អឥតខ្ចោះ!",
   "Very good": "ល្អណាស់",
   "Good quality": "គុណភាពល្អ",
