@@ -72,6 +72,7 @@ class EnrollmentStatusUpdate(BaseModel):
 class AdminUserUpdate(BaseModel):
     full_name: str = Field(min_length=1, max_length=120)
     email: str = Field(min_length=3, max_length=254)
+    avatar_url: Optional[str] = None
     phone: Optional[str] = None
     telegram: Optional[str] = None
     date_of_birth: Optional[str] = None
@@ -597,6 +598,7 @@ def admin_update_user_endpoint(user_id: str, payload: AdminUserUpdate, request: 
             email=clean_email,
             full_name=payload.full_name.strip(),
             is_verified=1 if payload.is_verified else 0,
+            avatar_url=payload.avatar_url,
             profile_data=profile_data,
         )
         _log("Update user", f"Updated profile for user {clean_email} ({user_id})")

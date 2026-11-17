@@ -1602,8 +1602,15 @@
               <!-- Modal Sticky Header -->
               <div class="flex items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 p-4 sm:p-5 bg-slate-50/80 dark:bg-slate-800/60 shrink-0">
                 <div class="flex items-center gap-3 min-w-0">
-                  <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-600 to-navy-800 text-white font-black flex items-center justify-center shrink-0 text-sm shadow-xs">
-                    {{ (userEditForm.full_name || 'U').slice(0, 2).toUpperCase() }}
+                  <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-indigo-600 to-navy-800 text-white font-black flex items-center justify-center shrink-0 text-sm shadow-xs overflow-hidden border border-slate-200/50 dark:border-slate-700/50">
+                    <img
+                      v-if="userEditForm.avatar_url"
+                      :src="resolveImageUrl(userEditForm.avatar_url)"
+                      :alt="userEditForm.full_name"
+                      class="w-full h-full object-cover"
+                      @error="userEditForm.avatar_url = ''"
+                    />
+                    <span v-else>{{ (userEditForm.full_name || 'U').slice(0, 2).toUpperCase() }}</span>
                   </div>
                   <div class="min-w-0">
                     <h3 class="font-extrabold text-navy-900 dark:text-white text-base truncate">
@@ -1630,6 +1637,60 @@
                 <p v-if="userEditError" role="alert" class="rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900/40 p-3 text-xs text-red-700 dark:text-red-300">
                   {{ userEditError }}
                 </p>
+
+                <!-- Profile Photo Preview & Status Card -->
+                <div class="flex items-center gap-4 p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800">
+                  <div class="relative w-16 h-16 rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-navy-50 dark:bg-slate-800 text-navy-800 dark:text-white font-black flex items-center justify-center shrink-0 text-xl shadow-xs overflow-hidden">
+                    <img
+                      v-if="userEditForm.avatar_url"
+                      :src="resolveImageUrl(userEditForm.avatar_url)"
+                      :alt="userEditForm.full_name"
+                      class="w-full h-full object-cover"
+                      @error="userEditForm.avatar_url = ''"
+                    />
+                    <span v-else>{{ (userEditForm.full_name || 'U').slice(0, 2).toUpperCase() }}</span>
+                  </div>
+                  <div class="min-w-0 flex-1">
+                    <div class="flex items-center gap-2">
+                      <p class="text-xs font-bold text-navy-900 dark:text-white">{{ t('Profile photo') }}</p>
+                      <span
+                        v-if="userEditForm.avatar_url"
+                        class="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/50 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800/60"
+                      >
+                        Active
+                      </span>
+                      <span
+                        v-else
+                        class="text-[10px] font-semibold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-full"
+                      >
+                        Default initials
+                      </span>
+                    </div>
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1 truncate">
+                      {{ userEditForm.avatar_url || t('No profile photo uploaded by this student.') }}
+                    </p>
+                    <div v-if="userEditForm.avatar_url" class="mt-2 flex items-center gap-2.5 text-xs">
+                      <a
+                        :href="resolveImageUrl(userEditForm.avatar_url)"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="inline-flex items-center gap-1 font-semibold text-indigo-600 dark:text-indigo-400 hover:underline cursor-pointer"
+                      >
+                        <ExternalLink class="w-3.5 h-3.5" />
+                        <span>{{ t('View full size') }}</span>
+                      </a>
+                      <span class="text-slate-300 dark:text-slate-700">•</span>
+                      <button
+                        type="button"
+                        @click="userEditForm.avatar_url = ''"
+                        class="inline-flex items-center gap-1 font-semibold text-red-600 dark:text-red-400 hover:underline cursor-pointer"
+                      >
+                        <Trash2 class="w-3.5 h-3.5" />
+                        <span>{{ t('Remove photo') }}</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
 
                 <div class="grid gap-3 sm:grid-cols-2">
                   <label class="block">
@@ -4792,6 +4853,7 @@ const userEditForm = reactive({
   id: '',
   full_name: '',
   email: '',
+  avatar_url: '',
   phone: '',
   telegram: '',
   date_of_birth: '',
@@ -5787,6 +5849,7 @@ function openEditUserModal(user) {
     id: user.id,
     full_name: user.full_name || '',
     email: user.email || '',
+    avatar_url: user.avatar_url || '',
     phone: user.phone || '',
     telegram: user.telegram || '',
     date_of_birth: user.date_of_birth || '',

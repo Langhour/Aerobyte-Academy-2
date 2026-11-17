@@ -733,6 +733,7 @@ def admin_update_user(
     email: str,
     full_name: str,
     is_verified: int = 1,
+    avatar_url: Optional[str] = None,
     profile_data: Optional[dict[str, Any]] = None,
 ) -> Optional[dict[str, Any]]:
     with _connect() as connection:
@@ -741,6 +742,9 @@ def admin_update_user(
         }
         updates = ["email = ?", "full_name = ?", "is_verified = ?"]
         params: list[Any] = [email.strip().casefold(), full_name.strip(), int(is_verified)]
+        if avatar_url is not None and "avatar_url" in user_cols:
+            updates.append("avatar_url = ?")
+            params.append(avatar_url.strip())
         if profile_data is not None:
             if "profile_json" in user_cols:
                 updates.append("profile_json = ?")
