@@ -289,7 +289,7 @@
                 type="button"
                 class="inline-flex w-fit items-center gap-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-700 dark:text-slate-300 transition hover:bg-slate-50 dark:hover:bg-slate-700 cursor-pointer"
                 :disabled="printOrdersLoading"
-                @click="loadPrintOrders"
+                @click="loadPrintOrders(true)"
               >
                 <RefreshCw class="h-3.5 w-3.5" :class="{ 'animate-spin': printOrdersLoading }" aria-hidden="true" />
                 {{ t('Refresh') }}
@@ -1637,12 +1637,47 @@ async function loadPrintOrders(forceRefresh = false) {
     }
   } catch (_) {}
 
+  // 2. Immediately synchronize with aerobyte_admin_print_orders if updated via admin on same browser
+  try {
+    const adminRaw = localStorage.getItem('aerobyte_admin_print_orders')
+    if (adminRaw) {
+      const adminParsed = JSON.parse(adminRaw)
+      if (Array.isArray(adminParsed) && adminParsed.length) {
+        const adminMap = new Map()
+        for (const ao of adminParsed) {
+          const k = String(ao.order_number || ao.id || '').replace(/^#/, '')
+          if (k) adminMap.set(k, ao)
+        }
+        let updated = false
+        for (const po of printOrders.value) {
+          const pk = String(po.order_number || po.id || '').replace(/^#/, '')
+          if (pk && adminMap.has(pk)) {
+            const ao = adminMap.get(pk)
+            if (ao.status && ao.status !== po.status) {
+              po.status = ao.status
+              updated = true
+            }
+            if (ao.review && !po.review) {
+              po.review = ao.review
+              updated = true
+            }
+          }
+        }
+        if (updated) {
+          localStorage.setItem('aerobyte_print_orders', JSON.stringify(printOrders.value))
+        }
+      }
+    }
+  } catch (_) {}
+
+  // 3. Fetch latest status from backend
   try {
     const creds = getActiveUserCredentials()
     const userEmail = creds.email || account.value?.email || profile.email || ''
     const userTg = creds.telegram || account.value?.telegram || profile.telegram || ''
     const userName = creds.name || account.value?.name || profile.fullName || ''
     const userId = creds.id || account.value?.id || ''
+    const knownIds = printOrders.value.map((o) => String(o.order_number || o.id || '').replace(/^#/, '')).filter(Boolean)
 
     let serverOrders = []
     try {
@@ -1650,6 +1685,7 @@ async function loadPrintOrders(forceRefresh = false) {
         email: userEmail,
         telegram: userTg,
         name: userName,
+        order_ids: knownIds.join(','),
       })
       if (Array.isArray(res.data)) {
         serverOrders = res.data
@@ -1661,6 +1697,7 @@ async function loadPrintOrders(forceRefresh = false) {
           email: userEmail,
           telegram: userTg,
           name: userName,
+          order_ids: knownIds.join(','),
         })
         if (Array.isArray(res2.data?.orders)) {
           serverOrders = res2.data.orders
@@ -1669,23 +1706,52 @@ async function loadPrintOrders(forceRefresh = false) {
     }
 
     if (serverOrders.length) {
-      const currentLocal = (() => {
-        try {
-          return JSON.parse(localStorage.getItem('aerobyte_print_orders') || '[]')
-        } catch (_) {
-          return []
-        }
-      })()
-      const serverIds = new Set(serverOrders.map((o) => o.order_number || o.id))
-      const combined = [...serverOrders]
-      for (const loc of currentLocal) {
-        if (!serverIds.has(loc.order_number) && !serverIds.has(loc.id)) {
-          combined.push(loc)
+      const serverMap = new Map()
+      for (const so of serverOrders) {
+        const sk = String(so.order_number || so.id || '').replace(/^#/, '')
+        if (sk) serverMap.set(sk, so)
+      }
+
+      // Update existing orders with fresh status and data from server
+      for (const loc of printOrders.value) {
+        const lk = String(loc.order_number || loc.id || '').replace(/^#/, '')
+        if (lk && serverMap.has(lk)) {
+          const fresh = serverMap.get(lk)
+          loc.status = fresh.status || loc.status
+          if (fresh.review) loc.review = fresh.review
+          if (fresh.estimated_price || fresh.price) {
+            loc.price = fresh.price || fresh.estimated_price
+            loc.estimated_price = fresh.estimated_price || fresh.price
+          }
+          serverMap.delete(lk)
         }
       }
-      printOrders.value = combined
+
+      // Prepend any server orders that were not already in local cache
+      for (const remaining of serverMap.values()) {
+        printOrders.value.unshift(remaining)
+      }
+
       try {
-        localStorage.setItem('aerobyte_print_orders', JSON.stringify(combined))
+        localStorage.setItem('aerobyte_print_orders', JSON.stringify(printOrders.value))
+      } catch (_) {}
+    } else if (knownIds.length) {
+      // Fallback: poll individual known order status directly
+      for (const id of knownIds) {
+        try {
+          const res = await printOrderService.getOrder(id)
+          if (res?.data?.order) {
+            const fresh = res.data.order
+            const match = printOrders.value.find((o) => String(o.order_number || o.id || '').replace(/^#/, '') === id)
+            if (match && fresh.status && match.status !== fresh.status) {
+              match.status = fresh.status
+              if (fresh.review) match.review = fresh.review
+            }
+          }
+        } catch (_) {}
+      }
+      try {
+        localStorage.setItem('aerobyte_print_orders', JSON.stringify(printOrders.value))
       } catch (_) {}
     }
   } catch (err) {

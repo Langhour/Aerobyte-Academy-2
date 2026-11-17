@@ -1803,6 +1803,7 @@ def get_user_print_orders(
     email: Optional[str] = None,
     customer_name: Optional[str] = None,
     telegram: Optional[str] = None,
+    order_ids: Optional[list[str]] = None,
     limit: int = 50,
 ) -> list[dict[str, Any]]:
     with _connect() as connection:
@@ -1813,6 +1814,14 @@ def get_user_print_orders(
 
         conditions = []
         params = []
+
+        if order_ids:
+            clean_ids = [str(x).strip().lstrip("#") for x in order_ids if str(x).strip()]
+            if clean_ids:
+                placeholders = ",".join("?" for _ in clean_ids)
+                conditions.append(f"(id IN ({placeholders}) OR order_number IN ({placeholders}))")
+                params.extend(clean_ids)
+                params.extend(clean_ids)
 
         if user_id and has_user_cols:
             conditions.append("user_id = ?")
@@ -1932,12 +1941,40 @@ def list_all_print_orders(limit: int = 200) -> list[dict[str, Any]]:
 
 
 def update_print_order_status(order_id: str, new_status: str) -> bool:
+    clean_id = str(order_id).strip().lstrip("#")
+    clean_status = str(new_status).strip()
     with _connect() as connection:
         cursor = connection.execute(
-            "UPDATE print_orders SET status = ? WHERE id = ? OR order_number = ?",
-            (new_status.strip(), order_id.strip(), order_id.strip()),
+            "UPDATE print_orders SET status = ? WHERE id = ? OR order_number = ? OR id = ? OR order_number = ?",
+            (clean_status, clean_id, clean_id, f"#{clean_id}", f"#{clean_id}"),
         )
         success = cursor.rowcount > 0
+        if not success:
+            # If order wasn't found in DB, insert it with the updated status
+            rows = connection.execute("SELECT 1 FROM print_orders WHERE id = ? OR order_number = ?", (clean_id, clean_id)).fetchall()
+            if not rows:
+                connection.execute(
+                    """
+                    INSERT INTO print_orders
+                    (id, order_number, customer_name, phone, telegram, notes, qr_file_url, total_parts, estimated_price, files_json, status, created_at)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    """,
+                    (
+                        clean_id,
+                        clean_id,
+                        "Customer",
+                        "",
+                        "",
+                        "",
+                        "",
+                        1,
+                        0.0,
+                        "[]",
+                        clean_status,
+                        datetime.now(CAMBODIA_TZ).isoformat(),
+                    ),
+                )
+                success = True
     if success:
         _backup_print_orders_to_disk()
     return success

@@ -3906,16 +3906,41 @@ function openPrintOrderDetails(order) {
 }
 
 async function updateOrderStatus(order, newStatus) {
+  const targetKey = String(order.order_number || order.id || '').replace(/^#/, '')
   order.status = newStatus
-  if (selectedPrintOrder.value && selectedPrintOrder.value.id === order.id) {
+  if (selectedPrintOrder.value && (selectedPrintOrder.value.id === order.id || selectedPrintOrder.value.order_number === order.order_number)) {
     selectedPrintOrder.value.status = newStatus
   }
+
+  // 1. Sync admin localStorage cache
   try {
     localStorage.setItem('aerobyte_admin_print_orders', JSON.stringify(printOrdersList.value))
   } catch (_) {}
-  triggerSuccess(`${order.order_number || order.id} ${t('status set to')} ${newStatus}`)
+
+  // 2. IMMEDIATELY sync user-facing print orders cache (aerobyte_print_orders)
   try {
-    await adminService.updatePrintOrderStatus(order.id, newStatus)
+    const userRaw = localStorage.getItem('aerobyte_print_orders')
+    const userOrders = userRaw ? JSON.parse(userRaw) : []
+    let found = false
+    for (const uo of userOrders) {
+      const uKey = String(uo.order_number || uo.id || '').replace(/^#/, '')
+      if (uKey === targetKey) {
+        uo.status = newStatus
+        found = true
+      }
+    }
+    if (!found && order) {
+      userOrders.unshift({ ...order, status: newStatus })
+    }
+    localStorage.setItem('aerobyte_print_orders', JSON.stringify(userOrders))
+    window.dispatchEvent(new CustomEvent('aerobyte-orders-updated', { detail: { orderId: targetKey, status: newStatus } }))
+  } catch (_) {}
+
+  triggerSuccess(`${order.order_number || order.id} ${t('status set to')} ${newStatus}`)
+
+  // 3. Send update to backend with sanitized targetKey
+  try {
+    await adminService.updatePrintOrderStatus(targetKey, newStatus)
   } catch (err) {
     console.error('Failed to sync print order status with backend:', err)
   }

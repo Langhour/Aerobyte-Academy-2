@@ -202,6 +202,7 @@ async def get_my_print_orders(
     email: Optional[str] = Query(None),
     telegram: Optional[str] = Query(None),
     name: Optional[str] = Query(None),
+    order_ids: Optional[str] = Query(None),
 ):
     session_uid = request.session.get("user_id") if request.session.get("role") == "user" else None
     session_email = (request.session.get("email") or "").strip().lower() if request.session.get("role") == "user" else ""
@@ -212,13 +213,28 @@ async def get_my_print_orders(
         if user:
             uemail = (user.get("email") or "").strip().lower()
 
+    ids_list = [x.strip() for x in order_ids.split(",") if x.strip()] if order_ids else None
+
     orders = get_user_print_orders(
         user_id=uid,
         email=uemail,
         customer_name=name,
         telegram=telegram,
+        order_ids=ids_list,
     )
     return {"orders": orders}
+
+
+@router.get("/api/print-orders/{order_id}")
+async def get_public_print_order(order_id: str):
+    """
+    Returns single print order details and live production status for customers.
+    """
+    clean_id = str(order_id).strip().lstrip("#")
+    order = get_print_order(clean_id)
+    if not order:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Print order not found")
+    return {"order": order}
 
 
 @router.post("/api/print-orders/{order_id}/review")
@@ -359,10 +375,11 @@ async def admin_update_print_order_status(
     Updates the production status of a 3D print order.
     """
     _require_admin(request)
-    success = update_print_order_status(order_id, payload.status)
+    clean_id = str(order_id).strip().lstrip("#")
+    success = update_print_order_status(clean_id, payload.status)
     if not success:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Order not found")
-    return {"success": True, "order_id": order_id, "status": payload.status}
+    return {"success": True, "order_id": clean_id, "status": payload.status}
 
 
 @router.delete("/api/admin/print-orders/{order_id}")

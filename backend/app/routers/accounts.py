@@ -767,6 +767,7 @@ def get_user_print_orders_endpoint(
     email: Optional[str] = None,
     telegram: Optional[str] = None,
     name: Optional[str] = None,
+    order_ids: Optional[str] = None,
 ):
     user_id = request.session.get("user_id") if request.session.get("role") == "user" else None
     user_email = (request.session.get("email") or "").strip().lower() if request.session.get("role") == "user" else ""
@@ -777,11 +778,14 @@ def get_user_print_orders_endpoint(
     if not user_email and email:
         user_email = email.strip().lower()
 
+    ids_list = [x.strip() for x in order_ids.split(",") if x.strip()] if order_ids else None
+
     orders = get_user_print_orders(
         user_id=user_id,
         email=user_email,
         customer_name=name,
         telegram=telegram,
+        order_ids=ids_list,
     )
     return orders
 
