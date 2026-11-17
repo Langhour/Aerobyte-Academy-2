@@ -1288,19 +1288,16 @@ async function updateProfileName() {
     let avatar = data.authenticated ? (data.user.avatar_url || '') : ''
 
     if (data.authenticated && !avatar) {
-
       try {
-
-        const saved = JSON.parse(localStorage.getItem(`aerobyte-profile:${data.user.id}`) || '{}')
-
+        const emailKey = data.user.email ? `aerobyte-profile:${data.user.email.toLowerCase()}` : null
+        const raw = (emailKey && localStorage.getItem(emailKey)) ||
+                    localStorage.getItem(`aerobyte-profile:${data.user.id}`) ||
+                    localStorage.getItem('aerobyte-profile')
+        const saved = JSON.parse(raw || '{}')
         if (saved.avatarUrl) avatar = saved.avatarUrl
-
       } catch (e) {
-
         // ignore
-
       }
-
     }
 
     profileAvatar.value = avatar

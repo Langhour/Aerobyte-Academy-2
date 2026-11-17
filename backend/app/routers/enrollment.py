@@ -199,6 +199,33 @@ def create_enrollment(payload: EnrollmentCreate):
     save_enrollment(record)
     if code:
         increment_coupon_usage(code)
+
+    # Auto-update user account profile with student details from enrollment
+    try:
+        from app.content_store import find_user_by_email, update_user_profile
+        user = find_user_by_email(payload.email)
+        if user is not None:
+            profile_data = {
+                "phone": (payload.phone_number or "").strip()[:50],
+                "telegram": (payload.phone_telegram or "").strip()[:80],
+                "date_of_birth": (payload.date_of_birth or "").strip()[:30],
+                "gender": (payload.gender or "").strip()[:20],
+                "location": (payload.address or "").strip()[:100],
+                "qualification": (payload.highest_qualification or "").strip()[:100],
+                "qualification_other": (getattr(payload, "other_qualification", "") or "")[:100],
+                "occupation": (payload.current_occupation or "").strip()[:100],
+                "experience": (payload.coding_experience or "").strip()[:100],
+            }
+            update_user_profile(
+                user["id"],
+                user["email"],
+                payload.full_name or user.get("full_name", ""),
+                avatar_url=user.get("avatar_url"),
+                profile_data=profile_data,
+            )
+    except Exception:
+        pass
+
     log_admin_activity(
         "New enrollment",
         f"{record.student_name} enrolled in {record.course_title}",

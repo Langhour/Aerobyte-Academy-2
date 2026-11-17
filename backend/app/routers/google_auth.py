@@ -19,6 +19,7 @@ from app.content_store import (
     find_user_by_id,
     link_google_user,
     mark_user_verified,
+    update_user_avatar,
 )
 from app.user_security import hash_user_password
 
@@ -30,6 +31,7 @@ oauth = OAuth()
 class GoogleDirectLoginRequest(BaseModel):
     email: str = Field(min_length=3, max_length=254)
     name: Optional[str] = Field(default=None, max_length=120)
+    picture: Optional[str] = None
 
 
 class GoogleCredentialRequest(BaseModel):
@@ -246,15 +248,19 @@ async def google_direct_login(payload: GoogleDirectLoginRequest, request: Reques
     except Exception:
         pass
 
+    if payload.picture and not user.get("avatar_url"):
+        try:
+            update_user_avatar(user["id"], payload.picture.strip())
+            user["avatar_url"] = payload.picture.strip()
+        except Exception:
+            pass
+
+    from app.routers.accounts import _public_user
     return {
         "authenticated": True,
         "role": "user",
         "redirect": "/profile",
-        "user": {
-            "id": user["id"],
-            "name": user["full_name"],
-            "email": user["email"],
-        },
+        "user": _public_user(user),
     }
 
 
@@ -333,15 +339,20 @@ async def google_handoff_login(payload: GoogleHandoffRequest, request: Request):
     except Exception:
         pass
 
+    google_pic = str(data.get("picture", "")).strip()
+    if google_pic and not user.get("avatar_url"):
+        try:
+            update_user_avatar(user["id"], google_pic)
+            user["avatar_url"] = google_pic
+        except Exception:
+            pass
+
+    from app.routers.accounts import _public_user
     return {
         "authenticated": True,
         "role": "user",
         "redirect": "/profile",
-        "user": {
-            "id": user["id"],
-            "name": user["full_name"],
-            "email": user["email"],
-        },
+        "user": _public_user(user),
     }
 
 
@@ -419,6 +430,7 @@ async def google_callback(request: Request):
             "role": "admin" if is_admin else "user",
             "name": str(claims.get("name", "")).strip() or email.partition("@")[0].title(),
             "sub": subject,
+            "picture": str(claims.get("picture", "")).strip(),
         })
         return RedirectResponse(
             f"{return_origin}/account?handoff_token={handoff_token}&dest={dest}",

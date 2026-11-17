@@ -1422,9 +1422,10 @@ const emptyProfile = () => ({
 
 const profile = reactive(emptyProfile())
 const draft = reactive(emptyProfile())
-const account = ref(null)
 const storageKey = computed(() => account.value ? `aerobyte-profile:${account.value.id}` : 'aerobyte-profile')
+const storageEmailKey = computed(() => account.value?.email ? `aerobyte-profile:${account.value.email.toLowerCase()}` : null)
 const historyStorageKey = computed(() => account.value ? `aerobyte-course-history:${account.value.id}` : 'aerobyte-course-history')
+const historyEmailKey = computed(() => account.value?.email ? `aerobyte-course-history:${account.value.email.toLowerCase()}` : null)
 const isEditing = ref(false)
 const notice = ref('')
 const noticeType = ref('success')
@@ -1652,14 +1653,22 @@ onMounted(async () => {
     return
   }
 
+  let cached = {}
   try {
-    const saved = localStorage.getItem(storageKey.value)
-    if (saved) copyProfile(profile, JSON.parse(saved))
+    const raw = (storageEmailKey.value && localStorage.getItem(storageEmailKey.value)) ||
+                (storageKey.value && localStorage.getItem(storageKey.value)) ||
+                localStorage.getItem('aerobyte-profile')
+    if (raw) {
+      cached = JSON.parse(raw)
+      copyProfile(profile, cached)
+    }
   } catch {
     // fallback to server
   }
-  profile.fullName = account.value.name
-  profile.email = account.value.email
+
+  // Server data takes precedence if present
+  if (account.value.name) profile.fullName = account.value.name
+  if (account.value.email) profile.email = account.value.email
   if (account.value.avatar_url) {
     profile.avatarUrl = account.value.avatar_url
   }
@@ -1672,8 +1681,37 @@ onMounted(async () => {
   if (account.value.occupation) profile.occupation = account.value.occupation
   if (account.value.experience) profile.experience = account.value.experience
 
+  // If server had missing fields that were restored from local cache, auto-sync back to server!
+  const hasLocalRestore = (
+    (!account.value.phone && profile.phone) ||
+    (!account.value.telegram && profile.telegram) ||
+    (!account.value.date_of_birth && profile.dateOfBirth) ||
+    (!account.value.location && profile.location) ||
+    (!account.value.qualification && profile.qualification) ||
+    (!account.value.occupation && profile.occupation) ||
+    (!account.value.experience && profile.experience)
+  )
+  if (hasLocalRestore) {
+    accountService.updateProfile({
+      full_name: profile.fullName,
+      email: profile.email,
+      avatar_url: profile.avatarUrl,
+      phone: profile.phone,
+      telegram: profile.telegram,
+      date_of_birth: profile.dateOfBirth,
+      location: profile.location,
+      qualification: profile.qualification,
+      qualification_other: profile.qualificationOther,
+      occupation: profile.occupation,
+      experience: profile.experience,
+    }).catch((err) => console.warn('Background profile auto-sync failed:', err))
+  }
+
+  // Save back to local storage under both email and id keys
   try {
-    localStorage.setItem(storageKey.value, JSON.stringify(profile))
+    if (storageEmailKey.value) localStorage.setItem(storageEmailKey.value, JSON.stringify(profile))
+    if (storageKey.value) localStorage.setItem(storageKey.value, JSON.stringify(profile))
+    localStorage.setItem('aerobyte-profile', JSON.stringify(profile))
   } catch {}
 
   copyProfile(draft, profile)
@@ -1714,10 +1752,11 @@ async function loadCourseHistory() {
   try {
     let savedIds = []
     try {
-      const parsed = JSON.parse(localStorage.getItem(historyStorageKey.value) || '[]')
-      if (Array.isArray(parsed)) {
-        savedIds = parsed.filter((id) => typeof id === 'string' && id)
-      }
+      const parsed1 = JSON.parse(localStorage.getItem(historyStorageKey.value) || '[]')
+      const parsed2 = JSON.parse((historyEmailKey.value && localStorage.getItem(historyEmailKey.value)) || '[]')
+      const parsed3 = JSON.parse(localStorage.getItem('aerobyte-course-history') || '[]')
+      const allParsed = [...(Array.isArray(parsed1) ? parsed1 : []), ...(Array.isArray(parsed2) ? parsed2 : []), ...(Array.isArray(parsed3) ? parsed3 : [])]
+      savedIds = [...new Set(allParsed.filter((id) => typeof id === 'string' && id))]
     } catch (_) {}
 
     // Fetch user enrollments from the database by account email and/or cached IDs
@@ -1732,9 +1771,13 @@ async function loadCourseHistory() {
 
     // Cache enrollment IDs locally for offline fallback
     try {
-      const allIds = [...new Set(records.map((r) => r.enrollment_id))]
+      const allIds = [...new Set([...records.map((r) => r.enrollment_id), ...savedIds])]
       if (allIds.length > 0) {
         localStorage.setItem(historyStorageKey.value, JSON.stringify(allIds))
+        if (historyEmailKey.value) {
+          localStorage.setItem(historyEmailKey.value, JSON.stringify(allIds))
+        }
+        localStorage.setItem('aerobyte-course-history', JSON.stringify(allIds))
       }
     } catch (_) {}
   } catch (error) {
@@ -1836,9 +1879,17 @@ async function handleAvatarChange(event) {
         account.value.avatar_url = data.avatar_url
       }
       avatarLoadFailed.value = false
-      const saved = JSON.parse(localStorage.getItem(storageKey.value) || '{}')
-      saved.avatarUrl = data.avatar_url
-      localStorage.setItem(storageKey.value, JSON.stringify(saved))
+      const updateAvatarCache = (key) => {
+        if (!key) return
+        try {
+          const s = JSON.parse(localStorage.getItem(key) || '{}')
+          s.avatarUrl = data.avatar_url
+          localStorage.setItem(key, JSON.stringify(s))
+        } catch (_) {}
+      }
+      updateAvatarCache(storageEmailKey.value)
+      updateAvatarCache(storageKey.value)
+      updateAvatarCache('aerobyte-profile')
       window.dispatchEvent(new Event('aerobyte-profile-updated'))
       window.dispatchEvent(new Event('aerobyte-auth-updated'))
       notice.value = t('Profile photo updated successfully!')
@@ -1873,13 +1924,17 @@ async function removeAvatar() {
   } catch (e) {
     console.warn('Could not clear avatar on server:', e)
   }
-  try {
-    const saved = JSON.parse(localStorage.getItem(storageKey.value) || '{}')
-    saved.avatarUrl = ''
-    localStorage.setItem(storageKey.value, JSON.stringify(saved))
-  } catch (e) {
-    // ignore
+  const clearAvatarCache = (key) => {
+    if (!key) return
+    try {
+      const s = JSON.parse(localStorage.getItem(key) || '{}')
+      s.avatarUrl = ''
+      localStorage.setItem(key, JSON.stringify(s))
+    } catch (_) {}
   }
+  clearAvatarCache(storageEmailKey.value)
+  clearAvatarCache(storageKey.value)
+  clearAvatarCache('aerobyte-profile')
   window.dispatchEvent(new Event('aerobyte-profile-updated'))
   window.dispatchEvent(new Event('aerobyte-auth-updated'))
   notice.value = t('Profile photo removed.')
@@ -1943,7 +1998,9 @@ async function saveProfile() {
   }
 
   try {
-    localStorage.setItem(storageKey.value, JSON.stringify(nextProfile))
+    if (storageEmailKey.value) localStorage.setItem(storageEmailKey.value, JSON.stringify(nextProfile))
+    if (storageKey.value) localStorage.setItem(storageKey.value, JSON.stringify(nextProfile))
+    localStorage.setItem('aerobyte-profile', JSON.stringify(nextProfile))
   } catch (error) {
     console.warn('Could not cache additional profile details to local storage:', error)
   }

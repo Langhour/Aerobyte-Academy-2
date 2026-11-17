@@ -103,6 +103,76 @@ def _connect() -> Iterator[object]:
         connection.close()
 
 
+def _hydrate_user_profile_fields(u: dict[str, Any], connection: Optional[object] = None) -> None:
+    raw_profile = u.get("profile_json") or "{}"
+    profile_data = {}
+    if isinstance(raw_profile, str):
+        try:
+            profile_data = json.loads(raw_profile)
+        except Exception:
+            profile_data = {}
+    elif isinstance(raw_profile, dict):
+        profile_data = raw_profile
+
+    for col in (
+        "phone",
+        "telegram",
+        "date_of_birth",
+        "gender",
+        "location",
+        "qualification",
+        "qualification_other",
+        "occupation",
+        "experience",
+    ):
+        if not u.get(col):
+            val = profile_data.get(col, "")
+            if val:
+                u[col] = val
+
+    # If any key profile fields are empty, check if this user has any enrollments under their email
+    user_email = (u.get("email") or "").strip().casefold()
+    if user_email and not (u.get("phone") and u.get("telegram") and u.get("date_of_birth") and u.get("location")):
+        try:
+            def _scan(conn):
+                return conn.execute(
+                    "SELECT content_json FROM enrollments WHERE content_json LIKE ? ORDER BY rowid DESC",
+                    (f"%{user_email}%",),
+                ).fetchall()
+
+            if connection is not None:
+                enr_rows = _scan(connection)
+            else:
+                with _connect() as conn:
+                    enr_rows = _scan(conn)
+
+            for erow in enr_rows:
+                try:
+                    cdata = json.loads(erow["content_json"])
+                    if str(cdata.get("email", "")).strip().casefold() == user_email:
+                        if not u.get("phone") and cdata.get("phone_number"):
+                            u["phone"] = cdata["phone_number"]
+                        if not u.get("telegram") and cdata.get("phone_telegram"):
+                            u["telegram"] = cdata["phone_telegram"]
+                        if not u.get("date_of_birth") and cdata.get("date_of_birth"):
+                            u["date_of_birth"] = cdata["date_of_birth"]
+                        if not u.get("gender") and cdata.get("gender"):
+                            u["gender"] = cdata["gender"]
+                        if not u.get("location") and cdata.get("address"):
+                            u["location"] = cdata["address"]
+                        if not u.get("qualification") and cdata.get("highest_qualification"):
+                            u["qualification"] = cdata["highest_qualification"]
+                        if not u.get("occupation") and cdata.get("current_occupation"):
+                            u["occupation"] = cdata["current_occupation"]
+                        if not u.get("experience") and cdata.get("coding_experience"):
+                            u["experience"] = cdata["coding_experience"]
+                        break
+                except Exception:
+                    pass
+        except Exception:
+            pass
+
+
 def initialize_content_store() -> None:
     with _connect() as connection:
         connection.execute(
@@ -332,6 +402,45 @@ def initialize_content_store() -> None:
             )
         except Exception:
             pass
+
+        # Auto-backfill user profile fields from enrollments if users have empty contact details
+        try:
+            empty_profile_users = connection.execute(
+                "SELECT id, email, full_name, profile_json, phone, telegram, date_of_birth, location, qualification, occupation, experience "
+                "FROM users WHERE phone IS NULL OR phone = '' OR telegram IS NULL OR telegram = ''"
+            ).fetchall()
+            for u_row in empty_profile_users:
+                u_dict = dict(u_row)
+                _hydrate_user_profile_fields(u_dict, connection=connection)
+                if u_dict.get("phone") or u_dict.get("telegram") or u_dict.get("date_of_birth") or u_dict.get("location"):
+                    p_data = {
+                        "phone": u_dict.get("phone", ""),
+                        "telegram": u_dict.get("telegram", ""),
+                        "date_of_birth": u_dict.get("date_of_birth", ""),
+                        "gender": u_dict.get("gender", ""),
+                        "location": u_dict.get("location", ""),
+                        "qualification": u_dict.get("qualification", ""),
+                        "qualification_other": u_dict.get("qualification_other", ""),
+                        "occupation": u_dict.get("occupation", ""),
+                        "experience": u_dict.get("experience", ""),
+                    }
+                    connection.execute(
+                        "UPDATE users SET profile_json = ?, phone = ?, telegram = ?, date_of_birth = ?, location = ?, qualification = ?, occupation = ?, experience = ? WHERE id = ?",
+                        (
+                            json.dumps(p_data, ensure_ascii=False),
+                            u_dict.get("phone", ""),
+                            u_dict.get("telegram", ""),
+                            u_dict.get("date_of_birth", ""),
+                            u_dict.get("location", ""),
+                            u_dict.get("qualification", ""),
+                            u_dict.get("occupation", ""),
+                            u_dict.get("experience", ""),
+                            u_dict["id"],
+                        ),
+                    )
+        except Exception:
+            pass
+
         seeded = connection.execute(
             "SELECT 1 FROM store_metadata WHERE key = 'initial_courses_seeded'"
         ).fetchone()
@@ -558,7 +667,11 @@ def find_user_by_email(email: str) -> Optional[dict[str, Any]]:
             "SELECT * FROM users WHERE email = ? COLLATE NOCASE",
             (email.strip().casefold(),),
         ).fetchone()
-    return dict(row) if row else None
+        if not row:
+            return None
+        u = dict(row)
+        _hydrate_user_profile_fields(u, connection=connection)
+        return u
 
 
 def find_user_by_google_sub(google_sub: str) -> Optional[dict[str, Any]]:
@@ -567,7 +680,11 @@ def find_user_by_google_sub(google_sub: str) -> Optional[dict[str, Any]]:
             "SELECT * FROM users WHERE google_sub = ?",
             (google_sub,),
         ).fetchone()
-    return dict(row) if row else None
+        if not row:
+            return None
+        u = dict(row)
+        _hydrate_user_profile_fields(u, connection=connection)
+        return u
 
 
 def create_google_user(
@@ -614,38 +731,24 @@ def find_user_by_id(user_id: str) -> Optional[dict[str, Any]]:
             "SELECT * FROM users WHERE id = ?",
             (user_id,),
         ).fetchone()
-    return dict(row) if row else None
+        if not row:
+            return None
+        u = dict(row)
+        _hydrate_user_profile_fields(u, connection=connection)
+        return u
 
 
 def list_users() -> list[dict[str, Any]]:
     with _connect() as connection:
         rows = connection.execute(
-            "SELECT id, email, full_name, created_at, is_verified, avatar_url, google_sub, profile_json "
-            "FROM users ORDER BY created_at DESC"
+            "SELECT * FROM users ORDER BY created_at DESC"
         ).fetchall()
-    users = []
-    for row in rows:
-        u = dict(row)
-        raw_profile = u.get("profile_json") or "{}"
-        profile_data = {}
-        if isinstance(raw_profile, str):
-            try:
-                profile_data = json.loads(raw_profile)
-            except Exception:
-                profile_data = {}
-        elif isinstance(raw_profile, dict):
-            profile_data = raw_profile
-
-        u["phone"] = profile_data.get("phone", "")
-        u["telegram"] = profile_data.get("telegram", "")
-        u["date_of_birth"] = profile_data.get("date_of_birth", "")
-        u["location"] = profile_data.get("location", "")
-        u["qualification"] = profile_data.get("qualification", "")
-        u["qualification_other"] = profile_data.get("qualification_other", "")
-        u["occupation"] = profile_data.get("occupation", "")
-        u["experience"] = profile_data.get("experience", "")
-        u["sign_in_method"] = "Google" if u.get("google_sub") else "Email / Password"
-        users.append(u)
+        users = []
+        for row in rows:
+            u = dict(row)
+            _hydrate_user_profile_fields(u, connection=connection)
+            u["sign_in_method"] = "Google" if u.get("google_sub") else "Email / Password"
+            users.append(u)
     return users
 
 
@@ -657,11 +760,15 @@ def admin_update_user(
     profile_data: Optional[dict[str, Any]] = None,
 ) -> Optional[dict[str, Any]]:
     with _connect() as connection:
+        user_cols = {
+            r["name"] for r in connection.execute("PRAGMA table_info(users)").fetchall()
+        }
         updates = ["email = ?", "full_name = ?", "is_verified = ?"]
         params: list[Any] = [email.strip().casefold(), full_name.strip(), int(is_verified)]
         if profile_data is not None:
-            updates.append("profile_json = ?")
-            params.append(json.dumps(profile_data, ensure_ascii=False))
+            if "profile_json" in user_cols:
+                updates.append("profile_json = ?")
+                params.append(json.dumps(profile_data, ensure_ascii=False))
             for col in [
                 "phone",
                 "telegram",
@@ -673,11 +780,12 @@ def admin_update_user(
                 "occupation",
                 "experience",
             ]:
-                if col in profile_data:
+                if col in user_cols and col in profile_data:
                     updates.append(f"{col} = ?")
                     params.append(str(profile_data[col] or "").strip())
-        updates.append("updated_at = ?")
-        params.append(datetime.now(timezone.utc).isoformat())
+        if "updated_at" in user_cols:
+            updates.append("updated_at = ?")
+            params.append(datetime.now(timezone.utc).isoformat())
         params.append(user_id)
         connection.execute(
             f"UPDATE users SET {', '.join(updates)} WHERE id = ?",
@@ -711,14 +819,18 @@ def update_user_profile(
     profile_data: Optional[dict[str, Any]] = None,
 ) -> None:
     with _connect() as connection:
+        user_cols = {
+            r["name"] for r in connection.execute("PRAGMA table_info(users)").fetchall()
+        }
         updates = ["email = ?", "full_name = ?"]
         params: list[Any] = [email.strip().casefold(), full_name.strip()]
-        if avatar_url is not None:
+        if avatar_url is not None and "avatar_url" in user_cols:
             updates.append("avatar_url = ?")
             params.append(avatar_url.strip())
         if profile_data is not None:
-            updates.append("profile_json = ?")
-            params.append(json.dumps(profile_data, ensure_ascii=False))
+            if "profile_json" in user_cols:
+                updates.append("profile_json = ?")
+                params.append(json.dumps(profile_data, ensure_ascii=False))
             for col in [
                 "phone",
                 "telegram",
@@ -730,11 +842,12 @@ def update_user_profile(
                 "occupation",
                 "experience",
             ]:
-                if col in profile_data:
+                if col in user_cols and col in profile_data:
                     updates.append(f"{col} = ?")
                     params.append(str(profile_data[col] or "").strip())
-        updates.append("updated_at = ?")
-        params.append(datetime.now(timezone.utc).isoformat())
+        if "updated_at" in user_cols:
+            updates.append("updated_at = ?")
+            params.append(datetime.now(timezone.utc).isoformat())
         params.append(user_id)
         connection.execute(
             f"UPDATE users SET {', '.join(updates)} WHERE id = ?",

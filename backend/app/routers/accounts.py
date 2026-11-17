@@ -134,14 +134,19 @@ class AccountRegistration(AccountCredentials):
 
 class AccountProfileUpdate(BaseModel):
     email: str = Field(min_length=3, max_length=254)
-    full_name: str = Field(min_length=1, max_length=120)
+    full_name: Optional[str] = None
+    name: Optional[str] = None
     avatar_url: Optional[str] = None
+    avatarUrl: Optional[str] = None
     phone: Optional[str] = None
     telegram: Optional[str] = None
     date_of_birth: Optional[str] = None
+    dateOfBirth: Optional[str] = None
+    gender: Optional[str] = None
     location: Optional[str] = None
     qualification: Optional[str] = None
     qualification_other: Optional[str] = None
+    qualificationOther: Optional[str] = None
     occupation: Optional[str] = None
     experience: Optional[str] = None
 
@@ -151,14 +156,6 @@ class AccountProfileUpdate(BaseModel):
         normalized = value.strip().casefold()
         if not re.fullmatch(r"[^@\s]+@[^@\s]+\.[^@\s]+", normalized):
             raise ValueError("Enter a valid email address.")
-        return normalized
-
-    @field_validator("full_name")
-    @classmethod
-    def validate_full_name(cls, value: str) -> str:
-        normalized = value.strip()
-        if not normalized:
-            raise ValueError("Enter your name.")
         return normalized
 
 
@@ -174,20 +171,86 @@ def _public_user(user: dict[str, Any]) -> dict[str, Any]:
     else:
         profile_data = {}
 
+    phone = user.get("phone") or profile_data.get("phone", "")
+    telegram = user.get("telegram") or profile_data.get("telegram", "")
+    date_of_birth = user.get("date_of_birth") or profile_data.get("date_of_birth", "")
+    gender = user.get("gender") or profile_data.get("gender", "")
+    location = user.get("location") or profile_data.get("location", "")
+    qualification = user.get("qualification") or profile_data.get("qualification", "")
+    qualification_other = user.get("qualification_other") or profile_data.get("qualification_other", "")
+    occupation = user.get("occupation") or profile_data.get("occupation", "")
+    experience = user.get("experience") or profile_data.get("experience", "")
+
+    # Auto-backfill from enrollments if user profile is missing contact details
+    if not (phone and telegram and date_of_birth and location):
+        user_email = (user.get("email") or "").strip().casefold()
+        if user_email:
+            try:
+                enrollments = find_enrollments_by_email(user_email)
+                if enrollments:
+                    latest = enrollments[0]
+                    needs_save = False
+                    if not phone and latest.phone_number:
+                        phone = latest.phone_number
+                        profile_data["phone"] = phone
+                        needs_save = True
+                    if not telegram and latest.phone_telegram:
+                        telegram = latest.phone_telegram
+                        profile_data["telegram"] = telegram
+                        needs_save = True
+                    if not date_of_birth and latest.date_of_birth:
+                        date_of_birth = latest.date_of_birth
+                        profile_data["date_of_birth"] = date_of_birth
+                        needs_save = True
+                    if not gender and latest.gender:
+                        gender = latest.gender
+                        profile_data["gender"] = gender
+                        needs_save = True
+                    if not location and latest.address:
+                        location = latest.address
+                        profile_data["location"] = location
+                        needs_save = True
+                    if not qualification and latest.highest_qualification:
+                        qualification = latest.highest_qualification
+                        profile_data["qualification"] = qualification
+                        needs_save = True
+                    if not occupation and latest.current_occupation:
+                        occupation = latest.current_occupation
+                        profile_data["occupation"] = occupation
+                        needs_save = True
+                    if not experience and latest.coding_experience:
+                        experience = latest.coding_experience
+                        profile_data["experience"] = experience
+                        needs_save = True
+
+                    if needs_save and user.get("id"):
+                        try:
+                            update_user_profile(
+                                user["id"],
+                                user["email"],
+                                user.get("full_name", ""),
+                                avatar_url=user.get("avatar_url"),
+                                profile_data=profile_data,
+                            )
+                        except Exception:
+                            pass
+            except Exception:
+                pass
+
     return {
         "id": user["id"],
-        "name": user["full_name"],
+        "name": user.get("full_name", ""),
         "email": user["email"],
         "avatar_url": user.get("avatar_url") or "",
-        "phone": user.get("phone") or profile_data.get("phone", ""),
-        "telegram": user.get("telegram") or profile_data.get("telegram", ""),
-        "date_of_birth": user.get("date_of_birth") or profile_data.get("date_of_birth", ""),
-        "gender": user.get("gender") or profile_data.get("gender", ""),
-        "location": user.get("location") or profile_data.get("location", ""),
-        "qualification": user.get("qualification") or profile_data.get("qualification", ""),
-        "qualification_other": user.get("qualification_other") or profile_data.get("qualification_other", ""),
-        "occupation": user.get("occupation") or profile_data.get("occupation", ""),
-        "experience": user.get("experience") or profile_data.get("experience", ""),
+        "phone": phone,
+        "telegram": telegram,
+        "date_of_birth": date_of_birth,
+        "gender": gender,
+        "location": location,
+        "qualification": qualification,
+        "qualification_other": qualification_other,
+        "occupation": occupation,
+        "experience": experience,
         "role": user.get("role", "user"),
         "created_at": user.get("created_at", ""),
         "updated_at": user.get("updated_at", ""),
@@ -464,9 +527,10 @@ def update_profile(payload: AccountProfileUpdate, request: Request):
         request.session.clear()
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Sign-in required.")
 
+    avatar_input = payload.avatar_url if payload.avatar_url is not None else payload.avatarUrl
     avatar_to_save: Optional[str] = None
-    if payload.avatar_url is not None:
-        raw_avatar = payload.avatar_url.strip()
+    if avatar_input is not None:
+        raw_avatar = str(avatar_input).strip()
         if raw_avatar.startswith("data:") or raw_avatar.startswith("blob:"):
             # Never store temporary data/blob URLs as persistent avatar URLs
             avatar_to_save = current_user.get("avatar_url") or None
@@ -476,13 +540,15 @@ def update_profile(payload: AccountProfileUpdate, request: Request):
         # Preserve existing avatar if not provided
         avatar_to_save = current_user.get("avatar_url") or None
 
+    full_name = (payload.full_name or payload.name or current_user.get("full_name") or "").strip()[:120]
     profile_data = {
         "phone": (payload.phone or "").strip()[:50],
         "telegram": (payload.telegram or "").strip()[:80],
-        "date_of_birth": (payload.date_of_birth or "").strip()[:30],
+        "date_of_birth": (payload.date_of_birth or payload.dateOfBirth or "").strip()[:30],
+        "gender": (payload.gender or "").strip()[:20],
         "location": (payload.location or "").strip()[:100],
         "qualification": (payload.qualification or "").strip()[:100],
-        "qualification_other": (payload.qualification_other or "").strip()[:100],
+        "qualification_other": (payload.qualification_other or payload.qualificationOther or "").strip()[:100],
         "occupation": (payload.occupation or "").strip()[:100],
         "experience": (payload.experience or "").strip()[:100],
     }
@@ -490,7 +556,7 @@ def update_profile(payload: AccountProfileUpdate, request: Request):
         update_user_profile(
             user_id,
             payload.email,
-            payload.full_name,
+            full_name,
             avatar_to_save,
             profile_data=profile_data,
         )

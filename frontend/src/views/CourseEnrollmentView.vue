@@ -811,16 +811,52 @@ async function submitEnrollment() {
       localStorage.setItem(`aerobyte-enrollment:${data.enrollment_id}`, JSON.stringify(enrollmentCache))
       localStorage.setItem('aerobyte-latest-enrollment', JSON.stringify(enrollmentCache))
 
+      const userEmail = (form.email || '').trim().toLowerCase()
       const historyKey = accountId.value
         ? `aerobyte-course-history:${accountId.value}`
         : 'aerobyte-course-history'
+      const historyEmailKey = userEmail ? `aerobyte-course-history:${userEmail}` : null
+
       const history = JSON.parse(localStorage.getItem(historyKey) || '[]')
-      if (Array.isArray(history)) {
-        localStorage.setItem(
-          historyKey,
-          JSON.stringify([...new Set([data.enrollment_id, ...history])]),
-        )
+      const mergedHist = [...new Set([data.enrollment_id, ...(Array.isArray(history) ? history : [])])]
+      localStorage.setItem(historyKey, JSON.stringify(mergedHist))
+      if (historyEmailKey) {
+        localStorage.setItem(historyEmailKey, JSON.stringify(mergedHist))
       }
+
+      // Also update and persist user profile details so /profile has all information immediately
+      const profileCache = {
+        fullName: form.full_name,
+        email: form.email,
+        phone: form.phone_number,
+        telegram: form.phone_telegram,
+        dateOfBirth: form.date_of_birth,
+        gender: form.gender,
+        location: form.address,
+        qualification: form.highest_qualification,
+        qualificationOther: form.other_qualification || '',
+        occupation: form.occupation,
+        experience: form.experience,
+      }
+      if (userEmail) localStorage.setItem(`aerobyte-profile:${userEmail}`, JSON.stringify(profileCache))
+      if (accountId.value) localStorage.setItem(`aerobyte-profile:${accountId.value}`, JSON.stringify(profileCache))
+      localStorage.setItem('aerobyte-profile', JSON.stringify(profileCache))
+      window.dispatchEvent(new Event('aerobyte-profile-updated'))
+
+      // Sync to server in background
+      accountService.updateProfile({
+        full_name: form.full_name,
+        email: form.email,
+        phone: form.phone_number,
+        telegram: form.phone_telegram,
+        date_of_birth: form.date_of_birth,
+        gender: form.gender,
+        location: form.address,
+        qualification: form.highest_qualification,
+        qualification_other: form.other_qualification || '',
+        occupation: form.occupation,
+        experience: form.experience,
+      }).catch((syncErr) => console.warn('Could not sync enrollment profile to server:', syncErr))
     } catch (storageError) {
       console.error('Could not save enrollment to local course history:', storageError)
     }
@@ -852,12 +888,34 @@ onMounted(async () => {
       return
     }
     accountId.value = data.user.id
-    if (!form.full_name && data.user.full_name) {
-      form.full_name = data.user.full_name
-    }
-    if (!form.email && data.user.email) {
-      form.email = data.user.email
-    }
+    const userEmail = (data.user.email || '').trim().toLowerCase()
+    let cached = {}
+    try {
+      const raw = (userEmail && localStorage.getItem(`aerobyte-profile:${userEmail}`)) ||
+                  (accountId.value && localStorage.getItem(`aerobyte-profile:${accountId.value}`)) ||
+                  localStorage.getItem('aerobyte-profile')
+      if (raw) cached = JSON.parse(raw)
+    } catch {}
+
+    const nameVal = data.user.name || data.user.full_name || cached.fullName || cached.name || ''
+    if (!form.full_name && nameVal) form.full_name = nameVal
+    if (!form.email && (data.user.email || cached.email)) form.email = data.user.email || cached.email
+    const phoneVal = data.user.phone || cached.phone || ''
+    if (!form.phone_number && phoneVal) form.phone_number = phoneVal
+    const tgVal = data.user.telegram || cached.telegram || ''
+    if (!form.phone_telegram && tgVal) form.phone_telegram = tgVal
+    const dobVal = data.user.date_of_birth || cached.dateOfBirth || cached.date_of_birth || ''
+    if (!form.date_of_birth && dobVal) form.date_of_birth = dobVal
+    const genderVal = data.user.gender || cached.gender || ''
+    if (!form.gender && genderVal) form.gender = genderVal
+    const addrVal = data.user.location || cached.location || ''
+    if (!form.address && addrVal) form.address = addrVal
+    const qualVal = data.user.qualification || cached.qualification || ''
+    if (!form.highest_qualification && qualVal) form.highest_qualification = qualVal
+    const occVal = data.user.occupation || cached.occupation || ''
+    if (!form.occupation && occVal) form.occupation = occVal
+    const expVal = data.user.experience || cached.experience || ''
+    if (!form.experience && expVal) form.experience = expVal
   } catch (error) {
     console.error('Could not check the signed-in account for enrollment:', error)
     router.replace({
