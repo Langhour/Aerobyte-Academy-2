@@ -458,8 +458,16 @@
             </a>
             <button
               type="button"
+              @click="openOrderModal = false; router.push({ path: '/profile', query: { section: 'orders' } })"
+              class="rounded-full border border-black/10 dark:border-white/15 bg-[#FAFAFA] dark:bg-white/5 hover:bg-black/5 text-[#111112] dark:text-white font-bold px-6 py-2.5 text-xs transition cursor-pointer flex items-center justify-center gap-1.5"
+            >
+              <span>{{ t('Track in My Orders') }}</span>
+              <span>→</span>
+            </button>
+            <button
+              type="button"
               @click="openOrderModal = false"
-              class="rounded-full border border-black/10 dark:border-white/15 bg-[#FAFAFA] dark:bg-white/5 hover:bg-black/5 text-[#111112] dark:text-white font-bold px-6 py-2.5 text-xs transition cursor-pointer"
+              class="rounded-full border border-black/10 dark:border-white/15 bg-transparent hover:bg-black/5 text-[#696969] dark:text-white/60 font-semibold px-4 py-2.5 text-xs transition cursor-pointer"
             >
               {{ t('Done') }}
             </button>
@@ -471,11 +479,13 @@
 </template>
 
 <script setup>
-import { ref, computed, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { useI18n } from '../i18n'
 import { printOrderService } from '../services/api'
 
 const { t } = useI18n()
+const router = useRouter()
 
 // State: Uploaded files - starts empty so users only drop their own files
 const files = ref([])
@@ -578,6 +588,29 @@ const orderForm = ref({
   notes: ''
 })
 
+function getCachedUserProfile() {
+  try {
+    const raw = localStorage.getItem('aerobyte-profile-current') || localStorage.getItem('aerobyte-profile')
+    return raw ? JSON.parse(raw) : {}
+  } catch (_) {
+    return {}
+  }
+}
+
+onMounted(() => {
+  const profile = getCachedUserProfile()
+  if (profile.fullName && !orderForm.value.name) {
+    orderForm.value.name = profile.fullName
+  }
+  if (!orderForm.value.telegram) {
+    if (profile.telegram) {
+      orderForm.value.telegram = profile.telegram
+    } else if (profile.phone) {
+      orderForm.value.telegram = profile.phone
+    }
+  }
+})
+
 async function submitPrintOrder() {
   validationError.value = ''
   if (files.value.length === 0) {
@@ -591,6 +624,7 @@ async function submitPrintOrder() {
 
   isSubmitting.value = true
   try {
+    const cached = getCachedUserProfile()
     const formData = new FormData()
     const metaList = files.value.map(f => ({
       name: f.name,
@@ -598,9 +632,11 @@ async function submitPrintOrder() {
     }))
 
     formData.append('order_data', JSON.stringify({
-      name: orderForm.value.name,
-      telegram: orderForm.value.telegram,
-      phone: orderForm.value.telegram,
+      user_id: cached.id || '',
+      user_email: cached.email || '',
+      name: orderForm.value.name || cached.fullName || '',
+      telegram: orderForm.value.telegram || cached.telegram || '',
+      phone: orderForm.value.telegram || cached.phone || '',
       notes: orderForm.value.notes,
       files: metaList,
     }))
@@ -620,20 +656,65 @@ async function submitPrintOrder() {
     }
 
     const res = await printOrderService.submitOrder(formData)
+    let finalOrder = null
     if (res?.data?.order) {
-      submittedOrder.value = res.data.order
+      finalOrder = res.data.order
     } else {
-      submittedOrder.value = {
-        order_number: `PR-${Math.floor(Math.random() * 9000 + 1000)}`
+      const fallbackNum = `PR-${Math.floor(Math.random() * 9000 + 1000)}`
+      finalOrder = {
+        id: fallbackNum,
+        order_number: fallbackNum,
+        customer_name: orderForm.value.name,
+        telegram: orderForm.value.telegram,
+        files: files.value.map(f => ({ original_name: f.name, size_str: f.sizeStr, quantity: 1, material: 'PLA / Custom' })),
+        total_parts: files.value.length,
+        estimated_price: 0.0,
+        price: 0.0,
+        status: 'Pending Review',
+        created_at: new Date().toISOString(),
+        date: new Date().toISOString(),
       }
     }
+
+    submittedOrder.value = finalOrder
+
+    // Persist to local cache so user profile displays it immediately
+    try {
+      const rawStored = localStorage.getItem('aerobyte_print_orders')
+      const stored = rawStored ? JSON.parse(rawStored) : []
+      const filtered = stored.filter(o => o.order_number !== finalOrder.order_number && o.id !== finalOrder.id)
+      localStorage.setItem('aerobyte_print_orders', JSON.stringify([finalOrder, ...filtered]))
+      window.dispatchEvent(new CustomEvent('aerobyte-orders-updated'))
+    } catch (_) {}
+
     openOrderModal.value = true
   } catch (err) {
     console.error('Failed to submit print order to backend:', err)
-    // Fallback gracefully so user can still reach Telegram
-    submittedOrder.value = {
-      order_number: `PR-${Math.floor(Math.random() * 9000 + 1000)}`
+    // Fallback gracefully so user can still reach Telegram and track order
+    const fallbackNum = `PR-${Math.floor(Math.random() * 9000 + 1000)}`
+    const fallbackOrder = {
+      id: fallbackNum,
+      order_number: fallbackNum,
+      customer_name: orderForm.value.name,
+      telegram: orderForm.value.telegram,
+      files: files.value.map(f => ({ original_name: f.name, size_str: f.sizeStr, quantity: 1, material: 'PLA / Custom' })),
+      total_parts: files.value.length,
+      estimated_price: 0.0,
+      price: 0.0,
+      status: 'Pending Review',
+      created_at: new Date().toISOString(),
+      date: new Date().toISOString(),
     }
+    submittedOrder.value = fallbackOrder
+
+    try {
+      const rawStored = localStorage.getItem('aerobyte_print_orders')
+      const stored = rawStored ? JSON.parse(rawStored) : []
+      const filtered = stored.filter(o => o.order_number !== fallbackOrder.order_number && o.id !== fallbackOrder.id)
+      localStorage.setItem('aerobyte_print_orders', JSON.stringify([fallbackOrder, ...filtered]))
+      window.dispatchEvent(new CustomEvent('aerobyte-orders-updated'))
+    } catch (_) {}
+
     openOrderModal.value = true
   } finally {
     isSubmitting.value = false

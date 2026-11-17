@@ -14,11 +14,13 @@ from pydantic import BaseModel
 from app.content_store import (
     create_print_order,
     get_print_order,
+    get_user_print_orders,
     list_all_print_orders,
     update_print_order_status,
     delete_print_order,
     save_uploaded_file,
     get_uploaded_file,
+    find_user_by_id,
 )
 
 router = APIRouter(tags=["Print Orders"])
@@ -58,6 +60,7 @@ class StatusUpdatePayload(BaseModel):
 
 @router.post("/api/print-orders")
 async def submit_print_order(
+    request: Request,
     order_data: str = Form(...),
     files: list[UploadFile] = File(default=[]),
     qr_file: Optional[UploadFile] = File(default=None),
@@ -151,6 +154,15 @@ async def submit_print_order(
     total_parts = sum(f.get("quantity", 1) for f in saved_files) if saved_files else 1
     est_price = float(parsed_data.get("estimated_price") or 0.0)
 
+    # Detect user account context from session or payload
+    session_uid = request.session.get("user_id") if request.session.get("role") == "user" else None
+    user_id = session_uid or parsed_data.get("user_id") or ""
+    user_email = (parsed_data.get("user_email") or parsed_data.get("email") or "").strip().lower()
+    if user_id and not user_email:
+        user = find_user_by_id(user_id)
+        if user:
+            user_email = (user.get("email") or "").strip().lower()
+
     # 3. Create Order Record in Database
     created_order = create_print_order({
         "customer_name": parsed_data.get("name") or parsed_data.get("customer_name") or "",
@@ -162,6 +174,8 @@ async def submit_print_order(
         "estimated_price": est_price,
         "files_json": saved_files,
         "status": "Pending Review",
+        "user_id": user_id,
+        "user_email": user_email,
     })
 
     return {
@@ -169,6 +183,31 @@ async def submit_print_order(
         "order": created_order,
         "message": "3D print order received successfully."
     }
+
+
+@router.get("/api/print-orders/my-orders")
+async def get_my_print_orders(
+    request: Request,
+    user_id: Optional[str] = Query(None),
+    email: Optional[str] = Query(None),
+    telegram: Optional[str] = Query(None),
+    name: Optional[str] = Query(None),
+):
+    session_uid = request.session.get("user_id") if request.session.get("role") == "user" else None
+    uid = session_uid or user_id
+    uemail = email
+    if uid and not uemail:
+        user = find_user_by_id(uid)
+        if user:
+            uemail = user.get("email", "")
+
+    orders = get_user_print_orders(
+        user_id=uid,
+        email=uemail,
+        customer_name=name,
+        telegram=telegram,
+    )
+    return {"orders": orders}
 
 
 @router.get("/api/print-orders/files/{filename}")

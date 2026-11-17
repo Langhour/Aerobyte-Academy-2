@@ -260,7 +260,9 @@ def initialize_content_store() -> None:
                 estimated_price REAL DEFAULT 0.0,
                 files_json TEXT NOT NULL DEFAULT '[]',
                 status TEXT NOT NULL DEFAULT 'Pending Review',
-                created_at TEXT NOT NULL
+                created_at TEXT NOT NULL,
+                user_id TEXT DEFAULT '',
+                user_email TEXT DEFAULT ''
             );
             """
         )
@@ -299,6 +301,26 @@ def initialize_content_store() -> None:
             connection.execute("CREATE INDEX IF NOT EXISTS idx_store_orders_user_id ON store_orders(user_id)")
             connection.execute("CREATE INDEX IF NOT EXISTS idx_store_orders_email ON store_orders(user_email)")
             connection.execute("CREATE INDEX IF NOT EXISTS idx_store_orders_created ON store_orders(created_at DESC)")
+        except Exception:
+            pass
+
+        print_columns = {
+            row["name"] for row in connection.execute("PRAGMA table_info(print_orders)").fetchall()
+        }
+        if "user_id" not in print_columns:
+            try:
+                connection.execute("ALTER TABLE print_orders ADD COLUMN user_id TEXT DEFAULT ''")
+            except Exception:
+                pass
+        if "user_email" not in print_columns:
+            try:
+                connection.execute("ALTER TABLE print_orders ADD COLUMN user_email TEXT DEFAULT ''")
+            except Exception:
+                pass
+        try:
+            connection.execute("CREATE INDEX IF NOT EXISTS idx_print_orders_user_id ON print_orders(user_id)")
+            connection.execute("CREATE INDEX IF NOT EXISTS idx_print_orders_email ON print_orders(user_email)")
+            connection.execute("CREATE INDEX IF NOT EXISTS idx_print_orders_created ON print_orders(created_at DESC)")
         except Exception:
             pass
         connection.execute(
@@ -498,121 +520,6 @@ def initialize_content_store() -> None:
             "INSERT OR IGNORE INTO coupons (code, content_json) VALUES (?, ?)",
             [(coupon.code, coupon.model_dump_json()) for coupon in default_coupons],
         )
-        try:
-            order_count_row = connection.execute("SELECT COUNT(*) AS c FROM print_orders").fetchone()
-            if order_count_row and order_count_row["c"] == 0:
-                default_print_orders = [
-                    (
-                        "PR-1024",
-                        "PR-1024",
-                        "Sokha Rith",
-                        "012 888 123",
-                        "@sokharith",
-                        "Need high impact resistance for drone racing crash protection.",
-                        "",
-                        2,
-                        7.90,
-                        json.dumps([{
-                            "id": "file-1",
-                            "original_name": "Drone_Canopy_GoPro_Mount.stl",
-                            "stored_filename": "sample_Drone_Canopy_GoPro_Mount.stl",
-                            "download_url": "/api/print-orders/files/sample_Drone_Canopy_GoPro_Mount.stl?name=Drone_Canopy_GoPro_Mount.stl",
-                            "size_str": "3.4 MB",
-                            "size_bytes": 3565158,
-                            "quantity": 2,
-                            "dimensions": {"x": 120, "y": 35, "z": 18},
-                            "volume_cm3": 28.5,
-                            "material": "TPU Flexible (Black)",
-                        }]),
-                        "In Production",
-                        (datetime.now(CAMBODIA_TZ) - timedelta(hours=2)).isoformat(),
-                    ),
-                    (
-                        "PR-1023",
-                        "PR-1023",
-                        "Channa Keo",
-                        "087 456 789",
-                        "@channakeo",
-                        "Please verify 0.2mm tolerance on planetary gear teeth.",
-                        "",
-                        1,
-                        12.10,
-                        json.dumps([{
-                            "id": "file-2",
-                            "original_name": "Robotics_Gearbox_Housing_v2.step",
-                            "stored_filename": "sample_Robotics_Gearbox_Housing_v2.step",
-                            "download_url": "/api/print-orders/files/sample_Robotics_Gearbox_Housing_v2.step?name=Robotics_Gearbox_Housing_v2.step",
-                            "size_str": "6.8 MB",
-                            "size_bytes": 7130316,
-                            "quantity": 1,
-                            "dimensions": {"x": 95, "y": 80, "z": 45},
-                            "volume_cm3": 54.0,
-                            "material": "PETG (Jet Black)",
-                        }]),
-                        "Ready for Pickup",
-                        (datetime.now(CAMBODIA_TZ) - timedelta(days=1)).isoformat(),
-                    ),
-                    (
-                        "PR-1022",
-                        "PR-1022",
-                        "Dara Vann",
-                        "098 777 654",
-                        "@daravann",
-                        "High detail resin SLA print for medical finger joint prototype.",
-                        "",
-                        3,
-                        7.54,
-                        json.dumps([{
-                            "id": "file-3",
-                            "original_name": "Prosthetic_Finger_Joint_Rig.stl",
-                            "stored_filename": "sample_Prosthetic_Finger_Joint_Rig.stl",
-                            "download_url": "/api/print-orders/files/sample_Prosthetic_Finger_Joint_Rig.stl?name=Prosthetic_Finger_Joint_Rig.stl",
-                            "size_str": "1.9 MB",
-                            "size_bytes": 1992294,
-                            "quantity": 3,
-                            "dimensions": {"x": 35, "y": 20, "z": 15},
-                            "volume_cm3": 8.5,
-                            "material": "Tough Resin (Grey)",
-                        }]),
-                        "Completed",
-                        (datetime.now(CAMBODIA_TZ) - timedelta(days=3)).isoformat(),
-                    ),
-                    (
-                        "PR-1021",
-                        "PR-1021",
-                        "Vicheka Mean",
-                        "010 333 999",
-                        "@vicheka_m",
-                        "Sensor clip mount for outdoor weather station.",
-                        "",
-                        1,
-                        6.40,
-                        json.dumps([{
-                            "id": "file-4",
-                            "original_name": "Aerospace_Sensor_Bracket.stl",
-                            "stored_filename": "sample_Aerospace_Sensor_Bracket.stl",
-                            "download_url": "/api/print-orders/files/sample_Aerospace_Sensor_Bracket.stl?name=Aerospace_Sensor_Bracket.stl",
-                            "size_str": "2.2 MB",
-                            "size_bytes": 2306867,
-                            "quantity": 1,
-                            "dimensions": {"x": 60, "y": 40, "z": 25},
-                            "volume_cm3": 18.2,
-                            "material": "PLA (Silver)",
-                        }]),
-                        "Pending Review",
-                        (datetime.now(CAMBODIA_TZ) - timedelta(days=4)).isoformat(),
-                    ),
-                ]
-                connection.executemany(
-                    """
-                    INSERT OR IGNORE INTO print_orders
-                    (id, order_number, customer_name, phone, telegram, notes, qr_file_url, total_parts, estimated_price, files_json, status, created_at)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                    """,
-                    default_print_orders,
-                )
-        except Exception:
-            pass
 
 
 def mark_user_verified(user_id: str) -> None:
@@ -1536,27 +1443,59 @@ def create_print_order(data: dict[str, Any]) -> dict[str, Any]:
         elif not files_json:
             files_json = "[]"
 
-        connection.execute(
-            """
-            INSERT INTO print_orders
-            (id, order_number, customer_name, phone, telegram, notes, qr_file_url, total_parts, estimated_price, files_json, status, created_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
-            (
-                order_id,
-                order_num,
-                data.get("customer_name", "").strip(),
-                data.get("phone", "").strip(),
-                data.get("telegram", "").strip(),
-                data.get("notes", "").strip(),
-                data.get("qr_file_url", "").strip(),
-                int(data.get("total_parts", 1)),
-                float(data.get("estimated_price", 0.0)),
-                files_json,
-                data.get("status", "Pending Review").strip(),
-                created_at,
-            ),
-        )
+        user_id = (data.get("user_id") or "").strip()
+        user_email = (data.get("user_email") or data.get("email") or "").strip().lower()
+
+        # Check if table has user_id and user_email columns
+        print_cols = {
+            row["name"] for row in connection.execute("PRAGMA table_info(print_orders)").fetchall()
+        }
+        if "user_id" in print_cols and "user_email" in print_cols:
+            connection.execute(
+                """
+                INSERT INTO print_orders
+                (id, order_number, customer_name, phone, telegram, notes, qr_file_url, total_parts, estimated_price, files_json, status, created_at, user_id, user_email)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    order_id,
+                    order_num,
+                    data.get("customer_name", "").strip(),
+                    data.get("phone", "").strip(),
+                    data.get("telegram", "").strip(),
+                    data.get("notes", "").strip(),
+                    data.get("qr_file_url", "").strip(),
+                    int(data.get("total_parts", 1)),
+                    float(data.get("estimated_price", 0.0)),
+                    files_json,
+                    data.get("status", "Pending Review").strip(),
+                    created_at,
+                    user_id,
+                    user_email,
+                ),
+            )
+        else:
+            connection.execute(
+                """
+                INSERT INTO print_orders
+                (id, order_number, customer_name, phone, telegram, notes, qr_file_url, total_parts, estimated_price, files_json, status, created_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    order_id,
+                    order_num,
+                    data.get("customer_name", "").strip(),
+                    data.get("phone", "").strip(),
+                    data.get("telegram", "").strip(),
+                    data.get("notes", "").strip(),
+                    data.get("qr_file_url", "").strip(),
+                    int(data.get("total_parts", 1)),
+                    float(data.get("estimated_price", 0.0)),
+                    files_json,
+                    data.get("status", "Pending Review").strip(),
+                    created_at,
+                ),
+            )
     return get_print_order(order_id) or data
 
 
@@ -1589,7 +1528,85 @@ def get_print_order(order_id: str) -> Optional[dict[str, Any]]:
             "files": files,
             "created_at": row_dict.get("created_at") or "",
             "date": row_dict.get("created_at") or "",
+            "user_id": row_dict.get("user_id") or "",
+            "user_email": row_dict.get("user_email") or "",
         }
+
+
+def get_user_print_orders(
+    user_id: Optional[str] = None,
+    email: Optional[str] = None,
+    customer_name: Optional[str] = None,
+    telegram: Optional[str] = None,
+    limit: int = 50,
+) -> list[dict[str, Any]]:
+    with _connect() as connection:
+        cols = {
+            row["name"] for row in connection.execute("PRAGMA table_info(print_orders)").fetchall()
+        }
+        has_user_cols = "user_id" in cols and "user_email" in cols
+
+        conditions = []
+        params = []
+
+        if user_id and has_user_cols:
+            conditions.append("user_id = ?")
+            params.append(str(user_id).strip())
+        if email and has_user_cols:
+            conditions.append("LOWER(user_email) = LOWER(?)")
+            params.append(str(email).strip())
+        if customer_name:
+            conditions.append("LOWER(customer_name) = LOWER(?)")
+            params.append(str(customer_name).strip())
+        if telegram:
+            clean_tg = str(telegram).strip().lstrip("@")
+            if clean_tg:
+                conditions.append("(LOWER(telegram) = LOWER(?) OR LOWER(telegram) = LOWER(?))")
+                params.append(clean_tg)
+                params.append(f"@{clean_tg}")
+
+        if not conditions:
+            return []
+
+        where_clause = " OR ".join(conditions)
+        query = f"SELECT * FROM print_orders WHERE ({where_clause}) ORDER BY created_at DESC LIMIT ?"
+        params.append(limit)
+        rows = connection.execute(query, tuple(params)).fetchall()
+
+    result = []
+    for r in rows:
+        row_dict = dict(r)
+        try:
+            files = json.loads(row_dict.get("files_json") or "[]")
+        except Exception:
+            files = []
+        primary_part = files[0].get("original_name", "CAD Part") if files else "Custom 3D Model"
+        primary_material = files[0].get("material", "PLA / Custom") if files else "Custom"
+        total_weight = sum(f.get("volume_cm3", 15) * 1.24 * f.get("quantity", 1) for f in files) if files else 0
+
+        result.append({
+            "id": row_dict["id"],
+            "order_number": row_dict["order_number"],
+            "customer": row_dict.get("customer_name") or row_dict.get("telegram") or "CAD Customer",
+            "customer_name": row_dict.get("customer_name") or "",
+            "phone": row_dict.get("phone") or "",
+            "telegram": row_dict.get("telegram") or "",
+            "notes": row_dict.get("notes") or "",
+            "qr_file_url": row_dict.get("qr_file_url") or "",
+            "part": f"{primary_part}{' (+' + str(len(files)-1) + ' more)' if len(files) > 1 else ''}",
+            "material": primary_material,
+            "weight": f"{int(total_weight)}g" if total_weight > 0 else "N/A",
+            "total_parts": row_dict.get("total_parts") or len(files) or 1,
+            "price": float(row_dict.get("estimated_price") or 0.0),
+            "estimated_price": float(row_dict.get("estimated_price") or 0.0),
+            "status": row_dict.get("status") or "Pending Review",
+            "files": files,
+            "created_at": row_dict.get("created_at") or "",
+            "date": row_dict.get("created_at") or "",
+            "user_id": row_dict.get("user_id") or "",
+            "user_email": row_dict.get("user_email") or "",
+        })
+    return result
 
 
 def list_all_print_orders(limit: int = 200) -> list[dict[str, Any]]:

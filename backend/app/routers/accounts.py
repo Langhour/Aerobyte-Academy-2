@@ -18,6 +18,7 @@ from app.content_store import (
     record_user_login,
     create_store_order,
     get_user_store_orders,
+    get_user_print_orders,
     log_login_event,
     create_user,
     mark_user_verified,
@@ -747,6 +748,31 @@ def get_user_orders_endpoint(request: Request, email: Optional[str] = None):
         user_email = email.strip()
 
     orders = get_user_store_orders(user_id=user_id, email=user_email)
+    return orders
+
+
+@router.get("/print-orders")
+def get_user_print_orders_endpoint(
+    request: Request,
+    email: Optional[str] = None,
+    telegram: Optional[str] = None,
+    name: Optional[str] = None,
+):
+    user_id = request.session.get("user_id") if request.session.get("role") == "user" else None
+    user_email = ""
+    if user_id:
+        user = find_user_by_id(user_id)
+        if user:
+            user_email = user.get("email", "")
+    if not user_email and email:
+        user_email = email.strip()
+
+    orders = get_user_print_orders(
+        user_id=user_id,
+        email=user_email,
+        customer_name=name,
+        telegram=telegram,
+    )
     return orders
 
 @router.post("/logout", status_code=status.HTTP_204_NO_CONTENT)

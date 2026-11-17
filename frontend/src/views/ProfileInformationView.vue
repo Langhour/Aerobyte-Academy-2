@@ -103,10 +103,10 @@
               {{ courseHistory.length }}
             </span>
             <span
-              v-if="item.id === 'orders' && storeOrders.length"
+              v-if="item.id === 'orders' && (printOrders.length || storeOrders.length)"
               class="ml-auto rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-2 py-0.5 text-[11px] text-slate-500 dark:text-slate-400"
             >
-              {{ storeOrders.length }}
+              {{ printOrders.length || storeOrders.length }}
             </span>
           </button>
           <div class="my-2 border-t border-slate-100 dark:border-slate-800"></div>
@@ -270,29 +270,28 @@
           </div>
         </section>
 
-        <!-- MY ORDERS SECTION -->
+        <!-- 3D PRINT ORDERS SECTION -->
         <section v-else-if="activeSection === 'orders'" class="space-y-5">
           <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <h2 class="text-xl font-extrabold text-navy-900 dark:text-white">{{ t('My orders') }}</h2>
-              <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ t('Review your store purchases and hardware orders.') }}</p>
+              <h2 class="text-xl font-extrabold text-navy-900 dark:text-white">{{ t('3D Print orders') }}</h2>
+              <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ t('Track 3D CAD files you submitted for quotation and printing.') }}</p>
             </div>
             <div class="flex items-center gap-2">
               <RouterLink
-                to="/store"
-                class="inline-flex w-fit items-center gap-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-700 dark:text-slate-300 transition hover:bg-slate-50 dark:hover:bg-slate-700 cursor-pointer"
+                to="/print/upload"
+                class="inline-flex w-fit items-center gap-1.5 rounded-lg border border-navy-900/10 dark:border-white/10 bg-navy-900 dark:bg-indigo-600 px-3.5 py-2 text-xs font-semibold text-white transition hover:bg-navy-800 dark:hover:bg-indigo-700 cursor-pointer shadow-xs"
               >
-                <ShoppingBag class="h-3.5 w-3.5 text-slate-500" />
-                {{ t('Visit Aero Store') }}
+                <Printer class="h-3.5 w-3.5" />
+                {{ t('Drop 3D CAD files') }}
               </RouterLink>
               <button
-                v-if="storeOrders.length"
                 type="button"
                 class="inline-flex w-fit items-center gap-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-700 dark:text-slate-300 transition hover:bg-slate-50 dark:hover:bg-slate-700 cursor-pointer"
-                :disabled="ordersLoading"
-                @click="loadStoreOrders"
+                :disabled="printOrdersLoading"
+                @click="loadPrintOrders"
               >
-                <RefreshCw class="h-3.5 w-3.5" :class="{ 'animate-spin': ordersLoading }" aria-hidden="true" />
+                <RefreshCw class="h-3.5 w-3.5" :class="{ 'animate-spin': printOrdersLoading }" aria-hidden="true" />
                 {{ t('Refresh') }}
               </button>
             </div>
@@ -300,91 +299,192 @@
 
           <!-- Empty Orders State -->
           <div
-            v-if="!ordersLoading && !storeOrders.length"
+            v-if="!printOrdersLoading && !printOrders.length && !storeOrders.length"
             class="rounded-2xl border border-dashed border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-6 py-12 text-center"
           >
-            <span class="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-navy-50 dark:bg-slate-800 text-navy-800 dark:text-slate-200">
-              <ShoppingBag class="h-6 w-6" aria-hidden="true" />
+            <span class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-navy-50 dark:bg-slate-800 text-navy-800 dark:text-slate-200">
+              <Printer class="h-7 w-7 text-navy-700 dark:text-indigo-400" aria-hidden="true" />
             </span>
-            <h3 class="mt-4 text-base font-bold text-navy-900 dark:text-white">{{ t('No store orders yet') }}</h3>
+            <h3 class="mt-4 text-base font-bold text-navy-900 dark:text-white">{{ t('No 3D print orders yet') }}</h3>
             <p class="mx-auto mt-2 max-w-md text-sm leading-6 text-slate-500 dark:text-slate-400">
-              {{ t('Hardware kits, drone components, and 3D printing supplies you order will appear here.') }}
+              {{ t('Upload your 3D CAD files (.stl, .obj, .step) on the Aero Print page to request quotes and track printing progress.') }}
             </p>
             <RouterLink
-              to="/store"
+              to="/print/upload"
               class="mt-5 inline-flex items-center gap-2 rounded-lg bg-navy-900 dark:bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-navy-800 dark:hover:bg-indigo-700"
             >
-              {{ t('Visit Aero Store') }}
+              <Printer class="h-4 w-4" aria-hidden="true" />
+              {{ t('Drop 3D CAD files') }}
               <ArrowRight class="h-4 w-4" aria-hidden="true" />
             </RouterLink>
           </div>
 
-          <!-- Orders List -->
+          <!-- Print Orders List -->
           <div v-else class="space-y-4">
             <article
-              v-for="order in storeOrders"
-              :key="order.id"
+              v-for="order in printOrders"
+              :key="order.order_number || order.id"
               class="overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs"
             >
+              <!-- Order Header -->
               <div class="border-b border-slate-100 dark:border-slate-800 px-5 py-3.5 flex flex-wrap items-center justify-between gap-3 bg-slate-50/50 dark:bg-slate-800/40">
                 <div class="flex items-center gap-3">
                   <span class="font-mono text-xs font-bold text-navy-900 dark:text-white">
-                    #{{ order.id }}
+                    #{{ order.order_number || order.id }}
                   </span>
                   <span class="text-xs text-slate-400">·</span>
                   <span class="text-xs text-slate-500 dark:text-slate-400">
-                    {{ formatCambodiaTime(order.date) }}
+                    {{ formatCambodiaTime(order.created_at || order.date) }}
                   </span>
                 </div>
                 <div class="flex items-center gap-2">
+                  <span
+                    class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold border"
+                    :class="getPrintStatusBadge(order.status).bg"
+                  >
+                    <span class="h-1.5 w-1.5 rounded-full animate-pulse" :class="getPrintStatusBadge(order.status).dot"></span>
+                    {{ t(order.status || 'Pending Review') }}
+                  </span>
+                </div>
+              </div>
+
+              <!-- Order Body -->
+              <div class="p-5 space-y-4">
+                <!-- CAD Files List -->
+                <div class="space-y-2">
+                  <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                    {{ t('Submitted 3D CAD Models') }}
+                  </div>
+                  <div class="divide-y divide-slate-100 dark:divide-slate-800 rounded-xl border border-slate-100 dark:border-slate-800/80 bg-slate-50/40 dark:bg-slate-800/30 p-2 sm:p-3">
+                    <div
+                      v-for="(file, idx) in (order.files || [{ original_name: order.part || 'CAD Part', size_str: '', quantity: order.total_parts || 1 }])"
+                      :key="file.id || idx"
+                      class="py-2.5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5 first:pt-1 last:pb-1"
+                    >
+                      <div class="flex items-center gap-3 min-w-0">
+                        <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-navy-50 dark:bg-slate-800 text-navy-900 dark:text-indigo-400 border border-slate-200/60 dark:border-slate-700/60">
+                          <Box class="h-4 w-4" />
+                        </div>
+                        <div class="min-w-0 flex-1">
+                          <h4 class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white truncate">
+                            {{ file.original_name || file.name || 'CAD Model' }}
+                          </h4>
+                          <p class="text-[11px] text-slate-500 dark:text-slate-400 flex flex-wrap items-center gap-2 mt-0.5">
+                            <span>Qty: <strong class="text-slate-700 dark:text-slate-200">{{ file.quantity || 1 }}</strong></span>
+                            <span v-if="file.size_str">· {{ file.size_str }}</span>
+                            <span v-if="file.material">· <span class="rounded bg-slate-200/60 dark:bg-slate-700 px-1.5 py-0.5">{{ file.material }}</span></span>
+                          </p>
+                        </div>
+                      </div>
+                      <div class="flex items-center gap-2 shrink-0 sm:self-center pl-12 sm:pl-0">
+                        <a
+                          v-if="file.download_url || file.stored_filename"
+                          :href="getCadFileUrl(file)"
+                          target="_blank"
+                          rel="noopener"
+                          download
+                          class="inline-flex items-center gap-1 rounded-md border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-2.5 py-1 text-[11px] font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition"
+                        >
+                          <Download class="h-3 w-3" />
+                          {{ t('Download') }}
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Customer Notes if any -->
+                <div v-if="order.notes" class="rounded-xl bg-amber-50/50 dark:bg-amber-950/20 border border-amber-200/50 dark:border-amber-800/40 p-3 text-xs text-amber-900 dark:text-amber-200">
+                  <span class="font-bold">{{ t('Notes') }}:</span> {{ order.notes }}
+                </div>
+
+                <!-- Footer Summary & Actions -->
+                <div class="border-t border-slate-100 dark:border-slate-800 pt-3 flex flex-wrap items-center justify-between gap-3 text-xs">
+                  <div class="flex items-center gap-4 text-slate-500 dark:text-slate-400">
+                    <div>
+                      <span class="font-semibold">{{ t('Total parts') }}:</span>
+                      <strong class="ml-1 text-slate-800 dark:text-slate-200">{{ order.total_parts || 1 }}</strong>
+                    </div>
+                    <div>
+                      <span class="font-semibold">{{ t('Quote Price') }}:</span>
+                      <span v-if="order.price > 0 || order.estimated_price > 0" class="ml-1 text-base font-black text-navy-900 dark:text-white">
+                        ${{ Number(order.price || order.estimated_price).toFixed(2) }}
+                        <span class="text-[11px] font-normal text-slate-400">({{ Math.round(Number(order.price || order.estimated_price) * 4100).toLocaleString() }} ៛)</span>
+                      </span>
+                      <span v-else class="ml-1 font-semibold text-amber-600 dark:text-amber-400 italic">
+                        {{ t('Quote in progress') }}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div class="flex items-center gap-2">
+                    <a
+                      :href="getOrderTelegramLink(order)"
+                      target="_blank"
+                      rel="noopener"
+                      class="inline-flex items-center gap-1.5 rounded-lg bg-navy-900 dark:bg-indigo-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-navy-800 dark:hover:bg-indigo-700 shadow-xs"
+                    >
+                      <Send class="h-3.5 w-3.5" />
+                      {{ t('Ask on Telegram') }}
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- Also display legacy store orders if any exist -->
+            <div v-if="storeOrders.length" class="mt-8 pt-6 border-t border-slate-200 dark:border-slate-800 space-y-4">
+              <h3 class="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                {{ t('Store Purchases') }} ({{ storeOrders.length }})
+              </h3>
+              <article
+                v-for="order in storeOrders"
+                :key="order.id"
+                class="overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs"
+              >
+                <div class="border-b border-slate-100 dark:border-slate-800 px-5 py-3.5 flex flex-wrap items-center justify-between gap-3 bg-slate-50/50 dark:bg-slate-800/40">
+                  <div class="flex items-center gap-3">
+                    <span class="font-mono text-xs font-bold text-navy-900 dark:text-white">
+                      #{{ order.id }}
+                    </span>
+                    <span class="text-xs text-slate-400">·</span>
+                    <span class="text-xs text-slate-500 dark:text-slate-400">
+                      {{ formatCambodiaTime(order.date) }}
+                    </span>
+                  </div>
                   <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60">
                     <span class="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                     {{ order.status || 'Confirmed' }}
                   </span>
                 </div>
-              </div>
-
-              <div class="p-5 space-y-4">
-                <!-- Order items -->
-                <div class="divide-y divide-slate-100 dark:divide-slate-800">
-                  <div
-                    v-for="item in order.items"
-                    :key="item.id"
-                    class="py-3 flex items-center justify-between gap-3 first:pt-0 last:pb-0"
-                  >
-                    <div class="flex items-center gap-3">
-                      <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-800 text-lg border border-slate-200/50 dark:border-slate-700/50">
-                        {{ item.icon }}
+                <div class="p-5 space-y-3">
+                  <div class="divide-y divide-slate-100 dark:divide-slate-800">
+                    <div
+                      v-for="item in order.items"
+                      :key="item.id"
+                      class="py-2.5 flex items-center justify-between gap-3 first:pt-0 last:pb-0"
+                    >
+                      <div class="flex items-center gap-3">
+                        <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-800 text-base border border-slate-200/50 dark:border-slate-700/50">
+                          {{ item.icon }}
+                        </div>
+                        <div>
+                          <h4 class="text-xs font-bold text-slate-900 dark:text-white line-clamp-1">
+                            {{ item.name }}
+                          </h4>
+                          <p class="text-[11px] text-slate-400">Qty: {{ item.quantity }} × ${{ Number(item.priceUsd).toFixed(2) }}</p>
+                        </div>
                       </div>
-                      <div>
-                        <h4 class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white line-clamp-1">
-                          {{ item.name }}
-                        </h4>
-                        <p class="text-[11px] text-slate-400">
-                          Qty: {{ item.quantity }} × ${{ Number(item.priceUsd).toFixed(2) }}
-                        </p>
-                      </div>
+                      <span class="text-xs font-bold text-slate-900 dark:text-white">${{ (item.priceUsd * item.quantity).toFixed(2) }}</span>
                     </div>
-                    <span class="text-xs sm:text-sm font-extrabold text-slate-900 dark:text-white">
-                      ${{ (item.priceUsd * item.quantity).toFixed(2) }}
-                    </span>
+                  </div>
+                  <div class="border-t border-slate-100 dark:border-slate-800 pt-3 flex items-center justify-between text-xs">
+                    <span class="text-slate-500 font-semibold">{{ t('Order Total') }}:</span>
+                    <span class="text-sm font-black text-navy-900 dark:text-white">${{ Number(order.total || 0).toFixed(2) }}</span>
                   </div>
                 </div>
-
-                <!-- Footer Summary -->
-                <div class="border-t border-slate-100 dark:border-slate-800 pt-3 flex flex-wrap items-center justify-between gap-3 text-xs">
-                  <div class="text-slate-500 dark:text-slate-400">
-                    <span class="font-semibold">{{ t('Fulfillment') }}:</span>
-                    {{ order.fulfillment === 'pickup' ? t('Same-Day Lab Pickup (Phnom Penh)') : t('Express Delivery') }}
-                  </div>
-                  <div class="flex items-baseline gap-2">
-                    <span class="text-slate-500 dark:text-slate-400 font-semibold">{{ t('Order Total') }}:</span>
-                    <span class="text-base font-black text-navy-900 dark:text-white">${{ Number(order.total || 0).toFixed(2) }}</span>
-                    <span class="text-[11px] text-slate-400">({{ Math.round((order.total || 0) * 4100).toLocaleString() }} ៛)</span>
-                  </div>
-                </div>
-              </div>
-            </article>
+              </article>
+            </div>
           </div>
         </section>
 
@@ -1332,7 +1432,7 @@ import { computed, defineComponent, h, onBeforeUnmount, onMounted, reactive, ref
 import { useRouter } from 'vue-router'
 import { useLanguage } from '../i18n'
 import DatePicker from '../components/common/DatePicker.vue'
-import { accountService, enrollmentService } from '../services/api'
+import { accountService, enrollmentService, printOrderService } from '../services/api'
 import { formatCambodiaTime } from '../utils/date'
 import { resolveImageUrl } from '../utils/image'
 import { useTheme } from '../composables/useTheme'
@@ -1340,6 +1440,7 @@ import {
   AlertCircle,
   ArrowRight,
   BookOpen,
+  Box,
   BriefcaseBusiness,
   CalendarDays,
   Camera,
@@ -1347,6 +1448,7 @@ import {
   CheckCircle2,
   ChevronDown,
   Code2,
+  Download,
   FileText,
   GraduationCap,
   Globe2,
@@ -1358,6 +1460,7 @@ import {
   Moon,
   Pencil,
   Phone,
+  Printer,
   RefreshCw,
   Scale,
   Send,
@@ -1379,7 +1482,7 @@ const router = useRouter()
 const accountSections = [
   { id: 'profile', label: 'Profile information', icon: UserRound },
   { id: 'history', label: 'Course history', icon: BookOpen },
-  { id: 'orders', label: 'My orders', icon: ShoppingBag },
+  { id: 'orders', label: '3D Print orders', icon: Printer },
   { id: 'settings', label: 'Settings', icon: Settings },
   { id: 'terms', label: 'Terms of use', icon: Scale },
   { id: 'privacy', label: 'Privacy Policy', icon: ShieldCheck },
@@ -1388,7 +1491,7 @@ const accountSections = [
 const activeSectionTitle = computed(() => {
   switch (activeSection.value) {
     case 'history': return t('Course history')
-    case 'orders': return t('My orders')
+    case 'orders': return t('3D Print orders')
     case 'settings': return t('Settings')
     case 'terms': return t('Terms of use')
     case 'privacy': return t('Privacy Policy')
@@ -1399,7 +1502,7 @@ const activeSectionTitle = computed(() => {
 const activeSectionDescription = computed(() => {
   switch (activeSection.value) {
     case 'history': return t('Review your registrations and payment status.')
-    case 'orders': return t('Review your store purchases and hardware orders.')
+    case 'orders': return t('Track 3D CAD files you submitted for quotation and printing.')
     case 'settings': return t('Manage your language and local profile preferences.')
     case 'terms': return t('Review our terms, student commitments, and platform guidelines.')
     case 'privacy': return t('Learn how AeroByte Academy collects, safeguards, and handles your personal and learning data.')
@@ -1431,8 +1534,135 @@ const isEditing = ref(false)
 const notice = ref('')
 const noticeType = ref('success')
 const activeSection = ref('profile')
+const printOrders = ref([])
+const printOrdersLoading = ref(false)
 const storeOrders = ref([])
 const ordersLoading = ref(false)
+
+function getPrintStatusBadge(status) {
+  const s = String(status || '').toLowerCase()
+  if (s.includes('ready') || s.includes('complete') || s.includes('delivered')) {
+    return {
+      bg: 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800/60',
+      dot: 'bg-emerald-500',
+    }
+  }
+  if (s.includes('production') || s.includes('printing')) {
+    return {
+      bg: 'bg-purple-50 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-800/60',
+      dot: 'bg-purple-500',
+    }
+  }
+  if (s.includes('quoted')) {
+    return {
+      bg: 'bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800/60',
+      dot: 'bg-blue-500',
+    }
+  }
+  if (s.includes('cancel')) {
+    return {
+      bg: 'bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border-rose-200 dark:border-rose-800/60',
+      dot: 'bg-rose-500',
+    }
+  }
+  return {
+    bg: 'bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800/60',
+    dot: 'bg-amber-500',
+  }
+}
+
+function getOrderTelegramLink(order) {
+  const orderNum = order.order_number || order.id || ''
+  const text = encodeURIComponent(
+    `Hello AeroByte team! I would like to check on my 3D print order #${orderNum}.\nParts: ${order.total_parts || (order.files ? order.files.length : 1)}`
+  )
+  return `https://t.me/aerobyte168?text=${text}`
+}
+
+function getCadFileUrl(file) {
+  if (file.download_url) {
+    if (file.download_url.startsWith('http://') || file.download_url.startsWith('https://')) {
+      return file.download_url
+    }
+    if (file.download_url.startsWith('/api')) {
+      return file.download_url
+    }
+    return `/api${file.download_url.startsWith('/') ? '' : '/'}${file.download_url}`
+  }
+  if (file.stored_filename) {
+    return printOrderService.getFileDownloadUrl(file.stored_filename, file.original_name)
+  }
+  return '#'
+}
+
+async function loadPrintOrders() {
+  printOrdersLoading.value = true
+  // 1. Read cached orders from localStorage for 0ms hydration
+  try {
+    const raw = localStorage.getItem('aerobyte_print_orders')
+    if (raw) {
+      const parsed = JSON.parse(raw)
+      if (Array.isArray(parsed) && parsed.length) {
+        printOrders.value = parsed
+      }
+    }
+  } catch (_) {}
+
+  try {
+    const userEmail = account.value?.email || profile.email || ''
+    const userTg = account.value?.telegram || profile.telegram || ''
+    const userName = account.value?.name || profile.fullName || ''
+
+    let serverOrders = []
+    try {
+      const res = await accountService.getUserPrintOrders({
+        email: userEmail,
+        telegram: userTg,
+        name: userName,
+      })
+      if (Array.isArray(res.data)) {
+        serverOrders = res.data
+      }
+    } catch (e1) {
+      try {
+        const res2 = await printOrderService.getMyOrders({
+          user_id: account.value?.id,
+          email: userEmail,
+          telegram: userTg,
+          name: userName,
+        })
+        if (Array.isArray(res2.data?.orders)) {
+          serverOrders = res2.data.orders
+        }
+      } catch (e2) {}
+    }
+
+    if (serverOrders.length) {
+      const currentLocal = (() => {
+        try {
+          return JSON.parse(localStorage.getItem('aerobyte_print_orders') || '[]')
+        } catch (_) {
+          return []
+        }
+      })()
+      const serverIds = new Set(serverOrders.map((o) => o.order_number || o.id))
+      const combined = [...serverOrders]
+      for (const loc of currentLocal) {
+        if (!serverIds.has(loc.order_number) && !serverIds.has(loc.id)) {
+          combined.push(loc)
+        }
+      }
+      printOrders.value = combined
+      try {
+        localStorage.setItem('aerobyte_print_orders', JSON.stringify(combined))
+      } catch (_) {}
+    }
+  } catch (err) {
+    console.warn('Could not load print orders from server, using local cache:', err)
+  } finally {
+    printOrdersLoading.value = false
+  }
+}
 
 async function loadStoreOrders() {
   ordersLoading.value = true
@@ -1742,6 +1972,7 @@ onMounted(async () => {
 
     copyProfile(draft, profile)
     loadCourseHistory()
+    loadPrintOrders()
     loadStoreOrders()
   } catch (error) {
     console.warn('Could not load session from server, maintaining cached state:', error)
@@ -1751,8 +1982,12 @@ onMounted(async () => {
     }
   }
 
-  window.addEventListener('storage', loadStoreOrders)
-  window.addEventListener('aerobyte-orders-updated', loadStoreOrders)
+  const handleOrdersSync = () => {
+    loadPrintOrders()
+    loadStoreOrders()
+  }
+  window.addEventListener('storage', handleOrdersSync)
+  window.addEventListener('aerobyte-orders-updated', handleOrdersSync)
   const targetSection = router.currentRoute.value.query.section
   if (['orders', 'history', 'settings', 'terms', 'privacy'].includes(targetSection)) {
     activeSection.value = targetSection
@@ -1762,8 +1997,8 @@ onMounted(async () => {
 
 onBeforeUnmount(() => {
   document.removeEventListener('click', handleDropdownClickOutside)
-  window.removeEventListener('storage', loadStoreOrders)
-  window.removeEventListener('aerobyte-orders-updated', loadStoreOrders)
+  window.removeEventListener('storage', handleOrdersSync)
+  window.removeEventListener('aerobyte-orders-updated', handleOrdersSync)
 })
 
 function selectSection(section) {
@@ -1771,7 +2006,10 @@ function selectSection(section) {
   notice.value = ''
   if (section !== 'profile') isEditing.value = false
   if (section === 'history' && !courseHistory.value.length) loadCourseHistory()
-  if (section === 'orders') loadStoreOrders()
+  if (section === 'orders') {
+    loadPrintOrders()
+    loadStoreOrders()
+  }
 }
 
 function statusClasses(status) {

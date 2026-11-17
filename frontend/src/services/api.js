@@ -127,6 +127,9 @@ export const accountService = {
   getUserOrders() {
     return apiClient.get('/accounts/orders')
   },
+  getUserPrintOrders(params = {}) {
+    return apiClient.get('/accounts/print-orders', { params })
+  },
 }
 
 export function getGoogleSignInUrl() {
@@ -287,6 +290,9 @@ export const printOrderService = {
     const base = apiClient.defaults.baseURL || '/api'
     const nameParam = originalName ? `?name=${encodeURIComponent(originalName)}` : ''
     return `${base}/print-orders/files/${encodeURIComponent(filename)}${nameParam}`
+  },
+  getMyOrders(params = {}) {
+    return apiClient.get('/print-orders/my-orders', { params })
   },
 }
 
