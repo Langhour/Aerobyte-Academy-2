@@ -1,15 +1,15 @@
 <template>
-  <div class="aero-fly-root relative isolate min-h-screen transition-colors duration-300 bg-[#f8fafc] dark:bg-[#04060f] text-slate-800 dark:text-[#f3f6ff] overflow-x-hidden selection:bg-orange-500/20 selection:text-orange-600 dark:selection:bg-[#5df0a8]/20 dark:selection:text-[#5df0a8]">
+  <div class="aero-fly-root relative isolate min-h-screen transition-colors duration-300 bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 overflow-x-hidden selection:bg-orange-500/20 selection:text-orange-600 dark:selection:bg-orange-500/20 dark:selection:text-orange-400">
     <!-- Fixed WebGL 3D Real Drone Canvas (Kept identical as requested) -->
     <canvas ref="canvasRef" class="fixed inset-0 w-full h-full block z-0 pointer-events-none"></canvas>
 
     <!-- Loading Indicator overlay while real 3D drone GLB loads -->
     <div
       v-if="loadingProgress < 100"
-      class="fixed bottom-6 right-6 z-50 flex items-center gap-3 bg-white/95 dark:bg-[rgba(12,18,38,0.9)] border border-slate-300 dark:border-[rgba(150,175,230,0.2)] px-4 py-2 rounded-full backdrop-blur-md shadow-xl text-xs font-mono font-bold text-slate-800 dark:text-white transition-opacity duration-500"
+      class="fixed bottom-6 right-6 z-50 flex items-center gap-3 bg-white/95 dark:bg-slate-900/95 border border-slate-300 dark:border-slate-800 px-4 py-2 rounded-full backdrop-blur-md shadow-xl text-xs font-mono font-bold text-slate-800 dark:text-slate-100 transition-opacity duration-500"
       :class="loadingProgress >= 100 ? 'opacity-0 pointer-events-none' : 'opacity-100'"
     >
-      <div class="w-3.5 h-3.5 border-2 border-orange-500 dark:border-[#5df0a8] border-t-transparent rounded-full animate-spin"></div>
+      <div class="w-3.5 h-3.5 border-2 border-orange-500 dark:border-emerald-400 border-t-transparent rounded-full animate-spin"></div>
       <span>{{ t('SYS // LOADING DRONE 3D') }} · {{ loadingProgress }}%</span>
     </div>
 
@@ -24,7 +24,7 @@
     >
       <div
         v-if="toastMessage"
-        class="fixed top-24 right-6 z-50 flex items-center gap-3 px-5 py-2.5 rounded-full bg-slate-900/95 dark:bg-[#070e24]/95 text-white border border-emerald-500/40 shadow-2xl backdrop-blur-xl text-xs font-mono font-semibold"
+        class="fixed top-24 right-6 z-50 flex items-center gap-3 px-5 py-2.5 rounded-full bg-slate-900/95 dark:bg-slate-900/95 text-white border border-emerald-500/40 shadow-2xl backdrop-blur-xl text-xs font-mono font-semibold"
       >
         <span class="text-emerald-400">✓</span>
         <span>{{ toastMessage }}</span>
@@ -89,7 +89,7 @@
             <div
               v-snap="'sessions-hdr'"
               :class="{ 'is-visible': snapVisible['sessions-hdr'] }"
-              class="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 pb-3 border-b border-slate-200 dark:border-white/10"
+              class="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 pb-3 border-b border-slate-200 dark:border-slate-800"
             >
               <div>
                 <div
@@ -110,7 +110,7 @@
                 </h2>
               </div>
               <span
-                class="stretch-snap-line text-[10px] sm:text-[11px] font-mono text-emerald-600 dark:text-[#5df0a8] font-bold self-start sm:self-auto"
+                class="stretch-snap-line text-[10px] sm:text-[11px] font-mono text-emerald-600 dark:text-emerald-400 font-bold self-start sm:self-auto"
                 style="animation-delay: 170ms"
               >
                 {{ t('● SKY CLEAR · 8 KM/H') }}
@@ -137,7 +137,7 @@
                 :key="session.id"
                 v-snap="`session-${session.id}`"
                 :class="{ 'is-visible': snapVisible[`session-${session.id}`] }"
-                class="stretch-snap-card p-3.5 sm:p-4 rounded-2xl bg-white/92 dark:bg-[#070e24]/90 border border-slate-200/90 dark:border-white/10 backdrop-blur-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 hover:border-slate-400 dark:hover:border-white/20 transition-colors shadow-xs"
+                class="stretch-snap-card p-3.5 sm:p-4 rounded-2xl bg-white/90 dark:bg-slate-900/90 border border-slate-200/90 dark:border-slate-800 backdrop-blur-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 hover:border-slate-400 dark:hover:border-slate-700 transition-colors shadow-xs"
                 style="animation-delay: 20ms"
               >
                 <div class="space-y-0.5">
@@ -168,7 +168,7 @@
                   </p>
                 </div>
 
-                <div class="flex items-center justify-between sm:justify-end gap-3 shrink-0 pt-1 sm:pt-0 border-t sm:border-t-0 border-slate-100 dark:border-white/5">
+                <div class="flex items-center justify-between sm:justify-end gap-3 shrink-0 pt-1 sm:pt-0 border-t sm:border-t-0 border-slate-100 dark:border-slate-800">
                   <span
                     class="stretch-snap-line text-[10px] sm:text-[11px] font-mono text-slate-400"
                     style="animation-delay: 180ms"
@@ -181,7 +181,7 @@
                     class="px-4 py-1.5 min-h-[34px] rounded-full text-xs font-bold active:scale-95 transition cursor-pointer"
                     :class="session.isJoined
                       ? 'bg-emerald-500 text-white'
-                      : 'bg-slate-100 dark:bg-white/10 hover:bg-slate-200 dark:hover:bg-white/20 text-[#0c1e5b] dark:text-white'"
+                      : 'bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-[#0c1e5b] dark:text-slate-100 border border-transparent dark:border-slate-700'"
                   >
                     {{ session.isJoined ? t('✓ Joined') : t('RSVP') }}
                   </button>
@@ -274,7 +274,7 @@
             <div
               v-snap="'benefits-hdr'"
               :class="{ 'is-visible': snapVisible['benefits-hdr'] }"
-              class="flex flex-col sm:flex-row sm:items-end justify-between gap-1.5 pb-3 border-b border-slate-200 dark:border-white/10"
+              class="flex flex-col sm:flex-row sm:items-end justify-between gap-1.5 pb-3 border-b border-slate-200 dark:border-slate-800"
             >
               <div>
                 <div
@@ -295,7 +295,7 @@
                 </h2>
               </div>
               <span
-                class="stretch-snap-line text-[10px] sm:text-[11px] font-mono text-emerald-600 dark:text-[#5df0a8] font-bold self-start sm:self-auto"
+                class="stretch-snap-line text-[10px] sm:text-[11px] font-mono text-emerald-600 dark:text-emerald-400 font-bold self-start sm:self-auto"
                 style="animation-delay: 260ms"
               >
                 {{ t('● 100% FREE COMMUNITY') }}
@@ -305,7 +305,7 @@
             <p
               v-snap="'benefits-intro'"
               :class="{ 'is-visible': snapVisible['benefits-intro'] }"
-              class="stretch-snap-line text-xs text-slate-600 dark:text-[#9aa6c4]"
+              class="stretch-snap-line text-xs text-slate-600 dark:text-slate-400"
               style="animation-delay: 30ms"
             >
               {{ t("Join Cambodia's open FPV collective. Everything you need to build, tune, and fly safely with active pilots.") }}
@@ -318,10 +318,10 @@
                 :key="benefit.titleKey"
                 v-snap="`benefit-${bIdx}`"
                 :class="{ 'is-visible': snapVisible[`benefit-${bIdx}`] }"
-                class="stretch-snap-card p-3.5 rounded-2xl bg-white/92 dark:bg-[#070e24]/90 border border-slate-200/90 dark:border-white/10 backdrop-blur-xl flex items-start gap-3 hover:border-slate-400 dark:hover:border-white/20 transition-colors shadow-xs"
+                class="stretch-snap-card p-3.5 rounded-2xl bg-white/90 dark:bg-slate-900/90 border border-slate-200/90 dark:border-slate-800 backdrop-blur-xl flex items-start gap-3 hover:border-slate-400 dark:hover:border-slate-700 transition-colors shadow-xs"
                 :style="{ animationDelay: `${(bIdx % 2) * 80}ms` }"
               >
-                <div class="w-8 h-8 rounded-xl bg-[#0c1e5b]/5 dark:bg-white/10 text-[#0c1e5b] dark:text-white border border-[#0c1e5b]/10 dark:border-white/10 flex items-center justify-center shrink-0">
+                <div class="w-8 h-8 rounded-xl bg-[#0c1e5b]/5 dark:bg-slate-800 text-[#0c1e5b] dark:text-slate-100 border border-[#0c1e5b]/10 dark:border-slate-700 flex items-center justify-center shrink-0">
                   <component :is="benefit.icon" class="w-4 h-4 stroke-[2]" />
                 </div>
                 <div class="space-y-0.5">
@@ -454,7 +454,7 @@
           <div
             v-snap="'store-hdr'"
             :class="{ 'is-visible': snapVisible['store-hdr'] }"
-            class="flex flex-col sm:flex-row sm:items-end justify-between gap-3 sm:gap-4 pb-4 border-b border-slate-200 dark:border-white/10"
+            class="flex flex-col sm:flex-row sm:items-end justify-between gap-3 sm:gap-4 pb-4 border-b border-slate-200 dark:border-slate-800"
           >
             <div>
               <div
@@ -498,20 +498,20 @@
               <h3 class="text-xs font-mono font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 {{ t('What We Do in Aero Store') }}
               </h3>
-              <span class="text-[11px] font-mono text-emerald-600 dark:text-[#5df0a8] font-bold">
+              <span class="text-[11px] font-mono text-emerald-600 dark:text-emerald-400 font-bold">
                 {{ t('● 100% BENCH-TESTED') }}
               </span>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4">
               <!-- Specialty 1: FPV Drone Hardware -->
-              <div class="p-4 sm:p-5 rounded-2xl bg-white/92 dark:bg-[#070e24]/90 border border-slate-200/90 dark:border-white/10 backdrop-blur-xl flex flex-col justify-between gap-3 sm:gap-4 hover:border-slate-400 dark:hover:border-white/20 transition shadow-xs">
+              <div class="p-4 sm:p-5 rounded-2xl bg-white/90 dark:bg-slate-900/90 border border-slate-200/90 dark:border-slate-800 backdrop-blur-xl flex flex-col justify-between gap-3 sm:gap-4 hover:border-slate-400 dark:hover:border-slate-700 transition shadow-xs">
                 <div class="space-y-2 sm:space-y-2.5">
                   <div class="flex items-center justify-between">
-                    <div class="w-8 h-8 rounded-xl bg-[#0c1e5b]/5 dark:bg-white/10 text-[#0c1e5b] dark:text-white border border-[#0c1e5b]/10 dark:border-white/10 flex items-center justify-center">
+                    <div class="w-8 h-8 rounded-xl bg-[#0c1e5b]/5 dark:bg-slate-800 text-[#0c1e5b] dark:text-slate-100 border border-[#0c1e5b]/10 dark:border-slate-700 flex items-center justify-center">
                       <Plane class="w-4 h-4 stroke-[2]" />
                     </div>
-                    <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-[#0c1e5b]/5 dark:bg-white/10 text-[#0c1e5b] dark:text-white border border-[#0c1e5b]/10 dark:border-white/10">
+                    <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-[#0c1e5b]/5 dark:bg-slate-800 text-[#0c1e5b] dark:text-slate-100 border border-[#0c1e5b]/10 dark:border-slate-700">
                       {{ t('FPV DRONES') }}
                     </span>
                   </div>
@@ -523,11 +523,11 @@
                   </p>
                 </div>
 
-                <div class="pt-2.5 sm:pt-3 border-t border-slate-100 dark:border-white/5 space-y-2">
+                <div class="pt-2.5 sm:pt-3 border-t border-slate-100 dark:border-slate-800 space-y-2">
                   <div class="flex flex-wrap gap-1.5 text-[10px] font-mono text-slate-500 dark:text-slate-400">
-                    <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-white/5">{{ t('BNF Quads') }}</span>
-                    <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-white/5">{{ t('55A Stacks') }}</span>
-                    <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-white/5">{{ t('ELRS 2.4G') }}</span>
+                    <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">{{ t('BNF Quads') }}</span>
+                    <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">{{ t('55A Stacks') }}</span>
+                    <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">{{ t('ELRS 2.4G') }}</span>
                   </div>
                   <router-link
                     to="/store"
@@ -540,13 +540,13 @@
               </div>
 
               <!-- Specialty 2: Robotics & STEM Maker Kits -->
-              <div class="p-4 sm:p-5 rounded-2xl bg-white/92 dark:bg-[#070e24]/90 border border-slate-200/90 dark:border-white/10 backdrop-blur-xl flex flex-col justify-between gap-3 sm:gap-4 hover:border-slate-400 dark:hover:border-white/20 transition shadow-xs">
+              <div class="p-4 sm:p-5 rounded-2xl bg-white/90 dark:bg-slate-900/90 border border-slate-200/90 dark:border-slate-800 backdrop-blur-xl flex flex-col justify-between gap-3 sm:gap-4 hover:border-slate-400 dark:hover:border-slate-700 transition shadow-xs">
                 <div class="space-y-2 sm:space-y-2.5">
                   <div class="flex items-center justify-between">
-                    <div class="w-8 h-8 rounded-xl bg-[#0c1e5b]/5 dark:bg-white/10 text-[#0c1e5b] dark:text-white border border-[#0c1e5b]/10 dark:border-white/10 flex items-center justify-center">
+                    <div class="w-8 h-8 rounded-xl bg-[#0c1e5b]/5 dark:bg-slate-800 text-[#0c1e5b] dark:text-slate-100 border border-[#0c1e5b]/10 dark:border-slate-700 flex items-center justify-center">
                       <Cpu class="w-4 h-4 stroke-[2]" />
                     </div>
-                    <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-[#0c1e5b]/5 dark:bg-white/10 text-[#0c1e5b] dark:text-white border border-[#0c1e5b]/10 dark:border-white/10">
+                    <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-[#0c1e5b]/5 dark:bg-slate-800 text-[#0c1e5b] dark:text-slate-100 border border-[#0c1e5b]/10 dark:border-slate-700">
                       {{ t('STEM & MAKER') }}
                     </span>
                   </div>
@@ -558,11 +558,11 @@
                   </p>
                 </div>
 
-                <div class="pt-2.5 sm:pt-3 border-t border-slate-100 dark:border-white/5 space-y-2">
+                <div class="pt-2.5 sm:pt-3 border-t border-slate-100 dark:border-slate-800 space-y-2">
                   <div class="flex flex-wrap gap-1.5 text-[10px] font-mono text-slate-500 dark:text-slate-400">
-                    <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-white/5">{{ t('ESP32 Lab Kit') }}</span>
-                    <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-white/5">{{ t('IoT Sensors') }}</span>
-                    <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-white/5">{{ t('Motor Shields') }}</span>
+                    <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">{{ t('ESP32 Lab Kit') }}</span>
+                    <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">{{ t('IoT Sensors') }}</span>
+                    <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">{{ t('Motor Shields') }}</span>
                   </div>
                   <router-link
                     to="/store"
@@ -575,13 +575,13 @@
               </div>
 
               <!-- Specialty 3: Custom 3D TPU Armor -->
-              <div class="p-4 sm:p-5 rounded-2xl bg-white/92 dark:bg-[#070e24]/90 border border-slate-200/90 dark:border-white/10 backdrop-blur-xl flex flex-col justify-between gap-3 sm:gap-4 hover:border-slate-400 dark:hover:border-white/20 transition shadow-xs">
+              <div class="p-4 sm:p-5 rounded-2xl bg-white/90 dark:bg-slate-900/90 border border-slate-200/90 dark:border-slate-800 backdrop-blur-xl flex flex-col justify-between gap-3 sm:gap-4 hover:border-slate-400 dark:hover:border-slate-700 transition shadow-xs">
                 <div class="space-y-2 sm:space-y-2.5">
                   <div class="flex items-center justify-between">
-                    <div class="w-8 h-8 rounded-xl bg-[#0c1e5b]/5 dark:bg-white/10 text-[#0c1e5b] dark:text-white border border-[#0c1e5b]/10 dark:border-white/10 flex items-center justify-center">
+                    <div class="w-8 h-8 rounded-xl bg-[#0c1e5b]/5 dark:bg-slate-800 text-[#0c1e5b] dark:text-slate-100 border border-[#0c1e5b]/10 dark:border-slate-700 flex items-center justify-center">
                       <Layers class="w-4 h-4 stroke-[2]" />
                     </div>
-                    <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-[#0c1e5b]/5 dark:bg-white/10 text-[#0c1e5b] dark:text-white border border-[#0c1e5b]/10 dark:border-white/10">
+                    <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-[#0c1e5b]/5 dark:bg-slate-800 text-[#0c1e5b] dark:text-slate-100 border border-[#0c1e5b]/10 dark:border-slate-700">
                       {{ t('3D TPU LAB') }}
                     </span>
                   </div>
@@ -593,11 +593,11 @@
                   </p>
                 </div>
 
-                <div class="pt-2.5 sm:pt-3 border-t border-slate-100 dark:border-white/5 space-y-2">
+                <div class="pt-2.5 sm:pt-3 border-t border-slate-100 dark:border-slate-800 space-y-2">
                   <div class="flex flex-wrap gap-1.5 text-[10px] font-mono text-slate-500 dark:text-slate-400">
-                    <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-white/5">{{ t('GoPro Mounts') }}</span>
-                    <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-white/5">{{ t('Arm Guards') }}</span>
-                    <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-white/5">{{ t('Antenna Tubes') }}</span>
+                    <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">{{ t('GoPro Mounts') }}</span>
+                    <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">{{ t('Arm Guards') }}</span>
+                    <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">{{ t('Antenna Tubes') }}</span>
                   </div>
                   <router-link
                     to="/print"
@@ -612,7 +612,7 @@
           </div>
 
           <!-- BLOCK 2: WHAT CUSTOMERS NEED & WHY THEY NEED AERO STORE -->
-          <div class="space-y-4 pt-4 border-t border-slate-200 dark:border-white/10">
+          <div class="space-y-4 pt-4 border-t border-slate-200 dark:border-slate-800">
             <div>
               <h3 class="text-xs font-mono font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 {{ t('Why You Need Aero Store & How We Help You') }}
@@ -624,8 +624,8 @@
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-3.5">
               <!-- Reason 1: No Burnt Boards -->
-              <div class="p-3.5 sm:p-4 rounded-2xl bg-white/92 dark:bg-[#070e24]/90 border border-slate-200/90 dark:border-white/10 backdrop-blur-xl flex items-start gap-3 sm:gap-3.5 shadow-xs">
-                <div class="w-8 sm:w-9 h-8 sm:h-9 rounded-xl bg-[#0c1e5b]/5 dark:bg-white/10 text-[#0c1e5b] dark:text-white border border-[#0c1e5b]/10 dark:border-white/10 flex items-center justify-center shrink-0">
+              <div class="p-3.5 sm:p-4 rounded-2xl bg-white/90 dark:bg-slate-900/90 border border-slate-200/90 dark:border-slate-800 backdrop-blur-xl flex items-start gap-3 sm:gap-3.5 shadow-xs">
+                <div class="w-8 sm:w-9 h-8 sm:h-9 rounded-xl bg-[#0c1e5b]/5 dark:bg-slate-800 text-[#0c1e5b] dark:text-slate-100 border border-[#0c1e5b]/10 dark:border-slate-700 flex items-center justify-center shrink-0">
                   <ShieldCheck class="w-4.5 h-4.5 stroke-[2]" />
                 </div>
                 <div class="space-y-1">
@@ -639,8 +639,8 @@
               </div>
 
               <!-- Reason 2: Fast Local Cambodia Stock -->
-              <div class="p-3.5 sm:p-4 rounded-2xl bg-white/92 dark:bg-[#070e24]/90 border border-slate-200/90 dark:border-white/10 backdrop-blur-xl flex items-start gap-3 sm:gap-3.5 shadow-xs">
-                <div class="w-8 sm:w-9 h-8 sm:h-9 rounded-xl bg-[#0c1e5b]/5 dark:bg-white/10 text-[#0c1e5b] dark:text-white border border-[#0c1e5b]/10 dark:border-white/10 flex items-center justify-center shrink-0">
+              <div class="p-3.5 sm:p-4 rounded-2xl bg-white/90 dark:bg-slate-900/90 border border-slate-200/90 dark:border-slate-800 backdrop-blur-xl flex items-start gap-3 sm:gap-3.5 shadow-xs">
+                <div class="w-8 sm:w-9 h-8 sm:h-9 rounded-xl bg-[#0c1e5b]/5 dark:bg-slate-800 text-[#0c1e5b] dark:text-slate-100 border border-[#0c1e5b]/10 dark:border-slate-700 flex items-center justify-center shrink-0">
                   <Truck class="w-4.5 h-4.5 stroke-[2]" />
                 </div>
                 <div class="space-y-1">
@@ -654,8 +654,8 @@
               </div>
 
               <!-- Reason 3: Hands-on Lab Bench Support -->
-              <div class="p-3.5 sm:p-4 rounded-2xl bg-white/92 dark:bg-[#070e24]/90 border border-slate-200/90 dark:border-white/10 backdrop-blur-xl flex items-start gap-3.5 shadow-xs">
-                <div class="w-8 sm:w-9 h-8 sm:h-9 rounded-xl bg-[#0c1e5b]/5 dark:bg-white/10 text-[#0c1e5b] dark:text-white border border-[#0c1e5b]/10 dark:border-white/10 flex items-center justify-center shrink-0">
+              <div class="p-3.5 sm:p-4 rounded-2xl bg-white/90 dark:bg-slate-900/90 border border-slate-200/90 dark:border-slate-800 backdrop-blur-xl flex items-start gap-3.5 shadow-xs">
+                <div class="w-8 sm:w-9 h-8 sm:h-9 rounded-xl bg-[#0c1e5b]/5 dark:bg-slate-800 text-[#0c1e5b] dark:text-slate-100 border border-[#0c1e5b]/10 dark:border-slate-700 flex items-center justify-center shrink-0">
                   <Wrench class="w-4.5 h-4.5 stroke-[2]" />
                 </div>
                 <div class="space-y-1">
@@ -669,8 +669,8 @@
               </div>
 
               <!-- Reason 4: Correct Hardware Matching -->
-              <div class="p-3.5 sm:p-4 rounded-2xl bg-white/92 dark:bg-[#070e24]/90 border border-slate-200/90 dark:border-white/10 backdrop-blur-xl flex items-start gap-3.5 shadow-xs">
-                <div class="w-8 sm:w-9 h-8 sm:h-9 rounded-xl bg-[#0c1e5b]/5 dark:bg-white/10 text-[#0c1e5b] dark:text-white border border-[#0c1e5b]/10 dark:border-white/10 flex items-center justify-center shrink-0">
+              <div class="p-3.5 sm:p-4 rounded-2xl bg-white/90 dark:bg-slate-900/90 border border-slate-200/90 dark:border-slate-800 backdrop-blur-xl flex items-start gap-3.5 shadow-xs">
+                <div class="w-8 sm:w-9 h-8 sm:h-9 rounded-xl bg-[#0c1e5b]/5 dark:bg-slate-800 text-[#0c1e5b] dark:text-slate-100 border border-[#0c1e5b]/10 dark:border-slate-700 flex items-center justify-center shrink-0">
                   <Target class="w-4.5 h-4.5 stroke-[2]" />
                 </div>
                 <div class="space-y-1">
@@ -686,11 +686,11 @@
           </div>
 
           <!-- BLOCK 3: QUICK CONSULT & TA KHMAU LAB CONTACT -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 pt-4 border-t border-slate-200 dark:border-white/10">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 pt-4 border-t border-slate-200 dark:border-slate-800">
             <!-- Telegram Hub -->
-            <div class="p-4 sm:p-5 rounded-2xl bg-white/92 dark:bg-[#070e24]/90 border border-slate-200/90 dark:border-white/10 backdrop-blur-xl flex flex-col justify-between gap-3 shadow-xs">
+            <div class="p-4 sm:p-5 rounded-2xl bg-white/90 dark:bg-slate-900/90 border border-slate-200/90 dark:border-slate-800 backdrop-blur-xl flex flex-col justify-between gap-3 shadow-xs">
               <div class="space-y-1.5">
-                <div class="w-8 h-8 rounded-xl bg-[#0c1e5b]/5 dark:bg-white/10 text-[#0c1e5b] dark:text-white border border-[#0c1e5b]/10 dark:border-white/10 flex items-center justify-center mb-1">
+                <div class="w-8 h-8 rounded-xl bg-[#0c1e5b]/5 dark:bg-slate-800 text-[#0c1e5b] dark:text-slate-100 border border-[#0c1e5b]/10 dark:border-slate-700 flex items-center justify-center mb-1">
                   <MessageSquare class="w-4 h-4 stroke-[2]" />
                 </div>
                 <h3 class="text-sm font-bold text-[#0c1e5b] dark:text-white">
@@ -714,9 +714,9 @@
             </div>
 
             <!-- Ta Khmau Flight & Maker Lab -->
-            <div class="p-4 sm:p-5 rounded-2xl bg-white/92 dark:bg-[#070e24]/90 border border-slate-200/90 dark:border-white/10 backdrop-blur-xl flex flex-col justify-between gap-3 shadow-xs">
+            <div class="p-4 sm:p-5 rounded-2xl bg-white/90 dark:bg-slate-900/90 border border-slate-200/90 dark:border-slate-800 backdrop-blur-xl flex flex-col justify-between gap-3 shadow-xs">
               <div class="space-y-1.5">
-                <div class="w-8 h-8 rounded-xl bg-[#0c1e5b]/5 dark:bg-white/10 text-[#0c1e5b] dark:text-white border border-[#0c1e5b]/10 dark:border-white/10 flex items-center justify-center mb-1">
+                <div class="w-8 h-8 rounded-xl bg-[#0c1e5b]/5 dark:bg-slate-800 text-[#0c1e5b] dark:text-slate-100 border border-[#0c1e5b]/10 dark:border-slate-700 flex items-center justify-center mb-1">
                   <MapPin class="w-4 h-4 stroke-[2]" />
                 </div>
                 <h3 class="text-sm font-bold text-[#0c1e5b] dark:text-white">
@@ -743,7 +743,7 @@
       </section>
 
       <!-- MINIMALIST FOOTER -->
-      <footer ref="footerRef" class="py-8 sm:py-12 px-4 sm:px-6 text-center border-t border-slate-200 dark:border-white/10 max-w-[1240px] mx-auto flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 dark:text-slate-500 font-mono gap-4 relative z-20 bg-slate-50 dark:bg-slate-950">
+      <footer ref="footerRef" class="py-8 sm:py-12 px-4 sm:px-6 text-center border-t border-slate-200 dark:border-slate-800 max-w-[1240px] mx-auto flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 dark:text-slate-400 font-mono gap-4 relative z-20 bg-slate-50 dark:bg-slate-950">
         <div>© {{ currentYear }} {{ t('AERO FLY // CAMBODIA DRONE & HARDWARE COLLECTIVE') }}</div>
         <div class="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
           <a href="https://t.me/+9o8_5bVa20MyMzdl" target="_blank" rel="noopener noreferrer" class="hover:text-slate-800 dark:hover:text-white py-1 transition">Telegram</a>
@@ -776,11 +776,6 @@ import {
 } from 'lucide-vue-next'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
-import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js'
-import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
-import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js'
-import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js'
-import { GammaCorrectionShader } from 'three/examples/jsm/shaders/GammaCorrectionShader.js'
 import { useTheme } from '../composables/useTheme'
 import { useI18n } from '../i18n'
 
@@ -1068,17 +1063,14 @@ function toggleRSVP(session) {
 // ----------------------------------------------------
 let animationFrameId = null
 let renderer = null
-let composer = null
 let scene = null
 let camera = null
-let bloomPass = null
 let ambientLight = null
 let hemiLight = null
 let keyLight = null
 let fillLight = null
 let cyanRim = null
 let orangeRim = null
-let stars = null
 let droneModel = null
 const propellers = []
 let lastScrollPos = 0
@@ -1087,25 +1079,33 @@ let scrollSpeed = 0
 function applySceneTheme(dark) {
   if (!scene || !ambientLight) return
 
+  renderer.setClearColor(0x000000, 0)
+
   if (dark) {
-    renderer.setClearColor(0x04060f, 1)
     ambientLight.color.setHex(0xffffff)
-    ambientLight.intensity = 2.4
-    if (hemiLight) hemiLight.intensity = 0.8
+    ambientLight.intensity = 1.8
+    if (hemiLight) {
+      hemiLight.color.setHex(0xffffff)
+      hemiLight.groundColor.setHex(0x1e293b)
+      hemiLight.intensity = 1.2
+    }
     if (keyLight) {
-      keyLight.intensity = 3.2
+      keyLight.intensity = 2.4
       keyLight.color.setHex(0xffffff)
     }
-    if (fillLight) fillLight.intensity = 1.8
-    if (cyanRim) cyanRim.intensity = 4.0
-    if (orangeRim) orangeRim.intensity = 3.0
-    if (stars) stars.visible = true
-    if (bloomPass) {
-      bloomPass.enabled = true
-      bloomPass.strength = 0.35
+    if (fillLight) {
+      fillLight.intensity = 1.4
+      fillLight.color.setHex(0x93c5fd)
+    }
+    if (cyanRim) {
+      cyanRim.intensity = 1.6
+      cyanRim.color.setHex(0x38bdf8)
+    }
+    if (orangeRim) {
+      orangeRim.intensity = 1.3
+      orangeRim.color.setHex(0xff7700)
     }
   } else {
-    renderer.setClearColor(0x000000, 0)
     ambientLight.color.setHex(0xffffff)
     ambientLight.intensity = 2.2
     if (hemiLight) {
@@ -1121,11 +1121,13 @@ function applySceneTheme(dark) {
       fillLight.intensity = 1.8
       fillLight.color.setHex(0xdbeafe)
     }
-    if (cyanRim) cyanRim.intensity = 2.2
-    if (orangeRim) orangeRim.intensity = 2.2
-    if (stars) stars.visible = false
-    if (bloomPass) {
-      bloomPass.enabled = false
+    if (cyanRim) {
+      cyanRim.intensity = 2.2
+      cyanRim.color.setHex(0x0284c7)
+    }
+    if (orangeRim) {
+      orangeRim.intensity = 2.2
+      orangeRim.color.setHex(0xff6b00)
     }
   }
 }
@@ -1157,26 +1159,30 @@ onMounted(() => {
   camera.position.set(0, 0, 8)
   scene.add(camera)
 
-  ambientLight = new THREE.AmbientLight(0xffffff, isDark.value ? 2.4 : 2.2)
+  ambientLight = new THREE.AmbientLight(0xffffff, isDark.value ? 1.8 : 2.2)
   scene.add(ambientLight)
 
-  hemiLight = new THREE.HemisphereLight(0xffffff, 0xb0bec5, isDark.value ? 0.8 : 2.0)
+  hemiLight = new THREE.HemisphereLight(
+    0xffffff,
+    isDark.value ? 0x1e293b : 0xb0bec5,
+    isDark.value ? 1.2 : 2.0
+  )
   scene.add(hemiLight)
 
-  keyLight = new THREE.DirectionalLight(0xffffff, isDark.value ? 3.2 : 3.2)
+  keyLight = new THREE.DirectionalLight(0xffffff, isDark.value ? 2.4 : 3.2)
   keyLight.position.set(4, 9, 6)
   keyLight.castShadow = true
   scene.add(keyLight)
 
-  fillLight = new THREE.DirectionalLight(isDark.value ? 0x7da4ff : 0xdbeafe, isDark.value ? 1.8 : 1.8)
+  fillLight = new THREE.DirectionalLight(isDark.value ? 0x93c5fd : 0xdbeafe, isDark.value ? 1.4 : 1.8)
   fillLight.position.set(-5, -2, 4)
   scene.add(fillLight)
 
-  cyanRim = new THREE.PointLight(isDark.value ? 0x5df0a8 : 0x0284c7, isDark.value ? 4.0 : 2.2, 18)
+  cyanRim = new THREE.PointLight(isDark.value ? 0x38bdf8 : 0x0284c7, isDark.value ? 1.6 : 2.2, 18)
   cyanRim.position.set(-3, 2, 3)
   scene.add(cyanRim)
 
-  orangeRim = new THREE.PointLight(0xff6b00, isDark.value ? 3.0 : 2.2, 15)
+  orangeRim = new THREE.PointLight(isDark.value ? 0xff7700 : 0xff6b00, isDark.value ? 1.3 : 2.2, 15)
   orangeRim.position.set(3, -2, -2)
   scene.add(orangeRim)
 
@@ -1417,28 +1423,6 @@ onMounted(() => {
     }
   )
 
-  const starGeo = new THREE.BufferGeometry()
-  const starPos = []
-  for (let i = 0; i < 1400; i++) {
-    const u = Math.random()
-    const v = Math.random()
-    const theta = u * 2.0 * Math.PI
-    const phi = Math.acos(2.0 * v - 1.0)
-    const r = 85.0
-    starPos.push(r * Math.sin(phi) * Math.cos(theta), r * Math.sin(phi) * Math.sin(theta), r * Math.cos(phi))
-  }
-  starGeo.setAttribute('position', new THREE.Float32BufferAttribute(starPos, 3))
-  const starMat = new THREE.PointsMaterial({ color: 0xcfe0ff, size: 1.6, transparent: true, opacity: 0.75 })
-  stars = new THREE.Points(starGeo, starMat)
-  stars.visible = isDark.value
-  scene.add(stars)
-
-  composer = new EffectComposer(renderer)
-  composer.addPass(new RenderPass(scene, camera))
-  bloomPass = new UnrealBloomPass(new THREE.Vector2(width, height), 0.35, 0.4, 0.1)
-  bloomPass.enabled = isDark.value
-  composer.addPass(bloomPass)
-  composer.addPass(new ShaderPass(GammaCorrectionShader))
 
   const DEG90 = Math.PI * 0.5
 
@@ -1711,11 +1695,7 @@ onMounted(() => {
     const isAtFooter = footerExitProgress >= 0.65 || curP >= 0.89
     worldGroup.visible = !isAtFooter
 
-    if (!isDark.value) {
-      renderer.render(scene, camera)
-    } else {
-      composer.render()
-    }
+    renderer.render(scene, camera)
   }
 
   animate()
@@ -1726,7 +1706,6 @@ onMounted(() => {
     camera.aspect = width / height
     camera.updateProjectionMatrix()
     renderer.setSize(width, height)
-    composer.setSize(width, height)
     updateAllSnaps()
   }
 
