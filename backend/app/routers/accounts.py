@@ -231,9 +231,10 @@ def _public_user(user: dict[str, Any]) -> dict[str, Any]:
 
 
 def _start_user_session(request: Request, user: dict[str, str], method: str = "Email / Password") -> None:
-    request.session.clear()
     request.session["role"] = "user"
     request.session["user_id"] = user["id"]
+    request.session["email"] = user.get("email", "").strip().casefold()
+    request.session["user_name"] = user.get("full_name") or user.get("name") or ""
     record_user_login(user["id"])
     try:
         forwarded = request.headers.get("x-forwarded-for")
@@ -479,35 +480,46 @@ def complete_password_reset(payload: PasswordResetComplete):
 
 
 @router.get("/session")
-def get_session(request: Request, email: Optional[str] = None):
+def get_session(request: Request, email: Optional[str] = None, user_id: Optional[str] = None):
     user = None
-    if request.session.get("role") == "user":
-        user_id = request.session.get("user_id", "")
-        if user_id:
-            user = find_user_by_id(user_id)
 
-    # Fallback to verified user email if session cookie was cleared or lost
+    # 1. Check existing session cookie
+    sess_uid = request.session.get("user_id", "")
+    sess_email = request.session.get("email", "")
+    if sess_uid:
+        user = find_user_by_id(sess_uid)
+    if not user and sess_email:
+        user = find_user_by_email(sess_email)
+
+    # 2. Fallback to client query params if cookie was cleared or lost
     if not user and email:
         cleaned_email = email.strip().casefold()
         if cleaned_email:
             matched = find_user_by_email(cleaned_email)
             if matched and matched.get("is_verified", 1) == 1:
                 user = matched
-                _start_user_session(request, user)
+    if not user and user_id:
+        matched = find_user_by_id(user_id.strip())
+        if matched and matched.get("is_verified", 1) == 1:
+            user = matched
 
-    if not user:
-        request.session.clear()
-        return {"authenticated": False, "user": None}
-    return {"authenticated": True, "user": _public_user(user)}
+    if user:
+        _start_user_session(request, user)
+        return {"authenticated": True, "user": _public_user(user)}
+
+    # Never clear session on a simple GET check!
+    return {"authenticated": False, "user": None}
 
 
 @router.put("/profile")
 def update_profile(payload: AccountProfileUpdate, request: Request):
     user = None
-    if request.session.get("role") == "user":
-        user_id = request.session.get("user_id", "")
-        if user_id:
-            user = find_user_by_id(user_id)
+    sess_uid = request.session.get("user_id", "")
+    sess_email = request.session.get("email", "")
+    if sess_uid:
+        user = find_user_by_id(sess_uid)
+    if not user and sess_email:
+        user = find_user_by_email(sess_email)
 
     # Fallback to verified user email if session cookie was cleared or lost
     if not user and payload.email:
@@ -519,7 +531,6 @@ def update_profile(payload: AccountProfileUpdate, request: Request):
                 _start_user_session(request, user)
 
     if not user:
-        request.session.clear()
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Sign-in required.")
 
     user_id = user["id"]
