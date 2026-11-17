@@ -1885,7 +1885,9 @@ onMounted(async () => {
       return null
     }
     const localCached = findCached()
+    let hasLocalProfile = false
     if (localCached) {
+      hasLocalProfile = true
       copyProfile(profile, localCached)
       copyProfile(draft, localCached)
     }
@@ -1895,10 +1897,13 @@ onMounted(async () => {
   try {
     const { data } = await accountService.getSession()
     if (!data.authenticated) {
-      await router.replace({ path: '/account', query: { mode: 'signin' } })
-      return
+      if (!hasLocalProfile) {
+        await router.replace({ path: '/account', query: { mode: 'signin' } })
+        return
+      }
+    } else {
+      account.value = data.user
     }
-    account.value = data.user
 
     const pendingEnrollRedirect = sessionStorage.getItem('aerobyte_enroll_redirect')
     if (pendingEnrollRedirect && pendingEnrollRedirect.startsWith('/')) {
@@ -2091,6 +2096,7 @@ async function confirmLogout() {
   }
 
   try {
+    localStorage.removeItem('aerobyte_user_session')
     localStorage.removeItem('aerobyte-profile-current')
     if (storageKey.value) localStorage.removeItem(storageKey.value)
     if (storageEmailKey.value) localStorage.removeItem(storageEmailKey.value)

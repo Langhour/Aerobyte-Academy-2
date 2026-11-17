@@ -1276,48 +1276,48 @@ function handleKeydown(event) {
 
 
 async function updateProfileName() {
-
+  // 1. Immediately hydrate from localStorage for instant persistent UI without flicker
   try {
-
-    const { data } = await accountService.getSession()
-
-    profileName.value = data.authenticated ? data.user.name : ''
-
-    profileEmail.value = data.authenticated ? data.user.email : ''
-
-    let avatar = data.authenticated ? (data.user.avatar_url || '') : ''
-
-    if (data.authenticated && !avatar) {
-      try {
-        const emailKey = data.user.email ? `aerobyte-profile:${data.user.email.toLowerCase()}` : null
-        const raw = localStorage.getItem('aerobyte-profile-current') ||
-                    (emailKey && localStorage.getItem(emailKey)) ||
-                    localStorage.getItem(`aerobyte-profile:${data.user.id}`) ||
-                    localStorage.getItem('aerobyte-profile')
-        const saved = JSON.parse(raw || '{}')
-        if (saved.avatarUrl) avatar = saved.avatarUrl
-      } catch (e) {
-        // ignore
+    const raw = localStorage.getItem('aerobyte_user_session') || localStorage.getItem('aerobyte-profile-current')
+    if (raw) {
+      const saved = JSON.parse(raw)
+      const name = saved.name || saved.fullName || ''
+      if (name) {
+        profileName.value = name
+        profileEmail.value = saved.email || ''
+        profileAvatar.value = saved.avatar_url || saved.avatarUrl || ''
       }
     }
+  } catch (_) {}
 
-    profileAvatar.value = avatar
-
-    avatarLoadFailed.value = false
-
-  } catch (error) {
-
-    console.warn('Could not load the signed-in account for navigation:', error)
-
-    // Do not clear immediately on temporary network error if already loaded
-    if (!profileName.value) {
-      profileName.value = ''
-      profileEmail.value = ''
-      profileAvatar.value = ''
+  // 2. Fetch authenticated session from server to verify and refresh
+  try {
+    const { data } = await accountService.getSession()
+    if (data.authenticated && data.user) {
+      profileName.value = data.user.name || data.user.full_name || ''
+      profileEmail.value = data.user.email || ''
+      let avatar = data.user.avatar_url || ''
+      if (!avatar) {
+        try {
+          const raw = localStorage.getItem('aerobyte_user_session') || localStorage.getItem('aerobyte-profile-current')
+          const saved = JSON.parse(raw || '{}')
+          if (saved.avatarUrl || saved.avatar_url) avatar = saved.avatarUrl || saved.avatar_url
+        } catch (_) {}
+      }
+      profileAvatar.value = avatar
+      avatarLoadFailed.value = false
+    } else {
+      // Only clear if localStorage has no session (i.e. user explicitly clicked Log Out)
+      const hasLocal = localStorage.getItem('aerobyte_user_session') || localStorage.getItem('aerobyte-profile-current')
+      if (!hasLocal) {
+        profileName.value = ''
+        profileEmail.value = ''
+        profileAvatar.value = ''
+      }
     }
-
+  } catch (error) {
+    console.warn('Could not load the signed-in account for navigation:', error)
   }
-
 }
 
 

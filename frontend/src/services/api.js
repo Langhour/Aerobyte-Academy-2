@@ -69,14 +69,22 @@ export const accountService = {
   },
   getSession(email = null) {
     let cleanEmail = email
-    if (!cleanEmail) {
-      try {
-        const cached = JSON.parse(localStorage.getItem('aerobyte-profile-current') || '{}')
-        cleanEmail = cached.email || ''
-      } catch (_) {}
-    }
+    let cleanId = null
+    try {
+      const sess = JSON.parse(localStorage.getItem('aerobyte_user_session') || '{}')
+      const profile = JSON.parse(localStorage.getItem('aerobyte-profile-current') || '{}')
+      if (!cleanEmail) {
+        cleanEmail = sess.email || profile.email || ''
+      }
+      cleanId = sess.id || profile.id || null
+    } catch (_) {}
+
+    const params = {}
+    if (cleanEmail) params.email = cleanEmail
+    if (cleanId) params.user_id = cleanId
+
     return apiClient.get('/accounts/session', {
-      params: cleanEmail ? { email: cleanEmail } : undefined,
+      params: Object.keys(params).length > 0 ? params : undefined,
     })
   },
   getUserEnrollments(params = {}) {

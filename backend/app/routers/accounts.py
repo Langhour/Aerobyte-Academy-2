@@ -577,7 +577,6 @@ def update_profile(payload: AccountProfileUpdate, request: Request):
 
     user = find_user_by_id(user_id)
     if user is None:
-        request.session.clear()
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Sign-in required.")
     return {"authenticated": True, "user": _public_user(user)}
 
@@ -788,6 +787,8 @@ def get_user_print_orders_endpoint(
 
 @router.post("/logout", status_code=status.HTTP_204_NO_CONTENT)
 def logout(request: Request):
-    if request.session.get("role") == "user":
-        request.session.clear()
+    request.session.pop("role", None)
+    request.session.pop("user_id", None)
+    request.session.pop("email", None)
+    request.session.pop("user_name", None)
     return Response(status_code=status.HTTP_204_NO_CONTENT)

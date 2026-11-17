@@ -653,12 +653,45 @@ function startResendCooldown(seconds = 30) {
   }, 1000)
 }
 
+function persistLoggedInUser(user) {
+  if (!user) return
+  try {
+    const sessionData = {
+      id: user.id,
+      email: user.email,
+      name: user.name || user.full_name || '',
+      role: user.role || 'user',
+      avatar_url: user.avatar_url || '',
+    }
+    const profileData = {
+      id: user.id,
+      email: user.email,
+      fullName: user.name || user.full_name || '',
+      avatarUrl: user.avatar_url || '',
+      phone: user.phone || '',
+      telegram: user.telegram || '',
+    }
+    localStorage.setItem('aerobyte_user_session', JSON.stringify(sessionData))
+    localStorage.setItem('aerobyte-profile-current', JSON.stringify(profileData))
+    localStorage.setItem('aerobyte-profile', JSON.stringify(profileData))
+    if (user.email) {
+      localStorage.setItem(`aerobyte-profile:${user.email.toLowerCase()}`, JSON.stringify(profileData))
+    }
+    if (user.id) {
+      localStorage.setItem(`aerobyte-profile:${user.id}`, JSON.stringify(profileData))
+    }
+  } catch (_) {}
+}
+
 async function verifyViaToken(token) {
   submitting.value = true
   message.value = ''
   isError.value = false
   try {
-    await accountService.verifyEmailToken(token)
+    const res = await accountService.verifyEmailToken(token)
+    if (res?.data?.user) {
+      persistLoggedInUser(res.data.user)
+    }
     window.dispatchEvent(new Event('aerobyte-auth-updated'))
     const redirectUrl = (typeof route.query.redirect === 'string' && route.query.redirect.startsWith('/'))
       ? route.query.redirect
@@ -685,10 +718,13 @@ async function submitVerifyCode() {
   message.value = ''
   isError.value = false
   try {
-    await accountService.verifyEmail({
+    const res = await accountService.verifyEmail({
       email: verifyEmail.value,
       code,
     })
+    if (res?.data?.user) {
+      persistLoggedInUser(res.data.user)
+    }
     window.dispatchEvent(new Event('aerobyte-auth-updated'))
     const redirectUrl = (typeof route.query.redirect === 'string' && route.query.redirect.startsWith('/'))
       ? route.query.redirect
@@ -793,7 +829,10 @@ async function submitAccountForm() {
       if (![401, 503].includes(error.response?.status)) throw error
     }
 
-    await accountService.login({ email: form.email, password: form.password })
+    const loginRes = await accountService.login({ email: form.email, password: form.password })
+    if (loginRes?.data?.user) {
+      persistLoggedInUser(loginRes.data.user)
+    }
     window.dispatchEvent(new Event('aerobyte-auth-updated'))
     form.password = ''
     const redirectUrl = (typeof route.query.redirect === 'string' && route.query.redirect.startsWith('/'))
@@ -914,6 +953,9 @@ onMounted(async () => {
       const res = await apiClient.post('/auth/google/handoff', {
         token: route.query.handoff_token,
       })
+      if (res?.data?.user) {
+        persistLoggedInUser(res.data.user)
+      }
       window.dispatchEvent(new Event('aerobyte-auth-updated'))
       const savedRedirect = sessionStorage.getItem('aerobyte_enroll_redirect')
       sessionStorage.removeItem('aerobyte_enroll_redirect')

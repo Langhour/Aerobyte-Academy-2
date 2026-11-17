@@ -90,9 +90,18 @@ router.afterEach((to) => {
 
 router.beforeEach(async (to, from, next) => {
   if (to.name === 'CourseEnrollment') {
+    let hasLocalSession = false
+    try {
+      const sess = localStorage.getItem('aerobyte_user_session') || localStorage.getItem('aerobyte-profile-current')
+      if (sess) {
+        const parsed = JSON.parse(sess)
+        if (parsed.email || parsed.id) hasLocalSession = true
+      }
+    } catch (_) {}
+
     try {
       const { data } = await accountService.getSession()
-      if (!data?.authenticated) {
+      if (!data?.authenticated && !hasLocalSession) {
         return next({
           path: '/account',
           query: {
@@ -102,13 +111,15 @@ router.beforeEach(async (to, from, next) => {
         })
       }
     } catch {
-      return next({
-        path: '/account',
-        query: {
-          mode: 'register',
-          redirect: to.fullPath,
-        },
-      })
+      if (!hasLocalSession) {
+        return next({
+          path: '/account',
+          query: {
+            mode: 'register',
+            redirect: to.fullPath,
+          },
+        })
+      }
     }
   }
   next()

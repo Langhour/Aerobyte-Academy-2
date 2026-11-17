@@ -20,6 +20,12 @@ DATABASE_PATH = Path(
     )
 )
 DATABASE_URL = os.getenv("DATABASE_URL", "").strip()
+USERS_BACKUP_PATH = Path(
+    os.getenv(
+        "AEROBYTE_USERS_BACKUP",
+        str(Path(__file__).resolve().parents[1] / "data" / "persistent_users_backup.json"),
+    )
+)
 
 
 class _PostgresConnection:
@@ -520,12 +526,45 @@ def initialize_content_store() -> None:
             "INSERT OR IGNORE INTO coupons (code, content_json) VALUES (?, ?)",
             [(coupon.code, coupon.model_dump_json()) for coupon in default_coupons],
         )
+        _restore_users_from_disk(connection)
+
+
+def _backup_users_to_disk() -> None:
+    try:
+        with _connect() as connection:
+            rows = connection.execute("SELECT * FROM users").fetchall()
+            users = [dict(r) for r in rows]
+            USERS_BACKUP_PATH.parent.mkdir(parents=True, exist_ok=True)
+            with open(USERS_BACKUP_PATH, "w", encoding="utf-8") as f:
+                json.dump(users, f, indent=2)
+    except Exception:
+        pass
+
+
+def _restore_users_from_disk(connection) -> None:
+    try:
+        if not USERS_BACKUP_PATH.exists():
+            return
+        with open(USERS_BACKUP_PATH, "r", encoding="utf-8") as f:
+            users = json.load(f)
+        for u in users:
+            cols = list(u.keys())
+            placeholders = ", ".join(["?"] * len(cols))
+            col_names = ", ".join(cols)
+            vals = [u[c] for c in cols]
+            connection.execute(
+                f"INSERT OR IGNORE INTO users ({col_names}) VALUES ({placeholders})",
+                vals,
+            )
+    except Exception:
+        pass
 
 
 def mark_user_verified(user_id: str) -> None:
     with _connect() as connection:
         connection.execute("UPDATE users SET is_verified = 1 WHERE id = ?", (user_id,))
         connection.execute("DELETE FROM email_verification_tokens WHERE user_id = ?", (user_id,))
+    _backup_users_to_disk()
 
 
 def create_user(
@@ -542,6 +581,7 @@ def create_user(
             "VALUES (?, ?, ?, ?, ?, ?)",
             (user_id, email.strip().casefold(), full_name.strip(), password_hash, created_at, is_verified),
         )
+    _backup_users_to_disk()
 
 
 def find_user_by_email(email: str) -> Optional[dict[str, Any]]:
@@ -591,6 +631,7 @@ def create_google_user(
                 google_sub,
             ),
         )
+    _backup_users_to_disk()
 
 
 def link_google_user(user_id: str, google_sub: str) -> None:
@@ -740,6 +781,7 @@ def update_user_profile(
             f"UPDATE users SET {', '.join(updates)} WHERE id = ?",
             tuple(params),
         )
+    _backup_users_to_disk()
 
 
 def update_user_avatar(user_id: str, avatar_url: str) -> None:
@@ -748,6 +790,7 @@ def update_user_avatar(user_id: str, avatar_url: str) -> None:
             "UPDATE users SET avatar_url = ?, updated_at = ? WHERE id = ?",
             (avatar_url.strip(), datetime.now(timezone.utc).isoformat(), user_id),
         )
+    _backup_users_to_disk()
 
 
 def create_password_reset_token(token_hash: str, user_id: str, created_at: str, expires_at: str) -> None:
