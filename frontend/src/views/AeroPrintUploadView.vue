@@ -423,12 +423,8 @@
             </div>
           </div>
 
-          <!-- Title & Lab Queue Badge -->
+          <!-- Title -->
           <div class="space-y-1.5">
-            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60">
-              <span class="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-              {{ t('3D Print Quote Request Received') }}
-            </div>
             <h3 class="text-xl sm:text-2xl font-black text-navy-900 dark:text-white tracking-tight">
               {{ t('Request Submitted!') }}
             </h3>
@@ -524,25 +520,16 @@
               <ExternalLink class="w-3.5 h-3.5 opacity-70" />
             </a>
 
-            <!-- Secondary Actions: Track in My Orders + Close -->
-            <div class="flex items-center gap-2.5">
-              <button
-                type="button"
-                @click="openOrderModal = false; router.push({ path: '/profile', query: { section: 'orders' } })"
-                class="flex-1 py-2.5 px-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold text-xs transition flex items-center justify-center gap-1.5 shadow-2xs cursor-pointer"
-              >
-                <Printer class="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
-                <span>{{ t('Track in My Orders') }}</span>
-                <ArrowRight class="w-3.5 h-3.5 text-slate-400" />
-              </button>
-              <button
-                type="button"
-                @click="openOrderModal = false"
-                class="py-2.5 px-5 rounded-xl border border-slate-200 dark:border-slate-700 bg-transparent hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 font-semibold text-xs transition cursor-pointer"
-              >
-                {{ t('Close') }}
-              </button>
-            </div>
+            <!-- Secondary Action: Track in My Orders -->
+            <button
+              type="button"
+              @click="openOrderModal = false; router.push({ path: '/profile', query: { section: 'orders' } })"
+              class="w-full py-2.5 px-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold text-xs transition flex items-center justify-center gap-1.5 shadow-2xs cursor-pointer"
+            >
+              <Printer class="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
+              <span>{{ t('Track in My Orders') }}</span>
+              <ArrowRight class="w-3.5 h-3.5 text-slate-400" />
+            </button>
           </div>
         </div>
       </div>
