@@ -1478,6 +1478,13 @@ export const khmerTranslations = {
   "Quoted": "បានផ្តល់តម្លៃ",
   "In Production": "កំពុងផលិត",
   "Ready for Pickup": "រួចរាល់សម្រាប់មកយក",
+  "3D Print Quote Request Received": "បានទទួលសំណើសុំតម្លៃបោះពុម្ព 3D",
+  "Request Submitted!": "បានដាក់ស្នើសំណើរួចរាល់!",
+  "Order Reference": "លេខយោងការកម្ម៉ង់",
+  "Our lab team will inspect your 3D models and contact you on Telegram with filament specs and price quote.": "ក្រុមការងារ Lab របស់យើងនឹងត្រួតពិនិត្យគំរូ 3D របស់អ្នក ហើយទាក់ទងអ្នកតាម Telegram ជាមួយនឹងព័ត៌មានលម្អិតអំពីសម្ភារៈ និងតម្លៃ។",
+  "Our engineering lab will inspect your CAD geometry and message you on Telegram with exact filament pricing.": "មន្ទីរពិសោធន៍របស់យើងនឹងពិនិត្យមើលរចនាសម្ព័ន្ធ CAD របស់អ្នក ហើយផ្ញើសារទៅកាន់ Telegram របស់អ្នកជាមួយនឹងតម្លៃពិតប្រាកដ។",
+  "Telegram QR Code Attached": "បានភ្ជាប់ QR Code តេឡេក្រាម",
+  "Customer": "អតិថិជន",
 
 
   "SHOP ALL": "ទិញទាំងអស់",

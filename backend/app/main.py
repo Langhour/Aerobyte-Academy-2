@@ -80,13 +80,20 @@ if cookie_samesite not in ("lax", "strict", "none"):
 DEFAULT_SESSION_SECRET = "aerobyte-academy-session-secret-persistent-2025"
 session_secret = os.getenv("ADMIN_SESSION_SECRET", "").strip() or DEFAULT_SESSION_SECRET
 
+# Automatically detect HTTPS on Render or production environment
+is_https = (
+    os.getenv("RENDER") is not None
+    or os.getenv("ADMIN_COOKIE_SECURE", "false").casefold() == "true"
+    or os.getenv("ENVIRONMENT", "").casefold() == "production"
+)
+
 app.add_middleware(
     SessionMiddleware,
     secret_key=session_secret,
-    session_cookie="aerobyte_admin",
-    max_age=365 * 24 * 60 * 60,  # 1 year session lifetime for persistent sign-in
+    session_cookie="aerobyte_session",
+    max_age=365 * 24 * 60 * 60,  # 1 full year session lifetime for persistent sign-in
     same_site=cookie_samesite,
-    https_only=os.getenv("ADMIN_COOKIE_SECURE", "false").casefold() == "true",
+    https_only=is_https,
 )
 
 app.include_router(courses.router)

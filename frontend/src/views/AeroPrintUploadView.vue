@@ -392,85 +392,157 @@
       </div>
     </main>
 
-    <!-- Request Received Modal -->
+    <!-- Request Received Modal (Redesigned like Official Payment Success / Receipt Card) -->
     <div
       v-if="openOrderModal"
-      class="fixed inset-0 z-50 flex items-center justify-center bg-black/65 backdrop-blur-sm p-4"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 backdrop-blur-md p-3 sm:p-5 overflow-y-auto"
+      @click.self="openOrderModal = false"
     >
-      <div class="relative w-full max-w-lg rounded-[28px] bg-white dark:bg-[#111112] p-6 sm:p-7 shadow-2xl border border-black/[0.08] dark:border-white/10">
-        <div class="flex items-center justify-between pb-4 border-b border-black/[0.06] dark:border-white/10">
-          <div>
-            <h3 class="text-lg font-bold text-[#111112] dark:text-white">{{ t('Submit 3D Print Request') }}</h3>
-            <p class="text-xs text-[#696969] dark:text-white/55 mt-0.5">{{ t('Aero Print Lab Queue') }}</p>
-          </div>
-          <button
-            type="button"
-            @click="openOrderModal = false"
-            class="h-8 w-8 rounded-full flex items-center justify-center text-[#696969] hover:text-[#111112] dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/10 font-bold cursor-pointer"
-          >
-            ✕
-          </button>
-        </div>
+      <div
+        class="relative w-full max-w-lg rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-2xl overflow-hidden transition-all duration-300 my-auto"
+      >
+        <!-- Top Accent Gradient Stripe (Payment/Academy Signature) -->
+        <div class="h-2 w-full bg-gradient-to-r from-emerald-500 via-navy-800 to-indigo-600"></div>
 
-        <div class="py-8 text-center space-y-3">
-          <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 text-2xl font-bold">
-            ✓
-          </div>
-          <h4 class="text-xl font-bold text-[#111112] dark:text-white">{{ t('Quote Request Received!') }}</h4>
-          <p class="text-xs text-[#575757] dark:text-white/65 max-w-sm mx-auto leading-relaxed">
-            {{ t('Our admin has received your CAD files and will text you directly on Telegram with your price quote.') }}
-          </p>
+        <!-- Close Button Top Right -->
+        <button
+          type="button"
+          @click="openOrderModal = false"
+          class="absolute top-4 right-4 h-8 w-8 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 flex items-center justify-center text-slate-500 dark:text-slate-400 transition cursor-pointer z-10"
+          :title="t('Close')"
+        >
+          <X class="w-4 h-4" />
+        </button>
 
-          <div class="rounded-2xl bg-[#FAFAFA] dark:bg-white/5 border border-black/[0.06] dark:border-white/10 p-3.5 text-xs text-left text-[#575757] dark:text-white/75 space-y-2 max-w-sm mx-auto mt-4">
-            <div v-if="submittedOrder?.order_number" class="flex justify-between items-center bg-navy-900/5 dark:bg-blue-400/10 px-2.5 py-1.5 rounded-xl border border-navy-900/10 dark:border-blue-400/20">
-              <span class="font-bold text-navy-900 dark:text-blue-300">{{ t('Order ID:') }}</span>
-              <span class="font-mono font-black text-xs text-navy-900 dark:text-blue-300 bg-white dark:bg-slate-800 px-2 py-0.5 rounded shadow-xs">{{ submittedOrder.order_number }}</span>
-            </div>
-            <div class="flex justify-between">
-              <span>{{ t('Contact:') }}</span>
-              <span class="font-bold text-[#111112] dark:text-white">{{ orderForm.telegram || (qrPreviewUrl ? t('QR Attached') : t('Not provided yet')) }}</span>
-            </div>
-            <div v-if="orderForm.name" class="flex justify-between">
-              <span>{{ t('Name:') }}</span>
-              <span class="font-bold text-[#111112] dark:text-white">{{ orderForm.name }}</span>
-            </div>
-            <div class="flex justify-between">
-              <span>{{ t('Files Submitted:') }}</span>
-              <span class="font-bold text-[#111112] dark:text-white">{{ files.length }} {{ files.length === 1 ? t('file') : t('files') }}</span>
-            </div>
-            <div v-if="qrPreviewUrl" class="flex justify-between items-center text-emerald-600 font-bold">
-              <span>{{ t('Telegram QR Code:') }}</span>
-              <span>{{ t('✓ Attached for Scan') }}</span>
+        <div class="p-6 sm:p-8 text-center">
+          <!-- Animated Radiant Success Checkmark Hero -->
+          <div class="relative mx-auto mt-2 mb-4 flex h-16 w-16 items-center justify-center">
+            <span class="absolute inset-0 rounded-full bg-emerald-500/20 dark:bg-emerald-500/30 animate-ping opacity-60"></span>
+            <div class="relative flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-600 text-white shadow-lg shadow-emerald-500/25">
+              <CheckCircle2 class="h-9 w-9 stroke-[2.5]" />
             </div>
           </div>
 
-          <div class="pt-4 flex flex-col sm:flex-row gap-2.5 justify-center">
+          <!-- Title & Lab Queue Badge -->
+          <div class="space-y-1.5">
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60">
+              <span class="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+              {{ t('3D Print Quote Request Received') }}
+            </div>
+            <h3 class="text-xl sm:text-2xl font-black text-navy-900 dark:text-white tracking-tight">
+              {{ t('Request Submitted!') }}
+            </h3>
+            <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-sm mx-auto leading-relaxed">
+              {{ t('Our lab team will inspect your 3D models and contact you on Telegram with filament specs and price quote.') }}
+            </p>
+          </div>
+
+          <!-- Official Invoice/Receipt Card Style Breakdown -->
+          <div class="mt-5 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40 p-4 sm:p-5 text-left text-xs space-y-3">
+            <!-- Header Row: Order Reference & Date -->
+            <div class="flex items-center justify-between border-b border-slate-200/80 dark:border-slate-700/80 pb-3">
+              <div>
+                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 block">
+                  {{ t('Order Reference') }}
+                </span>
+                <span class="text-sm font-mono font-black text-navy-900 dark:text-indigo-300">
+                  #{{ submittedOrder?.order_number || 'PR-1025' }}
+                </span>
+              </div>
+              <div class="text-right">
+                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 block">
+                  {{ t('Date') }}
+                </span>
+                <span class="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                  {{ formatCambodiaTime(submittedOrder?.created_at || new Date()) }}
+                </span>
+              </div>
+            </div>
+
+            <!-- CAD Files Line Items -->
+            <div class="space-y-2">
+              <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 flex items-center gap-1.5">
+                <Box class="w-3.5 h-3.5 text-navy-800 dark:text-indigo-400" />
+                <span>{{ t('Submitted CAD Models') }} ({{ files.length }})</span>
+              </div>
+              <div class="divide-y divide-slate-200/60 dark:divide-slate-700/50 rounded-xl bg-white dark:bg-slate-800/80 border border-slate-200/70 dark:border-slate-700/60 p-2 sm:p-2.5 max-h-36 overflow-y-auto">
+                <div
+                  v-for="(file, idx) in files"
+                  :key="file.id || idx"
+                  class="flex items-center justify-between gap-3 py-1.5 first:pt-0 last:pb-0"
+                >
+                  <div class="flex items-center gap-2 min-w-0">
+                    <div class="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-navy-50 dark:bg-slate-700 text-navy-900 dark:text-indigo-300 text-[11px]">
+                      <Box class="w-3.5 h-3.5" />
+                    </div>
+                    <span class="font-bold text-slate-800 dark:text-slate-200 truncate max-w-[200px] text-xs">
+                      {{ file.name }}
+                    </span>
+                  </div>
+                  <span class="text-[11px] font-medium text-slate-400 shrink-0">
+                    {{ file.sizeStr }}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Contact & Customer Information -->
+            <div class="pt-2 border-t border-slate-200/80 dark:border-slate-700/80 flex flex-wrap items-center justify-between gap-2 text-xs">
+              <div>
+                <span class="text-slate-500 dark:text-slate-400">{{ t('Contact') }}:</span>
+                <strong class="ml-1 text-slate-900 dark:text-white">{{ orderForm.telegram || (qrPreviewUrl ? t('QR Attached') : t('Not provided')) }}</strong>
+              </div>
+              <div v-if="orderForm.name">
+                <span class="text-slate-500 dark:text-slate-400">{{ t('Customer') }}:</span>
+                <strong class="ml-1 text-slate-900 dark:text-white">{{ orderForm.name }}</strong>
+              </div>
+              <div v-if="qrPreviewUrl" class="text-emerald-600 dark:text-emerald-400 font-bold flex items-center gap-1 text-[11px]">
+                <span>✓ {{ t('Telegram QR Code Attached') }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Lab Inspection Callout Box (Like Scan to Pay Verification Box) -->
+          <div class="mt-4 rounded-xl bg-blue-50/80 dark:bg-indigo-950/40 border border-blue-100 dark:border-indigo-900/50 p-3 flex items-start gap-2.5 text-xs text-blue-900 dark:text-indigo-200 text-left">
+            <ShieldCheck class="w-4 h-4 text-blue-600 dark:text-indigo-400 shrink-0 mt-0.5" />
+            <p class="leading-relaxed text-[11px]">
+              {{ t('Our engineering lab will inspect your CAD geometry and message you on Telegram with exact filament pricing.') }}
+            </p>
+          </div>
+
+          <!-- Action Buttons Hierarchy -->
+          <div class="mt-6 space-y-2.5">
+            <!-- Hero Telegram Direct Action -->
             <a
               :href="telegramDirectLink"
               target="_blank"
               rel="noopener"
-              class="rounded-full bg-navy-900 hover:bg-navy-800 dark:bg-navy-600 dark:hover:bg-navy-800 text-white font-bold px-6 py-2.5 text-xs shadow-md transition flex items-center justify-center gap-2"
+              class="w-full py-3 sm:py-3.5 px-5 rounded-xl bg-navy-900 hover:bg-navy-800 dark:bg-indigo-600 dark:hover:bg-indigo-500 text-white font-bold text-xs sm:text-sm shadow-md transition flex items-center justify-center gap-2 cursor-pointer"
             >
-              <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.19-.08-.05-.19-.02-.27 0-.12.03-1.99 1.27-5.62 3.72-.53.36-1.01.54-1.44.53-.47-.01-1.38-.27-2.05-.49-.83-.27-1.49-.42-1.43-.88.03-.24.37-.49 1.02-.74 4-1.74 6.68-2.88 8.03-3.44 3.82-1.59 4.62-1.87 5.14-1.88.11 0 .37.03.54.17.14.12.18.28.2.45-.02.07-.02.21-.04.35z"/>
-              </svg>
+              <Send class="w-4 h-4" />
               <span>{{ t('Message @aerobyte168 on Telegram') }}</span>
+              <ExternalLink class="w-3.5 h-3.5 opacity-70" />
             </a>
-            <button
-              type="button"
-              @click="openOrderModal = false; router.push({ path: '/profile', query: { section: 'orders' } })"
-              class="rounded-full border border-black/10 dark:border-white/15 bg-[#FAFAFA] dark:bg-white/5 hover:bg-black/5 text-[#111112] dark:text-white font-bold px-6 py-2.5 text-xs transition cursor-pointer flex items-center justify-center gap-1.5"
-            >
-              <span>{{ t('Track in My Orders') }}</span>
-              <span>→</span>
-            </button>
-            <button
-              type="button"
-              @click="openOrderModal = false"
-              class="rounded-full border border-black/10 dark:border-white/15 bg-transparent hover:bg-black/5 text-[#696969] dark:text-white/60 font-semibold px-4 py-2.5 text-xs transition cursor-pointer"
-            >
-              {{ t('Done') }}
-            </button>
+
+            <!-- Secondary Actions: Track in My Orders + Close -->
+            <div class="flex items-center gap-2.5">
+              <button
+                type="button"
+                @click="openOrderModal = false; router.push({ path: '/profile', query: { section: 'orders' } })"
+                class="flex-1 py-2.5 px-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold text-xs transition flex items-center justify-center gap-1.5 shadow-2xs cursor-pointer"
+              >
+                <Printer class="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
+                <span>{{ t('Track in My Orders') }}</span>
+                <ArrowRight class="w-3.5 h-3.5 text-slate-400" />
+              </button>
+              <button
+                type="button"
+                @click="openOrderModal = false"
+                class="py-2.5 px-5 rounded-xl border border-slate-200 dark:border-slate-700 bg-transparent hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 font-semibold text-xs transition cursor-pointer"
+              >
+                {{ t('Close') }}
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -481,8 +553,19 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
+import {
+  ArrowRight,
+  Box,
+  CheckCircle2,
+  ExternalLink,
+  Printer,
+  Send,
+  ShieldCheck,
+  X,
+} from 'lucide-vue-next'
 import { useI18n } from '../i18n'
 import { printOrderService } from '../services/api'
+import { formatCambodiaTime } from '../utils/date'
 
 const { t } = useI18n()
 const router = useRouter()
