@@ -4839,16 +4839,15 @@ watch([userSearch, userMethodFilter, userVerifiedFilter], () => {
 const navigationModules = [
   {
     id: 'academy',
-    title: 'Academy & Store',
-    icon: BookOpen,
-    subtitle: 'Courses, students, orders & revenue',
-    description: 'Course catalog, student enrollments, hardware store orders, payments, and promo coupons.',
+    title: 'AeroByte Academy',
+    icon: GraduationCap,
+    subtitle: 'Courses, students, payments & coupons',
+    description: 'Dashboard overview, course manager, student roster, QR checkout, and discounts.',
     defaultSection: 'dashboard',
     sections: [
       { id: 'dashboard', title: 'Dashboard Overview', icon: LayoutDashboard },
       { id: 'courses', title: 'Courses & Schedules', icon: BookOpen },
       { id: 'students', title: 'Student Enrollments', icon: Users },
-      { id: 'store_orders', title: 'Store Hardware Orders', icon: ShoppingBag },
       { id: 'payments', title: 'Payments & QR Checkout', icon: CreditCard },
       { id: 'promos', title: 'Promo & Coupons', icon: Tag },
     ],
@@ -4953,7 +4952,7 @@ function toggleModule(mod) {
 }
 
 const activeModuleId = computed(() => {
-  if (['dashboard', 'courses', 'students', 'store_orders', 'payments', 'promos'].includes(activeSection.value)) {
+  if (['dashboard', 'courses', 'students', 'payments', 'promos'].includes(activeSection.value)) {
     return 'academy'
   }
   if (activeSection.value === 'aeroprint') {
@@ -4982,7 +4981,7 @@ watch(
 
 function getModuleBadgeCount(moduleId) {
   if (moduleId === 'academy') {
-    return pendingEnrollmentsCount.value + pendingPaymentsCount.value + pendingStoreOrdersCount.value
+    return pendingEnrollmentsCount.value + pendingPaymentsCount.value
   }
   if (moduleId === 'print') {
     return pendingPrintOrdersCount.value
@@ -5004,7 +5003,7 @@ function selectSection(sectionId) {
   let targetId = sectionId
 
   // Ensure the module containing target section is expanded
-  if (['dashboard', 'courses', 'students', 'store_orders', 'payments', 'promos'].includes(targetId)) {
+  if (['dashboard', 'courses', 'students', 'payments', 'promos'].includes(targetId)) {
     openModules.value.academy = true
   } else if (targetId === 'aeroprint') {
     openModules.value.print = true
@@ -5027,8 +5026,6 @@ function selectSection(sectionId) {
     loadLogsData()
   } else if (targetId === 'users') {
     loadUsersData()
-  } else if (targetId === 'store_orders') {
-    fetchStoreOrders()
   } else if (targetId === 'aeroprint') {
     fetchPrintOrders()
   }
@@ -6035,7 +6032,6 @@ async function refreshNotifications() {
 function getSectionBadgeCount(sectionId) {
   if (sectionId === 'students') return pendingEnrollmentsCount.value
   if (sectionId === 'payments') return pendingPaymentsCount.value
-  if (sectionId === 'store_orders') return pendingStoreOrdersCount.value
   if (sectionId === 'aeroprint') return pendingPrintOrdersCount.value
   return 0
 }
@@ -6044,7 +6040,7 @@ function getSectionBadgeColor(sectionId) {
   if (sectionId === 'payments') {
     return 'bg-rose-100 dark:bg-rose-950/80 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800'
   }
-  if (sectionId === 'students' || sectionId === 'store_orders' || sectionId === 'aeroprint') {
+  if (sectionId === 'students' || sectionId === 'aeroprint') {
     return 'bg-amber-100 dark:bg-amber-950/80 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800'
   }
   return 'bg-blue-100 dark:bg-blue-950/80 text-blue-700 dark:text-blue-300'
