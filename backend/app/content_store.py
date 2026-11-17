@@ -26,6 +26,12 @@ USERS_BACKUP_PATH = Path(
         str(Path(__file__).resolve().parents[1] / "data" / "persistent_users_backup.json"),
     )
 )
+PRINT_ORDERS_BACKUP_PATH = Path(
+    os.getenv(
+        "AEROBYTE_PRINT_ORDERS_BACKUP",
+        str(Path(__file__).resolve().parents[1] / "data" / "persistent_print_orders_backup.json"),
+    )
+)
 
 
 class _PostgresConnection:
@@ -533,6 +539,7 @@ def initialize_content_store() -> None:
             [(coupon.code, coupon.model_dump_json()) for coupon in default_coupons],
         )
         _restore_users_from_disk(connection)
+        _restore_print_orders_from_disk(connection)
 
 
 def _backup_users_to_disk() -> None:
@@ -561,6 +568,64 @@ def _restore_users_from_disk(connection) -> None:
             connection.execute(
                 f"INSERT OR IGNORE INTO users ({col_names}) VALUES ({placeholders})",
                 vals,
+            )
+    except Exception:
+        pass
+
+
+def _backup_print_orders_to_disk() -> None:
+    try:
+        with _connect() as connection:
+            rows = connection.execute("SELECT * FROM print_orders ORDER BY created_at DESC").fetchall()
+            orders = []
+            for r in rows:
+                rd = dict(r)
+                if isinstance(rd.get("files_json"), str):
+                    try:
+                        rd["files"] = json.loads(rd["files_json"])
+                    except Exception:
+                        rd["files"] = []
+                orders.append(rd)
+            PRINT_ORDERS_BACKUP_PATH.parent.mkdir(parents=True, exist_ok=True)
+            with open(PRINT_ORDERS_BACKUP_PATH, "w", encoding="utf-8") as f:
+                json.dump(orders, f, indent=2, ensure_ascii=False)
+    except Exception:
+        pass
+
+
+def _restore_print_orders_from_disk(connection) -> None:
+    try:
+        if not PRINT_ORDERS_BACKUP_PATH.exists():
+            return
+        with open(PRINT_ORDERS_BACKUP_PATH, "r", encoding="utf-8") as f:
+            orders = json.load(f)
+        for o in orders:
+            order_id = o.get("id") or o.get("order_number")
+            order_number = o.get("order_number") or order_id
+            customer_name = o.get("customer_name") or ""
+            phone = o.get("phone") or ""
+            telegram = o.get("telegram") or ""
+            notes = o.get("notes") or ""
+            qr_file_url = o.get("qr_file_url") or ""
+            total_parts = int(o.get("total_parts") or 1)
+            estimated_price = float(o.get("estimated_price") or 0.0)
+            files_raw = o.get("files_json") or o.get("files") or []
+            files_json = json.dumps(files_raw, ensure_ascii=False) if not isinstance(files_raw, str) else files_raw
+            status = o.get("status") or "Pending Review"
+            created_at = o.get("created_at") or datetime.now(timezone.utc).isoformat()
+            user_id = o.get("user_id") or ""
+            user_email = o.get("user_email") or ""
+            review_json = o.get("review_json") or ""
+            if isinstance(review_json, dict):
+                review_json = json.dumps(review_json, ensure_ascii=False)
+
+            connection.execute(
+                """
+                INSERT OR REPLACE INTO print_orders
+                (id, order_number, customer_name, phone, telegram, notes, qr_file_url, total_parts, estimated_price, files_json, status, created_at, user_id, user_email, review_json)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                (order_id, order_number, customer_name, phone, telegram, notes, qr_file_url, total_parts, estimated_price, files_json, status, created_at, user_id, user_email, review_json),
             )
     except Exception:
         pass
@@ -1545,6 +1610,7 @@ def create_print_order(data: dict[str, Any]) -> dict[str, Any]:
                     created_at,
                 ),
             )
+    _backup_print_orders_to_disk()
     return get_print_order(order_id) or data
 
 
@@ -1728,7 +1794,10 @@ def update_print_order_status(order_id: str, new_status: str) -> bool:
             "UPDATE print_orders SET status = ? WHERE id = ? OR order_number = ?",
             (new_status.strip(), order_id.strip(), order_id.strip()),
         )
-        return cursor.rowcount > 0
+        success = cursor.rowcount > 0
+    if success:
+        _backup_print_orders_to_disk()
+    return success
 
 
 def save_print_order_review(order_id: str, review_data: dict[str, Any]) -> Optional[dict[str, Any]]:
@@ -1753,6 +1822,7 @@ def save_print_order_review(order_id: str, review_data: dict[str, Any]) -> Optio
             "UPDATE print_orders SET review_json = ? WHERE id = ? OR order_number = ?",
             (review_json, clean_id, clean_id),
         )
+    _backup_print_orders_to_disk()
     return get_print_order(clean_id)
 
 
@@ -1787,7 +1857,10 @@ def delete_print_order(order_id: str) -> bool:
             "DELETE FROM print_orders WHERE id = ? OR order_number = ?",
             (order_id.strip(), order_id.strip()),
         )
-        return cursor.rowcount > 0
+        success = cursor.rowcount > 0
+    if success:
+        _backup_print_orders_to_disk()
+    return success
 
 
 def record_user_login(user_id: str) -> None:

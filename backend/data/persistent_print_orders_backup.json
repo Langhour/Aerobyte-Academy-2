@@ -1,0 +1,134 @@
+[
+  {
+    "id": "PR-1025",
+    "order_number": "PR-1025",
+    "customer_name": "Lang Hour",
+    "phone": "+855948010157",
+    "telegram": "@bjbjh",
+    "notes": "Fast print kit for Aero Bot prototype",
+    "qr_file_url": "",
+    "total_parts": 1,
+    "estimated_price": 0.0,
+    "status": "Completed",
+    "created_at": "2026-11-17T15:32:00+07:00",
+    "user_id": "ff685636-ad2f-434a-86f2-89406c51962a",
+    "user_email": "lghr5002@gmail.com",
+    "files": [
+      {
+        "id": "file-1025",
+        "original_name": "aero_bot_8cm_fast_kit.3mf",
+        "stored_filename": "print_aero_bot_8cm_fast_kit.3mf",
+        "download_url": "/api/print-orders/files/print_aero_bot_8cm_fast_kit.3mf?name=aero_bot_8cm_fast_kit.3mf",
+        "size_str": "890.5 KB",
+        "size_bytes": 911872,
+        "quantity": 1,
+        "dimensions": {
+          "x": 80,
+          "y": 80,
+          "z": 45
+        },
+        "volume_cm3": 28.5,
+        "material": "PLA / Custom"
+      }
+    ]
+  },
+  {
+    "id": "PR-1028",
+    "order_number": "PR-1028",
+    "customer_name": "Lang Hour",
+    "phone": "+855948010157",
+    "telegram": "@bjbjh",
+    "notes": "Aero Bot 8cm chassis bracket",
+    "qr_file_url": "",
+    "total_parts": 1,
+    "estimated_price": 0.0,
+    "status": "Pending Review",
+    "created_at": "2026-11-17T15:05:00+07:00",
+    "user_id": "ff685636-ad2f-434a-86f2-89406c51962a",
+    "user_email": "lghr5002@gmail.com",
+    "files": [
+      {
+        "id": "file-1028",
+        "original_name": "aero_bot_8cm_fast_kit.3mf",
+        "stored_filename": "print_aero_bot_8cm_fast_kit.3mf",
+        "download_url": "/api/print-orders/files/print_aero_bot_8cm_fast_kit.3mf?name=aero_bot_8cm_fast_kit.3mf",
+        "size_str": "890.5 KB",
+        "size_bytes": 911872,
+        "quantity": 1,
+        "dimensions": {
+          "x": 80,
+          "y": 80,
+          "z": 45
+        },
+        "volume_cm3": 28.5,
+        "material": "PLA / Custom"
+      }
+    ]
+  },
+  {
+    "id": "PR-1027",
+    "order_number": "PR-1027",
+    "customer_name": "Lang Hour",
+    "phone": "+855948010157",
+    "telegram": "@bjbjh",
+    "notes": "Aero Bot 8cm motor mount",
+    "qr_file_url": "",
+    "total_parts": 1,
+    "estimated_price": 0.0,
+    "status": "Pending Review",
+    "created_at": "2026-11-17T15:04:00+07:00",
+    "user_id": "ff685636-ad2f-434a-86f2-89406c51962a",
+    "user_email": "lghr5002@gmail.com",
+    "files": [
+      {
+        "id": "file-1027",
+        "original_name": "aero_bot_8cm_fast_kit.3mf",
+        "stored_filename": "print_aero_bot_8cm_fast_kit.3mf",
+        "download_url": "/api/print-orders/files/print_aero_bot_8cm_fast_kit.3mf?name=aero_bot_8cm_fast_kit.3mf",
+        "size_str": "890.5 KB",
+        "size_bytes": 911872,
+        "quantity": 1,
+        "dimensions": {
+          "x": 80,
+          "y": 80,
+          "z": 45
+        },
+        "volume_cm3": 28.5,
+        "material": "PLA / Custom"
+      }
+    ]
+  },
+  {
+    "id": "PR-1026",
+    "order_number": "PR-1026",
+    "customer_name": "Lang Hour",
+    "phone": "+855948010157",
+    "telegram": "@bjbjh",
+    "notes": "Aero Bot 8cm test gear component",
+    "qr_file_url": "",
+    "total_parts": 1,
+    "estimated_price": 0.0,
+    "status": "Pending Review",
+    "created_at": "2026-11-17T15:00:00+07:00",
+    "user_id": "ff685636-ad2f-434a-86f2-89406c51962a",
+    "user_email": "lghr5002@gmail.com",
+    "files": [
+      {
+        "id": "file-1026",
+        "original_name": "aero_bot_8cm_fast_kit.3mf",
+        "stored_filename": "print_aero_bot_8cm_fast_kit.3mf",
+        "download_url": "/api/print-orders/files/print_aero_bot_8cm_fast_kit.3mf?name=aero_bot_8cm_fast_kit.3mf",
+        "size_str": "890.5 KB",
+        "size_bytes": 911872,
+        "quantity": 1,
+        "dimensions": {
+          "x": 80,
+          "y": 80,
+          "z": 45
+        },
+        "volume_cm3": 28.5,
+        "material": "PLA / Custom"
+      }
+    ]
+  }
+]
