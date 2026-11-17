@@ -415,6 +415,46 @@
                   <span class="font-bold">{{ t('Notes') }}:</span> {{ order.notes }}
                 </div>
 
+                <!-- Customer Review Display (if reviewed) -->
+                <div v-if="order.review" class="rounded-xl border border-amber-200/80 dark:border-amber-900/50 bg-amber-50/40 dark:bg-amber-950/20 p-3.5 space-y-2">
+                  <div class="flex items-center justify-between gap-2">
+                    <div class="flex items-center gap-2">
+                      <div class="flex items-center text-amber-500">
+                        <Star
+                          v-for="s in 5"
+                          :key="s"
+                          class="h-4 w-4"
+                          :class="s <= (order.review.rating || 5) ? 'fill-amber-400 text-amber-500' : 'text-slate-300 dark:text-slate-600'"
+                        />
+                      </div>
+                      <span class="text-xs font-bold text-amber-900 dark:text-amber-200">
+                        {{ (order.review.rating || 5).toFixed(1) }} / 5.0
+                      </span>
+                      <span class="text-[11px] font-medium text-slate-400">· {{ t('Your Review') }}</span>
+                    </div>
+                    <button
+                      type="button"
+                      @click="openReviewModal(order)"
+                      class="inline-flex items-center gap-1 text-[11px] font-bold text-amber-800 dark:text-amber-300 hover:text-amber-950 dark:hover:text-amber-100 hover:underline cursor-pointer"
+                    >
+                      <Pencil class="h-3 w-3" />
+                      {{ t('Edit Review') }}
+                    </button>
+                  </div>
+                  <p v-if="order.review.comment" class="text-xs text-slate-700 dark:text-slate-300 leading-relaxed italic">
+                    "{{ order.review.comment }}"
+                  </p>
+                  <div v-if="order.review.tags && order.review.tags.length" class="flex flex-wrap gap-1.5 pt-0.5">
+                    <span
+                      v-for="tag in order.review.tags"
+                      :key="tag"
+                      class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-semibold bg-white dark:bg-slate-800 text-amber-900 dark:text-amber-200 border border-amber-200 dark:border-amber-800/60 shadow-2xs"
+                    >
+                      ✓ {{ t(tag) }}
+                    </span>
+                  </div>
+                </div>
+
                 <!-- Footer Summary & Actions -->
                 <div class="border-t border-slate-100 dark:border-slate-800 pt-3 flex flex-wrap items-center justify-between gap-3 text-xs">
                   <div class="flex items-center gap-4 text-slate-500 dark:text-slate-400">
@@ -435,6 +475,27 @@
                   </div>
 
                   <div class="flex items-center gap-2">
+                    <!-- Review Order Button when Completed -->
+                    <button
+                      v-if="isPrintOrderCompleted(order) && !order.review"
+                      type="button"
+                      @click="openReviewModal(order)"
+                      class="inline-flex items-center gap-1.5 rounded-lg border border-amber-300 dark:border-amber-700/60 bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/40 dark:hover:bg-amber-900/40 text-amber-900 dark:text-amber-200 px-3 py-1.5 text-xs font-bold transition shadow-xs cursor-pointer"
+                    >
+                      <Star class="h-3.5 w-3.5 fill-amber-400 text-amber-500" />
+                      {{ t('Review Order') }}
+                    </button>
+
+                    <button
+                      v-else-if="order.review"
+                      type="button"
+                      @click="openReviewModal(order)"
+                      class="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 px-3 py-1.5 text-xs font-semibold transition shadow-xs cursor-pointer"
+                    >
+                      <Star class="h-3.5 w-3.5 fill-amber-400 text-amber-500" />
+                      {{ t('Edit Review') }}
+                    </button>
+
                     <a
                       :href="getOrderTelegramLink(order)"
                       target="_blank"
@@ -1441,6 +1502,146 @@
         </div>
       </section>
     </div>
+
+    <!-- 3D Print Order Review Modal -->
+    <div
+      v-if="reviewModalOpen && reviewingOrder"
+      class="fixed inset-0 z-[60] flex items-center justify-center bg-slate-950/60 dark:bg-black/75 backdrop-blur-xs px-4 py-6"
+      @click.self="reviewModalOpen = false"
+    >
+      <section
+        role="dialog"
+        aria-modal="true"
+        class="w-full max-w-lg rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150"
+      >
+        <!-- Modal Header -->
+        <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 px-6 py-4 bg-slate-50/50 dark:bg-slate-800/40">
+          <div class="flex items-center gap-3">
+            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-100 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400">
+              <Star class="h-5 w-5 fill-amber-400 text-amber-500" />
+            </div>
+            <div>
+              <h2 class="text-base font-extrabold text-navy-900 dark:text-white">
+                {{ t('Review Your 3D Print Order') }}
+              </h2>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                #{{ reviewingOrder.order_number || reviewingOrder.id }} · {{ t('Completed') }}
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            @click="reviewModalOpen = false"
+            class="p-2 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer transition"
+          >
+            <X class="w-5 h-5" />
+          </button>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="p-6 space-y-5 text-xs">
+          <!-- Star Rating -->
+          <div class="text-center space-y-2 py-2">
+            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300">
+              {{ t('Rating') }}
+            </label>
+            <div class="flex items-center justify-center gap-2">
+              <button
+                v-for="star in 5"
+                :key="star"
+                type="button"
+                @mouseenter="reviewRatingHover = star"
+                @mouseleave="reviewRatingHover = 0"
+                @click="reviewRating = star"
+                class="p-1 transition-transform hover:scale-125 cursor-pointer focus:outline-hidden"
+              >
+                <Star
+                  class="h-8 w-8 transition-colors"
+                  :class="star <= (reviewRatingHover || reviewRating) ? 'fill-amber-400 text-amber-500' : 'text-slate-300 dark:text-slate-700'"
+                />
+              </button>
+            </div>
+            <p class="text-sm font-bold text-navy-900 dark:text-white">
+              {{ getRatingLabel(reviewRatingHover || reviewRating) }}
+            </p>
+          </div>
+
+          <!-- Quick Feedback Tags -->
+          <div class="space-y-2">
+            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300">
+              {{ t('What did you like most?') }}
+            </label>
+            <div class="flex flex-wrap gap-2">
+              <button
+                v-for="tag in availableReviewTags"
+                :key="tag"
+                type="button"
+                @click="toggleReviewTag(tag)"
+                class="px-3 py-1.5 rounded-full text-xs font-semibold transition border cursor-pointer"
+                :class="reviewTags.includes(tag)
+                  ? 'bg-amber-100 dark:bg-amber-950/60 text-amber-900 dark:text-amber-200 border-amber-300 dark:border-amber-700 ring-1 ring-amber-400/30'
+                  : 'bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700'"
+              >
+                <span v-if="reviewTags.includes(tag)" class="mr-1">✓</span>
+                {{ t(tag) }}
+              </button>
+            </div>
+          </div>
+
+          <!-- Written Comment -->
+          <div class="space-y-1.5">
+            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300">
+              {{ t('Detailed Feedback (Optional)') }}
+            </label>
+            <textarea
+              v-model="reviewComment"
+              rows="3"
+              maxlength="500"
+              class="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-3 text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:border-navy-900 focus:outline-hidden dark:focus:border-indigo-500 transition"
+              :placeholder="t('Tell us about the print tolerances, surface smoothness, turnaround speed, or service...')"
+            ></textarea>
+            <div class="flex justify-end text-[10px] text-slate-400">
+              {{ reviewComment.length }} / 500
+            </div>
+          </div>
+
+          <!-- Reviewer Name -->
+          <div class="space-y-1.5">
+            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300">
+              {{ t('Your Display Name') }}
+            </label>
+            <input
+              v-model="reviewerName"
+              type="text"
+              maxlength="60"
+              class="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 text-xs text-slate-900 dark:text-white focus:border-navy-900 focus:outline-hidden dark:focus:border-indigo-500 transition"
+              placeholder="e.g. Sokha Chan"
+            />
+          </div>
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="border-t border-slate-100 dark:border-slate-800 px-6 py-4 bg-slate-50/50 dark:bg-slate-800/40 flex items-center justify-end gap-3">
+          <button
+            type="button"
+            @click="reviewModalOpen = false"
+            class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
+          >
+            {{ t('Cancel') }}
+          </button>
+          <button
+            type="button"
+            :disabled="isSubmittingReview"
+            @click="submitReviewHandler"
+            class="inline-flex items-center gap-1.5 rounded-xl bg-navy-900 dark:bg-indigo-600 hover:bg-navy-800 dark:hover:bg-indigo-700 px-5 py-2 text-xs font-bold text-white transition shadow-sm cursor-pointer disabled:opacity-50"
+          >
+            <RefreshCw v-if="isSubmittingReview" class="h-3.5 w-3.5 animate-spin" />
+            <Star v-else class="h-3.5 w-3.5 fill-amber-400 text-amber-500" />
+            {{ isSubmittingReview ? t('Submitting...') : t('Submit Review') }}
+          </button>
+        </div>
+      </section>
+    </div>
   </div>
 </template>
 
@@ -1485,6 +1686,7 @@ import {
   ShieldCheck,
   ShoppingBag,
   Sparkles,
+  Star,
   Sun,
   Trash2,
   Upload,
@@ -1694,6 +1896,122 @@ function getCadFileUrl(file) {
     return printOrderService.getFileDownloadUrl(file.stored_filename, file.original_name)
   }
   return '#'
+}
+
+function isPrintOrderCompleted(order) {
+  if (!order) return false
+  const s = String(order.status || '').toLowerCase()
+  return s.includes('complete') || s === 'completed'
+}
+
+// 3D Print Order Review State & Methods
+const reviewModalOpen = ref(false)
+const reviewingOrder = ref(null)
+const reviewRating = ref(5)
+const reviewRatingHover = ref(0)
+const reviewComment = ref('')
+const reviewTags = ref([])
+const reviewerName = ref('')
+const isSubmittingReview = ref(false)
+
+const availableReviewTags = [
+  'Clean layer lines',
+  'Strong & sturdy',
+  'Accurate dimensions',
+  'Smooth finish',
+  'Fast turnaround',
+  'Great support',
+]
+
+function getRatingLabel(rating) {
+  if (rating >= 5) return t('Outstanding print quality!')
+  if (rating === 4) return t('Very good')
+  if (rating === 3) return t('Good quality')
+  if (rating === 2) return t('Fair')
+  return t('Needs improvement')
+}
+
+function openReviewModal(order) {
+  reviewingOrder.value = order
+  if (order.review) {
+    reviewRating.value = Number(order.review.rating) || 5
+    reviewComment.value = order.review.comment || ''
+    reviewTags.value = Array.isArray(order.review.tags) ? [...order.review.tags] : []
+    reviewerName.value = order.review.reviewer_name || order.customer_name || profile.fullName || ''
+  } else {
+    reviewRating.value = 5
+    reviewComment.value = ''
+    reviewTags.value = ['Clean layer lines', 'Strong & sturdy']
+    reviewerName.value = order.customer_name || profile.fullName || account.value?.name || ''
+  }
+  reviewRatingHover.value = 0
+  reviewModalOpen.value = true
+}
+
+function toggleReviewTag(tag) {
+  const idx = reviewTags.value.indexOf(tag)
+  if (idx >= 0) {
+    reviewTags.value.splice(idx, 1)
+  } else {
+    reviewTags.value.push(tag)
+  }
+}
+
+async function submitReviewHandler() {
+  if (!reviewingOrder.value) return
+  isSubmittingReview.value = true
+  const orderId = reviewingOrder.value.order_number || reviewingOrder.value.id
+
+  const payload = {
+    rating: reviewRating.value,
+    comment: reviewComment.value.trim(),
+    tags: reviewTags.value,
+    reviewer_name: reviewerName.value.trim() || profile.fullName || 'Customer',
+    created_at: new Date().toISOString(),
+  }
+
+  try {
+    const res = await printOrderService.submitReview(orderId, payload)
+    if (res?.data?.order?.review) {
+      reviewingOrder.value.review = res.data.order.review
+    } else {
+      reviewingOrder.value.review = payload
+    }
+  } catch (err) {
+    console.warn('Backend review submission failed, saving locally:', err)
+    reviewingOrder.value.review = payload
+  } finally {
+    // Synchronize local cached orders
+    try {
+      const local = JSON.parse(localStorage.getItem('aerobyte_print_orders') || '[]')
+      const targetId = reviewingOrder.value.order_number || reviewingOrder.value.id
+      const match = local.find((o) => (o.order_number === targetId || o.id === targetId))
+      if (match) {
+        match.review = reviewingOrder.value.review
+      } else {
+        local.unshift(reviewingOrder.value)
+      }
+      localStorage.setItem('aerobyte_print_orders', JSON.stringify(local))
+    } catch (_) {}
+
+    // Also sync admin cache if present on same browser
+    try {
+      const adminLocal = JSON.parse(localStorage.getItem('aerobyte_admin_print_orders') || '[]')
+      const targetId = reviewingOrder.value.order_number || reviewingOrder.value.id
+      const adminMatch = adminLocal.find((o) => (o.order_number === targetId || o.id === targetId))
+      if (adminMatch) {
+        adminMatch.review = reviewingOrder.value.review
+        localStorage.setItem('aerobyte_admin_print_orders', JSON.stringify(adminLocal))
+      }
+    } catch (_) {}
+
+    window.dispatchEvent(new Event('aerobyte-orders-updated'))
+
+    isSubmittingReview.value = false
+    reviewModalOpen.value = false
+    notice.value = t('Review submitted successfully!')
+    noticeType.value = 'success'
+  }
 }
 
 async function loadPrintOrders(forceRefresh = false) {

@@ -3140,6 +3140,15 @@
                         >
                           📷 QR Attached
                         </span>
+                        <span
+                          v-if="order.review"
+                          class="inline-flex items-center gap-1 px-1.5 py-0.2 rounded bg-amber-50 dark:bg-amber-950/60 text-[9px] font-bold text-amber-700 dark:text-amber-300 border border-amber-300/60 cursor-pointer"
+                          :title="(order.review.comment ? 'Review: ' + order.review.comment : 'Rated ' + (order.review.rating || 5) + '/5')"
+                          @click="openPrintOrderDetails(order)"
+                        >
+                          <Star class="w-2.5 h-2.5 fill-amber-400 text-amber-500" />
+                          <span>{{ (order.review.rating || 5).toFixed(1) }}</span>
+                        </span>
                       </div>
                     </td>
 
@@ -3443,6 +3452,53 @@
               />
             </div>
           </div>
+        </div>
+
+        <!-- Customer Review & Rating Section -->
+        <div
+          v-if="selectedPrintOrder.review"
+          class="rounded-xl border border-amber-200/80 dark:border-amber-900/60 p-4 bg-amber-50/40 dark:bg-amber-950/20 space-y-2.5"
+        >
+          <div class="flex items-center justify-between">
+            <h4 class="text-xs font-bold uppercase tracking-wider text-amber-900 dark:text-amber-200 flex items-center gap-1.5">
+              <Star class="w-4 h-4 fill-amber-400 text-amber-500" />
+              <span>{{ t('Customer Review & Rating') }}</span>
+            </h4>
+            <div class="flex items-center gap-1 text-amber-500">
+              <Star
+                v-for="s in 5"
+                :key="s"
+                class="w-3.5 h-3.5"
+                :class="s <= (selectedPrintOrder.review.rating || 5) ? 'fill-amber-400 text-amber-500' : 'text-slate-300 dark:text-slate-600'"
+              />
+              <span class="ml-1 text-xs font-bold text-amber-900 dark:text-amber-200">
+                {{ (selectedPrintOrder.review.rating || 5).toFixed(1) }} / 5.0
+              </span>
+            </div>
+          </div>
+          <p v-if="selectedPrintOrder.review.comment" class="text-xs text-slate-800 dark:text-slate-200 font-medium italic bg-white/70 dark:bg-slate-900/60 p-2.5 rounded-lg border border-amber-200/60 dark:border-amber-900/40">
+            "{{ selectedPrintOrder.review.comment }}"
+          </p>
+          <div v-if="selectedPrintOrder.review.tags && selectedPrintOrder.review.tags.length" class="flex flex-wrap gap-1.5 pt-0.5">
+            <span
+              v-for="tag in selectedPrintOrder.review.tags"
+              :key="tag"
+              class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-semibold bg-white dark:bg-slate-900 text-amber-900 dark:text-amber-200 border border-amber-200 dark:border-amber-800/60"
+            >
+              ✓ {{ t(tag) }}
+            </span>
+          </div>
+          <div class="text-[10px] text-slate-500 dark:text-slate-400 flex items-center justify-between pt-1">
+            <span>By: <strong>{{ selectedPrintOrder.review.reviewer_name || selectedPrintOrder.customer_name || 'Customer' }}</strong></span>
+            <span v-if="selectedPrintOrder.review.created_at">{{ formatCambodiaTime(selectedPrintOrder.review.created_at) }}</span>
+          </div>
+        </div>
+
+        <div
+          v-else-if="selectedPrintOrder.status === 'Completed'"
+          class="rounded-xl border border-dashed border-slate-200 dark:border-slate-800 p-3 bg-slate-50/40 dark:bg-slate-800/20 text-center text-[11px] text-slate-500 dark:text-slate-400"
+        >
+          {{ t('No review submitted yet. Customer has the option to review in their profile.') }}
         </div>
       </div>
 
@@ -3756,6 +3812,7 @@ import {
   Box,
   FileCode,
   ShoppingBag,
+  Star,
 } from 'lucide-vue-next'
 import { useLanguage } from '../i18n'
 import { useTheme } from '../composables/useTheme'
