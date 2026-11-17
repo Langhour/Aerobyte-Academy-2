@@ -360,6 +360,25 @@ def initialize_content_store() -> None:
         except Exception:
             pass
 
+        # Clean up any phantom/broken avatar URLs where the file does not exist in uploaded_files or disk
+        try:
+            broken_avatar_users = connection.execute(
+                "SELECT id, avatar_url FROM users WHERE avatar_url IS NOT NULL AND avatar_url != ''"
+            ).fetchall()
+            for b_row in broken_avatar_users:
+                a_url = b_row["avatar_url"]
+                if a_url and "/uploads/" in a_url:
+                    f_name = a_url.split("/uploads/")[-1].split("?")[0].strip()
+                    disk_exists = (upload_dir / f_name).is_file() and (upload_dir / f_name).stat().st_size > 0
+                    if not disk_exists:
+                        db_exists = connection.execute(
+                            "SELECT 1 FROM uploaded_files WHERE filename = ?", (f_name,)
+                        ).fetchone()
+                        if not db_exists:
+                            connection.execute("UPDATE users SET avatar_url = '' WHERE id = ?", (b_row["id"],))
+        except Exception:
+            pass
+
         # Auto-backfill user profile fields from enrollments if users have empty contact details
         try:
             empty_profile_users = connection.execute(

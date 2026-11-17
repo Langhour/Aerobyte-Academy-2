@@ -45,7 +45,7 @@
                   :src="resolveImageUrl(profile.avatarUrl)"
                   :alt="profile.fullName"
                   class="h-full w-full object-cover"
-                  @error="avatarLoadFailed = true"
+                  @error="onAvatarError"
                 />
                 <span v-else>{{ initials }}</span>
                 <div v-if="avatarUploading" class="absolute inset-0 bg-black/50 flex items-center justify-center">
@@ -874,7 +874,7 @@
                     :src="resolveImageUrl(draft.avatarUrl || profile.avatarUrl)"
                     :alt="draft.fullName || profile.fullName"
                     class="h-full w-full object-cover"
-                    @error="avatarLoadFailed = true"
+                    @error="onAvatarError"
                   />
                   <span v-else>{{ initials }}</span>
                 </div>
@@ -892,7 +892,7 @@
               <div class="space-y-1.5 text-center sm:text-left flex-1 min-w-0">
                 <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2">
                   <h3 class="text-sm font-bold text-navy-900 dark:text-white">{{ t('Profile photo') }}</h3>
-                  <span v-if="draft.avatarUrl || profile.avatarUrl" class="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/50 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800/60">
+                  <span v-if="(draft.avatarUrl || profile.avatarUrl) && !avatarLoadFailed" class="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/50 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800/60">
                     Active
                   </span>
                 </div>
@@ -908,10 +908,10 @@
                   >
                     <RefreshCw v-if="avatarUploading" class="h-3.5 w-3.5 animate-spin" />
                     <Upload v-else class="h-3.5 w-3.5" />
-                    <span>{{ avatarUploading ? 'Uploading...' : ((draft.avatarUrl || profile.avatarUrl) ? t('Change photo') : t('Upload photo')) }}</span>
+                    <span>{{ avatarUploading ? 'Uploading...' : (((draft.avatarUrl || profile.avatarUrl) && !avatarLoadFailed) ? t('Change photo') : t('Upload photo')) }}</span>
                   </button>
                   <button
-                    v-if="draft.avatarUrl || profile.avatarUrl"
+                    v-if="(draft.avatarUrl || profile.avatarUrl) && !avatarLoadFailed"
                     type="button"
                     class="inline-flex items-center gap-1.5 rounded-lg border border-red-200 dark:border-red-900/60 bg-red-50/60 dark:bg-red-950/40 px-3.5 py-2 text-xs font-semibold text-red-700 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/50 transition cursor-pointer"
                     @click="removeAvatar"
@@ -1142,7 +1142,7 @@
                     :src="resolveImageUrl(profile.avatarUrl)"
                     :alt="profile.fullName"
                     class="h-full w-full object-cover"
-                    @error="avatarLoadFailed = true"
+                    @error="onAvatarError"
                   />
                   <span v-else>{{ initials }}</span>
                 </div>
@@ -1160,7 +1160,7 @@
               <div class="space-y-1.5 text-center sm:text-left flex-1 min-w-0">
                 <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2">
                   <h3 class="text-sm font-bold text-navy-900 dark:text-white">{{ t('Profile photo') }}</h3>
-                  <span v-if="profile.avatarUrl" class="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/50 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800/60">
+                  <span v-if="profile.avatarUrl && !avatarLoadFailed" class="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/50 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800/60">
                     Active
                   </span>
                 </div>
@@ -1176,10 +1176,10 @@
                   >
                     <RefreshCw v-if="avatarUploading" class="h-3.5 w-3.5 animate-spin" />
                     <Upload v-else class="h-3.5 w-3.5" />
-                    <span>{{ avatarUploading ? 'Uploading...' : (profile.avatarUrl ? t('Change photo') : t('Upload photo')) }}</span>
+                    <span>{{ avatarUploading ? 'Uploading...' : (profile.avatarUrl && !avatarLoadFailed ? t('Change photo') : t('Upload photo')) }}</span>
                   </button>
                   <button
-                    v-if="profile.avatarUrl"
+                    v-if="profile.avatarUrl && !avatarLoadFailed"
                     type="button"
                     class="inline-flex items-center gap-1.5 rounded-lg border border-red-200 dark:border-red-900/60 bg-red-50/60 dark:bg-red-950/40 px-3.5 py-2 text-xs font-semibold text-red-700 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/50 transition cursor-pointer"
                     @click="removeAvatar"
@@ -1891,6 +1891,35 @@ function triggerAvatarUpload() {
   avatarFileInput.value?.click()
 }
 
+function onAvatarError() {
+  avatarLoadFailed.value = true
+  if (profile.avatarUrl) {
+    console.warn('Avatar image failed to load, clearing broken avatar reference:', profile.avatarUrl)
+    profile.avatarUrl = ''
+    draft.avatarUrl = ''
+    if (account.value) account.value.avatar_url = ''
+    try {
+      const clearCache = (k) => {
+        if (!k) return
+        const s = JSON.parse(localStorage.getItem(k) || '{}')
+        s.avatarUrl = ''
+        localStorage.setItem(k, JSON.stringify(s))
+      }
+      clearCache('aerobyte-profile-current')
+      clearCache(storageEmailKey.value)
+      clearCache(storageKey.value)
+      clearCache('aerobyte-profile')
+      window.dispatchEvent(new Event('aerobyte-profile-updated'))
+      window.dispatchEvent(new Event('aerobyte-auth-updated'))
+    } catch (_) {}
+    accountService.updateProfile({
+      full_name: profile.fullName,
+      email: profile.email,
+      avatar_url: '',
+    }).catch(() => {})
+  }
+}
+
 async function handleAvatarChange(event) {
   const file = event.target.files?.[0]
   if (!file) return
@@ -1941,12 +1970,12 @@ async function handleAvatarChange(event) {
     }
   } catch (error) {
     console.error('Failed to upload avatar to server:', error)
-    profile.avatarUrl = account.value?.avatar_url || ''
-    draft.avatarUrl = account.value?.avatar_url || ''
+    profile.avatarUrl = ''
+    draft.avatarUrl = ''
+    avatarLoadFailed.value = false
     notice.value = error.response?.data?.detail || t('Failed to upload avatar image. Please try again.')
     noticeType.value = 'error'
   } finally {
-    URL.revokeObjectURL(previewUrl)
     avatarUploading.value = false
     if (event.target) event.target.value = ''
   }

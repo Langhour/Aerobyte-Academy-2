@@ -139,7 +139,7 @@ def serve_uploaded_file(
 
     # Raw or non-image request
     if raw or not is_image:
-        if disk_path.is_file():
+        if disk_path.is_file() and disk_path.stat().st_size > 0:
             return FileResponse(
                 disk_path,
                 headers={"Cache-Control": "public, max-age=31536000, immutable"},
@@ -152,6 +152,7 @@ def serve_uploaded_file(
             elif not isinstance(data, bytes):
                 data = bytes(data)
             try:
+                upload_directory.mkdir(parents=True, exist_ok=True)
                 disk_path.write_bytes(data)
             except Exception:
                 pass
@@ -167,7 +168,7 @@ def serve_uploaded_file(
     cache_tag = f"opt_w{target_w}_q{q}_{clean_name}.webp" if target_w else f"opt_orig_q{q}_{clean_name}.webp"
     cached_path = upload_directory / cache_tag
 
-    if cached_path.is_file():
+    if cached_path.is_file() and cached_path.stat().st_size > 0:
         return FileResponse(
             cached_path,
             media_type="image/webp",
@@ -176,7 +177,7 @@ def serve_uploaded_file(
 
     # Need source bytes
     source_bytes = None
-    if disk_path.is_file():
+    if disk_path.is_file() and disk_path.stat().st_size > 0:
         source_bytes = disk_path.read_bytes()
     else:
         file_record = get_uploaded_file(clean_name)
@@ -189,6 +190,7 @@ def serve_uploaded_file(
             else:
                 source_bytes = data
             try:
+                upload_directory.mkdir(parents=True, exist_ok=True)
                 disk_path.write_bytes(source_bytes)
             except Exception:
                 pass
