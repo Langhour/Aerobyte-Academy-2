@@ -45,7 +45,10 @@
 
           <!-- LINE 2: UPPERCASE SUBTITLE WITH SUBTLE RED DOT ACCENTS -->
           <div class="relative inline-block max-w-sm sm:max-w-none px-2">
-            <p class="text-[10px] sm:text-sm md:text-base font-bold tracking-[0.16em] sm:tracking-[0.32em] uppercase text-slate-700 dark:text-white/90">
+            <p
+              class="text-[10px] sm:text-sm md:text-base font-bold uppercase text-slate-700 dark:text-white/90"
+              :class="locale === 'kh' ? 'tracking-normal' : 'tracking-[0.16em] sm:tracking-[0.32em]'"
+            >
               {{ t('THE OPEN DRONE FLIGHT COMMUNITY FOR CAMBODIA.') }}
             </p>
             <!-- Minimal Red Dot Accents from reference image -->
@@ -89,45 +92,24 @@
             <div
               v-snap="'sessions-hdr'"
               :class="{ 'is-visible': snapVisible['sessions-hdr'] }"
-              class="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 pb-3 border-b border-slate-200 dark:border-slate-800"
+              class="pb-3 border-b border-slate-200 dark:border-slate-800"
             >
-              <div>
-                <div
-                  class="stretch-snap-line text-[10px] font-mono tracking-widest uppercase text-slate-400 dark:text-slate-500"
-                  style="animation-delay: 20ms"
-                >
-                  {{ t('01 // SESSIONS') }}
-                </div>
-                <h2 class="text-xl sm:text-3xl font-black text-[#0c1e5b] dark:text-white flex flex-wrap gap-x-[0.26em]">
-                  <span
-                    v-for="(word, wIdx) in sessionsTitleWords"
-                    :key="wIdx"
-                    class="stretch-snap-word"
-                    :style="{ animationDelay: `${50 + wIdx * 80}ms` }"
-                  >
-                    {{ word }}
-                  </span>
-                </h2>
-              </div>
-              <span
-                class="stretch-snap-line text-[10px] sm:text-[11px] font-mono text-emerald-600 dark:text-emerald-400 font-bold self-start sm:self-auto"
-                style="animation-delay: 170ms"
+              <div
+                class="stretch-snap-line text-[10px] font-mono tracking-widest uppercase text-slate-400 dark:text-slate-500"
+                style="animation-delay: 20ms"
               >
-                {{ t('● SKY CLEAR · 8 KM/H') }}
-              </span>
-            </div>
-
-            <!-- Minimal Stats Line -->
-            <div
-              v-snap="'sessions-stats'"
-              :class="{ 'is-visible': snapVisible['sessions-stats'] }"
-              class="flex flex-wrap items-center gap-3 sm:gap-6 text-[11px] sm:text-xs font-mono text-slate-500 dark:text-slate-400 py-0.5"
-            >
-              <span class="stretch-snap-line" style="animation-delay: 20ms"><strong>140+</strong> {{ t('Pilots') }}</span>
-              <span class="stretch-snap-line" style="animation-delay: 60ms">•</span>
-              <span class="stretch-snap-line" style="animation-delay: 100ms"><strong>5.8 GHz</strong> {{ t('Band') }}</span>
-              <span class="stretch-snap-line" style="animation-delay: 140ms">•</span>
-              <span class="stretch-snap-line" style="animation-delay: 180ms"><strong>{{ t('Weekly') }}</strong> {{ t('Gatherings') }}</span>
+                {{ t('01 // SESSIONS') }}
+              </div>
+              <h2 class="text-xl sm:text-3xl font-black text-[#0c1e5b] dark:text-white flex flex-wrap gap-x-[0.26em]">
+                <span
+                  v-for="(word, wIdx) in sessionsTitleWords"
+                  :key="wIdx"
+                  class="stretch-snap-word"
+                  :style="{ animationDelay: `${50 + wIdx * 80}ms` }"
+                >
+                  {{ word }}
+                </span>
+              </h2>
             </div>
 
             <!-- Ultra-Short Sessions List -->
@@ -159,13 +141,16 @@
                       {{ word }}
                     </span>
                   </h3>
-                  <p
-                    class="stretch-snap-line text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1.5"
+                  <a
+                    :href="session.mapUrl"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="stretch-snap-line text-xs text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white flex items-center gap-1.5 transition-colors cursor-pointer"
                     style="animation-delay: 170ms"
                   >
                     <MapPin class="w-3.5 h-3.5 text-[#0c1e5b] dark:text-white shrink-0" />
-                    <span>{{ session.location }}</span>
-                  </p>
+                    <span class="hover:underline">{{ session.location }}</span>
+                  </a>
                 </div>
 
                 <div class="flex items-center justify-between sm:justify-end gap-3 shrink-0 pt-1 sm:pt-0 border-t sm:border-t-0 border-slate-100 dark:border-slate-800">
@@ -210,13 +195,16 @@
                   class="inline-block overflow-hidden py-1 px-[0.02em]"
                 >
                   <span
-                    class="inline-block transform transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] tracking-[0.06em] sm:tracking-[0.14em]"
+                    class="inline-block transform transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
                     :style="{ transitionDelay: getCharDelay(item.globalIndex) }"
-                    :class="{
-                      'translate-y-0 opacity-100': middleTextState === 'active',
-                      'translate-y-[120%] opacity-0': middleTextState === 'before',
-                      '-translate-y-[120%] opacity-0': middleTextState === 'after'
-                    }"
+                    :class="[
+                      locale === 'kh' ? 'tracking-normal' : 'tracking-[0.06em] sm:tracking-[0.14em]',
+                      {
+                        'translate-y-0 opacity-100': middleTextState === 'active',
+                        'translate-y-[120%] opacity-0': middleTextState === 'before',
+                        '-translate-y-[120%] opacity-0': middleTextState === 'after'
+                      }
+                    ]"
                   >
                     {{ item.char }}
                   </span>
@@ -233,13 +221,16 @@
                   class="inline-block overflow-hidden py-0.5 mx-[0.18em]"
                 >
                   <span
-                    class="inline-block transform transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] tracking-[0.12em] sm:tracking-[0.24em]"
+                    class="inline-block transform transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
                     :style="{ transitionDelay: getSubtitleWordDelay(wIdx) }"
-                    :class="{
-                      'translate-y-0 opacity-100': middleTextState === 'active',
-                      'translate-y-[120%] opacity-0': middleTextState === 'before',
-                      '-translate-y-[120%] opacity-0': middleTextState === 'after'
-                    }"
+                    :class="[
+                      locale === 'kh' ? 'tracking-normal' : 'tracking-[0.12em] sm:tracking-[0.24em]',
+                      {
+                        'translate-y-0 opacity-100': middleTextState === 'active',
+                        'translate-y-[120%] opacity-0': middleTextState === 'before',
+                        '-translate-y-[120%] opacity-0': middleTextState === 'after'
+                      }
+                    ]"
                   >
                     {{ word }}
                   </span>
@@ -295,7 +286,7 @@
                 </h2>
               </div>
               <span
-                class="stretch-snap-line text-[10px] sm:text-[11px] font-mono text-emerald-600 dark:text-emerald-400 font-bold self-start sm:self-auto"
+                class="stretch-snap-line text-[10px] sm:text-[11px] font-mono text-sky-600 dark:text-sky-400 font-bold self-start sm:self-auto"
                 style="animation-delay: 260ms"
               >
                 {{ t('● 100% FREE COMMUNITY') }}
@@ -358,10 +349,9 @@
                 href="https://t.me/+9o8_5bVa20MyMzdl"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-full text-xs font-bold bg-[#0c1e5b] dark:bg-white text-white dark:text-[#0c1e5b] hover:opacity-90 active:scale-95 transition cursor-pointer shrink-0 shadow-sm"
+                class="w-full sm:w-auto inline-flex items-center justify-center px-5 py-2.5 rounded-full text-xs font-bold bg-[#0c1e5b] dark:bg-white text-white dark:text-[#0c1e5b] hover:opacity-90 active:scale-95 transition cursor-pointer shrink-0 shadow-sm"
               >
                 <span>{{ t('Join Telegram Hub') }}</span>
-                <span>↗</span>
               </a>
             </div>
           </div>
@@ -389,13 +379,16 @@
                   class="inline-block overflow-hidden py-1 px-[0.02em]"
                 >
                   <span
-                    class="inline-block transform transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] tracking-[0.06em] sm:tracking-[0.14em]"
+                    class="inline-block transform transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
                     :style="{ transitionDelay: getCharTwoDelay(item.globalIndex) }"
-                    :class="{
-                      'translate-y-0 opacity-100': middleTextTwoState === 'active',
-                      'translate-y-[120%] opacity-0': middleTextTwoState === 'before',
-                      '-translate-y-[120%] opacity-0': middleTextTwoState === 'after'
-                    }"
+                    :class="[
+                      locale === 'kh' ? 'tracking-normal' : 'tracking-[0.06em] sm:tracking-[0.14em]',
+                      {
+                        'translate-y-0 opacity-100': middleTextTwoState === 'active',
+                        'translate-y-[120%] opacity-0': middleTextTwoState === 'before',
+                        '-translate-y-[120%] opacity-0': middleTextTwoState === 'after'
+                      }
+                    ]"
                   >
                     {{ item.char }}
                   </span>
@@ -412,13 +405,16 @@
                   class="inline-block overflow-hidden py-0.5 mx-[0.18em]"
                 >
                   <span
-                    class="inline-block transform transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] tracking-[0.12em] sm:tracking-[0.24em]"
+                    class="inline-block transform transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
                     :style="{ transitionDelay: getSubtitleTwoWordDelay(wIdx) }"
-                    :class="{
-                      'translate-y-0 opacity-100': middleTextTwoState === 'active',
-                      'translate-y-[120%] opacity-0': middleTextTwoState === 'before',
-                      '-translate-y-[120%] opacity-0': middleTextTwoState === 'after'
-                    }"
+                    :class="[
+                      locale === 'kh' ? 'tracking-normal' : 'tracking-[0.12em] sm:tracking-[0.24em]',
+                      {
+                        'translate-y-0 opacity-100': middleTextTwoState === 'active',
+                        'translate-y-[120%] opacity-0': middleTextTwoState === 'before',
+                        '-translate-y-[120%] opacity-0': middleTextTwoState === 'after'
+                      }
+                    ]"
                   >
                     {{ word }}
                   </span>
@@ -482,13 +478,14 @@
             </div>
 
             <div class="flex items-center gap-2.5 shrink-0 pt-1 sm:pt-0">
-              <router-link
-                to="/store"
-                class="w-full sm:w-auto justify-center px-5 py-2.5 rounded-full text-xs font-bold bg-[#0c1e5b] dark:bg-white text-white dark:text-[#0c1e5b] hover:opacity-90 active:scale-95 transition shadow-sm inline-flex items-center gap-1.5 cursor-pointer"
+              <a
+                href="https://t.me/+9o8_5bVa20MyMzdl"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="w-full sm:w-auto justify-center px-5 py-2.5 rounded-full text-xs font-bold bg-[#0c1e5b] dark:bg-white text-white dark:text-[#0c1e5b] hover:opacity-90 active:scale-95 transition shadow-sm inline-flex items-center cursor-pointer"
               >
-                <span>{{ t('Browse Store Catalog') }}</span>
-                <span>→</span>
-              </router-link>
+                <span>{{ t('Connect on Telegram') }}</span>
+              </a>
             </div>
           </div>
 
@@ -498,7 +495,7 @@
               <h3 class="text-xs font-mono font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 {{ t('What We Do in Aero Store') }}
               </h3>
-              <span class="text-[11px] font-mono text-emerald-600 dark:text-emerald-400 font-bold">
+              <span class="text-[11px] font-mono text-sky-600 dark:text-sky-400 font-bold">
                 {{ t('● 100% BENCH-TESTED') }}
               </span>
             </div>
@@ -523,19 +520,12 @@
                   </p>
                 </div>
 
-                <div class="pt-2.5 sm:pt-3 border-t border-slate-100 dark:border-slate-800 space-y-2">
+                <div class="pt-2.5 sm:pt-3 border-t border-slate-100 dark:border-slate-800">
                   <div class="flex flex-wrap gap-1.5 text-[10px] font-mono text-slate-500 dark:text-slate-400">
                     <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">{{ t('BNF Quads') }}</span>
                     <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">{{ t('55A Stacks') }}</span>
                     <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">{{ t('ELRS 2.4G') }}</span>
                   </div>
-                  <router-link
-                    to="/store"
-                    class="inline-flex items-center gap-1 text-xs font-bold text-[#0c1e5b] dark:text-white hover:underline pt-0.5"
-                  >
-                    <span>{{ t('View Drone Gear') }}</span>
-                    <span>→</span>
-                  </router-link>
                 </div>
               </div>
 
@@ -558,19 +548,12 @@
                   </p>
                 </div>
 
-                <div class="pt-2.5 sm:pt-3 border-t border-slate-100 dark:border-slate-800 space-y-2">
+                <div class="pt-2.5 sm:pt-3 border-t border-slate-100 dark:border-slate-800">
                   <div class="flex flex-wrap gap-1.5 text-[10px] font-mono text-slate-500 dark:text-slate-400">
                     <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">{{ t('ESP32 Lab Kit') }}</span>
                     <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">{{ t('IoT Sensors') }}</span>
                     <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">{{ t('Motor Shields') }}</span>
                   </div>
-                  <router-link
-                    to="/store"
-                    class="inline-flex items-center gap-1 text-xs font-bold text-[#0c1e5b] dark:text-white hover:underline pt-0.5"
-                  >
-                    <span>{{ t('View Maker Kits') }}</span>
-                    <span>→</span>
-                  </router-link>
                 </div>
               </div>
 
@@ -593,19 +576,12 @@
                   </p>
                 </div>
 
-                <div class="pt-2.5 sm:pt-3 border-t border-slate-100 dark:border-slate-800 space-y-2">
+                <div class="pt-2.5 sm:pt-3 border-t border-slate-100 dark:border-slate-800">
                   <div class="flex flex-wrap gap-1.5 text-[10px] font-mono text-slate-500 dark:text-slate-400">
                     <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">{{ t('GoPro Mounts') }}</span>
                     <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">{{ t('Arm Guards') }}</span>
                     <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">{{ t('Antenna Tubes') }}</span>
                   </div>
-                  <router-link
-                    to="/print"
-                    class="inline-flex items-center gap-1 text-xs font-bold text-[#0c1e5b] dark:text-white hover:underline pt-0.5"
-                  >
-                    <span>{{ t('Custom 3D Printing') }}</span>
-                    <span>→</span>
-                  </router-link>
                 </div>
               </div>
             </div>
@@ -660,10 +636,10 @@
                 </div>
                 <div class="space-y-1">
                   <h4 class="text-xs font-bold text-[#0c1e5b] dark:text-white">
-                    {{ t('Free Ta Khmau Bench Lab & Tuning Guidance') }}
+                    {{ t('Bench Diagnostics & Tuning Guidance') }}
                   </h4>
                   <p class="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">
-                    {{ t('Need help soldering tiny motor pads, flashing Betaflight 4.5, or binding ELRS? Bring your parts to our Ta Khmau Lab for free smoke-stopper maiden checks and rate tuning.') }}
+                    {{ t('Need help soldering tiny motor pads, flashing Betaflight 4.5, or binding ELRS? Bring your parts for free smoke-stopper maiden checks and rate tuning.') }}
                   </p>
                 </div>
               </div>
@@ -685,7 +661,7 @@
             </div>
           </div>
 
-          <!-- BLOCK 3: QUICK CONSULT & TA KHMAU LAB CONTACT -->
+          <!-- BLOCK 3: QUICK CONSULT & LOCATION CONTACT -->
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 pt-4 border-t border-slate-200 dark:border-slate-800">
             <!-- Telegram Hub -->
             <div class="p-4 sm:p-5 rounded-2xl bg-white/90 dark:bg-slate-900/90 border border-slate-200/90 dark:border-slate-800 backdrop-blur-xl flex flex-col justify-between gap-3 shadow-xs">
@@ -705,36 +681,34 @@
                   href="https://t.me/+9o8_5bVa20MyMzdl"
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="inline-flex items-center gap-1.5 text-xs font-bold text-sky-600 dark:text-cyan-400 hover:underline active:scale-95 transition"
+                  class="inline-flex items-center text-xs font-bold text-sky-600 dark:text-cyan-400 hover:underline active:scale-95 transition"
                 >
                   <span>{{ t('Open Telegram Chat') }}</span>
-                  <span>↗</span>
                 </a>
               </div>
             </div>
 
-            <!-- Ta Khmau Flight & Maker Lab -->
+            <!-- AeroByte Location -->
             <div class="p-4 sm:p-5 rounded-2xl bg-white/90 dark:bg-slate-900/90 border border-slate-200/90 dark:border-slate-800 backdrop-blur-xl flex flex-col justify-between gap-3 shadow-xs">
               <div class="space-y-1.5">
                 <div class="w-8 h-8 rounded-xl bg-[#0c1e5b]/5 dark:bg-slate-800 text-[#0c1e5b] dark:text-slate-100 border border-[#0c1e5b]/10 dark:border-slate-700 flex items-center justify-center mb-1">
                   <MapPin class="w-4 h-4 stroke-[2]" />
                 </div>
                 <h3 class="text-sm font-bold text-[#0c1e5b] dark:text-white">
-                  {{ t('Ta Khmau Flight & Maker Lab') }}
+                  {{ t('AeroByte Location') }}
                 </h3>
                 <p class="text-xs text-slate-500 dark:text-slate-400">
-                  {{ t('Free open soldering benches, smoke stoppers, Betaflight diagnostics, and in-person hardware pickup.') }}
+                  {{ t('Phum Lekh Muoy, Sangkat Svay Rolum Ta Khmau, Kandal 08110701') }}
                 </p>
               </div>
               <div class="pt-2">
                 <a
-                  href="https://maps.google.com/?q=Ta+Khmau+Cambodia"
+                  href="https://maps.app.goo.gl/Pj7oV9NrPmbc5mnFA"
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="inline-flex items-center gap-1.5 text-xs font-bold text-[#0c1e5b] dark:text-white hover:underline active:scale-95 transition"
+                  class="inline-flex items-center text-xs font-bold text-[#0c1e5b] dark:text-white hover:underline active:scale-95 transition"
                 >
                   <span>{{ t('Get Directions') }}</span>
-                  <span>↗</span>
                 </a>
               </div>
             </div>
@@ -780,7 +754,7 @@ import { useTheme } from '../composables/useTheme'
 import { useI18n } from '../i18n'
 
 const { isDark } = useTheme()
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 const canvasRef = ref(null)
 const footerRef = ref(null)
@@ -876,13 +850,16 @@ const middleSubtitleText = computed(() => t('FROM FIRST HOVER TO PRO FREESTYLE &
 
 const titleWordGroups = computed(() => {
   const text = middleTitleText.value || 'FLY AS ONE'
+  const isKhmer = /[\u1780-\u17FF]/.test(text)
   const words = text.split(' ')
   let globalCount = 0
   return words.map((word) => {
-    const chars = word.split('').map((ch) => {
-      const idx = globalCount++
-      return { char: ch, globalIndex: idx }
-    })
+    const chars = isKhmer
+      ? [{ char: word, globalIndex: globalCount++ }]
+      : word.split('').map((ch) => {
+          const idx = globalCount++
+          return { char: ch, globalIndex: idx }
+        })
     return { word, chars }
   })
 })
@@ -934,13 +911,16 @@ const middleSubtitleTwoText = computed(() => t('FROM CAD BENCH TO FULL THROTTLE 
 
 const titleTwoWordGroups = computed(() => {
   const text = middleTitleTwoText.value || 'BUILT TO SOAR'
+  const isKhmer = /[\u1780-\u17FF]/.test(text)
   const words = text.split(' ')
   let globalCount = 0
   return words.map((word) => {
-    const chars = word.split('').map((ch) => {
-      const idx = globalCount++
-      return { char: ch, globalIndex: idx }
-    })
+    const chars = isKhmer
+      ? [{ char: word, globalIndex: globalCount++ }]
+      : word.split('').map((ch) => {
+          const idx = globalCount++
+          return { char: ch, globalIndex: idx }
+        })
     return { word, chars }
   })
 })
@@ -999,7 +979,8 @@ const rawFlightSessions = [
     titleKey: 'Sunrise Freestyle & Proximity Run',
     categoryKey: 'WEEKEND FLY-IN',
     timeKey: 'Sun · 6:30 AM',
-    locationKey: 'AeroByte Flight Zone, Ta Khmau',
+    locationKey: 'Phum Lekh Muoy, Sangkat Svay Rolum Ta Khmau, Kandal 08110701',
+    mapUrl: 'https://maps.app.goo.gl/Pj7oV9NrPmbc5mnFA',
     descriptionKey: 'Open grass runway with low morning wind. Freestyle gaps, proximity practice, and active spotters.',
     attendees: ['Vuthy', 'Dara', 'Alex', 'Samnang', 'Chhay', 'Sreypov']
   },
@@ -1008,7 +989,8 @@ const rawFlightSessions = [
     titleKey: 'Bench Tuning & Maiden Diagnostics',
     categoryKey: 'TECH WORKSHOP',
     timeKey: 'Sat · 2:00 PM',
-    locationKey: 'AeroByte Maker Lab, Ta Khmau',
+    locationKey: 'Phum Lekh Muoy, Sangkat Svay Rolum Ta Khmau, Kandal 08110701',
+    mapUrl: 'https://maps.app.goo.gl/Pj7oV9NrPmbc5mnFA',
     descriptionKey: 'Free open soldering bench, Betaflight 4.5 tuning, smoke-stopper tests, and motor telemetry checks.',
     attendees: ['Rithy', 'Bona', 'Sophea', 'Sovann', 'Alex']
   },
@@ -1017,7 +999,8 @@ const rawFlightSessions = [
     titleKey: 'Beginner Clinic & Simulator Coaching',
     categoryKey: 'COMMUNITY CLINIC',
     timeKey: 'Sat & Sun · 4:30 PM',
-    locationKey: 'Ta Khmau Lab & Testing Field',
+    locationKey: 'Phum Lekh Muoy, Sangkat Svay Rolum Ta Khmau, Kandal 08110701',
+    mapUrl: 'https://maps.app.goo.gl/Pj7oV9NrPmbc5mnFA',
     descriptionKey: 'Zero gear required. First-timer goggles spectating, simulator practice, and flight buddy pairing.',
     attendees: ['Samnang', 'Dara', 'Alex', 'Kosal']
   }
@@ -1036,6 +1019,7 @@ const flightSessions = computed(() =>
       category: t(session.categoryKey),
       time: t(session.timeKey),
       location: t(session.locationKey),
+      mapUrl: session.mapUrl,
       description: t(session.descriptionKey),
       attendees,
       isJoined

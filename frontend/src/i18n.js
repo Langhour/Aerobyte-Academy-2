@@ -1476,7 +1476,11 @@ export const khmerTranslations = {
   "Copy address": "ចម្លងអាសយដ្ឋាន",
 
   // Aero Fly Translations
-  "THE OPEN DRONE FLIGHT COMMUNITY FOR CAMBODIA.": "សហគមន៍ហោះហើរដ្រូនបើកចំហសម្រាប់ប្រទេសកម្ពុជា។",
+  "THE OPEN DRONE FLIGHT COMMUNITY FOR CAMBODIA.": "សហគមន៏បង្ហោះដ្រូននៅក្នុងប្រទេសកម្ពុជា",
+  "Connect on Telegram": "ទាក់ទងតាមតេឡេក្រាម",
+  "Order via Telegram": "កុម្ម៉ង់តាមតេឡេក្រាម",
+  "Inquire on Telegram": "សាកសួរតាមតេឡេក្រាម",
+  "AeroByte Location": "ទីតាំង AeroByte",
   "SCROLL": "អូសចុះក្រោម",
   "SYS // LOADING DRONE 3D": "ប្រព័ន្ធ // កំពុងផ្ទុកដ្រូន 3D",
   "SYS // LOADING DRONE 3D ·": "ប្រព័ន្ធ // កំពុងផ្ទុកដ្រូន 3D ·",
@@ -1630,7 +1634,7 @@ export const khmerTranslations = {
   "Community flight sessions, RSVP roster, pilot metrics, and lab locations.": "វគ្គហោះហើរសហគមន៍ បញ្ជីឈ្មោះ RSVP សូចនាករពីឡុត និងទីតាំងបន្ទប់ពិសោធន៍។",
   "Manage 3D printing material pricing rates, printer fleet status, and custom print requests.": "គ្រប់គ្រងអត្រាតម្លៃសម្ភារៈបោះពុម្ព 3D ស្ថានភាពម៉ាស៊ីន និងសំណើបោះពុម្ពតាមតម្រូវការ។",
   "Material pricing rates, printer fleet status, and custom print requests.": "អត្រាតម្លៃសម្ភារៈ ស្ថានភាពម៉ាស៊ីន និងសំណើបោះពុម្ពតាមតម្រូវការ។",
-  "BUILT TO SOAR": "បង្កើតឡើងដើម្បីហោះហើរខ្ពស់",
+  "BUILT TO SOAR": "បង្កើតដើម្បីហោះហើរ",
   "FROM CAD BENCH TO FULL THROTTLE FREEDOM.": "ពីការរចនា CAD រហូតដល់ការហោះហើរដោយសេរីភាពពេញលេញ។",
   "Other Setting Else": "ការកំណត់ផ្សេងៗទៀត",
   "Back to Modules": "ត្រឡប់ទៅម៉ូឌុលទាំងអស់",
