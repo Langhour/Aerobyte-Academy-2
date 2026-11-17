@@ -1540,20 +1540,104 @@ const emptyProfile = () => ({
   experience: '',
 })
 
-const account = ref(null)
-const profile = reactive(emptyProfile())
-const draft = reactive(emptyProfile())
+function getActiveUserCredentials() {
+  let uid = ''
+  let uemail = ''
+  let uname = ''
+  let utg = ''
+
+  try {
+    const rawSess = localStorage.getItem('aerobyte_user_session')
+    if (rawSess) {
+      const sess = JSON.parse(rawSess)
+      const u = sess.user || sess
+      if (u) {
+        if (!uid && u.id) uid = u.id
+        if (!uemail && u.email) uemail = u.email
+        if (!uname && (u.name || u.full_name)) uname = u.name || u.full_name
+        if (!utg && u.telegram) utg = u.telegram
+      }
+    }
+  } catch (_) {}
+
+  try {
+    const rawProf = localStorage.getItem('aerobyte-profile-current') || localStorage.getItem('aerobyte-profile')
+    if (rawProf) {
+      const p = JSON.parse(rawProf)
+      if (p) {
+        if (!uid && p.id) uid = p.id
+        if (!uemail && p.email) uemail = p.email
+        if (!uname && p.fullName) uname = p.fullName
+        if (!utg && p.telegram) utg = p.telegram
+      }
+    }
+  } catch (_) {}
+
+  if (!uemail) {
+    try {
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i)
+        if (k && k.startsWith('aerobyte-profile:')) {
+          const val = JSON.parse(localStorage.getItem(k) || '{}')
+          if (val.email) {
+            uemail = val.email
+            if (!uname && val.fullName) uname = val.fullName
+            break
+          }
+        }
+      }
+    } catch (_) {}
+  }
+
+  return { id: uid, email: uemail, name: uname, telegram: utg }
+}
+
+function readCachedPrintOrders() {
+  try {
+    const raw = localStorage.getItem('aerobyte_print_orders')
+    if (raw) {
+      const parsed = JSON.parse(raw)
+      if (Array.isArray(parsed) && parsed.length) return parsed
+    }
+  } catch (_) {}
+  return []
+}
+
+function readCachedStoreOrders() {
+  try {
+    const raw = localStorage.getItem('aerobyte_store_orders')
+    if (raw) {
+      const parsed = JSON.parse(raw)
+      if (Array.isArray(parsed) && parsed.length) return parsed
+    }
+  } catch (_) {}
+  return []
+}
+
+const initialCreds = getActiveUserCredentials()
+const account = ref(initialCreds.id ? { id: initialCreds.id, email: initialCreds.email, name: initialCreds.name, telegram: initialCreds.telegram } : null)
+const profile = reactive({
+  ...emptyProfile(),
+  fullName: initialCreds.name || '',
+  email: initialCreds.email || '',
+  telegram: initialCreds.telegram || '',
+})
+const draft = reactive({ ...profile })
 const storageKey = computed(() => account.value ? `aerobyte-profile:${account.value.id}` : 'aerobyte-profile')
-const storageEmailKey = computed(() => account.value?.email ? `aerobyte-profile:${account.value.email.toLowerCase()}` : null)
+const storageEmailKey = computed(() => (account.value?.email || profile.email) ? `aerobyte-profile:${(account.value?.email || profile.email).toLowerCase()}` : null)
 const historyStorageKey = computed(() => account.value ? `aerobyte-course-history:${account.value.id}` : 'aerobyte-course-history')
-const historyEmailKey = computed(() => account.value?.email ? `aerobyte-course-history:${account.value.email.toLowerCase()}` : null)
+const historyEmailKey = computed(() => (account.value?.email || profile.email) ? `aerobyte-course-history:${(account.value?.email || profile.email).toLowerCase()}` : null)
 const isEditing = ref(false)
 const notice = ref('')
 const noticeType = ref('success')
-const activeSection = ref('profile')
-const printOrders = ref([])
+const activeSection = ref(
+  ['orders', 'history', 'settings', 'terms', 'privacy'].includes(router.currentRoute.value.query.section)
+    ? router.currentRoute.value.query.section
+    : 'profile'
+)
+const printOrders = ref(readCachedPrintOrders())
 const printOrdersLoading = ref(false)
-const storeOrders = ref([])
+const storeOrders = ref(readCachedStoreOrders())
 const ordersLoading = ref(false)
 
 function getPrintStatusBadge(status) {
@@ -1612,8 +1696,11 @@ function getCadFileUrl(file) {
   return '#'
 }
 
-async function loadPrintOrders() {
-  printOrdersLoading.value = true
+async function loadPrintOrders(forceRefresh = false) {
+  if (!printOrders.value.length || forceRefresh) {
+    printOrdersLoading.value = true
+  }
+
   // 1. Read cached orders from localStorage for 0ms hydration
   try {
     const raw = localStorage.getItem('aerobyte_print_orders')
@@ -1626,9 +1713,11 @@ async function loadPrintOrders() {
   } catch (_) {}
 
   try {
-    const userEmail = account.value?.email || profile.email || ''
-    const userTg = account.value?.telegram || profile.telegram || ''
-    const userName = account.value?.name || profile.fullName || ''
+    const creds = getActiveUserCredentials()
+    const userEmail = creds.email || account.value?.email || profile.email || ''
+    const userTg = creds.telegram || account.value?.telegram || profile.telegram || ''
+    const userName = creds.name || account.value?.name || profile.fullName || ''
+    const userId = creds.id || account.value?.id || ''
 
     let serverOrders = []
     try {
@@ -1643,7 +1732,7 @@ async function loadPrintOrders() {
     } catch (e1) {
       try {
         const res2 = await printOrderService.getMyOrders({
-          user_id: account.value?.id,
+          user_id: userId,
           email: userEmail,
           telegram: userTg,
           name: userName,
@@ -1880,8 +1969,14 @@ function copyProfile(target, source) {
 }
 
 onMounted(async () => {
+  let hasLocalProfile = false
+
   // 1. Instant local pre-hydration on tick 0 before any network request
   try {
+    const creds = getActiveUserCredentials()
+    if (creds.name || creds.email || creds.telegram) {
+      hasLocalProfile = true
+    }
     const findCached = () => {
       const direct = localStorage.getItem('aerobyte-profile-current') || localStorage.getItem('aerobyte-profile')
       if (direct) {
@@ -1902,7 +1997,6 @@ onMounted(async () => {
       return null
     }
     const localCached = findCached()
-    let hasLocalProfile = false
     if (localCached) {
       hasLocalProfile = true
       copyProfile(profile, localCached)
@@ -1910,7 +2004,12 @@ onMounted(async () => {
     }
   } catch (_) {}
 
-  // 2. Fetch authenticated session from server
+  // 2. Instantly load orders and history in parallel (0ms delay!)
+  loadPrintOrders()
+  loadStoreOrders()
+  loadCourseHistory()
+
+  // 3. Fetch authenticated session from server
   try {
     const { data } = await accountService.getSession()
     if (!data.authenticated) {
@@ -1920,6 +2019,9 @@ onMounted(async () => {
       }
     } else {
       account.value = data.user
+      // Re-sync with confirmed session user
+      loadPrintOrders()
+      loadStoreOrders()
     }
 
     const pendingEnrollRedirect = sessionStorage.getItem('aerobyte_enroll_redirect')
@@ -1943,21 +2045,21 @@ onMounted(async () => {
     } catch (_) {}
 
     // Server data takes precedence if present
-    if (account.value.name) profile.fullName = account.value.name
-    if (account.value.email) profile.email = account.value.email
-    if (account.value.avatar_url) profile.avatarUrl = account.value.avatar_url
-    if (account.value.phone) profile.phone = account.value.phone
-    if (account.value.telegram) profile.telegram = account.value.telegram
-    if (account.value.date_of_birth) profile.dateOfBirth = account.value.date_of_birth
-    if (account.value.gender) profile.gender = account.value.gender
-    if (account.value.location) profile.location = account.value.location
-    if (account.value.qualification) profile.qualification = account.value.qualification
-    if (account.value.qualification_other) profile.qualificationOther = account.value.qualification_other
-    if (account.value.occupation) profile.occupation = account.value.occupation
-    if (account.value.experience) profile.experience = account.value.experience
+    if (account.value?.name) profile.fullName = account.value.name
+    if (account.value?.email) profile.email = account.value.email
+    if (account.value?.avatar_url) profile.avatarUrl = account.value.avatar_url
+    if (account.value?.phone) profile.phone = account.value.phone
+    if (account.value?.telegram) profile.telegram = account.value.telegram
+    if (account.value?.date_of_birth) profile.dateOfBirth = account.value.date_of_birth
+    if (account.value?.gender) profile.gender = account.value.gender
+    if (account.value?.location) profile.location = account.value.location
+    if (account.value?.qualification) profile.qualification = account.value.qualification
+    if (account.value?.qualification_other) profile.qualificationOther = account.value.qualification_other
+    if (account.value?.occupation) profile.occupation = account.value.occupation
+    if (account.value?.experience) profile.experience = account.value.experience
 
     // If server had missing fields that were restored from local cache, auto-sync back to server!
-    const hasLocalRestore = (
+    const hasLocalRestore = account.value && (
       (!account.value.phone && profile.phone) ||
       (!account.value.telegram && profile.telegram) ||
       (!account.value.date_of_birth && profile.dateOfBirth) ||
@@ -1993,9 +2095,6 @@ onMounted(async () => {
     } catch (_) {}
 
     copyProfile(draft, profile)
-    loadCourseHistory()
-    loadPrintOrders()
-    loadStoreOrders()
   } catch (error) {
     console.warn('Could not load session from server, maintaining cached state:', error)
     if (!profile.fullName && !profile.email) {
