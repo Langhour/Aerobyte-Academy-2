@@ -1230,6 +1230,209 @@
           </div>
         </section>
 
+        <section v-else-if="activeSection === 'store_orders'" class="w-full pb-8 space-y-6">
+          <!-- Top KPI / Overview Banner -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 sm:p-5 shadow-card flex items-center gap-3.5">
+              <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-900/40">
+                <ShoppingBag class="w-5 h-5" />
+              </div>
+              <div>
+                <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">{{ t('Total Store Orders') }}</p>
+                <p class="text-xl font-extrabold text-navy-900 dark:text-white mt-0.5">{{ storeOrdersList.length }}</p>
+                <p class="text-[11px] text-blue-600 dark:text-blue-400 font-semibold">{{ t('From /store catalog') }}</p>
+              </div>
+            </div>
+
+            <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 sm:p-5 shadow-card flex items-center gap-3.5">
+              <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 border border-amber-100 dark:border-amber-900/40">
+                <Clock class="w-5 h-5" />
+              </div>
+              <div>
+                <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">{{ t('Pending Fulfillment') }}</p>
+                <p class="text-xl font-extrabold text-navy-900 dark:text-white mt-0.5">{{ pendingStoreOrdersCount }}</p>
+                <p class="text-[11px] text-amber-600 dark:text-amber-400 font-semibold">{{ t('Awaiting dispatch') }}</p>
+              </div>
+            </div>
+
+            <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 sm:p-5 shadow-card flex items-center gap-3.5">
+              <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-900/40">
+                <CreditCard class="w-5 h-5" />
+              </div>
+              <div>
+                <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">{{ t('Store Order Revenue') }}</p>
+                <p class="text-xl font-extrabold text-navy-900 dark:text-white mt-0.5">${{ storeRevenueTotal.toFixed(2) }}</p>
+                <p class="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold">{{ t('Hardware & accessories') }}</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Store Orders Table Card -->
+          <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6 shadow-card space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-3">
+              <div>
+                <h3 class="text-base font-extrabold text-navy-900 dark:text-white flex items-center gap-2">
+                  <span>{{ t('Store Hardware Orders') }}</span>
+                  <span class="px-2 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 text-[11px] font-black border border-blue-200/50">
+                    {{ filteredStoreOrders.length }}
+                  </span>
+                </h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{{ t('Customer hardware purchases, item lists, shipping addresses, and order statuses.') }}</p>
+              </div>
+
+              <div class="flex flex-wrap items-center gap-2">
+                <div class="relative">
+                  <Search class="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <input
+                    v-model.trim="storeOrderSearch"
+                    type="text"
+                    placeholder="Search order, customer, phone..."
+                    class="pl-8 pr-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-navy-800 dark:focus:ring-indigo-500 w-48 sm:w-56"
+                  />
+                </div>
+
+                <select
+                  v-model="storeOrderStatusFilter"
+                  class="px-2.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-200 focus:outline-none"
+                >
+                  <option value="all">All Statuses</option>
+                  <option value="pending">Pending</option>
+                  <option value="processing">Processing</option>
+                  <option value="shipped">Shipped</option>
+                  <option value="completed">Completed</option>
+                  <option value="cancelled">Cancelled</option>
+                </select>
+
+                <button
+                  type="button"
+                  @click="fetchStoreOrders"
+                  :disabled="isLoadingStoreOrders"
+                  class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer transition disabled:opacity-50"
+                  title="Refresh Store Orders"
+                >
+                  <RefreshCw class="w-3.5 h-3.5" :class="{ 'animate-spin': isLoadingStoreOrders }" />
+                  <span class="hidden sm:inline">{{ t('Refresh') }}</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Orders Table -->
+            <div class="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-800">
+              <table class="w-full text-left border-collapse text-xs">
+                <thead>
+                  <tr class="bg-slate-50/80 dark:bg-slate-800/50 text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-800">
+                    <th class="py-3 px-4">Order ID</th>
+                    <th class="py-3 px-4">Customer & Contact</th>
+                    <th class="py-3 px-4">Fulfillment / Address</th>
+                    <th class="py-3 px-4">Items</th>
+                    <th class="py-3 px-4 text-center">Total</th>
+                    <th class="py-3 px-4 text-center">Status</th>
+                    <th class="py-3 px-4 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+                  <tr
+                    v-for="order in filteredStoreOrders"
+                    :key="order.id"
+                    class="hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition"
+                  >
+                    <td class="py-3.5 px-4 font-mono font-bold text-slate-700 dark:text-slate-200">
+                      <span>{{ order.id }}</span>
+                      <p class="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5 font-sans font-normal">
+                        {{ formatTimeAgo(order.created_at || order.date) }}
+                      </p>
+                    </td>
+
+                    <td class="py-3.5 px-4">
+                      <p class="font-bold text-navy-900 dark:text-white">{{ order.customer_name || 'Customer' }}</p>
+                      <div class="flex flex-wrap items-center gap-1.5 mt-0.5">
+                        <span class="text-[10px] text-slate-500 dark:text-slate-400 font-mono">{{ order.phone || order.user_email }}</span>
+                        <a
+                          v-if="order.telegram"
+                          :href="'https://t.me/' + order.telegram.replace('@', '')"
+                          target="_blank"
+                          rel="noopener"
+                          class="text-[10px] font-bold text-blue-600 hover:text-blue-700 dark:text-blue-400 underline inline-flex items-center gap-0.5 font-mono"
+                        >
+                          {{ order.telegram }}
+                          <ExternalLink class="w-2.5 h-2.5" />
+                        </a>
+                      </div>
+                    </td>
+
+                    <td class="py-3.5 px-4">
+                      <span
+                        class="inline-block px-1.5 py-0.5 rounded text-[10px] font-bold uppercase"
+                        :class="order.fulfillment === 'pickup' ? 'bg-purple-50 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300' : 'bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300'"
+                      >
+                        {{ order.fulfillment || 'delivery' }}
+                      </span>
+                      <p v-if="order.address" class="text-[11px] text-slate-500 dark:text-slate-400 truncate max-w-[180px] mt-0.5" :title="order.address">
+                        {{ order.address }}
+                      </p>
+                    </td>
+
+                    <td class="py-3.5 px-4">
+                      <div class="space-y-0.5 max-w-[220px]">
+                        <p v-for="(it, idx) in (order.items || []).slice(0, 2)" :key="idx" class="truncate font-semibold text-slate-700 dark:text-slate-200">
+                          {{ it.quantity }}x {{ it.name || it.title }}
+                        </p>
+                        <p v-if="(order.items || []).length > 2" class="text-[10px] text-slate-400 dark:text-slate-500">
+                          +{{ order.items.length - 2 }} more items
+                        </p>
+                      </div>
+                    </td>
+
+                    <td class="py-3.5 px-4 text-center font-bold text-emerald-600 dark:text-emerald-400">
+                      ${{ Number(order.total || 0).toFixed(2) }}
+                    </td>
+
+                    <td class="py-3 px-4 min-w-[140px] text-center">
+                      <CustomSelect
+                        size="sm"
+                        :model-value="(order.status || 'pending').toLowerCase()"
+                        :options="storeOrderStatusOptions"
+                        :trigger-class="[
+                          'font-bold text-[11px] rounded-lg shadow-2xs',
+                          (order.status || '').toLowerCase() === 'pending' ? 'border-amber-300 bg-amber-50 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-700' :
+                          (order.status || '').toLowerCase() === 'processing' ? 'border-blue-300 bg-blue-50 text-blue-800 dark:bg-blue-950/60 dark:text-blue-300 dark:border-blue-700' :
+                          (order.status || '').toLowerCase() === 'shipped' ? 'border-purple-300 bg-purple-50 text-purple-800 dark:bg-purple-950/60 dark:text-purple-300 dark:border-purple-700' :
+                          (order.status || '').toLowerCase() === 'completed' ? 'border-emerald-300 bg-emerald-50 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-700' :
+                          'border-slate-300 bg-slate-50 text-slate-800 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700'
+                        ]"
+                        @change="updateStoreOrderStatus(order, $event)"
+                      />
+                    </td>
+
+                    <td class="py-3.5 px-4 text-right">
+                      <button
+                        type="button"
+                        @click="openStoreOrderDetails(order)"
+                        class="px-2.5 py-1.5 rounded-lg bg-navy-50 hover:bg-navy-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-navy-900 dark:text-slate-200 font-bold text-[11px] inline-flex items-center gap-1.5 transition cursor-pointer"
+                      >
+                        <Eye class="w-3.5 h-3.5 text-navy-800 dark:text-blue-400" />
+                        <span>{{ t('Details') }}</span>
+                      </button>
+                    </td>
+                  </tr>
+
+                  <tr v-if="filteredStoreOrders.length === 0">
+                    <td colspan="7" class="py-12 text-center">
+                      <div class="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-400 flex items-center justify-center mx-auto mb-3">
+                        <ShoppingBag class="w-6 h-6" />
+                      </div>
+                      <h4 class="text-sm font-bold text-navy-900 dark:text-white">{{ t('No Store Orders Found') }}</h4>
+                      <p class="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto mt-1">
+                        {{ t('Customer purchases from /store will be recorded and displayed here.') }}
+                      </p>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
         <section v-else-if="activeSection === 'payments'" class="w-full pb-8">
           <div class="overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-card">
             <div class="border-b border-slate-100 dark:border-slate-800 p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -2814,236 +3017,283 @@
         </div>
 
         <!-- ======================================================== -->
-        <!-- SECTION: STORE HARDWARE ORDERS                           -->
+        <!-- SECTION: AERO FLY CONTROL CENTER                         -->
         <!-- ======================================================== -->
-        <section v-else-if="activeSection === 'store_orders'" class="w-full pb-8 space-y-6">
+        <section v-else-if="activeSection === 'aerofly'" class="w-full pb-8 space-y-6">
           <!-- Top KPI / Overview Banner -->
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 sm:p-5 shadow-card flex items-center gap-3.5">
               <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-900/40">
-                <ShoppingBag class="w-5 h-5" />
+                <Calendar class="w-5 h-5" />
               </div>
               <div>
-                <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">{{ t('Total Store Orders') }}</p>
-                <p class="text-xl font-extrabold text-navy-900 dark:text-white mt-0.5">{{ storeOrdersList.length }}</p>
-                <p class="text-[11px] text-blue-600 dark:text-blue-400 font-semibold">{{ t('From /store catalog') }}</p>
+                <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">{{ t('Flight Sessions') }}</p>
+                <p class="text-xl font-extrabold text-navy-900 dark:text-white mt-0.5">{{ flightSessionsList.length }}</p>
+                <p class="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold">{{ t('Active Weekly Meetups') }}</p>
               </div>
             </div>
 
             <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 sm:p-5 shadow-card flex items-center gap-3.5">
-              <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 border border-amber-100 dark:border-amber-900/40">
-                <Clock class="w-5 h-5" />
+              <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-900/40">
+                <Users class="w-5 h-5" />
               </div>
               <div>
-                <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">{{ t('Pending Fulfillment') }}</p>
-                <p class="text-xl font-extrabold text-navy-900 dark:text-white mt-0.5">{{ pendingStoreOrdersCount }}</p>
-                <p class="text-[11px] text-amber-600 dark:text-amber-400 font-semibold">{{ t('Awaiting dispatch') }}</p>
+                <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">{{ t('Pilot Community') }}</p>
+                <p class="text-xl font-extrabold text-navy-900 dark:text-white mt-0.5">{{ aeroFlyConfig.pilotCount }}</p>
+                <p class="text-[11px] text-indigo-600 dark:text-indigo-400 font-semibold">{{ t('Cambodia Drone Pilots') }}</p>
               </div>
             </div>
 
             <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 sm:p-5 shadow-card flex items-center gap-3.5">
               <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-900/40">
-                <CreditCard class="w-5 h-5" />
+                <MapPin class="w-5 h-5" />
               </div>
-              <div>
-                <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">{{ t('Store Order Revenue') }}</p>
-                <p class="text-xl font-extrabold text-navy-900 dark:text-white mt-0.5">${{ storeRevenueTotal.toFixed(2) }}</p>
-                <p class="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold">{{ t('Hardware & accessories') }}</p>
+              <div class="min-w-0 flex-1">
+                <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">{{ t('Flight Lab') }}</p>
+                <p class="text-xs font-bold text-navy-900 dark:text-white truncate mt-0.5">Ta Khmau Lab & Meadow</p>
+                <p class="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block animate-pulse"></span>
+                  {{ t('Operational & Open') }}
+                </p>
               </div>
             </div>
           </div>
 
-          <!-- Store Orders Table Card -->
-          <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6 shadow-card space-y-4">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-3">
+          <!-- Flight Sessions Manager Card -->
+          <div id="admin-aerofly-sessions" class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6 shadow-card space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-4">
               <div>
-                <h3 class="text-base font-extrabold text-navy-900 dark:text-white flex items-center gap-2">
-                  <span>{{ t('Store Hardware Orders') }}</span>
-                  <span class="px-2 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 text-[11px] font-black border border-blue-200/50">
-                    {{ filteredStoreOrders.length }}
-                  </span>
-                </h3>
-                <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{{ t('Customer hardware purchases, item lists, shipping addresses, and order statuses.') }}</p>
+                <h3 class="text-base sm:text-lg font-extrabold text-navy-900 dark:text-white">{{ t('Flight Sessions Manager') }}</h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{{ t('Control schedule, locations, and capacity for community drone flights on /fly.') }}</p>
               </div>
-
-              <div class="flex flex-wrap items-center gap-2">
-                <div class="relative">
-                  <Search class="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-                  <input
-                    v-model.trim="storeOrderSearch"
-                    type="text"
-                    placeholder="Search order, customer, phone..."
-                    class="pl-8 pr-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-navy-800 dark:focus:ring-indigo-500 w-48 sm:w-56"
-                  />
-                </div>
-
-                <select
-                  v-model="storeOrderStatusFilter"
-                  class="px-2.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-200 focus:outline-none"
-                >
-                  <option value="all">All Statuses</option>
-                  <option value="pending">Pending</option>
-                  <option value="processing">Processing</option>
-                  <option value="shipped">Shipped</option>
-                  <option value="completed">Completed</option>
-                  <option value="cancelled">Cancelled</option>
-                </select>
-
+              <div class="flex items-center gap-2">
                 <button
                   type="button"
-                  @click="fetchStoreOrders"
-                  :disabled="isLoadingStoreOrders"
-                  class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer transition disabled:opacity-50"
-                  title="Refresh Store Orders"
+                  @click="openNewSessionModal"
+                  class="flex items-center gap-1.5 rounded-xl bg-navy-900 dark:bg-indigo-600 text-white px-3.5 py-2 text-xs font-bold hover:bg-navy-800 dark:hover:bg-indigo-500 shadow-xs transition cursor-pointer"
                 >
-                  <RefreshCw class="w-3.5 h-3.5" :class="{ 'animate-spin': isLoadingStoreOrders }" />
-                  <span class="hidden sm:inline">{{ t('Refresh') }}</span>
+                  <Plus class="w-3.5 h-3.5" />
+                  <span>{{ t('Add Flight Session') }}</span>
                 </button>
+                <RouterLink
+                  to="/fly"
+                  target="_blank"
+                  class="flex items-center gap-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition"
+                >
+                  <span>{{ t('View Public Page') }}</span>
+                  <ExternalLink class="w-3.5 h-3.5 text-slate-400" />
+                </RouterLink>
               </div>
             </div>
 
-            <!-- Orders Table -->
+            <!-- Sessions Table -->
             <div class="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-800">
               <table class="w-full text-left border-collapse text-xs">
                 <thead>
                   <tr class="bg-slate-50/80 dark:bg-slate-800/50 text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-800">
-                    <th class="py-3 px-4">Order ID</th>
-                    <th class="py-3 px-4">Customer & Contact</th>
-                    <th class="py-3 px-4">Fulfillment / Address</th>
-                    <th class="py-3 px-4">Items</th>
-                    <th class="py-3 px-4 text-center">Total</th>
-                    <th class="py-3 px-4 text-center">Status</th>
-                    <th class="py-3 px-4 text-right">Actions</th>
+                    <th class="py-3 px-4">{{ t('Session Title') }}</th>
+                    <th class="py-3 px-4">{{ t('Date & Time') }}</th>
+                    <th class="py-3 px-4">{{ t('Location') }}</th>
+                    <th class="py-3 px-4 text-center">{{ t('Spots') }}</th>
+                    <th class="py-3 px-4 text-center">{{ t('RSVP Status') }}</th>
+                    <th class="py-3 px-4 text-right">{{ t('Actions') }}</th>
                   </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
                   <tr
-                    v-for="order in filteredStoreOrders"
-                    :key="order.id"
+                    v-for="session in flightSessionsList"
+                    :key="session.id"
                     class="hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition"
                   >
-                    <td class="py-3.5 px-4 font-mono font-bold text-slate-700 dark:text-slate-200">
-                      <span>{{ order.id }}</span>
-                      <p class="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5 font-sans font-normal">
-                        {{ formatTimeAgo(order.created_at || order.date) }}
-                      </p>
+                    <td class="py-3 px-4 font-bold text-navy-900 dark:text-white">
+                      {{ session.title }}
                     </td>
-
-                    <td class="py-3.5 px-4">
-                      <p class="font-bold text-navy-900 dark:text-white">{{ order.customer_name || 'Customer' }}</p>
-                      <div class="flex flex-wrap items-center gap-1.5 mt-0.5">
-                        <span class="text-[10px] text-slate-500 dark:text-slate-400 font-mono">{{ order.phone || order.user_email }}</span>
-                        <a
-                          v-if="order.telegram"
-                          :href="'https://t.me/' + order.telegram.replace('@', '')"
-                          target="_blank"
-                          rel="noopener"
-                          class="text-[10px] font-bold text-blue-600 hover:text-blue-700 dark:text-blue-400 underline inline-flex items-center gap-0.5 font-mono"
-                        >
-                          {{ order.telegram }}
-                          <ExternalLink class="w-2.5 h-2.5" />
-                        </a>
-                      </div>
+                    <td class="py-3 px-4 text-slate-600 dark:text-slate-300 font-medium">
+                      {{ session.time }}
                     </td>
-
-                    <td class="py-3.5 px-4">
-                      <span
-                        class="inline-block px-1.5 py-0.5 rounded text-[10px] font-bold uppercase"
-                        :class="order.fulfillment === 'pickup' ? 'bg-purple-50 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300' : 'bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300'"
-                      >
-                        {{ order.fulfillment || 'delivery' }}
+                    <td class="py-3 px-4 text-slate-500 dark:text-slate-400">
+                      {{ session.location }}
+                    </td>
+                    <td class="py-3 px-4 text-center">
+                      <span class="inline-block px-2.5 py-0.5 rounded-full font-bold text-[11px] bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+                        {{ session.spots }} / {{ session.maxSpots }}
                       </span>
-                      <p v-if="order.address" class="text-[11px] text-slate-500 dark:text-slate-400 truncate max-w-[180px] mt-0.5" :title="order.address">
-                        {{ order.address }}
-                      </p>
                     </td>
-
-                    <td class="py-3.5 px-4">
-                      <div class="space-y-0.5 max-w-[220px]">
-                        <p v-for="(it, idx) in (order.items || []).slice(0, 2)" :key="idx" class="truncate font-semibold text-slate-700 dark:text-slate-200">
-                          {{ it.quantity }}x {{ it.name || it.title }}
-                        </p>
-                        <p v-if="(order.items || []).length > 2" class="text-[10px] text-slate-400 dark:text-slate-500">
-                          +{{ order.items.length - 2 }} more items
-                        </p>
-                      </div>
-                    </td>
-
-                    <td class="py-3.5 px-4 text-center font-bold text-emerald-600 dark:text-emerald-400">
-                      ${{ Number(order.total || 0).toFixed(2) }}
-                    </td>
-
-                    <td class="py-3 px-4 min-w-[140px] text-center">
-                      <CustomSelect
-                        size="sm"
-                        :model-value="(order.status || 'pending').toLowerCase()"
-                        :options="storeOrderStatusOptions"
-                        :trigger-class="[
-                          'font-bold text-[11px] rounded-lg shadow-2xs',
-                          (order.status || '').toLowerCase() === 'pending' ? 'border-amber-300 bg-amber-50 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-700' :
-                          (order.status || '').toLowerCase() === 'processing' ? 'border-blue-300 bg-blue-50 text-blue-800 dark:bg-blue-950/60 dark:text-blue-300 dark:border-blue-700' :
-                          (order.status || '').toLowerCase() === 'shipped' ? 'border-purple-300 bg-purple-50 text-purple-800 dark:bg-purple-950/60 dark:text-purple-300 dark:border-purple-700' :
-                          (order.status || '').toLowerCase() === 'completed' ? 'border-emerald-300 bg-emerald-50 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-700' :
-                          'border-slate-300 bg-slate-50 text-slate-800 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700'
-                        ]"
-                        @change="updateStoreOrderStatus(order, $event)"
-                      />
-                    </td>
-
-                    <td class="py-3.5 px-4 text-right">
+                    <td class="py-3 px-4 text-center">
                       <button
                         type="button"
-                        @click="openStoreOrderDetails(order)"
-                        class="px-2.5 py-1.5 rounded-lg bg-navy-50 hover:bg-navy-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-navy-900 dark:text-slate-200 font-bold text-[11px] inline-flex items-center gap-1.5 transition cursor-pointer"
+                        @click="toggleSessionStatus(session)"
+                        class="px-2.5 py-1 rounded-full text-[10px] font-bold transition cursor-pointer border"
+                        :class="session.status === 'Open RSVP'
+                          ? 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800'
+                          : session.status === 'Full'
+                            ? 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-800'
+                            : 'bg-slate-100 text-slate-600 border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700'"
+                        :title="t('Click to toggle status')"
                       >
-                        <Eye class="w-3.5 h-3.5 text-navy-800 dark:text-blue-400" />
-                        <span>{{ t('Details') }}</span>
+                        {{ t(session.status) }}
                       </button>
                     </td>
-                  </tr>
-
-                  <tr v-if="filteredStoreOrders.length === 0">
-                    <td colspan="7" class="py-12 text-center">
-                      <div class="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-400 flex items-center justify-center mx-auto mb-3">
-                        <ShoppingBag class="w-6 h-6" />
-                      </div>
-                      <h4 class="text-sm font-bold text-navy-900 dark:text-white">{{ t('No Store Orders Found') }}</h4>
-                      <p class="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto mt-1">
-                        {{ t('Customer purchases from /store will be recorded and displayed here.') }}
-                      </p>
+                    <td class="py-3 px-4 text-right space-x-2">
+                      <button
+                        type="button"
+                        @click="openEditSessionModal(session)"
+                        class="p-1 rounded-lg text-slate-500 hover:text-navy-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
+                        :title="t('Edit Flight Session')"
+                      >
+                        <Pencil class="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        type="button"
+                        @click="deleteFlightSession(session.id)"
+                        class="p-1 rounded-lg text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/40 transition cursor-pointer"
+                        :title="t('Delete session')"
+                      >
+                        <Trash2 class="w-3.5 h-3.5" />
+                      </button>
                     </td>
                   </tr>
                 </tbody>
               </table>
             </div>
           </div>
+
+          <!-- Community Hub & Lab Details Card -->
+          <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6 shadow-card space-y-4">
+            <div class="border-b border-slate-100 dark:border-slate-800 pb-3">
+              <h3 class="text-base font-extrabold text-navy-900 dark:text-white">{{ t('Pilot Community Hub') }}</h3>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{{ t('Configure Telegram group links, pilot counter badges, and lab location.') }}</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">{{ t('Community Telegram') }}</label>
+                <input
+                  v-model.trim="aeroFlyConfig.telegram"
+                  type="text"
+                  class="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3.5 py-2.5 text-xs font-medium text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-navy-800 dark:focus:ring-indigo-500"
+                  placeholder="https://t.me/+9o8_5bVa20MyMzdl"
+                />
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">{{ t('Active Pilots Count') }}</label>
+                <input
+                  v-model.trim="aeroFlyConfig.pilotCount"
+                  type="text"
+                  class="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3.5 py-2.5 text-xs font-medium text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-navy-800 dark:focus:ring-indigo-500"
+                  placeholder="2,000+ Pilots"
+                />
+              </div>
+
+              <div class="sm:col-span-2">
+                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">{{ t('Flight Lab Location') }}</label>
+                <input
+                  v-model.trim="aeroFlyConfig.labLocation"
+                  type="text"
+                  class="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3.5 py-2.5 text-xs font-medium text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-navy-800 dark:focus:ring-indigo-500"
+                  placeholder="Ta Khmau Flight & Maker Lab, Kandal, Cambodia"
+                />
+              </div>
+
+              <div class="sm:col-span-2">
+                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">{{ t('Announcement Banner') }}</label>
+                <input
+                  v-model.trim="aeroFlyConfig.announcement"
+                  type="text"
+                  class="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3.5 py-2.5 text-xs font-medium text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-navy-800 dark:focus:ring-indigo-500"
+                  placeholder="Next Community Flight Meetup: Saturday 05:45 AM!"
+                />
+              </div>
+            </div>
+
+            <div class="pt-2 flex justify-end">
+              <button
+                type="button"
+                @click="saveAeroFlyConfig"
+                class="rounded-xl bg-navy-900 dark:bg-indigo-600 text-white px-4 py-2.5 text-xs font-bold hover:bg-navy-800 dark:hover:bg-indigo-500 transition shadow-xs cursor-pointer"
+              >
+                {{ t('Save Changes') }}
+              </button>
+            </div>
+          </div>
         </section>
 
         <!-- ======================================================== -->
-        <!-- SECTION: AERO PRINT (3D PRINT ORDERS)                    -->
+        <!-- SECTION: AERO PRINT CONTROL CENTER                       -->
         <!-- ======================================================== -->
-        <section v-else-if="activeSection === 'aeroprint'" class="w-full pb-8 space-y-6">
+        <!-- AERO PRINT: RATES, FLEET & CUSTOMER CAD ORDERS             -->
+        <!-- ======================================================== -->
+        <section v-else-if="activeSection === 'aeroprint' || activeSection === 'aeroprint_fleet'" class="w-full pb-8 space-y-6">
+          <!-- Aero Print Sub-Navigation Module Tabs -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-3">
+            <div class="flex items-center gap-2">
+              <button
+                type="button"
+                @click="activeSection = 'aeroprint'"
+                class="px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 cursor-pointer"
+                :class="activeSection === 'aeroprint'
+                  ? 'bg-navy-900 dark:bg-indigo-600 text-white shadow-xs'
+                  : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-navy-900 dark:hover:text-white border border-slate-200 dark:border-slate-800'"
+              >
+                <Layers class="w-4 h-4" />
+                <span>{{ t('Material Pricing Rates') }}</span>
+              </button>
+
+              <button
+                type="button"
+                @click="activeSection = 'aeroprint_fleet'"
+                class="px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 cursor-pointer relative"
+                :class="activeSection === 'aeroprint_fleet'
+                  ? 'bg-navy-900 dark:bg-indigo-600 text-white shadow-xs'
+                  : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-navy-900 dark:hover:text-white border border-slate-200 dark:border-slate-800'"
+              >
+                <Sliders class="w-4 h-4" />
+                <span>{{ t('Printer Fleet & Orders') }}</span>
+                <span
+                  v-if="pendingPrintOrdersCount > 0"
+                  class="ml-1 px-1.5 py-0.5 rounded-full text-[10px] font-black"
+                  :class="activeSection === 'aeroprint_fleet' ? 'bg-amber-400 text-navy-900' : 'bg-amber-500 text-white'"
+                >
+                  {{ pendingPrintOrdersCount }}
+                </span>
+              </button>
+            </div>
+
+            <!-- Refresh Orders Button -->
+            <button
+              type="button"
+              @click="fetchPrintOrders"
+              :disabled="isLoadingPrintOrders"
+              class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer transition disabled:opacity-50"
+              title="Refresh Orders"
+            >
+              <RefreshCw class="w-3.5 h-3.5" :class="{ 'animate-spin': isLoadingPrintOrders }" />
+              <span class="hidden sm:inline">{{ t('Refresh Orders') }}</span>
+            </button>
+          </div>
+
           <!-- Top KPI / Overview Banner -->
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 sm:p-5 shadow-card flex items-center gap-3.5">
               <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 border border-purple-100 dark:border-purple-900/40">
-                <Printer class="w-5 h-5" />
+                <Layers class="w-5 h-5" />
               </div>
               <div>
-                <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">{{ t('Print Quote Inquiries') }}</p>
-                <p class="text-xl font-extrabold text-navy-900 dark:text-white mt-0.5">{{ printOrdersList.length }}</p>
-                <p class="text-[11px] text-purple-600 dark:text-purple-400 font-semibold">{{ t('From /print/upload') }}</p>
+                <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">{{ t('Material Fleet') }}</p>
+                <p class="text-xl font-extrabold text-navy-900 dark:text-white mt-0.5">6 Materials</p>
+                <p class="text-[11px] text-purple-600 dark:text-purple-400 font-semibold">PLA, PETG, ABS, Resin, TPU</p>
               </div>
             </div>
 
             <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 sm:p-5 shadow-card flex items-center gap-3.5">
-              <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 border border-amber-100 dark:border-amber-900/40">
-                <Clock class="w-5 h-5" />
+              <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-900/40">
+                <Printer class="w-5 h-5" />
               </div>
               <div>
-                <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">{{ t('Pending Review') }}</p>
-                <p class="text-xl font-extrabold text-navy-900 dark:text-white mt-0.5">{{ pendingPrintOrdersCount }}</p>
-                <p class="text-[11px] text-amber-600 dark:text-amber-400 font-semibold">{{ t('Awaiting Telegram quote') }}</p>
+                <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">{{ t('Printer Fleet Status') }}</p>
+                <p class="text-xl font-extrabold text-navy-900 dark:text-white mt-0.5">5 Machines</p>
+                <p class="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold">{{ printFleetList.filter(p => p.status === 'Operational').length }} Online & Ready</p>
               </div>
             </div>
 
@@ -3052,9 +3302,159 @@
                 <Box class="w-5 h-5" />
               </div>
               <div>
-                <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">{{ t('Customer CAD Models') }}</p>
-                <p class="text-xl font-extrabold text-navy-900 dark:text-white mt-0.5">{{ printOrdersList.reduce((acc, o) => acc + (o.files?.length || 1), 0) }}</p>
-                <p class="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold">{{ t('.STL, .STEP, .OBJ files') }}</p>
+                <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">{{ t('Active Customer Orders') }}</p>
+                <p class="text-xl font-extrabold text-navy-900 dark:text-white mt-0.5">{{ printOrdersList.length }} Orders</p>
+                <p class="text-[11px] text-amber-600 dark:text-amber-400 font-semibold">{{ pendingPrintOrdersCount }} Pending Review</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Material Pricing Rates ($/g) Card (Shown on Rates tab) -->
+          <div
+            v-if="activeSection === 'aeroprint'"
+            class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6 shadow-card space-y-4"
+          >
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-4">
+              <div>
+                <h3 class="text-base sm:text-lg font-extrabold text-navy-900 dark:text-white">{{ t('Material Pricing Rates') }}</h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{{ t('Adjust base setup fees and cost-per-gram ($/g) across all supported filaments and resins.') }}</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <RouterLink
+                  to="/print"
+                  target="_blank"
+                  class="flex items-center gap-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition"
+                >
+                  <span>{{ t('View Public Page') }}</span>
+                  <ExternalLink class="w-3.5 h-3.5 text-slate-400" />
+                </RouterLink>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3.5">
+              <div class="rounded-xl border border-slate-200 dark:border-slate-800 p-3 bg-slate-50/50 dark:bg-slate-800/40">
+                <span class="text-[11px] font-bold text-slate-500 dark:text-slate-400 block mb-1">{{ t('Base Setup Fee') }}</span>
+                <div class="flex items-center gap-1">
+                  <span class="text-xs font-bold text-slate-400">$</span>
+                  <input
+                    v-model.number="printRates.baseFee"
+                    type="number"
+                    step="0.5"
+                    class="w-full text-sm font-extrabold text-navy-900 dark:text-white bg-transparent border-none focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              <div class="rounded-xl border border-slate-200 dark:border-slate-800 p-3 bg-slate-50/50 dark:bg-slate-800/40">
+                <span class="text-[11px] font-bold text-slate-500 dark:text-slate-400 block mb-1">PLA ($/g)</span>
+                <div class="flex items-center gap-1">
+                  <span class="text-xs font-bold text-slate-400">$</span>
+                  <input
+                    v-model.number="printRates.pla"
+                    type="number"
+                    step="0.01"
+                    class="w-full text-sm font-extrabold text-navy-900 dark:text-white bg-transparent border-none focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              <div class="rounded-xl border border-slate-200 dark:border-slate-800 p-3 bg-slate-50/50 dark:bg-slate-800/40">
+                <span class="text-[11px] font-bold text-slate-500 dark:text-slate-400 block mb-1">PETG ($/g)</span>
+                <div class="flex items-center gap-1">
+                  <span class="text-xs font-bold text-slate-400">$</span>
+                  <input
+                    v-model.number="printRates.petg"
+                    type="number"
+                    step="0.01"
+                    class="w-full text-sm font-extrabold text-navy-900 dark:text-white bg-transparent border-none focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              <div class="rounded-xl border border-slate-200 dark:border-slate-800 p-3 bg-slate-50/50 dark:bg-slate-800/40">
+                <span class="text-[11px] font-bold text-slate-500 dark:text-slate-400 block mb-1">ABS ($/g)</span>
+                <div class="flex items-center gap-1">
+                  <span class="text-xs font-bold text-slate-400">$</span>
+                  <input
+                    v-model.number="printRates.abs"
+                    type="number"
+                    step="0.01"
+                    class="w-full text-sm font-extrabold text-navy-900 dark:text-white bg-transparent border-none focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              <div class="rounded-xl border border-slate-200 dark:border-slate-800 p-3 bg-slate-50/50 dark:bg-slate-800/40">
+                <span class="text-[11px] font-bold text-slate-500 dark:text-slate-400 block mb-1">Resin ($/g)</span>
+                <div class="flex items-center gap-1">
+                  <span class="text-xs font-bold text-slate-400">$</span>
+                  <input
+                    v-model.number="printRates.resin"
+                    type="number"
+                    step="0.01"
+                    class="w-full text-sm font-extrabold text-navy-900 dark:text-white bg-transparent border-none focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              <div class="rounded-xl border border-slate-200 dark:border-slate-800 p-3 bg-slate-50/50 dark:bg-slate-800/40">
+                <span class="text-[11px] font-bold text-slate-500 dark:text-slate-400 block mb-1">TPU ($/g)</span>
+                <div class="flex items-center gap-1">
+                  <span class="text-xs font-bold text-slate-400">$</span>
+                  <input
+                    v-model.number="printRates.tpu"
+                    type="number"
+                    step="0.01"
+                    class="w-full text-sm font-extrabold text-navy-900 dark:text-white bg-transparent border-none focus:outline-none"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div class="pt-2 flex justify-end">
+              <button
+                type="button"
+                @click="savePrintRates"
+                class="rounded-xl bg-navy-900 dark:bg-indigo-600 text-white px-4 py-2.5 text-xs font-bold hover:bg-navy-800 dark:hover:bg-indigo-500 transition shadow-xs cursor-pointer"
+              >
+                {{ t('Save Changes') }}
+              </button>
+            </div>
+          </div>
+
+          <!-- Printer Hardware Fleet Status Card -->
+          <div id="admin-aeroprint-fleet" class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6 shadow-card space-y-4">
+            <div class="border-b border-slate-100 dark:border-slate-800 pb-3">
+              <h3 class="text-base font-extrabold text-navy-900 dark:text-white">{{ t('Printer Fleet Status') }}</h3>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{{ t('Live status of active 3D printers in the Ta Khmau hardware lab.') }}</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+              <div
+                v-for="printer in printFleetList"
+                :key="printer.id"
+                class="rounded-xl border p-4 transition-all duration-150 flex flex-col justify-between"
+                :class="printer.status === 'Operational'
+                  ? 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900'
+                  : 'border-amber-200 dark:border-amber-900/60 bg-amber-50/30 dark:bg-amber-950/20'"
+              >
+                <div>
+                  <div class="flex items-center justify-between gap-2 mb-2">
+                    <span class="font-extrabold text-xs text-navy-900 dark:text-white truncate">{{ printer.name }}</span>
+                    <button
+                      type="button"
+                      @click="togglePrinterStatus(printer)"
+                      class="px-2 py-0.5 rounded-full text-[10px] font-bold cursor-pointer border transition"
+                      :class="printer.status === 'Operational'
+                        ? 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800'
+                        : 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-800'"
+                    >
+                      {{ t(printer.status) }}
+                    </button>
+                  </div>
+                  <p class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">{{ printer.tech }}</p>
+                  <p class="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5 font-mono">Bed: {{ printer.bed }}</p>
+                </div>
               </div>
             </div>
           </div>
@@ -3069,28 +3469,13 @@
                     {{ printOrdersList.length }}
                   </span>
                 </h3>
-                <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{{ t('Review user-dropped 3D CAD files, connect via Telegram, and download models directly.') }}</p>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{{ t('Review user-dropped 3D CAD files, view customer details, and download models directly.') }}</p>
               </div>
 
               <div class="flex items-center gap-2">
-                <button
-                  type="button"
-                  @click="fetchPrintOrders"
-                  :disabled="isLoadingPrintOrders"
-                  class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer transition disabled:opacity-50"
-                  title="Refresh Print Inquiries"
-                >
-                  <RefreshCw class="w-3.5 h-3.5" :class="{ 'animate-spin': isLoadingPrintOrders }" />
-                  <span class="hidden sm:inline">{{ t('Refresh') }}</span>
-                </button>
-                <RouterLink
-                  to="/print"
-                  target="_blank"
-                  class="flex items-center gap-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition"
-                >
-                  <span>{{ t('Public Page') }}</span>
-                  <ExternalLink class="w-3.5 h-3.5 text-slate-400" />
-                </RouterLink>
+                <span class="text-xs text-slate-400 dark:text-slate-500 hidden sm:inline">
+                  {{ pendingPrintOrdersCount }} pending review
+                </span>
               </div>
             </div>
 
@@ -3098,9 +3483,11 @@
               <table class="w-full text-left border-collapse text-xs">
                 <thead>
                   <tr class="bg-slate-50/80 dark:bg-slate-800/50 text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-800">
-                    <th class="py-3 px-4">Inquiry ID</th>
+                    <th class="py-3 px-4">ID</th>
                     <th class="py-3 px-4">{{ t('Customer & Contact') }}</th>
-                    <th class="py-3 px-4">{{ t('CAD Files & Requirements') }}</th>
+                    <th class="py-3 px-4">{{ t('Dropped Files & Specs') }}</th>
+                    <th class="py-3 px-4 text-center">{{ t('Weight') }}</th>
+                    <th class="py-3 px-4 text-center">{{ t('Est. Price') }}</th>
                     <th class="py-3 px-4 text-center">{{ t('Status') }}</th>
                     <th class="py-3 px-4 text-right">{{ t('Actions') }}</th>
                   </tr>
@@ -3121,19 +3508,9 @@
 
                     <!-- Customer Contact & Telegram -->
                     <td class="py-3.5 px-4">
-                      <p class="font-bold text-navy-900 dark:text-white">{{ order.customer_name || order.customer || 'Customer' }}</p>
+                      <p class="font-bold text-navy-900 dark:text-white">{{ order.customer_name || order.customer }}</p>
                       <div class="flex flex-wrap items-center gap-1.5 mt-0.5">
-                        <span class="text-[10px] text-slate-500 dark:text-slate-400 font-mono">{{ order.phone || order.user_email || 'No phone' }}</span>
-                        <a
-                          v-if="order.telegram"
-                          :href="'https://t.me/' + order.telegram.replace('@', '')"
-                          target="_blank"
-                          rel="noopener"
-                          class="text-[10px] font-bold text-blue-600 hover:text-blue-700 dark:text-blue-400 underline inline-flex items-center gap-0.5 font-mono"
-                        >
-                          {{ order.telegram }}
-                          <ExternalLink class="w-2.5 h-2.5" />
-                        </a>
+                        <span class="text-[10px] text-slate-500 dark:text-slate-400 font-mono">{{ order.telegram || order.phone }}</span>
                         <span
                           v-if="order.qr_file_url"
                           class="inline-flex items-center gap-1 px-1.5 py-0.2 rounded bg-emerald-50 dark:bg-emerald-950/50 text-[9px] font-bold text-emerald-600 dark:text-emerald-400 border border-emerald-200/50"
@@ -3145,26 +3522,32 @@
 
                     <!-- Dropped 3D Files & Specification -->
                     <td class="py-3.5 px-4">
-                      <div class="space-y-1 max-w-[260px]">
-                        <div class="flex items-center gap-2">
-                          <span
-                            v-if="order.files && order.files.length"
-                            class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/60 text-[10px] font-bold text-blue-600 dark:text-blue-400 border border-blue-200/50"
-                          >
-                            <Box class="w-2.5 h-2.5" />
-                            <span>{{ order.files.length }} {{ order.files.length === 1 ? 'file' : 'files' }}</span>
-                          </span>
-                          <span class="text-[11px] font-semibold text-slate-700 dark:text-slate-200 truncate">
-                            {{ order.files && order.files[0] ? (order.files[0].original_name || order.files[0].name) : (order.part || '3D Model') }}
-                          </span>
-                        </div>
-                        <p v-if="order.notes" class="text-[10px] text-slate-500 dark:text-slate-400 truncate italic" :title="order.notes">
-                          "{{ order.notes }}"
-                        </p>
+                      <p class="font-semibold text-slate-700 dark:text-slate-200 truncate max-w-[200px]" :title="order.part">
+                        {{ order.part }}
+                      </p>
+                      <div class="flex items-center gap-2 mt-0.5">
+                        <span class="text-[10px] text-slate-500 dark:text-slate-400">{{ order.material }}</span>
+                        <span
+                          v-if="order.files && order.files.length"
+                          class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/60 text-[10px] font-bold text-blue-600 dark:text-blue-400 border border-blue-200/50"
+                        >
+                          <Box class="w-2.5 h-2.5" />
+                          <span>{{ order.files.length }} {{ order.files.length === 1 ? 'file' : 'files' }}</span>
+                        </span>
                       </div>
                     </td>
 
-                    <!-- Status Dropdown -->
+                    <!-- Weight -->
+                    <td class="py-3.5 px-4 text-center font-mono font-semibold text-slate-600 dark:text-slate-300">
+                      {{ order.weight }}
+                    </td>
+
+                    <!-- Price -->
+                    <td class="py-3.5 px-4 text-center font-bold text-emerald-600 dark:text-emerald-400">
+                      ${{ (order.price || order.estimated_price || 0).toFixed(2) }}
+                    </td>
+
+                    <!-- Status Dropdown (CustomSelect with UX/UI) -->
                     <td class="py-3 px-4 min-w-[160px] text-center">
                       <CustomSelect
                         size="sm"
@@ -3181,7 +3564,7 @@
                       />
                     </td>
 
-                    <!-- Action Buttons -->
+                    <!-- Action Buttons: Details Modal, Direct Download, Delete -->
                     <td class="py-3.5 px-4 text-right">
                       <div class="flex items-center justify-end gap-1.5">
                         <button
@@ -3197,9 +3580,9 @@
                         <a
                           v-if="order.files && order.files[0]"
                           :href="getPrintFileDownloadUrl(order.files[0])"
-                          :download="order.files[0].original_name || order.files[0].name"
+                          :download="order.files[0].original_name"
                           class="p-1.5 rounded-lg text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 border border-emerald-200/50 dark:border-emerald-800/50 transition cursor-pointer"
-                          :title="'Download ' + (order.files[0].original_name || order.files[0].name)"
+                          :title="'Download ' + order.files[0].original_name"
                         >
                           <Download class="w-3.5 h-3.5" />
                         </a>
@@ -3215,18 +3598,6 @@
                       </div>
                     </td>
                   </tr>
-
-                  <tr v-if="printOrdersList.length === 0">
-                    <td colspan="5" class="py-12 text-center">
-                      <div class="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-400 flex items-center justify-center mx-auto mb-3">
-                        <Printer class="w-6 h-6" />
-                      </div>
-                      <h4 class="text-sm font-bold text-navy-900 dark:text-white">{{ t('No Print Inquiries Yet') }}</h4>
-                      <p class="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto mt-1">
-                        {{ t('Customer-dropped 3D CAD files from /print/upload will appear here for review and quote fulfillment.') }}
-                      </p>
-                    </td>
-                  </tr>
                 </tbody>
               </table>
             </div>
@@ -3234,6 +3605,181 @@
         </section>
       </main>
     </div>
+  <div
+    v-if="storeOrderModalOpen && selectedStoreOrder"
+    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-950/65 dark:bg-black/75 backdrop-blur-xs"
+  >
+    <div class="relative w-full max-w-2xl max-h-[90vh] flex flex-col rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden">
+      <!-- Header -->
+      <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 px-6 py-4 bg-slate-50/50 dark:bg-slate-800/40">
+        <div class="flex items-center gap-3">
+          <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-500/10 dark:bg-blue-400/15 text-blue-600 dark:text-blue-400 font-black">
+            <ShoppingBag class="w-5 h-5" />
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h3 class="text-base font-extrabold text-navy-900 dark:text-white">
+                {{ selectedStoreOrder.id }}
+              </h3>
+              <span
+                class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase"
+                :class="{
+                  'bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300': (selectedStoreOrder.status || '').toLowerCase() === 'pending',
+                  'bg-blue-100 text-blue-800 dark:bg-blue-950/60 dark:text-blue-300': (selectedStoreOrder.status || '').toLowerCase() === 'processing',
+                  'bg-purple-100 text-purple-800 dark:bg-purple-950/60 dark:text-purple-300': (selectedStoreOrder.status || '').toLowerCase() === 'shipped',
+                  'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300': (selectedStoreOrder.status || '').toLowerCase() === 'completed',
+                  'bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-300': (selectedStoreOrder.status || '').toLowerCase() === 'cancelled',
+                }"
+              >
+                {{ selectedStoreOrder.status }}
+              </span>
+            </div>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+              Placed on {{ formatCambodiaTime(selectedStoreOrder.created_at || selectedStoreOrder.date) }}
+            </p>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          @click="storeOrderModalOpen = false"
+          class="p-2 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer transition"
+        >
+          <X class="w-5 h-5" />
+        </button>
+      </div>
+
+      <!-- Body -->
+      <div class="overflow-y-auto p-6 space-y-5 text-xs">
+        <!-- Customer Details -->
+        <div class="rounded-xl border border-slate-200 dark:border-slate-800 p-4 bg-slate-50/50 dark:bg-slate-800/30 space-y-3">
+          <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+            {{ t('Customer & Delivery Details') }}
+          </h4>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <span class="block text-[11px] text-slate-500 dark:text-slate-400">{{ t('Customer Name') }}</span>
+              <p class="font-bold text-navy-900 dark:text-white mt-0.5 text-sm">
+                {{ selectedStoreOrder.customer_name || 'Customer' }}
+              </p>
+            </div>
+            <div>
+              <span class="block text-[11px] text-slate-500 dark:text-slate-400">{{ t('Email') }}</span>
+              <p class="font-semibold text-slate-700 dark:text-slate-300 mt-0.5">
+                {{ selectedStoreOrder.user_email || 'Guest' }}
+              </p>
+            </div>
+            <div>
+              <span class="block text-[11px] text-slate-500 dark:text-slate-400">{{ t('Phone Number') }}</span>
+              <p class="font-bold text-navy-900 dark:text-white font-mono mt-0.5">
+                {{ selectedStoreOrder.phone || 'N/A' }}
+              </p>
+            </div>
+            <div>
+              <span class="block text-[11px] text-slate-500 dark:text-slate-400">{{ t('Telegram Handle') }}</span>
+              <div class="flex items-center gap-1.5 mt-0.5">
+                <p class="font-bold text-navy-900 dark:text-white font-mono">
+                  {{ selectedStoreOrder.telegram || 'N/A' }}
+                </p>
+                <a
+                  v-if="selectedStoreOrder.telegram"
+                  :href="'https://t.me/' + selectedStoreOrder.telegram.replace('@', '')"
+                  target="_blank"
+                  rel="noopener"
+                  class="text-[10px] font-bold text-blue-600 hover:text-blue-700 dark:text-blue-400 underline inline-flex items-center gap-0.5"
+                >
+                  <span>Chat</span>
+                  <ExternalLink class="w-3 h-3" />
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-3 border-t border-slate-200 dark:border-slate-700/60 grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <span class="block text-[11px] text-slate-500 dark:text-slate-400">{{ t('Fulfillment Method') }}</span>
+              <span class="inline-block mt-1 px-2 py-0.5 rounded text-[11px] font-bold uppercase bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200">
+                {{ selectedStoreOrder.fulfillment || 'delivery' }}
+              </span>
+            </div>
+            <div>
+              <span class="block text-[11px] text-slate-500 dark:text-slate-400">{{ t('Delivery Address') }}</span>
+              <p class="font-medium text-slate-700 dark:text-slate-300 mt-0.5">
+                {{ selectedStoreOrder.address || 'Pickup at Ta Khmau Maker Lab' }}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ordered Items Table -->
+        <div class="space-y-2">
+          <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+            {{ t('Purchased Items') }} ({{ (selectedStoreOrder.items || []).length }})
+          </h4>
+          <div class="rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr class="bg-slate-50/80 dark:bg-slate-800/50 text-[10px] font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-800">
+                  <th class="py-2.5 px-3">Item</th>
+                  <th class="py-2.5 px-3 text-center">Qty</th>
+                  <th class="py-2.5 px-3 text-right">Price</th>
+                  <th class="py-2.5 px-3 text-right">Subtotal</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+                <tr v-for="(it, idx) in (selectedStoreOrder.items || [])" :key="idx">
+                  <td class="py-2.5 px-3 font-semibold text-navy-900 dark:text-white">
+                    {{ it.name || it.title }}
+                  </td>
+                  <td class="py-2.5 px-3 text-center font-mono">
+                    {{ it.quantity }}
+                  </td>
+                  <td class="py-2.5 px-3 text-right font-mono text-slate-600 dark:text-slate-300">
+                    ${{ Number(it.price || 0).toFixed(2) }}
+                  </td>
+                  <td class="py-2.5 px-3 text-right font-bold text-navy-900 dark:text-white">
+                    ${{ (Number(it.price || 0) * Number(it.quantity || 1)).toFixed(2) }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Order Financial Summary -->
+        <div class="rounded-xl border border-slate-200 dark:border-slate-800 p-4 bg-slate-50/50 dark:bg-slate-800/30 space-y-2">
+          <div class="flex justify-between text-slate-600 dark:text-slate-400">
+            <span>{{ t('Subtotal') }}</span>
+            <span class="font-mono">${{ Number(selectedStoreOrder.subtotal || selectedStoreOrder.total || 0).toFixed(2) }}</span>
+          </div>
+          <div v-if="selectedStoreOrder.delivery_fee" class="flex justify-between text-slate-600 dark:text-slate-400">
+            <span>{{ t('Delivery Fee') }}</span>
+            <span class="font-mono">+${{ Number(selectedStoreOrder.delivery_fee).toFixed(2) }}</span>
+          </div>
+          <div v-if="selectedStoreOrder.discount" class="flex justify-between text-emerald-600 dark:text-emerald-400">
+            <span>{{ t('Discount') }}</span>
+            <span class="font-mono">-${{ Number(selectedStoreOrder.discount).toFixed(2) }}</span>
+          </div>
+          <div class="pt-2 border-t border-slate-200 dark:border-slate-700 flex justify-between text-sm font-extrabold text-navy-900 dark:text-white">
+            <span>{{ t('Total') }}</span>
+            <span class="text-emerald-600 dark:text-emerald-400">${{ Number(selectedStoreOrder.total || 0).toFixed(2) }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="p-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 flex justify-end">
+        <button
+          type="button"
+          @click="storeOrderModalOpen = false"
+          class="px-4 py-2 rounded-xl bg-navy-900 dark:bg-indigo-600 text-white font-bold text-xs hover:bg-navy-800 dark:hover:bg-indigo-500 cursor-pointer shadow-xs transition"
+        >
+          {{ t('Close') }}
+        </button>
+      </div>
+    </div>
+  </div>
+
   </template>
 
   <!-- Image Cropper Modal for Course Cover & Modules -->
@@ -3467,177 +4013,99 @@
     </div>
   </div>
 
-  <!-- Modal: Store Hardware Order Details -->
+  <!-- Modal: Add / Edit Flight Session -->
   <div
-    v-if="storeOrderModalOpen && selectedStoreOrder"
-    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-950/65 dark:bg-black/75 backdrop-blur-xs"
+    v-if="sessionModalOpen"
+    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-950/60 dark:bg-black/70 backdrop-blur-xs"
   >
-    <div class="relative w-full max-w-2xl max-h-[90vh] flex flex-col rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden">
-      <!-- Header -->
-      <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 px-6 py-4 bg-slate-50/50 dark:bg-slate-800/40">
-        <div class="flex items-center gap-3">
-          <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-500/10 dark:bg-blue-400/15 text-blue-600 dark:text-blue-400 font-black">
-            <ShoppingBag class="w-5 h-5" />
-          </div>
-          <div>
-            <div class="flex items-center gap-2">
-              <h3 class="text-base font-extrabold text-navy-900 dark:text-white">
-                {{ selectedStoreOrder.id }}
-              </h3>
-              <span
-                class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase"
-                :class="{
-                  'bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300': (selectedStoreOrder.status || '').toLowerCase() === 'pending',
-                  'bg-blue-100 text-blue-800 dark:bg-blue-950/60 dark:text-blue-300': (selectedStoreOrder.status || '').toLowerCase() === 'processing',
-                  'bg-purple-100 text-purple-800 dark:bg-purple-950/60 dark:text-purple-300': (selectedStoreOrder.status || '').toLowerCase() === 'shipped',
-                  'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300': (selectedStoreOrder.status || '').toLowerCase() === 'completed',
-                  'bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-300': (selectedStoreOrder.status || '').toLowerCase() === 'cancelled',
-                }"
-              >
-                {{ selectedStoreOrder.status }}
-              </span>
-            </div>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-              Placed on {{ formatCambodiaTime(selectedStoreOrder.created_at || selectedStoreOrder.date) }}
-            </p>
-          </div>
-        </div>
-
+    <div class="relative w-full max-w-lg rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl p-6 space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+        <h3 class="text-base font-extrabold text-navy-900 dark:text-white">
+          {{ editingSessionId ? t('Edit Flight Session') : t('Add Flight Session') }}
+        </h3>
         <button
           type="button"
-          @click="storeOrderModalOpen = false"
-          class="p-2 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer transition"
+          @click="sessionModalOpen = false"
+          class="p-1 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
         >
-          <X class="w-5 h-5" />
+          <X class="w-4 h-4" />
         </button>
       </div>
 
-      <!-- Body -->
-      <div class="overflow-y-auto p-6 space-y-5 text-xs">
-        <!-- Customer Details -->
-        <div class="rounded-xl border border-slate-200 dark:border-slate-800 p-4 bg-slate-50/50 dark:bg-slate-800/30 space-y-3">
-          <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
-            {{ t('Customer & Delivery Details') }}
-          </h4>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div>
-              <span class="block text-[11px] text-slate-500 dark:text-slate-400">{{ t('Customer Name') }}</span>
-              <p class="font-bold text-navy-900 dark:text-white mt-0.5 text-sm">
-                {{ selectedStoreOrder.customer_name || 'Customer' }}
-              </p>
-            </div>
-            <div>
-              <span class="block text-[11px] text-slate-500 dark:text-slate-400">{{ t('Email') }}</span>
-              <p class="font-semibold text-slate-700 dark:text-slate-300 mt-0.5">
-                {{ selectedStoreOrder.user_email || 'Guest' }}
-              </p>
-            </div>
-            <div>
-              <span class="block text-[11px] text-slate-500 dark:text-slate-400">{{ t('Phone Number') }}</span>
-              <p class="font-bold text-navy-900 dark:text-white font-mono mt-0.5">
-                {{ selectedStoreOrder.phone || 'N/A' }}
-              </p>
-            </div>
-            <div>
-              <span class="block text-[11px] text-slate-500 dark:text-slate-400">{{ t('Telegram Handle') }}</span>
-              <div class="flex items-center gap-1.5 mt-0.5">
-                <p class="font-bold text-navy-900 dark:text-white font-mono">
-                  {{ selectedStoreOrder.telegram || 'N/A' }}
-                </p>
-                <a
-                  v-if="selectedStoreOrder.telegram"
-                  :href="'https://t.me/' + selectedStoreOrder.telegram.replace('@', '')"
-                  target="_blank"
-                  rel="noopener"
-                  class="text-[10px] font-bold text-blue-600 hover:text-blue-700 dark:text-blue-400 underline inline-flex items-center gap-0.5"
-                >
-                  <span>Chat</span>
-                  <ExternalLink class="w-3 h-3" />
-                </a>
-              </div>
-            </div>
-          </div>
+      <div class="space-y-3 text-xs">
+        <div>
+          <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">{{ t('Session Title') }}</label>
+          <input
+            v-model.trim="sessionForm.title"
+            type="text"
+            class="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3.5 py-2 text-xs font-medium text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-navy-800 dark:focus:ring-indigo-500"
+            placeholder="Sunrise Freestyle & Proximity Run"
+          />
+        </div>
 
-          <div class="pt-3 border-t border-slate-200 dark:border-slate-700/60 grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div>
-              <span class="block text-[11px] text-slate-500 dark:text-slate-400">{{ t('Fulfillment Method') }}</span>
-              <span class="inline-block mt-1 px-2 py-0.5 rounded text-[11px] font-bold uppercase bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200">
-                {{ selectedStoreOrder.fulfillment || 'delivery' }}
-              </span>
-            </div>
-            <div>
-              <span class="block text-[11px] text-slate-500 dark:text-slate-400">{{ t('Delivery Address') }}</span>
-              <p class="font-medium text-slate-700 dark:text-slate-300 mt-0.5">
-                {{ selectedStoreOrder.address || 'Pickup at Ta Khmau Maker Lab' }}
-              </p>
-            </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">{{ t('Date & Time') }}</label>
+            <input
+              v-model.trim="sessionForm.time"
+              type="text"
+              class="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3.5 py-2 text-xs font-medium text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-navy-800 dark:focus:ring-indigo-500"
+              placeholder="Every Saturday, 05:45 - 08:30 AM"
+            />
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">{{ t('Location') }}</label>
+            <input
+              v-model.trim="sessionForm.location"
+              type="text"
+              class="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3.5 py-2 text-xs font-medium text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-navy-800 dark:focus:ring-indigo-500"
+              placeholder="Ta Khmau Open Meadow"
+            />
           </div>
         </div>
 
-        <!-- Ordered Items Table -->
-        <div class="space-y-2">
-          <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
-            {{ t('Purchased Items') }} ({{ (selectedStoreOrder.items || []).length }})
-          </h4>
-          <div class="rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
-            <table class="w-full text-left border-collapse text-xs">
-              <thead>
-                <tr class="bg-slate-50/80 dark:bg-slate-800/50 text-[10px] font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-800">
-                  <th class="py-2.5 px-3">Item</th>
-                  <th class="py-2.5 px-3 text-center">Qty</th>
-                  <th class="py-2.5 px-3 text-right">Price</th>
-                  <th class="py-2.5 px-3 text-right">Subtotal</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
-                <tr v-for="(it, idx) in (selectedStoreOrder.items || [])" :key="idx">
-                  <td class="py-2.5 px-3 font-semibold text-navy-900 dark:text-white">
-                    {{ it.name || it.title }}
-                  </td>
-                  <td class="py-2.5 px-3 text-center font-mono">
-                    {{ it.quantity }}
-                  </td>
-                  <td class="py-2.5 px-3 text-right font-mono text-slate-600 dark:text-slate-300">
-                    ${{ Number(it.price || 0).toFixed(2) }}
-                  </td>
-                  <td class="py-2.5 px-3 text-right font-bold text-navy-900 dark:text-white">
-                    ${{ (Number(it.price || 0) * Number(it.quantity || 1)).toFixed(2) }}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+        <div class="grid grid-cols-3 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">{{ t('Max Spots') }}</label>
+            <input
+              v-model.number="sessionForm.maxSpots"
+              type="number"
+              class="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3.5 py-2 text-xs font-medium text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-navy-800 dark:focus:ring-indigo-500"
+            />
           </div>
-        </div>
-
-        <!-- Order Financial Summary -->
-        <div class="rounded-xl border border-slate-200 dark:border-slate-800 p-4 bg-slate-50/50 dark:bg-slate-800/30 space-y-2">
-          <div class="flex justify-between text-slate-600 dark:text-slate-400">
-            <span>{{ t('Subtotal') }}</span>
-            <span class="font-mono">${{ Number(selectedStoreOrder.subtotal || selectedStoreOrder.total || 0).toFixed(2) }}</span>
+          <div>
+            <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">RSVP Count</label>
+            <input
+              v-model.number="sessionForm.spots"
+              type="number"
+              class="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3.5 py-2 text-xs font-medium text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-navy-800 dark:focus:ring-indigo-500"
+            />
           </div>
-          <div v-if="selectedStoreOrder.delivery_fee" class="flex justify-between text-slate-600 dark:text-slate-400">
-            <span>{{ t('Delivery Fee') }}</span>
-            <span class="font-mono">+${{ Number(selectedStoreOrder.delivery_fee).toFixed(2) }}</span>
-          </div>
-          <div v-if="selectedStoreOrder.discount" class="flex justify-between text-emerald-600 dark:text-emerald-400">
-            <span>{{ t('Discount') }}</span>
-            <span class="font-mono">-${{ Number(selectedStoreOrder.discount).toFixed(2) }}</span>
-          </div>
-          <div class="pt-2 border-t border-slate-200 dark:border-slate-700 flex justify-between text-sm font-extrabold text-navy-900 dark:text-white">
-            <span>{{ t('Total') }}</span>
-            <span class="text-emerald-600 dark:text-emerald-400">${{ Number(selectedStoreOrder.total || 0).toFixed(2) }}</span>
+          <div>
+            <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">{{ t('RSVP Status') }}</label>
+            <CustomSelect
+              v-model="sessionForm.status"
+              :options="aeroFlyRsvpStatusOptions"
+              size="sm"
+            />
           </div>
         </div>
       </div>
 
-      <!-- Footer -->
-      <div class="p-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 flex justify-end">
+      <div class="pt-3 flex justify-end gap-2 border-t border-slate-100 dark:border-slate-800">
         <button
           type="button"
-          @click="storeOrderModalOpen = false"
-          class="px-4 py-2 rounded-xl bg-navy-900 dark:bg-indigo-600 text-white font-bold text-xs hover:bg-navy-800 dark:hover:bg-indigo-500 cursor-pointer shadow-xs transition"
+          @click="sessionModalOpen = false"
+          class="rounded-xl border border-slate-200 dark:border-slate-700 px-4 py-2 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer"
         >
-          {{ t('Close') }}
+          {{ t('Cancel') }}
+        </button>
+        <button
+          type="button"
+          @click="saveFlightSession"
+          class="rounded-xl bg-navy-900 dark:bg-indigo-600 text-white px-4 py-2 text-xs font-bold hover:bg-navy-800 dark:hover:bg-indigo-500 shadow-xs cursor-pointer"
+        >
+          {{ t('Save Changes') }}
         </button>
       </div>
     </div>
@@ -4059,14 +4527,6 @@ const adminSections = [
     features: ['Transaction log', 'Paid / pending / expired / refunded', 'Manual status override', 'Payment timeline fields'],
   },
   {
-    id: 'store_orders',
-    title: 'Store Hardware Orders',
-    icon: ShoppingBag,
-    description: 'Manage physical hardware and component orders submitted through the AeroByte Store.',
-    summary: 'View store orders, update fulfillment statuses, and inspect shipping & customer details.',
-    features: ['Real-time customer orders', 'Fulfillment & tracking status', 'Direct Telegram contacts', 'Itemized hardware totals'],
-  },
-  {
     id: 'promos',
     title: 'Promo & Coupons',
     icon: Tag,
@@ -4101,12 +4561,20 @@ const adminSections = [
 ]
 const aeroControlSections = [
   {
+    id: 'aerofly',
+    title: 'Aero Fly',
+    icon: Plane,
+    description: 'Manage 3D drone flight sessions, community RSVP roster, pilot metrics, and lab locations.',
+    summary: 'Community flight sessions, RSVP roster, pilot metrics, and lab locations.',
+    features: ['Flight Sessions Manager', 'Community RSVP & Spots', 'Pilot Hub & Telegram', 'Ta Khmau Flight Lab'],
+  },
+  {
     id: 'aeroprint',
     title: 'Aero Print',
     icon: Printer,
-    description: 'Customer 3D print quote inquiries and dropped CAD files.',
-    summary: 'Manage user-submitted 3D printing orders, CAD files, and customer Telegram contacts.',
-    features: ['Customer 3D CAD models', 'Telegram contact & QR code', 'Inquiry status updates', 'CAD file downloads'],
+    description: 'Manage 3D printing material pricing rates, printer fleet status, and custom print requests.',
+    summary: 'Material pricing rates, printer fleet status, and custom print requests.',
+    features: ['Material Pricing Rates ($/g)', 'Printer Fleet Status', 'Print Inquiries Log', 'Turnaround & Orders'],
   },
 ]
 
@@ -4200,10 +4668,267 @@ function openStoreOrderDetails(order) {
   storeOrderModalOpen.value = true
 }
 
+
 // ------------------------------------------
-// 3D PRINT ORDERS STATE & ACTIONS
+// AERO FLY ADMIN STATE & ACTIONS
 // ------------------------------------------
-const printOrdersList = ref([])
+const aeroFlyConfig = reactive({
+  telegram: 'https://t.me/aerobyte_fpv',
+  pilotCount: '2,000+ Pilots',
+  labLocation: 'Ta Khmau Flight & Maker Lab, Kandal, Cambodia',
+  announcement: 'Next Community Flight Meetup: This Saturday at 05:45 AM at Ta Khmau Meadow!',
+})
+
+const defaultFlightSessions = [
+  { id: 1, title: 'Sunrise Freestyle & Proximity Run', time: 'Every Saturday, 05:45 - 08:30 AM', location: 'Ta Khmau Open Meadow', spots: 12, maxSpots: 15, status: 'Open RSVP' },
+  { id: 2, title: 'Bench Tuning & Maiden Diagnostics', time: 'Saturday Afternoon, 02:00 - 05:30 PM', location: 'Ta Khmau Maker Lab, Benches 1-4', spots: 8, maxSpots: 8, status: 'Full' },
+  { id: 3, title: 'Beginner Clinic & Simulator Coaching', time: 'Every Sunday, 08:00 - 11:30 AM', location: 'Ta Khmau Flight Field, Sector B', spots: 14, maxSpots: 20, status: 'Open RSVP' },
+]
+
+const flightSessionsList = ref(
+  JSON.parse(localStorage.getItem('aerobyte_admin_flight_sessions') || 'null') || defaultFlightSessions
+)
+
+function saveFlightSessionsToStorage() {
+  localStorage.setItem('aerobyte_admin_flight_sessions', JSON.stringify(flightSessionsList.value))
+}
+
+const sessionModalOpen = ref(false)
+const editingSessionId = ref(null)
+const sessionForm = reactive({
+  title: '',
+  time: '',
+  location: '',
+  spots: 0,
+  maxSpots: 15,
+  status: 'Open RSVP',
+})
+
+function openNewSessionModal() {
+  editingSessionId.value = null
+  sessionForm.title = ''
+  sessionForm.time = 'Every Saturday, 06:00 - 08:30 AM'
+  sessionForm.location = 'Ta Khmau Open Meadow'
+  sessionForm.spots = 0
+  sessionForm.maxSpots = 15
+  sessionForm.status = 'Open RSVP'
+  sessionModalOpen.value = true
+}
+
+function openEditSessionModal(session) {
+  editingSessionId.value = session.id
+  sessionForm.title = session.title
+  sessionForm.time = session.time
+  sessionForm.location = session.location
+  sessionForm.spots = session.spots
+  sessionForm.maxSpots = session.maxSpots
+  sessionForm.status = session.status
+  sessionModalOpen.value = true
+}
+
+function saveFlightSession() {
+  if (!sessionForm.title.trim()) return
+  if (editingSessionId.value) {
+    const idx = flightSessionsList.value.findIndex(s => s.id === editingSessionId.value)
+    if (idx !== -1) {
+      flightSessionsList.value[idx] = {
+        ...flightSessionsList.value[idx],
+        ...sessionForm,
+      }
+    }
+  } else {
+    flightSessionsList.value.push({
+      id: Date.now(),
+      ...sessionForm,
+    })
+  }
+  saveFlightSessionsToStorage()
+  sessionModalOpen.value = false
+  triggerSuccess(t('Flight session updated successfully.'))
+}
+
+function deleteFlightSession(id) {
+  flightSessionsList.value = flightSessionsList.value.filter(s => s.id !== id)
+  saveFlightSessionsToStorage()
+  triggerSuccess(t('Flight session removed.'))
+}
+
+function toggleSessionStatus(session) {
+  if (session.status === 'Open RSVP') session.status = 'Full'
+  else if (session.status === 'Full') session.status = 'Completed'
+  else session.status = 'Open RSVP'
+  saveFlightSessionsToStorage()
+  triggerSuccess(t('Status updated.'))
+}
+
+function saveAeroFlyConfig() {
+  localStorage.setItem('aerobyte_admin_fly_config', JSON.stringify(aeroFlyConfig))
+  triggerSuccess(t('Aero Fly settings saved successfully.'))
+}
+
+// ------------------------------------------
+// AERO PRINT STATE & ACTIONS
+// ------------------------------------------
+const defaultPrintRates = {
+  baseFee: 2.50,
+  pla: 0.06,
+  petg: 0.08,
+  abs: 0.09,
+  resin: 0.18,
+  tpu: 0.12,
+  turnaround: '24–48 Hours Fast Dispatch',
+  telegram: 'https://t.me/aerobyte_print',
+}
+
+const printRates = reactive(
+  JSON.parse(localStorage.getItem('aerobyte_admin_print_rates') || 'null') || defaultPrintRates
+)
+
+function savePrintRates() {
+  localStorage.setItem('aerobyte_admin_print_rates', JSON.stringify(printRates))
+  triggerSuccess(t('3D Print rates and settings saved successfully.'))
+}
+
+const defaultPrintFleet = [
+  { id: 1, name: 'Bambu Lab X1-Carbon #1', tech: 'FDM Dual Extrusion', bed: '256 × 256 × 256 mm', status: 'Operational' },
+  { id: 2, name: 'Bambu Lab X1-Carbon #2', tech: 'FDM High-Speed', bed: '256 × 256 × 256 mm', status: 'Operational' },
+  { id: 3, name: 'Voron 2.4 Custom 350', tech: 'FDM High-Temp Engineering', bed: '350 × 350 × 350 mm', status: 'Operational' },
+  { id: 4, name: 'Elegoo Saturn 4 Ultra 12K', tech: 'SLA Resin High-Detail', bed: '218 × 122 × 220 mm', status: 'Operational' },
+  { id: 5, name: 'Formlabs Fuse 1+', tech: 'SLS Industrial Nylon', bed: '165 × 165 × 300 mm', status: 'Maintenance' },
+]
+
+const printFleetList = ref(
+  JSON.parse(localStorage.getItem('aerobyte_admin_print_fleet') || 'null') || defaultPrintFleet
+)
+
+function togglePrinterStatus(printer) {
+  printer.status = printer.status === 'Operational' ? 'Maintenance' : 'Operational'
+  localStorage.setItem('aerobyte_admin_print_fleet', JSON.stringify(printFleetList.value))
+  triggerSuccess(`${printer.name} ${t('status updated.')}`)
+}
+
+const defaultPrintOrders = [
+  {
+    id: 'PR-1024',
+    order_number: 'PR-1024',
+    customer: 'Sokha Rith',
+    customer_name: 'Sokha Rith',
+    phone: '012 888 123',
+    telegram: '@sokharith',
+    notes: 'Need high impact resistance for drone racing crash protection.',
+    part: 'Custom Drone Canopy (GoPro Mount)',
+    material: 'TPU Flexible (Black)',
+    weight: '45g',
+    price: 7.90,
+    status: 'In Production',
+    date: 'Today, 10:15 AM',
+    created_at: '2026-11-16T10:15:00',
+    files: [
+      {
+        id: 'file-1',
+        original_name: 'Drone_Canopy_GoPro_Mount.stl',
+        stored_filename: 'sample_Drone_Canopy_GoPro_Mount.stl',
+        download_url: '/api/print-orders/files/sample_Drone_Canopy_GoPro_Mount.stl?name=Drone_Canopy_GoPro_Mount.stl',
+        size_str: '3.4 MB',
+        quantity: 2,
+        dimensions: { x: 120, y: 35, z: 18 },
+        volume_cm3: 28.5,
+        material: 'TPU Flexible (Black)',
+      },
+    ],
+  },
+  {
+    id: 'PR-1023',
+    order_number: 'PR-1023',
+    customer: 'Channa Keo',
+    customer_name: 'Channa Keo',
+    phone: '087 456 789',
+    telegram: '@channakeo',
+    notes: 'Please verify 0.2mm tolerance on planetary gear teeth.',
+    part: 'Robotics Gearbox Housing v2',
+    material: 'PETG (Jet Black)',
+    weight: '120g',
+    price: 12.10,
+    status: 'Ready for Pickup',
+    date: 'Yesterday, 04:30 PM',
+    created_at: '2026-11-15T16:30:00',
+    files: [
+      {
+        id: 'file-2',
+        original_name: 'Robotics_Gearbox_Housing_v2.step',
+        stored_filename: 'sample_Robotics_Gearbox_Housing_v2.step',
+        download_url: '/api/print-orders/files/sample_Robotics_Gearbox_Housing_v2.step?name=Robotics_Gearbox_Housing_v2.step',
+        size_str: '6.8 MB',
+        quantity: 1,
+        dimensions: { x: 95, y: 80, z: 45 },
+        volume_cm3: 54.0,
+        material: 'PETG (Jet Black)',
+      },
+    ],
+  },
+  {
+    id: 'PR-1022',
+    order_number: 'PR-1022',
+    customer: 'Dara Vann',
+    customer_name: 'Dara Vann',
+    phone: '098 777 654',
+    telegram: '@daravann',
+    notes: 'High detail resin SLA print for medical finger joint prototype.',
+    part: 'Miniature Prosthetic Joint',
+    material: 'Tough Resin (Grey)',
+    weight: '28g',
+    price: 7.54,
+    status: 'Completed',
+    date: '04 Nov 2026',
+    created_at: '2026-11-04T09:00:00',
+    files: [
+      {
+        id: 'file-3',
+        original_name: 'Prosthetic_Finger_Joint_Rig.stl',
+        stored_filename: 'sample_Prosthetic_Finger_Joint_Rig.stl',
+        download_url: '/api/print-orders/files/sample_Prosthetic_Finger_Joint_Rig.stl?name=Prosthetic_Finger_Joint_Rig.stl',
+        size_str: '1.9 MB',
+        quantity: 3,
+        dimensions: { x: 35, y: 20, z: 15 },
+        volume_cm3: 8.5,
+        material: 'Tough Resin (Grey)',
+      },
+    ],
+  },
+  {
+    id: 'PR-1021',
+    order_number: 'PR-1021',
+    customer: 'Vicheka Mean',
+    customer_name: 'Vicheka Mean',
+    phone: '010 333 999',
+    telegram: '@vicheka_m',
+    notes: 'Sensor clip mount for outdoor weather station.',
+    part: 'Aerospace Sensor Bracket',
+    material: 'PLA (Silver)',
+    weight: '65g',
+    price: 6.40,
+    status: 'Pending Review',
+    date: '03 Nov 2026',
+    created_at: '2026-11-03T11:20:00',
+    files: [
+      {
+        id: 'file-4',
+        original_name: 'Aerospace_Sensor_Bracket.stl',
+        stored_filename: 'sample_Aerospace_Sensor_Bracket.stl',
+        download_url: '/api/print-orders/files/sample_Aerospace_Sensor_Bracket.stl?name=Aerospace_Sensor_Bracket.stl',
+        size_str: '2.2 MB',
+        quantity: 1,
+        dimensions: { x: 60, y: 40, z: 25 },
+        volume_cm3: 18.2,
+        material: 'PLA (Silver)',
+      },
+    ],
+  },
+]
+
+const printOrdersList = ref(
+  JSON.parse(localStorage.getItem('aerobyte_admin_print_orders') || 'null') || defaultPrintOrders
+)
 const pendingPrintOrdersCount = computed(() => {
   return (printOrdersList.value || []).filter((o) => o.status === 'Pending Review').length
 })
@@ -4214,6 +4939,11 @@ const printOrderStatusOptions = computed(() => [
   { value: 'Completed', label: t('Completed') },
   { value: 'Cancelled', label: t('Cancelled') },
 ])
+const aeroFlyRsvpStatusOptions = computed(() => [
+  { value: 'Open RSVP', label: t('Open RSVP') },
+  { value: 'Full', label: t('Full') },
+  { value: 'Completed', label: t('Completed') },
+])
 const printOrderModalOpen = ref(false)
 const selectedPrintOrder = ref(null)
 const isLoadingPrintOrders = ref(false)
@@ -4222,9 +4952,16 @@ async function fetchPrintOrders() {
   isLoadingPrintOrders.value = true
   try {
     const res = await adminService.getPrintOrders()
-    if (res?.data?.orders) {
-      printOrdersList.value = res.data.orders
+    const serverOrders = res?.data?.orders || []
+    const serverIds = new Set(serverOrders.map(o => o.order_number || o.id))
+    const combined = [...serverOrders]
+    for (const d of defaultPrintOrders) {
+      if (!serverIds.has(d.order_number) && !serverIds.has(d.id)) {
+        combined.push(d)
+      }
     }
+    printOrdersList.value = combined
+    localStorage.setItem('aerobyte_admin_print_orders', JSON.stringify(combined))
   } catch (err) {
     console.warn('Could not fetch print orders from backend, using cached state:', err)
   } finally {
@@ -4668,10 +5405,10 @@ watch([userSearch, userMethodFilter, userVerifiedFilter], () => {
 const navigationModules = [
   {
     id: 'academy',
-    title: 'Academy & Store',
-    icon: BookOpen,
-    subtitle: 'Courses, students, orders & revenue',
-    description: 'Course catalog, student enrollments, hardware store orders, payments, and promo coupons.',
+    title: 'AeroByte Academy',
+    icon: GraduationCap,
+    subtitle: 'Courses, students, payments & coupons',
+    description: 'Dashboard overview, course manager, student roster, QR checkout, and discounts.',
     defaultSection: 'dashboard',
     sections: [
       { id: 'dashboard', title: 'Dashboard Overview', icon: LayoutDashboard },
@@ -4683,14 +5420,27 @@ const navigationModules = [
     ],
   },
   {
+    id: 'fly',
+    title: 'Aero Fly',
+    icon: Plane,
+    subtitle: 'Flight meetups, pilot hub & lab',
+    description: 'Weekly community flight sessions, pilot member roster, and Ta Khmau flight zone.',
+    defaultSection: 'aerofly',
+    sections: [
+      { id: 'aerofly', title: 'Flight Sessions & Meetups', icon: Calendar },
+      { id: 'aerofly_config', title: 'Ta Khmau Lab & Community Config', icon: MapPin },
+    ],
+  },
+  {
     id: 'print',
     title: 'Aero Print',
     icon: Printer,
-    subtitle: 'Customer 3D print quote inquiries',
-    description: 'Custom 3D CAD files dropped by customers and quote inquiry status.',
+    subtitle: '3D printing rates, fleet & orders',
+    description: 'Custom material pricing rates ($/g), printer fleet status, and print order inquiries.',
     defaultSection: 'aeroprint',
     sections: [
-      { id: 'aeroprint', title: '3D Print Orders', icon: Printer },
+      { id: 'aeroprint', title: 'Material Pricing Rates', icon: Layers },
+      { id: 'aeroprint_fleet', title: 'Printer Fleet & Orders', icon: Sliders },
     ],
   },
   {
@@ -4709,6 +5459,7 @@ const navigationModules = [
 // Accordion open / collapsed state for modules
 const openModules = ref({
   academy: true,
+  fly: false,
   print: false,
   settings: false,
 })
@@ -4785,7 +5536,10 @@ const activeModuleId = computed(() => {
   if (['dashboard', 'courses', 'students', 'store_orders', 'payments', 'promos'].includes(activeSection.value)) {
     return 'academy'
   }
-  if (activeSection.value === 'aeroprint') {
+  if (activeSection.value.startsWith('aerofly')) {
+    return 'fly'
+  }
+  if (activeSection.value.startsWith('aeroprint')) {
     return 'print'
   }
   if (['users', 'logs', 'settings'].includes(activeSection.value)) {
@@ -4811,7 +5565,7 @@ watch(
 
 function getModuleBadgeCount(moduleId) {
   if (moduleId === 'academy') {
-    return pendingEnrollmentsCount.value + pendingPaymentsCount.value + pendingStoreOrdersCount.value
+    return pendingEnrollmentsCount.value + pendingPaymentsCount.value
   }
   if (moduleId === 'print') {
     return pendingPrintOrdersCount.value
@@ -4831,11 +5585,21 @@ function getModuleBadgeColor(moduleId) {
 
 function selectSection(sectionId) {
   let targetId = sectionId
+  let scrollToId = null
+
+  if (sectionId === 'aerofly_config') {
+    targetId = 'aerofly'
+    scrollToId = 'admin-aerofly-config'
+  } else if (sectionId === 'aeroprint_fleet') {
+    targetId = 'aeroprint_fleet'
+  }
 
   // Ensure the module containing target section is expanded
   if (['dashboard', 'courses', 'students', 'store_orders', 'payments', 'promos'].includes(targetId)) {
     openModules.value.academy = true
-  } else if (targetId === 'aeroprint') {
+  } else if (targetId === 'aerofly') {
+    openModules.value.fly = true
+  } else if (targetId === 'aeroprint' || targetId === 'aeroprint_fleet') {
     openModules.value.print = true
   } else if (['users', 'logs', 'settings'].includes(targetId)) {
     openModules.value.settings = true
@@ -4856,10 +5620,6 @@ function selectSection(sectionId) {
     loadLogsData()
   } else if (targetId === 'users') {
     loadUsersData()
-  } else if (targetId === 'store_orders') {
-    fetchStoreOrders()
-  } else if (targetId === 'aeroprint') {
-    fetchPrintOrders()
   }
 
   if (scrollToId && typeof document !== 'undefined') {
@@ -5857,9 +6617,8 @@ async function refreshNotifications() {
 
 function getSectionBadgeCount(sectionId) {
   if (sectionId === 'students') return pendingEnrollmentsCount.value
-  if (sectionId === 'payments') return pendingPaymentsCount.value
   if (sectionId === 'store_orders') return pendingStoreOrdersCount.value
-  if (sectionId === 'aeroprint') return pendingPrintOrdersCount.value
+  if (sectionId === 'payments') return pendingPaymentsCount.value
   return 0
 }
 
@@ -5867,7 +6626,7 @@ function getSectionBadgeColor(sectionId) {
   if (sectionId === 'payments') {
     return 'bg-rose-100 dark:bg-rose-950/80 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800'
   }
-  if (sectionId === 'students' || sectionId === 'store_orders' || sectionId === 'aeroprint') {
+  if (sectionId === 'students' || sectionId === 'store_orders') {
     return 'bg-amber-100 dark:bg-amber-950/80 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800'
   }
   return 'bg-blue-100 dark:bg-blue-950/80 text-blue-700 dark:text-blue-300'
@@ -5964,7 +6723,6 @@ onMounted(() => {
     lastKnownEnrollmentIds = new Set((enrollments.value || []).map(e => e.enrollment_id))
     lastKnownPaymentIds = new Set((payments.value || []).map(p => `${p.transaction_id || p.enrollment_id}-${p.status}`))
     fetchPrintOrders()
-    fetchStoreOrders()
   })
   if (activeSection.value === 'logs') {
     loadLogsData()
