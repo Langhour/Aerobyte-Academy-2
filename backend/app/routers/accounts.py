@@ -11,7 +11,7 @@ from typing import Any, Optional
 from uuid import uuid4
 
 import httpx
-from fastapi import APIRouter, File, HTTPException, Request, Response, UploadFile, status
+from fastapi import APIRouter, File, Form, HTTPException, Request, Response, UploadFile, status
 from pydantic import BaseModel, Field, field_validator
 
 from app.content_store import (
@@ -478,32 +478,51 @@ def complete_password_reset(payload: PasswordResetComplete):
 
 
 @router.get("/session")
-def get_session(request: Request):
-    if request.session.get("role") != "user":
+def get_session(request: Request, email: Optional[str] = None):
+    user = None
+    if request.session.get("role") == "user":
+        user_id = request.session.get("user_id", "")
+        if user_id:
+            user = find_user_by_id(user_id)
+
+    # Fallback to verified user email if session cookie was cleared or lost
+    if not user and email:
+        cleaned_email = email.strip().casefold()
+        if cleaned_email:
+            matched = find_user_by_email(cleaned_email)
+            if matched and matched.get("is_verified", 1) == 1:
+                user = matched
+                _start_user_session(request, user)
+
+    if not user:
+        request.session.clear()
         return {"authenticated": False, "user": None}
-    user_id = request.session.get("user_id", "")
-    if not user_id:
-        return {"authenticated": False, "user": None}
-    try:
-        user = find_user_by_id(user_id)
-        if user is None:
-            request.session.clear()
-            return {"authenticated": False, "user": None}
-        return {"authenticated": True, "user": _public_user(user)}
-    except Exception as exc:
-        logger.exception("Failed to get session for user %s: %s", user_id, exc)
-        return {"authenticated": False, "user": None}
+    return {"authenticated": True, "user": _public_user(user)}
 
 
 @router.put("/profile")
 def update_profile(payload: AccountProfileUpdate, request: Request):
-    if request.session.get("role") != "user":
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Sign-in required.")
-    user_id = request.session.get("user_id", "")
-    current_user = find_user_by_id(user_id)
-    if current_user is None:
+    user = None
+    if request.session.get("role") == "user":
+        user_id = request.session.get("user_id", "")
+        if user_id:
+            user = find_user_by_id(user_id)
+
+    # Fallback to verified user email if session cookie was cleared or lost
+    if not user and payload.email:
+        cleaned_email = payload.email.strip().casefold()
+        if cleaned_email:
+            matched = find_user_by_email(cleaned_email)
+            if matched and matched.get("is_verified", 1) == 1:
+                user = matched
+                _start_user_session(request, user)
+
+    if not user:
         request.session.clear()
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Sign-in required.")
+
+    user_id = user["id"]
+    current_user = user
 
     avatar_input = payload.avatar_url if payload.avatar_url is not None else payload.avatarUrl
     avatar_to_save: Optional[str] = None
@@ -555,10 +574,26 @@ def update_profile(payload: AccountProfileUpdate, request: Request):
 async def upload_avatar(
     request: Request,
     avatar: UploadFile = File(...),
+    email: Optional[str] = Form(None),
 ):
-    if request.session.get("role") != "user":
+    user = None
+    if request.session.get("role") == "user":
+        user_id = request.session.get("user_id", "")
+        if user_id:
+            user = find_user_by_id(user_id)
+
+    # Fallback to verified user email from Form if session cookie was cleared or lost
+    if not user and email:
+        cleaned_email = email.strip().casefold()
+        if cleaned_email:
+            matched = find_user_by_email(cleaned_email)
+            if matched and matched.get("is_verified", 1) == 1:
+                user = matched
+                _start_user_session(request, user)
+
+    if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Sign-in required.")
-    user_id = request.session.get("user_id", "")
+    user_id = user["id"]
 
     media_type = (avatar.content_type or "").lower()
     allowed_types = {

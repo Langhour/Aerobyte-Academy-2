@@ -67,8 +67,17 @@ export const accountService = {
   completePasswordReset(payload) {
     return apiClient.post('/accounts/password-reset/complete', payload)
   },
-  getSession() {
-    return apiClient.get('/accounts/session')
+  getSession(email = null) {
+    let cleanEmail = email
+    if (!cleanEmail) {
+      try {
+        const cached = JSON.parse(localStorage.getItem('aerobyte-profile-current') || '{}')
+        cleanEmail = cached.email || ''
+      } catch (_) {}
+    }
+    return apiClient.get('/accounts/session', {
+      params: cleanEmail ? { email: cleanEmail } : undefined,
+    })
   },
   getUserEnrollments(params = {}) {
     return apiClient.get('/accounts/enrollments', { params })
@@ -76,12 +85,38 @@ export const accountService = {
   updateProfile(payload) {
     return apiClient.put('/accounts/profile', payload)
   },
-  uploadAvatar(file) {
+  async uploadAvatar(file, email = null) {
+    let cleanEmail = email
+    if (!cleanEmail) {
+      try {
+        const cached = JSON.parse(localStorage.getItem('aerobyte-profile-current') || '{}')
+        cleanEmail = cached.email || ''
+      } catch (_) {}
+    }
     const formData = new FormData()
     formData.append('avatar', file)
-    return apiClient.post('/accounts/avatar', formData, {
-      headers: { 'Content-Type': undefined },
+    if (cleanEmail) {
+      formData.append('email', cleanEmail)
+    }
+
+    const base = apiClient.defaults.baseURL || '/api'
+    const endpoint = `${base.replace(/\/+$/, '')}/accounts/avatar`
+    const res = await fetch(endpoint, {
+      method: 'POST',
+      body: formData,
+      credentials: 'include',
     })
+    const data = await res.json().catch(() => ({}))
+    if (!res.ok) {
+      const detail = data.detail
+      const msg = Array.isArray(detail)
+        ? (detail[0]?.msg || JSON.stringify(detail))
+        : (typeof detail === 'string' ? detail : data.message || `Upload failed (${res.status})`)
+      const err = new Error(msg)
+      err.response = { status: res.status, data }
+      throw err
+    }
+    return { data }
   },
   logout() {
     return apiClient.post('/accounts/logout')

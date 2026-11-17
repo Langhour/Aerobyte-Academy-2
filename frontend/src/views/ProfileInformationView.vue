@@ -1943,7 +1943,8 @@ async function handleAvatarChange(event) {
   draft.avatarUrl = previewUrl
 
   try {
-    const { data } = await accountService.uploadAvatar(file)
+    const userEmail = account.value?.email || profile.email || ''
+    const { data } = await accountService.uploadAvatar(file, userEmail)
     if (data.avatar_url) {
       profile.avatarUrl = data.avatar_url
       draft.avatarUrl = data.avatar_url
@@ -1974,7 +1975,9 @@ async function handleAvatarChange(event) {
     draft.avatarUrl = ''
     avatarLoadFailed.value = false
     const detail = error.response?.data?.detail
-    const detailMsg = Array.isArray(detail) ? (detail[0]?.msg || '') : (typeof detail === 'string' ? detail : '')
+    const detailMsg = Array.isArray(detail)
+      ? (detail[0]?.msg || '')
+      : (typeof detail === 'string' ? detail : (error.message || ''))
     notice.value = detailMsg || t('Failed to upload avatar image. Please try again.')
     noticeType.value = 'error'
   } finally {
