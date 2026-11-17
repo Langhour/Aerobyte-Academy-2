@@ -18,6 +18,8 @@ from app.content_store import (
     list_all_print_orders,
     update_print_order_status,
     delete_print_order,
+    save_print_order_review,
+    list_completed_print_reviews,
     save_uploaded_file,
     get_uploaded_file,
     find_user_by_id,
@@ -52,6 +54,13 @@ def _format_size(num_bytes: int) -> str:
 
 class StatusUpdatePayload(BaseModel):
     status: str
+
+
+class ReviewPayload(BaseModel):
+    rating: int = 5
+    comment: Optional[str] = ""
+    tags: Optional[list[str]] = []
+    reviewer_name: Optional[str] = ""
 
 
 # =========================================================================
@@ -210,6 +219,55 @@ async def get_my_print_orders(
         telegram=telegram,
     )
     return {"orders": orders}
+
+
+@router.post("/api/print-orders/{order_id}/review")
+async def submit_print_order_review(
+    order_id: str,
+    payload: ReviewPayload,
+    request: Request,
+):
+    """
+    Allows a customer to submit or update a review on their completed 3D print order.
+    """
+    clean_id = order_id.strip()
+    order = get_print_order(clean_id)
+    if not order:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Print order not found")
+
+    # Validate rating between 1 and 5
+    rating = max(1, min(5, int(payload.rating)))
+
+    # Session context if logged in
+    session_user = request.session.get("user") or {}
+    reviewer_name = payload.reviewer_name or session_user.get("full_name") or order.get("customer") or "Customer"
+
+    review_dict = {
+        "rating": rating,
+        "comment": (payload.comment or "").strip(),
+        "tags": [str(t).strip() for t in (payload.tags or []) if str(t).strip()],
+        "reviewer_name": reviewer_name,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+    }
+
+    updated_order = save_print_order_review(clean_id, review_dict)
+    if not updated_order:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Could not save review")
+
+    return {
+        "success": True,
+        "order": updated_order,
+        "message": "Review submitted successfully"
+    }
+
+
+@router.get("/api/print-orders/reviews")
+async def get_print_order_reviews(limit: int = Query(20, ge=1, le=100)):
+    """
+    Returns public verified customer reviews for 3D print orders.
+    """
+    reviews = list_completed_print_reviews(limit=limit)
+    return {"reviews": reviews}
 
 
 @router.get("/api/print-orders/files/{filename}")

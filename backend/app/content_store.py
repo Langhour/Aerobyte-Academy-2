@@ -268,7 +268,8 @@ def initialize_content_store() -> None:
                 status TEXT NOT NULL DEFAULT 'Pending Review',
                 created_at TEXT NOT NULL,
                 user_id TEXT DEFAULT '',
-                user_email TEXT DEFAULT ''
+                user_email TEXT DEFAULT '',
+                review_json TEXT DEFAULT ''
             );
             """
         )
@@ -321,6 +322,11 @@ def initialize_content_store() -> None:
         if "user_email" not in print_columns:
             try:
                 connection.execute("ALTER TABLE print_orders ADD COLUMN user_email TEXT DEFAULT ''")
+            except Exception:
+                pass
+        if "review_json" not in print_columns:
+            try:
+                connection.execute("ALTER TABLE print_orders ADD COLUMN review_json TEXT DEFAULT ''")
             except Exception:
                 pass
         try:
@@ -1555,6 +1561,12 @@ def get_print_order(order_id: str) -> Optional[dict[str, Any]]:
             files = json.loads(row_dict.get("files_json") or "[]")
         except Exception:
             files = []
+        review_data = None
+        if row_dict.get("review_json"):
+            try:
+                review_data = json.loads(row_dict["review_json"])
+            except Exception:
+                review_data = None
         return {
             "id": row_dict["id"],
             "order_number": row_dict["order_number"],
@@ -1569,6 +1581,7 @@ def get_print_order(order_id: str) -> Optional[dict[str, Any]]:
             "estimated_price": float(row_dict.get("estimated_price") or 0.0),
             "status": row_dict.get("status") or "Pending Review",
             "files": files,
+            "review": review_data,
             "created_at": row_dict.get("created_at") or "",
             "date": row_dict.get("created_at") or "",
             "user_id": row_dict.get("user_id") or "",
@@ -1623,6 +1636,12 @@ def get_user_print_orders(
             files = json.loads(row_dict.get("files_json") or "[]")
         except Exception:
             files = []
+        review_data = None
+        if row_dict.get("review_json"):
+            try:
+                review_data = json.loads(row_dict["review_json"])
+            except Exception:
+                review_data = None
         primary_part = files[0].get("original_name", "CAD Part") if files else "Custom 3D Model"
         primary_material = files[0].get("material", "PLA / Custom") if files else "Custom"
         total_weight = sum(f.get("volume_cm3", 15) * 1.24 * f.get("quantity", 1) for f in files) if files else 0
@@ -1644,6 +1663,7 @@ def get_user_print_orders(
             "estimated_price": float(row_dict.get("estimated_price") or 0.0),
             "status": row_dict.get("status") or "Pending Review",
             "files": files,
+            "review": review_data,
             "created_at": row_dict.get("created_at") or "",
             "date": row_dict.get("created_at") or "",
             "user_id": row_dict.get("user_id") or "",
@@ -1665,6 +1685,12 @@ def list_all_print_orders(limit: int = 200) -> list[dict[str, Any]]:
             files = json.loads(row_dict.get("files_json") or "[]")
         except Exception:
             files = []
+        review_data = None
+        if row_dict.get("review_json"):
+            try:
+                review_data = json.loads(row_dict["review_json"])
+            except Exception:
+                review_data = None
         # Derive primary part and material summary for concise table row display
         primary_part = files[0].get("original_name", "CAD Part") if files else "Custom 3D Model"
         primary_material = files[0].get("material", "PLA / Custom") if files else "Custom"
@@ -1687,8 +1713,11 @@ def list_all_print_orders(limit: int = 200) -> list[dict[str, Any]]:
             "estimated_price": float(row_dict.get("estimated_price") or 0.0),
             "status": row_dict.get("status") or "Pending Review",
             "files": files,
+            "review": review_data,
             "created_at": row_dict.get("created_at") or "",
             "date": row_dict.get("created_at") or "",
+            "user_id": row_dict.get("user_id") or "",
+            "user_email": row_dict.get("user_email") or "",
         })
     return result
 
@@ -1700,6 +1729,56 @@ def update_print_order_status(order_id: str, new_status: str) -> bool:
             (new_status.strip(), order_id.strip(), order_id.strip()),
         )
         return cursor.rowcount > 0
+
+
+def save_print_order_review(order_id: str, review_data: dict[str, Any]) -> Optional[dict[str, Any]]:
+    clean_id = str(order_id).strip()
+    with _connect() as connection:
+        order = connection.execute(
+            "SELECT id, order_number, status, review_json FROM print_orders WHERE id = ? OR order_number = ?",
+            (clean_id, clean_id),
+        ).fetchone()
+        if not order:
+            return None
+        payload = {
+            "rating": int(review_data.get("rating") or 5),
+            "comment": str(review_data.get("comment") or "").strip(),
+            "tags": list(review_data.get("tags") or []),
+            "reviewer_name": str(review_data.get("reviewer_name") or "").strip(),
+            "created_at": review_data.get("created_at") or datetime.now(timezone.utc).isoformat(),
+            "updated_at": datetime.now(timezone.utc).isoformat(),
+        }
+        review_json = json.dumps(payload)
+        connection.execute(
+            "UPDATE print_orders SET review_json = ? WHERE id = ? OR order_number = ?",
+            (review_json, clean_id, clean_id),
+        )
+    return get_print_order(clean_id)
+
+
+def list_completed_print_reviews(limit: int = 20) -> list[dict[str, Any]]:
+    with _connect() as connection:
+        rows = connection.execute(
+            "SELECT * FROM print_orders WHERE review_json != '' AND review_json IS NOT NULL ORDER BY created_at DESC LIMIT ?",
+            (limit,),
+        ).fetchall()
+    result = []
+    for r in rows:
+        row_dict = dict(r)
+        try:
+            rev = json.loads(row_dict.get("review_json") or "{}")
+        except Exception:
+            rev = {}
+        if rev and rev.get("rating"):
+            result.append({
+                "order_number": row_dict.get("order_number") or row_dict.get("id"),
+                "customer": rev.get("reviewer_name") or row_dict.get("customer_name") or "Verified Customer",
+                "rating": rev.get("rating", 5),
+                "comment": rev.get("comment", ""),
+                "tags": rev.get("tags", []),
+                "created_at": rev.get("created_at") or row_dict.get("created_at"),
+            })
+    return result
 
 
 def delete_print_order(order_id: str) -> bool:

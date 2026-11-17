@@ -302,6 +302,12 @@ export const printOrderService = {
   getMyOrders(params = {}) {
     return apiClient.get('/print-orders/my-orders', { params })
   },
+  submitReview(id, reviewData) {
+    return apiClient.post(`/print-orders/${encodeURIComponent(id)}/review`, reviewData)
+  },
+  getReviews(params = {}) {
+    return apiClient.get('/print-orders/reviews', { params })
+  },
 }
 
 export const analyticsService = {
