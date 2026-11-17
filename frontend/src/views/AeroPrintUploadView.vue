@@ -21,7 +21,7 @@
               </h1>
               <span class="inline-flex items-center gap-1.5 rounded-full bg-navy-900/10 dark:bg-blue-400/15 border border-navy-900/20 dark:border-blue-400/30 px-3 py-0.5 text-xs font-semibold text-navy-900 dark:text-blue-300">
                 <span class="h-1.5 w-1.5 rounded-full bg-navy-900 dark:bg-blue-400"></span>
-                Aero Print • {{ t('Direct Telegram Quote') }}
+                Aero Print
               </span>
             </div>
             <p class="text-xs sm:text-sm text-[#575757] dark:text-white/65">
@@ -165,9 +165,10 @@
                   {{ t('Telegram Username or Phone Number *') }}
                 </label>
                 <div class="relative">
-                  <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-[#575757] dark:text-white/50">
-                    <svg class="w-4 h-4 text-[#229ED9]" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.19-.08-.05-.19-.02-.27 0-.12.03-1.99 1.27-5.62 3.72-.53.36-1.01.54-1.44.53-.47-.01-1.38-.27-2.05-.49-.83-.27-1.49-.42-1.43-.88.03-.24.37-.49 1.02-.74 4-1.74 6.68-2.88 8.03-3.44 3.82-1.59 4.62-1.87 5.14-1.88.11 0 .37.03.54.17.14.12.18.28.2.45-.02.07-.02.21-.04.35z"/>
+                  <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
+                    <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <circle cx="12" cy="12" r="12" fill="#24A1DE"/>
+                      <path fill-rule="evenodd" clip-rule="evenodd" d="M5.39 11.58c3.96-1.72 6.6-2.86 7.92-3.41 3.77-1.57 4.56-1.84 5.07-1.85.11 0 .36.03.52.16.14.11.18.27.2.44-.02.07-.02.21-.04.35-.15 1.56-.79 5.35-1.12 7.09-.14.74-.41.99-.67 1.01-.57.05-1-.37-1.56-.74-.86-.57-1.35-.93-2.19-1.48-.97-.64-.34-.99.21-1.57.15-.15 2.67-2.45 2.72-2.65.01-.03.01-.14-.07-.19-.08-.05-.19-.02-.27 0-.12.03-1.96 1.25-5.54 3.67-.52.36-.99.53-1.42.52-.46-.01-1.36-.26-2.02-.48-.82-.27-1.47-.41-1.41-.87.03-.24.36-.48 1.01-.73z" fill="white"/>
                     </svg>
                   </div>
                   <input
@@ -297,13 +298,10 @@
         <!-- RIGHT COLUMN: Request Summary Card (4 Cols, Sticky) -->
         <div class="lg:col-span-4 lg:sticky lg:top-20 space-y-5">
           <div class="rounded-[28px] border border-black/[0.07] dark:border-white/10 bg-white dark:bg-[#111112] p-6 shadow-xl shadow-black/[0.04]">
-            <div class="flex items-center justify-between border-b border-black/[0.06] dark:border-white/10 pb-4">
+            <div class="border-b border-black/[0.06] dark:border-white/10 pb-4">
               <h3 class="text-lg font-bold text-[#111112] dark:text-white">
                 {{ t('3D Print Request Summary') }}
               </h3>
-              <span class="inline-flex items-center rounded-full bg-navy-900/10 dark:bg-blue-400/15 px-2.5 py-0.5 text-[11px] font-bold text-navy-900 dark:text-blue-300">
-                {{ t('Direct Telegram Quote') }}
-              </span>
             </div>
 
             <!-- Files Overview -->
@@ -377,16 +375,13 @@
                 rel="noopener"
                 class="w-full rounded-full border border-black/10 dark:border-white/15 bg-[#FAFAFA] dark:bg-white/5 hover:border-navy-900 dark:hover:border-blue-400 text-[#111112] dark:text-white font-bold py-3 px-4 text-xs transition flex items-center justify-center gap-2"
               >
-                <svg class="w-4 h-4 text-[#229ED9]" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.19-.08-.05-.19-.02-.27 0-.12.03-1.99 1.27-5.62 3.72-.53.36-1.01.54-1.44.53-.47-.01-1.38-.27-2.05-.49-.83-.27-1.49-.42-1.43-.88.03-.24.37-.49 1.02-.74 4-1.74 6.68-2.88 8.03-3.44 3.82-1.59 4.62-1.87 5.14-1.88.11 0 .37.03.54.17.14.12.18.28.2.45-.02.07-.02.21-.04.35z"/>
+                <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="12" cy="12" r="12" fill="#24A1DE"/>
+                  <path fill-rule="evenodd" clip-rule="evenodd" d="M5.39 11.58c3.96-1.72 6.6-2.86 7.92-3.41 3.77-1.57 4.56-1.84 5.07-1.85.11 0 .36.03.52.16.14.11.18.27.2.44-.02.07-.02.21-.04.35-.15 1.56-.79 5.35-1.12 7.09-.14.74-.41.99-.67 1.01-.57.05-1-.37-1.56-.74-.86-.57-1.35-.93-2.19-1.48-.97-.64-.34-.99.21-1.57.15-.15 2.67-2.45 2.72-2.65.01-.03.01-.14-.07-.19-.08-.05-.19-.02-.27 0-.12.03-1.96 1.25-5.54 3.67-.52.36-.99.53-1.42.52-.46-.01-1.36-.26-2.02-.48-.82-.27-1.47-.41-1.41-.87.03-.24.36-.48 1.01-.73z" fill="white"/>
                 </svg>
                 <span>{{ t('Chat on Telegram (@aerobyte168)') }}</span>
               </a>
             </div>
-
-            <p class="text-[11px] text-center text-[#696969] dark:text-white/50 mt-4 leading-relaxed">
-              📍 {{ t('AeroByte Location') }} • {{ t('Ta Khmau, Cambodia. Fast 24h turnarounds for prototypes, drones & robotics.') }}
-            </p>
           </div>
         </div>
       </div>
