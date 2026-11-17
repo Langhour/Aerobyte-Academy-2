@@ -600,13 +600,28 @@ async def upload_avatar(
 
     upload_dir = Path(__file__).resolve().parents[2] / "data" / "uploads"
     upload_dir.mkdir(parents=True, exist_ok=True)
-    (upload_dir / filename).write_bytes(contents)
-    save_uploaded_file(filename, media_type, contents)
+    try:
+        (upload_dir / filename).write_bytes(contents)
+    except Exception as io_err:
+        logger.warning("Could not write avatar to disk: %s", io_err)
+
+    try:
+        save_uploaded_file(filename, media_type, contents)
+    except Exception as db_err:
+        logger.warning("Could not persist uploaded file to DB: %s", db_err)
 
     api_origin = os.getenv("BACKEND_API_ORIGIN", "").rstrip("/")
     avatar_url = f"{api_origin}/uploads/{filename}" if api_origin else f"/uploads/{filename}"
 
-    update_user_avatar(user_id, avatar_url)
+    try:
+        update_user_avatar(user_id, avatar_url)
+    except Exception as update_err:
+        logger.error("Failed to update user avatar in DB: %s", update_err)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to update user avatar profile.",
+        ) from update_err
+
     user = find_user_by_id(user_id)
     return {"avatar_url": avatar_url, "user": _public_user(user) if user else None}
 

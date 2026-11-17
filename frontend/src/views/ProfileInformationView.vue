@@ -1973,7 +1973,9 @@ async function handleAvatarChange(event) {
     profile.avatarUrl = ''
     draft.avatarUrl = ''
     avatarLoadFailed.value = false
-    notice.value = error.response?.data?.detail || t('Failed to upload avatar image. Please try again.')
+    const detail = error.response?.data?.detail
+    const detailMsg = Array.isArray(detail) ? (detail[0]?.msg || '') : (typeof detail === 'string' ? detail : '')
+    notice.value = detailMsg || t('Failed to upload avatar image. Please try again.')
     noticeType.value = 'error'
   } finally {
     avatarUploading.value = false

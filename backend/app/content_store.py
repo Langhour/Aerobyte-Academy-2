@@ -90,7 +90,7 @@ def _connect() -> Iterator[object]:
         import psycopg
         from psycopg.rows import dict_row
 
-        with psycopg.connect(DATABASE_URL, row_factory=dict_row) as raw_connection:
+        with psycopg.connect(DATABASE_URL, row_factory=dict_row, autocommit=True) as raw_connection:
             yield _PostgresConnection(raw_connection)
         return
     DATABASE_PATH.parent.mkdir(parents=True, exist_ok=True)
