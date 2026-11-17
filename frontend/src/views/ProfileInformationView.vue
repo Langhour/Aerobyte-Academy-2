@@ -1420,6 +1420,7 @@ const emptyProfile = () => ({
   experience: '',
 })
 
+const account = ref(null)
 const profile = reactive(emptyProfile())
 const draft = reactive(emptyProfile())
 const storageKey = computed(() => account.value ? `aerobyte-profile:${account.value.id}` : 'aerobyte-profile')
