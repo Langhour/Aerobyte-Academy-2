@@ -2,9 +2,6 @@ import base64
 import html
 import logging
 import os
-import smtplib
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
 from pathlib import Path
 
 import httpx
@@ -12,7 +9,6 @@ import httpx
 logger = logging.getLogger(__name__)
 
 RESEND_API_URL = "https://api.resend.com/emails"
-EMAILJS_API_URL = "https://api.emailjs.com/api/v1.0/email/send"
 
 
 def _reload_env() -> None:
@@ -38,17 +34,6 @@ class EmailNotConfiguredError(RuntimeError):
 
 # Default Resend API key fallback (base64 encoded to ensure availability across deployments)
 _DEFAULT_RESEND_KEY = base64.b64decode("cmVfVW1LSkZ5ZGZfMzltYXNoV3hvV0NOeVpBRERNVWlGcHV0").decode("utf-8")
-_DEFAULT_SMTP_USER = "lghr5002@gmail.com"
-_DEFAULT_SMTP_PASS = base64.b64decode("a3F4cGVlYWZqa2dpZWhpdw==").decode("utf-8")
-
-
-def get_smtp_credentials() -> tuple[str, str, str, int]:
-    _reload_env()
-    user = os.getenv("SMTP_USER", "").strip() or _DEFAULT_SMTP_USER
-    password = os.getenv("SMTP_PASSWORD", "").strip() or _DEFAULT_SMTP_PASS
-    host = os.getenv("SMTP_HOST", "smtp.gmail.com").strip()
-    port = int(os.getenv("SMTP_PORT", "587").strip())
-    return user, password, host, port
 
 
 def get_resend_credentials() -> tuple[str, str]:
@@ -70,42 +55,10 @@ def get_resend_credentials() -> tuple[str, str]:
     return api_key, sender
 
 
-def get_emailjs_credentials() -> tuple[str, str, str, str]:
-    _reload_env()
-    service_id = os.getenv("EMAILJS_SERVICE_ID", "").strip()
-    template_id = os.getenv("EMAILJS_TEMPLATE_ID", "").strip()
-    public_key = os.getenv("EMAILJS_PUBLIC_KEY", "").strip()
-    private_key = os.getenv("EMAILJS_PRIVATE_KEY", "").strip()
-    return service_id, template_id, public_key, private_key
-
-
-def get_emailjs_verification_template_id() -> str:
-    _reload_env()
-    return (
-        os.getenv("EMAILJS_VERIFICATION_TEMPLATE_ID", "").strip()
-        or os.getenv("EMAILJS_OTP_TEMPLATE_ID", "").strip()
-    )
-
-
-def has_remote_email_provider() -> bool:
-    api_key, _ = get_resend_credentials()
-    if api_key:
-        return True
-
-    smtp_user, smtp_pass, _, _ = get_smtp_credentials()
-    if smtp_user and smtp_pass:
-        return True
-
-    service_id, template_id, public_key, private_key = get_emailjs_credentials()
-    if all((service_id, template_id, public_key, private_key)):
-        return True
-
-    return False
-
-
 def email_is_configured() -> bool:
-    """Return True ONLY if a real third-party email provider is configured to send outbound emails."""
-    return has_remote_email_provider()
+    """Return True if Resend is configured."""
+    api_key, _ = get_resend_credentials()
+    return bool(api_key)
 
 
 def _send_with_resend(to_email: str, subject: str, text_content: str, html_content: str) -> None:
@@ -131,51 +84,6 @@ def _send_with_resend(to_email: str, subject: str, text_content: str, html_conte
     if response.status_code >= 400:
         logger.error("Resend API error (%s): %s", response.status_code, response.text)
     response.raise_for_status()
-
-
-def _send_with_emailjs(email: str, name: str, reset_url: str) -> None:
-    service_id, template_id, public_key, private_key = get_emailjs_credentials()
-    if not all((service_id, template_id, public_key, private_key)):
-        raise EmailNotConfiguredError("EmailJS credentials incomplete.")
-
-    response = httpx.post(
-        EMAILJS_API_URL,
-        json={
-            "service_id": service_id,
-            "template_id": template_id,
-            "user_id": public_key,
-            "accessToken": private_key,
-            "template_params": {
-                "to_email": email,
-                "email": email,
-                "user_email": email,
-                "recipient": email,
-                "to_name": name,
-                "name": name,
-                "reset_url": reset_url,
-            },
-        },
-        timeout=15,
-    )
-    response.raise_for_status()
-
-
-def _send_with_smtp(email: str, subject: str, text_content: str, html_content: str) -> None:
-    smtp_user, smtp_pass, smtp_host, smtp_port = get_smtp_credentials()
-    if not (smtp_user and smtp_pass):
-        raise EmailNotConfiguredError("SMTP credentials not available.")
-
-    msg = MIMEMultipart("alternative")
-    msg["Subject"] = subject
-    msg["From"] = f"AeroByte Academy <{smtp_user}>"
-    msg["To"] = email
-    msg.attach(MIMEText(text_content, "plain"))
-    msg.attach(MIMEText(html_content, "html"))
-
-    with smtplib.SMTP(smtp_host, smtp_port, timeout=15) as server:
-        server.starttls()
-        server.login(smtp_user, smtp_pass)
-        server.send_message(msg)
 
 
 def send_password_reset_email(email: str, name: str, reset_url: str) -> None:
@@ -217,38 +125,7 @@ def send_password_reset_email(email: str, name: str, reset_url: str) -> None:
         f"</td></tr></table></body></html>"
     )
 
-    # 1. Primary: Resend
-    api_key, _ = get_resend_credentials()
-    if api_key:
-        try:
-            _send_with_resend(email, subject, text_content, html_content)
-            return
-        except Exception as exc:
-            logger.warning("Resend failed to send password reset to %s (%s). Attempting fallbacks...", email, exc)
-
-    # 2. Secondary fallback: EmailJS
-    service_id, template_id, public_key, private_key = get_emailjs_credentials()
-    if all((service_id, template_id, public_key, private_key)):
-        _send_with_emailjs(email, name, reset_url)
-        return
-
-    # 3. Tertiary fallback: SMTP
-    smtp_user, smtp_pass, _, _ = get_smtp_credentials()
-    if smtp_user and smtp_pass:
-        try:
-            _send_with_smtp(email, subject, text_content, html_content)
-            return
-        except Exception as exc:
-            logger.warning("SMTP failed to send password reset to %s (%s). Attempting fallbacks...", email, exc)
-
-    # 4. Dev Fallback
-    dev_fallback = os.getenv("DEV_EMAIL_FALLBACK", "true").lower() in ("true", "1", "yes")
-    if dev_fallback:
-        logger.info("[DEV / FALLBACK PASSWORD RESET LINK] User: %s <%s> | Reset URL: %s", name, email, reset_url)
-        print(f"\n{'='*70}\n[DEV PASSWORD RESET LINK]\nUser: {name} <{email}>\nReset URL: {reset_url}\n{'='*70}\n", flush=True)
-        return
-
-    raise EmailNotConfiguredError("Password reset email is not configured (set RESEND_API_KEY in environment).")
+    _send_with_resend(email, subject, text_content, html_content)
 
 
 def send_verification_email(email: str, name: str, code: str, verify_url: str) -> None:
@@ -296,80 +173,4 @@ def send_verification_email(email: str, name: str, code: str, verify_url: str) -
         f"</td></tr></table></body></html>"
     )
 
-    # 1. Primary: Resend
-    api_key, _ = get_resend_credentials()
-    if api_key:
-        try:
-            _send_with_resend(email, subject, text_content, html_content)
-            return
-        except Exception as exc:
-            logger.warning("Resend failed to send verification email to %s (%s). Attempting fallbacks...", email, exc)
-
-    # 2. Secondary fallback: EmailJS
-    service_id, template_id, public_key, private_key = get_emailjs_credentials()
-    otp_template_id = get_emailjs_verification_template_id() or template_id
-    if all((service_id, otp_template_id, public_key, private_key)):
-        try:
-            response = httpx.post(
-                EMAILJS_API_URL,
-                json={
-                    "service_id": service_id,
-                    "template_id": otp_template_id,
-                    "user_id": public_key,
-                    "accessToken": private_key,
-                    "template_params": {
-                        "subject": subject,
-                        "to_email": email,
-                        "email": email,
-                        "user_email": email,
-                        "recipient": email,
-                        "to_name": name,
-                        "name": name,
-                        "passcode": code,
-                        "Passcode": code,
-                        "PASSCODE": code,
-                        "code": code,
-                        "Code": code,
-                        "CODE": code,
-                        "otp": code,
-                        "Otp": code,
-                        "OTP": code,
-                        "verification_code": code,
-                        "verificationCode": code,
-                        "VerificationCode": code,
-                        "VERIFICATION_CODE": code,
-                        "token": code,
-                        "pin": code,
-                        "time": "15 minutes",
-                        "message": f"Your AeroByte Academy verification code is: {code}\n\nClick here to verify directly: {verify_url}",
-                        "reset_url": verify_url,
-                        "verify_url": verify_url,
-                    },
-                },
-                timeout=15,
-            )
-            response.raise_for_status()
-            return
-        except Exception:
-            logger.exception("Failed to send verification email via EmailJS")
-
-    # 3. Tertiary fallback: SMTP
-    smtp_user, smtp_pass, _, _ = get_smtp_credentials()
-    if smtp_user and smtp_pass:
-        try:
-            _send_with_smtp(email, subject, text_content, html_content)
-            return
-        except Exception as exc:
-            logger.warning("SMTP failed to send verification email to %s (%s). Attempting fallbacks...", email, exc)
-
-    # 4. Dev Fallback
-    dev_fallback = os.getenv("DEV_EMAIL_FALLBACK", "true").lower() in ("true", "1", "yes")
-    if dev_fallback:
-        logger.info("[DEV / FALLBACK EMAIL VERIFICATION] User: %s <%s> | Code: %s | Verify URL: %s", name, email, code, verify_url)
-        print(
-            f"\n{'='*70}\n[DEV EMAIL VERIFICATION]\nUser: {name} <{email}>\nCode: {code}\nVerify URL: {verify_url}\n{'='*70}\n",
-            flush=True,
-        )
-        raise EmailNotConfiguredError(f"External email provider could not deliver to {email}. Verification code logged.")
-
-    raise EmailNotConfiguredError("Verification email service is not configured (set RESEND_API_KEY in environment).")
+    _send_with_resend(email, subject, text_content, html_content)

@@ -90,7 +90,6 @@ Open **Environment Variables** on the application. At minimum set:
 | `BACKEND_API_ORIGIN` | No | Absolute origin for uploaded image URLs; usually the same public origin |
 | `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | No | Google sign-in |
 | `RESEND_API_KEY` / `EMAIL_FROM` | No | Resend password-reset email |
-| `EMAILJS_*` | No | EmailJS password-reset email |
 | `SMTP_*` | No | SMTP password-reset email |
 | `DEV_EMAIL_FALLBACK` | Auto | Defaults to `false` in this Compose file |
 

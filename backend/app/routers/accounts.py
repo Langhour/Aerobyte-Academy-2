@@ -472,13 +472,7 @@ def request_password_reset(payload: PasswordResetRequest, request: Request):
     frontend_url = _frontend_origin(request)
     reset_url = f"{frontend_url}/account?mode=reset&token={token}"
 
-    resend_ready = bool(os.getenv("RESEND_API_KEY", "").strip())
-    emailjs_ready = all(
-        os.getenv(name, "").strip()
-        for name in ("EMAILJS_SERVICE_ID", "EMAILJS_TEMPLATE_ID", "EMAILJS_PUBLIC_KEY", "EMAILJS_PRIVATE_KEY")
-    )
-    smtp_ready = bool(os.getenv("SMTP_USER", "").strip() and os.getenv("SMTP_PASSWORD", "").strip())
-    has_remote_provider = resend_ready or emailjs_ready or smtp_ready
+    has_remote_provider = bool(os.getenv("RESEND_API_KEY", "").strip())
 
     email_delivered = False
     try:

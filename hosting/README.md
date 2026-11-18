@@ -50,4 +50,4 @@ EMAIL_FROM=AeroByte Academy <onboarding@resend.dev>
 
 > **Tip:** While testing, Resend allows sending from `onboarding@resend.dev` to your own Resend account email. For production, add and verify your custom domain on Resend (e.g., `notifications@your-domain.com`).
 
-Optional fallback: If Resend is not configured, you may configure EmailJS (`EMAILJS_SERVICE_ID`, `EMAILJS_TEMPLATE_ID`, `EMAILJS_PUBLIC_KEY`, `EMAILJS_PRIVATE_KEY`) or standard SMTP (`SMTP_USER`, `SMTP_PASSWORD`).
+
