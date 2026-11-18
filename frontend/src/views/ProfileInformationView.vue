@@ -1661,6 +1661,12 @@ async function loadPrintOrders(forceRefresh = false) {
               po.review = ao.review
               updated = true
             }
+            const adminP = Number(ao.price || ao.estimated_price || 0)
+            if (adminP > 0 && (po.price !== adminP || po.estimated_price !== adminP)) {
+              po.price = adminP
+              po.estimated_price = adminP
+              updated = true
+            }
           }
         }
         if (updated) {
@@ -1719,9 +1725,9 @@ async function loadPrintOrders(forceRefresh = false) {
           const fresh = serverMap.get(lk)
           loc.status = fresh.status || loc.status
           if (fresh.review) loc.review = fresh.review
-          if (fresh.estimated_price || fresh.price) {
-            loc.price = fresh.price || fresh.estimated_price
-            loc.estimated_price = fresh.estimated_price || fresh.price
+          if (fresh.estimated_price !== undefined || fresh.price !== undefined) {
+            loc.price = Number(fresh.price || fresh.estimated_price || 0)
+            loc.estimated_price = Number(fresh.estimated_price || fresh.price || 0)
           }
           serverMap.delete(lk)
         }
@@ -1743,9 +1749,15 @@ async function loadPrintOrders(forceRefresh = false) {
           if (res?.data?.order) {
             const fresh = res.data.order
             const match = printOrders.value.find((o) => String(o.order_number || o.id || '').replace(/^#/, '') === id)
-            if (match && fresh.status && match.status !== fresh.status) {
-              match.status = fresh.status
+            if (match) {
+              if (fresh.status && match.status !== fresh.status) {
+                match.status = fresh.status
+              }
               if (fresh.review) match.review = fresh.review
+              if (fresh.estimated_price !== undefined || fresh.price !== undefined) {
+                match.price = Number(fresh.price || fresh.estimated_price || 0)
+                match.estimated_price = Number(fresh.estimated_price || fresh.price || 0)
+              }
             }
           }
         } catch (_) {}
@@ -2094,7 +2106,20 @@ onMounted(async () => {
     }
   }
 
-  const handleOrdersSync = () => {
+  const handleOrdersSync = (event) => {
+    if (event?.detail?.orderId) {
+      const cleanId = String(event.detail.orderId).replace(/^#/, '')
+      const match = printOrders.value.find((o) => String(o.order_number || o.id || '').replace(/^#/, '') === cleanId)
+      if (match) {
+        if (event.detail.price !== undefined) {
+          match.price = Number(event.detail.price)
+          match.estimated_price = Number(event.detail.price)
+        }
+        if (event.detail.status !== undefined) {
+          match.status = event.detail.status
+        }
+      }
+    }
     loadPrintOrders()
     loadStoreOrders()
   }

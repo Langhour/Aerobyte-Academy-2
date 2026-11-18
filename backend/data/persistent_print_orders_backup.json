@@ -8,7 +8,7 @@
     "notes": "Fast print kit for Aero Bot prototype",
     "qr_file_url": "",
     "total_parts": 1,
-    "estimated_price": 0.0,
+    "estimated_price": 15.0,
     "files_json": "[{\"id\": \"file-1025\", \"original_name\": \"aero_bot_8cm_fast_kit.3mf\", \"stored_filename\": \"print_aero_bot_8cm_fast_kit.3mf\", \"download_url\": \"/api/print-orders/files/print_aero_bot_8cm_fast_kit.3mf?name=aero_bot_8cm_fast_kit.3mf\", \"size_str\": \"890.5 KB\", \"size_bytes\": 911872, \"quantity\": 1, \"dimensions\": {\"x\": 80, \"y\": 80, \"z\": 45}, \"volume_cm3\": 28.5, \"material\": \"PLA / Custom\"}]",
     "status": "Completed",
     "created_at": "2026-11-17T15:32:00+07:00",

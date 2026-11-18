@@ -2906,6 +2906,7 @@
                     <th class="py-3 px-4">Inquiry ID</th>
                     <th class="py-3 px-4">{{ t('Customer & Contact') }}</th>
                     <th class="py-3 px-4">{{ t('CAD Files & Requirements') }}</th>
+                    <th class="py-3 px-4">{{ t('Quote Price') }}</th>
                     <th class="py-3 px-4 text-center">{{ t('Status') }}</th>
                     <th class="py-3 px-4 text-right">{{ t('Actions') }}</th>
                   </tr>
@@ -2978,6 +2979,39 @@
                       </div>
                     </td>
 
+                    <!-- Quote Price (Admin Set / Live Update) -->
+                    <td class="py-3.5 px-4 min-w-[140px]">
+                      <div class="flex items-center gap-1.5">
+                        <div class="relative w-28">
+                          <span class="absolute inset-y-0 left-0 pl-2.5 flex items-center text-xs font-bold text-slate-400 dark:text-slate-500">$</span>
+                          <input
+                            type="number"
+                            step="0.5"
+                            min="0"
+                            :value="order.price || order.estimated_price || ''"
+                            :placeholder="t('0.00')"
+                            @change="updateOrderPrice(order, $event.target.value)"
+                            @keydown.enter.prevent="$event.target.blur()"
+                            class="w-full pl-6 pr-2 py-1.5 text-xs font-bold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-navy-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                            :title="t('Set quote price in USD for user')"
+                          />
+                        </div>
+                        <span
+                          v-if="(order.price > 0 || order.estimated_price > 0)"
+                          class="inline-flex items-center justify-center h-5 w-5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 font-bold text-xs"
+                          :title="'Quoted: $' + Number(order.price || order.estimated_price).toFixed(2)"
+                        >
+                          ✓
+                        </span>
+                      </div>
+                      <p v-if="order.price > 0 || order.estimated_price > 0" class="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5 font-mono">
+                        {{ Math.round(Number(order.price || order.estimated_price) * 4100).toLocaleString() }} ៛
+                      </p>
+                      <p v-else class="text-[10px] text-amber-600 dark:text-amber-400 mt-0.5 italic">
+                        {{ t('Quote in progress') }}
+                      </p>
+                    </td>
+
                     <!-- Status Dropdown -->
                     <td class="py-3 px-4 min-w-[160px] text-center">
                       <CustomSelect
@@ -3031,7 +3065,7 @@
                   </tr>
 
                   <tr v-if="printOrdersList.length === 0">
-                    <td colspan="5" class="py-12 text-center">
+                    <td colspan="6" class="py-12 text-center">
                       <div class="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-400 flex items-center justify-center mx-auto mb-3">
                         <Printer class="w-6 h-6" />
                       </div>
@@ -3230,24 +3264,66 @@
           </div>
         </div>
 
-        <!-- Production Status & Price Bar -->
-        <div class="rounded-xl border border-slate-200 dark:border-slate-800 p-4 bg-slate-50/50 dark:bg-slate-800/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div>
-            <span class="block text-[11px] text-slate-500 dark:text-slate-400">{{ t('Estimated Pricing') }}</span>
-            <p class="text-lg font-extrabold text-emerald-600 dark:text-emerald-400 mt-0.5">
-              ${{ (selectedPrintOrder.price || selectedPrintOrder.estimated_price || 0).toFixed(2) }}
-            </p>
+        <!-- Production Status & Admin Quotation Bar -->
+        <div class="rounded-xl border border-slate-200 dark:border-slate-800 p-4 bg-slate-50/70 dark:bg-slate-800/40 space-y-3">
+          <div class="flex items-center justify-between">
+            <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 flex items-center gap-1.5">
+              <DollarSign class="w-4 h-4 text-emerald-500" />
+              <span>{{ t('Pricing Quotation & Status') }}</span>
+            </h4>
+            <span v-if="selectedPrintOrder.price > 0 || selectedPrintOrder.estimated_price > 0" class="text-xs font-black text-emerald-600 dark:text-emerald-400">
+              ${{ Number(selectedPrintOrder.price || selectedPrintOrder.estimated_price).toFixed(2) }} ({{ Math.round(Number(selectedPrintOrder.price || selectedPrintOrder.estimated_price) * 4100).toLocaleString() }} ៛)
+            </span>
+            <span v-else class="text-xs font-semibold text-amber-600 dark:text-amber-400 italic">
+              {{ t('Quote in progress') }}
+            </span>
           </div>
 
-          <div class="flex items-center gap-3">
-            <label class="text-xs font-bold text-slate-700 dark:text-slate-300 whitespace-nowrap">{{ t('Update Status:') }}</label>
-            <div class="w-48">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 items-end">
+            <!-- Price Input for Admin -->
+            <div>
+              <label class="block text-[11px] font-bold text-slate-600 dark:text-slate-300 mb-1">
+                {{ t('Set Quote Price (USD)') }}
+              </label>
+              <div class="flex items-center gap-2">
+                <div class="relative flex-1">
+                  <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-sm font-bold text-slate-400">$</span>
+                  <input
+                    type="number"
+                    step="0.5"
+                    min="0"
+                    v-model.number="modalPriceInput"
+                    :placeholder="t('0.00')"
+                    @keydown.enter.prevent="saveModalPrice"
+                    class="w-full pl-7 pr-3 py-1.5 text-xs font-bold rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-navy-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+                <button
+                  type="button"
+                  @click="saveModalPrice"
+                  class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center gap-1 transition shadow-xs cursor-pointer"
+                  :title="t('Save price and update user view')"
+                >
+                  <Check class="w-3.5 h-3.5" />
+                  <span>{{ t('Set Price') }}</span>
+                </button>
+              </div>
+              <p class="text-[10px] text-slate-400 dark:text-slate-500 mt-1 font-mono" v-if="modalPriceInput > 0">
+                ≈ {{ Math.round(Number(modalPriceInput) * 4100).toLocaleString() }} ៛ (Cambodian Riel)
+              </p>
+            </div>
+
+            <!-- Update Production Status -->
+            <div>
+              <label class="block text-[11px] font-bold text-slate-600 dark:text-slate-300 mb-1">
+                {{ t('Update Production Status') }}
+              </label>
               <CustomSelect
                 size="sm"
                 :model-value="selectedPrintOrder.status"
                 :options="printOrderStatusOptions"
                 :trigger-class="[
-                  'font-bold text-xs rounded-xl shadow-2xs',
+                  'font-bold text-xs rounded-xl shadow-2xs py-1.5',
                   selectedPrintOrder.status === 'Pending Review' ? 'border-amber-300 bg-amber-50 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-700' :
                   selectedPrintOrder.status === 'In Production' ? 'border-blue-300 bg-blue-50 text-blue-800 dark:bg-blue-950/60 dark:text-blue-300 dark:border-blue-700' :
                   selectedPrintOrder.status === 'Ready for Pickup' || selectedPrintOrder.status === 'Completed' ? 'border-emerald-300 bg-emerald-50 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-700' :
@@ -3442,6 +3518,7 @@ import {
   Box,
   FileCode,
   ShoppingBag,
+  DollarSign,
   Star,
 } from 'lucide-vue-next'
 import { useLanguage } from '../i18n'
@@ -3873,6 +3950,7 @@ const printOrderStatusOptions = computed(() => [
 const printOrderModalOpen = ref(false)
 const selectedPrintOrder = ref(null)
 const isLoadingPrintOrders = ref(false)
+const modalPriceInput = ref('')
 
 async function fetchPrintOrders() {
   isLoadingPrintOrders.value = true
@@ -3899,7 +3977,60 @@ async function fetchPrintOrders() {
 
 function openPrintOrderDetails(order) {
   selectedPrintOrder.value = order
+  modalPriceInput.value = (order.price > 0 || order.estimated_price > 0) ? (order.price || order.estimated_price) : ''
   printOrderModalOpen.value = true
+}
+
+function saveModalPrice() {
+  if (!selectedPrintOrder.value) return
+  updateOrderPrice(selectedPrintOrder.value, modalPriceInput.value)
+}
+
+async function updateOrderPrice(order, newPrice) {
+  const targetKey = String(order.order_number || order.id || '').replace(/^#/, '')
+  const parsedPrice = Math.max(0, parseFloat(newPrice) || 0)
+  order.price = parsedPrice
+  order.estimated_price = parsedPrice
+
+  if (selectedPrintOrder.value && (selectedPrintOrder.value.id === order.id || selectedPrintOrder.value.order_number === order.order_number)) {
+    selectedPrintOrder.value.price = parsedPrice
+    selectedPrintOrder.value.estimated_price = parsedPrice
+    modalPriceInput.value = parsedPrice > 0 ? parsedPrice : ''
+  }
+
+  // 1. Sync admin localStorage cache
+  try {
+    localStorage.setItem('aerobyte_admin_print_orders', JSON.stringify(printOrdersList.value))
+  } catch (_) {}
+
+  // 2. IMMEDIATELY sync user-facing print orders cache (aerobyte_print_orders)
+  try {
+    const userRaw = localStorage.getItem('aerobyte_print_orders')
+    const userOrders = userRaw ? JSON.parse(userRaw) : []
+    let found = false
+    for (const uo of userOrders) {
+      const uKey = String(uo.order_number || uo.id || '').replace(/^#/, '')
+      if (uKey === targetKey) {
+        uo.price = parsedPrice
+        uo.estimated_price = parsedPrice
+        found = true
+      }
+    }
+    if (!found && order) {
+      userOrders.unshift({ ...order, price: parsedPrice, estimated_price: parsedPrice })
+    }
+    localStorage.setItem('aerobyte_print_orders', JSON.stringify(userOrders))
+    window.dispatchEvent(new CustomEvent('aerobyte-orders-updated', { detail: { orderId: targetKey, price: parsedPrice } }))
+  } catch (_) {}
+
+  triggerSuccess(`${order.order_number || order.id}: ${t('Quote price updated to')} $${parsedPrice.toFixed(2)}`)
+
+  // 3. Send update to backend
+  try {
+    await adminService.updatePrintOrderPrice(targetKey, parsedPrice)
+  } catch (err) {
+    console.error('Failed to sync print order price with backend:', err)
+  }
 }
 
 async function updateOrderStatus(order, newStatus) {
