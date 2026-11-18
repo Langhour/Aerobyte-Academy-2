@@ -1913,10 +1913,15 @@ function handleDropdownClickOutside(event) {
 }
 
 const completion = computed(() => {
+  const hasAvatar = Boolean(
+    profile.avatarUrl?.trim() &&
+    !avatarLoadFailed.value &&
+    !profile.avatarUrl.includes('avatar_ff685636-ad2f-434a-86f2-89406c51962a_11f4b3349942')
+  )
   const fields = [
     Boolean(profile.fullName?.trim()),
     Boolean(profile.email?.trim()),
-    Boolean(profile.avatarUrl?.trim()),
+    hasAvatar,
     Boolean(profile.phone?.trim()),
     Boolean(profile.telegram?.trim()),
     Boolean(profile.dateOfBirth?.trim()),
@@ -1971,7 +1976,11 @@ const ProfileDetail = defineComponent({
 
 function copyProfile(target, source) {
   Object.keys(target).forEach((key) => {
-    target[key] = typeof source[key] === 'string' ? source[key] : ''
+    let val = typeof source[key] === 'string' ? source[key] : ''
+    if (key === 'avatarUrl' && val.includes('avatar_ff685636-ad2f-434a-86f2-89406c51962a_11f4b3349942')) {
+      val = ''
+    }
+    target[key] = val
   })
 }
 
@@ -2040,9 +2049,11 @@ onMounted(async () => {
       // Server data is single source of truth across all devices/browsers!
       if (account.value?.name) profile.fullName = account.value.name
       if (account.value?.email) profile.email = account.value.email
-      if (account.value?.avatar_url) {
+      if (account.value?.avatar_url && !account.value.avatar_url.includes('avatar_ff685636-ad2f-434a-86f2-89406c51962a_11f4b3349942')) {
         profile.avatarUrl = account.value.avatar_url
         avatarLoadFailed.value = false
+      } else {
+        profile.avatarUrl = ''
       }
       if (account.value?.phone) profile.phone = account.value.phone
       if (account.value?.telegram) profile.telegram = account.value.telegram
@@ -2083,9 +2094,11 @@ onMounted(async () => {
     // Server data strictly takes precedence if present
     if (account.value?.name) profile.fullName = account.value.name
     if (account.value?.email) profile.email = account.value.email
-    if (account.value?.avatar_url) {
+    if (account.value?.avatar_url && !account.value.avatar_url.includes('avatar_ff685636-ad2f-434a-86f2-89406c51962a_11f4b3349942')) {
       profile.avatarUrl = account.value.avatar_url
       avatarLoadFailed.value = false
+    } else {
+      profile.avatarUrl = ''
     }
     if (account.value?.phone) profile.phone = account.value.phone
     if (account.value?.telegram) profile.telegram = account.value.telegram
