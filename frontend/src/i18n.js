@@ -477,6 +477,12 @@ export const khmerTranslations = {
   'Profile photo removed.': 'បានលុបរូបថតប្រវត្តិរូប។',
   'Please select a valid image file (JPG, PNG, WEBP).': 'សូមជ្រើសរើសឯកសាររូបភាពត្រឹមត្រូវ (JPG, PNG, WEBP)។',
   'Image file size must be less than 5MB.': 'ទំហំឯកសាររូបភាពត្រូវតែតិចជាង 5MB។',
+  'This image cannot be saved (must be JPG, PNG, or WebP under 2MB). Please choose another photo.':
+    'រូបភាពនេះមិនអាចរក្សាទុកបានទេ (ត្រូវតែជា JPG, PNG ឬ WebP ក្រោម 2MB)។ សូមជ្រើសរើសរូបថតផ្សេងទៀត។',
+  'Failed to save your photo. Please try choosing a different image.':
+    'ការរក្សាទុករូបថតរបស់អ្នកបានបរាជ័យ។ សូមព្យាយាមជ្រើសរើសរូបភាពផ្សេងទៀត។',
+  'This image is empty or corrupted. Please choose another photo.':
+    'រូបភាពនេះទទេ ឬខូច។ សូមជ្រើសរើសរូបថតផ្សេងទៀត។',
   'Upload a photo or avatar image. Recommended size: at least 256x256 px (JPG, PNG, or WebP).':
     'ផ្ទុកឡើងរូបថត ឬរូបតំណាង។ ទំហំដែលបានណែនាំ៖ យ៉ាងហោចណាស់ 256x256 px (JPG, PNG ឬ WebP)។',
   'A complete profile helps our team support your learning journey.':

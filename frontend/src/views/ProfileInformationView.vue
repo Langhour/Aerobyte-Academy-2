@@ -149,7 +149,7 @@
         <input
           ref="avatarFileInput"
           type="file"
-          accept="image/png,image/jpeg,image/webp,image/gif"
+          accept="image/png,image/jpeg,image/webp,.jpg,.jpeg,.png,.webp"
           class="hidden"
           aria-hidden="true"
           @change="handleAvatarChange"
@@ -760,6 +760,16 @@
                     <span>{{ t('Remove photo') }}</span>
                   </button>
                 </div>
+
+                <!-- Avatar Validation / Save Error Notice (Editing Mode) -->
+                <div
+                  v-if="avatarError"
+                  class="mt-2.5 flex items-start gap-2 rounded-xl border border-red-300 dark:border-red-900/60 bg-red-50/90 dark:bg-red-950/40 p-2.5 text-xs font-semibold text-red-600 dark:text-red-400 shadow-2xs"
+                  role="alert"
+                >
+                  <AlertCircle class="h-4 w-4 shrink-0 text-red-500 dark:text-red-400 mt-0.5" aria-hidden="true" />
+                  <span class="leading-relaxed">{{ avatarError }}</span>
+                </div>
               </div>
             </div>
           </section>
@@ -1027,6 +1037,16 @@
                     <Trash2 class="h-3.5 w-3.5" />
                     <span>{{ t('Remove photo') }}</span>
                   </button>
+                </div>
+
+                <!-- Avatar Validation / Save Error Notice (Viewing Mode) -->
+                <div
+                  v-if="avatarError"
+                  class="mt-2.5 flex items-start gap-2 rounded-xl border border-red-300 dark:border-red-900/60 bg-red-50/90 dark:bg-red-950/40 p-2.5 text-xs font-semibold text-red-600 dark:text-red-400 shadow-2xs"
+                  role="alert"
+                >
+                  <AlertCircle class="h-4 w-4 shrink-0 text-red-500 dark:text-red-400 mt-0.5" aria-hidden="true" />
+                  <span class="leading-relaxed">{{ avatarError }}</span>
                 </div>
               </div>
             </div>
@@ -1847,6 +1867,7 @@ const logoutDialogOpen = ref(false)
 const avatarFileInput = ref(null)
 const avatarUploading = ref(false)
 const avatarLoadFailed = ref(false)
+const avatarError = ref('')
 
 const qualificationDropdownRef = ref(null)
 const qualificationDropdownOpen = ref(false)
@@ -2352,6 +2373,7 @@ async function confirmLogout() {
 
 function startEditing() {
   notice.value = ''
+  avatarError.value = ''
   avatarLoadFailed.value = false
   qualificationDropdownOpen.value = false
   experienceDropdownOpen.value = false
@@ -2363,6 +2385,8 @@ function startEditing() {
 }
 
 function cancelEditing() {
+  notice.value = ''
+  avatarError.value = ''
   qualificationDropdownOpen.value = false
   experienceDropdownOpen.value = false
   copyProfile(draft, profile)
@@ -2370,6 +2394,7 @@ function cancelEditing() {
 }
 
 function triggerAvatarUpload() {
+  avatarError.value = ''
   avatarFileInput.value?.click()
 }
 
@@ -2379,37 +2404,77 @@ function onAvatarError() {
 }
 
 async function handleAvatarChange(event) {
+  avatarError.value = ''
+  notice.value = ''
+
   const file = event.target.files?.[0]
   if (!file) return
-  if (!file.type.startsWith('image/')) {
-    notice.value = t('Please select a valid image file (JPG, PNG, WEBP).')
-    noticeType.value = 'error'
+
+  // 1. Frontend validation: Check format (JPG, PNG, WebP)
+  const validMimes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
+  const nameLower = (file.name || '').toLowerCase()
+  const hasValidExt = nameLower.endsWith('.jpg') || nameLower.endsWith('.jpeg') || nameLower.endsWith('.png') || nameLower.endsWith('.webp')
+  const hasValidMime = validMimes.includes((file.type || '').toLowerCase())
+
+  if (!hasValidMime && !hasValidExt) {
+    avatarError.value = t('This image cannot be saved (must be JPG, PNG, or WebP under 2MB). Please choose another photo.')
+    if (event.target) event.target.value = ''
     return
   }
-  if (file.size > 5 * 1024 * 1024) {
-    notice.value = t('Image file size must be less than 5MB.')
-    noticeType.value = 'error'
+
+  // 2. Frontend validation: Check file size (max 2MB)
+  const MAX_AVATAR_SIZE = 2 * 1024 * 1024 // 2MB
+  if (file.size <= 0) {
+    avatarError.value = t('This image is empty or corrupted. Please choose another photo.')
+    if (event.target) event.target.value = ''
     return
   }
+
+  if (file.size > MAX_AVATAR_SIZE) {
+    avatarError.value = t('This image cannot be saved (must be JPG, PNG, or WebP under 2MB). Please choose another photo.')
+    if (event.target) event.target.value = ''
+    return
+  }
+
+  // 3. Frontend validation: Verify image is decodeable and not corrupted
+  const previewBlobUrl = URL.createObjectURL(file)
+  const isImageValid = await new Promise((resolve) => {
+    const testImg = new Image()
+    testImg.onload = () => resolve(true)
+    testImg.onerror = () => resolve(false)
+    testImg.src = previewBlobUrl
+  })
+
+  if (!isImageValid) {
+    URL.revokeObjectURL(previewBlobUrl)
+    avatarError.value = t('This image cannot be saved (file appears corrupted). Please choose another photo.')
+    if (event.target) event.target.value = ''
+    return
+  }
+
+  // Preserve previous photo URLs to revert if backend save fails
+  const previousProfileAvatar = profile.avatarUrl
+  const previousDraftAvatar = draft.avatarUrl
 
   avatarUploading.value = true
   avatarLoadFailed.value = false
-  notice.value = ''
 
-  const previewUrl = URL.createObjectURL(file)
-  profile.avatarUrl = previewUrl
-  draft.avatarUrl = previewUrl
+  // Temporary optimistic preview while uploading
+  profile.avatarUrl = previewBlobUrl
+  draft.avatarUrl = previewBlobUrl
 
   try {
     const userEmail = account.value?.email || profile.email || ''
     const { data } = await accountService.uploadAvatar(file, userEmail)
-    if (data.avatar_url) {
+    if (data && data.avatar_url) {
       profile.avatarUrl = data.avatar_url
       draft.avatarUrl = data.avatar_url
       if (account.value) {
         account.value.avatar_url = data.avatar_url
       }
       avatarLoadFailed.value = false
+      avatarError.value = ''
+
       const updateAvatarCache = (key) => {
         if (!key) return
         try {
@@ -2426,25 +2491,31 @@ async function handleAvatarChange(event) {
       window.dispatchEvent(new Event('aerobyte-auth-updated'))
       notice.value = t('Profile photo updated successfully!')
       noticeType.value = 'success'
+    } else {
+      throw new Error('No avatar returned from server.')
     }
   } catch (error) {
     console.error('Failed to upload avatar to server:', error)
-    profile.avatarUrl = ''
-    draft.avatarUrl = ''
+    // Revert avatar preview back to previous photo / initials (LH)
+    profile.avatarUrl = previousProfileAvatar
+    draft.avatarUrl = previousDraftAvatar
     avatarLoadFailed.value = false
+
     const detail = error.response?.data?.detail
     const detailMsg = Array.isArray(detail)
       ? (detail[0]?.msg || '')
-      : (typeof detail === 'string' ? detail : (error.message || ''))
-    notice.value = detailMsg || t('Failed to upload avatar image. Please try again.')
-    noticeType.value = 'error'
+      : (typeof detail === 'string' ? detail : '')
+
+    avatarError.value = detailMsg || t('Failed to save your photo. Please try choosing a different image.')
   } finally {
     avatarUploading.value = false
+    URL.revokeObjectURL(previewBlobUrl)
     if (event.target) event.target.value = ''
   }
 }
 
 async function removeAvatar() {
+  avatarError.value = ''
   avatarLoadFailed.value = false
   profile.avatarUrl = ''
   draft.avatarUrl = ''

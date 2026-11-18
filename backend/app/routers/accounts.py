@@ -668,7 +668,6 @@ async def upload_avatar(
         "image/jpg": ".jpg",
         "image/png": ".png",
         "image/webp": ".webp",
-        "image/gif": ".gif",
         "image/pjpeg": ".jpg",
         "image/jfif": ".jpg",
         "image/x-png": ".png",
@@ -681,19 +680,38 @@ async def upload_avatar(
             media_type = "image/png"
         elif filename_lower.endswith(".webp"):
             media_type = "image/webp"
-        elif filename_lower.endswith(".gif"):
-            media_type = "image/gif"
         else:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Only JPG, PNG, WEBP, or GIF images are allowed.",
+                detail="This image cannot be saved (must be JPG, PNG, or WebP under 2MB). Please choose another photo.",
             )
 
     contents = await avatar.read()
-    if len(contents) > 5 * 1024 * 1024:
+    if not contents or len(contents) == 0:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Avatar image size cannot exceed 5MB.",
+            detail="This image is empty or corrupted. Please choose another photo.",
+        )
+
+    if len(contents) > 2 * 1024 * 1024:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="This image cannot be saved (must be JPG, PNG, or WebP under 2MB). Please choose another photo.",
+        )
+
+    # Validate image magic bytes to ensure file is a real, uncorrupted image
+    is_valid_image = False
+    if contents.startswith(b"\xff\xd8\xff"):  # JPEG
+        is_valid_image = True
+    elif contents.startswith(b"\x89PNG\r\n\x1a\n"):  # PNG
+        is_valid_image = True
+    elif contents.startswith(b"RIFF") and len(contents) > 12 and contents[8:12] == b"WEBP":  # WebP
+        is_valid_image = True
+
+    if not is_valid_image:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="This image cannot be saved (must be JPG, PNG, or WebP under 2MB). Please choose another photo.",
         )
 
     ext = allowed_types.get(media_type, ".png")
@@ -710,7 +728,11 @@ async def upload_avatar(
     try:
         save_uploaded_file(filename, media_type, contents)
     except Exception as db_err:
-        logger.warning("Could not persist uploaded file to DB: %s", db_err)
+        logger.error("Could not persist uploaded file to DB: %s", db_err)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to save image to the database. Please try choosing a different image.",
+        ) from db_err
 
     api_origin = os.getenv("BACKEND_API_ORIGIN", "").rstrip("/")
     avatar_url = f"{api_origin}/uploads/{filename}" if api_origin else f"/uploads/{filename}"
@@ -721,7 +743,7 @@ async def upload_avatar(
         logger.error("Failed to update user avatar in DB: %s", update_err)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Failed to update user avatar profile.",
+            detail="Failed to save your photo. Please try choosing a different image.",
         ) from update_err
 
     user = find_user_by_id(user_id)
