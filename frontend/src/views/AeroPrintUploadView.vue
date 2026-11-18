@@ -835,11 +835,20 @@ async function submitPrintOrder() {
 
     // Persist to local cache so user profile displays it immediately
     try {
-      const rawStored = localStorage.getItem('aerobyte_print_orders')
-      const stored = rawStored ? JSON.parse(rawStored) : []
-      const filtered = stored.filter(o => o.order_number !== finalOrder.order_number && o.id !== finalOrder.id)
-      localStorage.setItem('aerobyte_print_orders', JSON.stringify([finalOrder, ...filtered]))
-      window.dispatchEvent(new CustomEvent('aerobyte-orders-updated'))
+      const activeEmail = (cached.email || '').trim().toLowerCase()
+      const keysToSave = ['aerobyte_print_orders']
+      if (activeEmail) {
+        keysToSave.push(`aerobyte_print_orders:${activeEmail}`)
+      }
+      keysToSave.forEach((k) => {
+        try {
+          const rawStored = localStorage.getItem(k)
+          const stored = rawStored ? JSON.parse(rawStored) : []
+          const filtered = stored.filter(o => o.order_number !== finalOrder.order_number && o.id !== finalOrder.id)
+          localStorage.setItem(k, JSON.stringify([finalOrder, ...filtered]))
+        } catch (_) {}
+      })
+      window.dispatchEvent(new CustomEvent('aerobyte-orders-updated', { detail: { orderId: finalOrder.order_number || finalOrder.id } }))
     } catch (_) {}
 
     openOrderModal.value = true
@@ -863,11 +872,21 @@ async function submitPrintOrder() {
     submittedOrder.value = fallbackOrder
 
     try {
-      const rawStored = localStorage.getItem('aerobyte_print_orders')
-      const stored = rawStored ? JSON.parse(rawStored) : []
-      const filtered = stored.filter(o => o.order_number !== fallbackOrder.order_number && o.id !== fallbackOrder.id)
-      localStorage.setItem('aerobyte_print_orders', JSON.stringify([fallbackOrder, ...filtered]))
-      window.dispatchEvent(new CustomEvent('aerobyte-orders-updated'))
+      const cached = getCachedUserProfile()
+      const activeEmail = (cached.email || '').trim().toLowerCase()
+      const keysToSave = ['aerobyte_print_orders']
+      if (activeEmail) {
+        keysToSave.push(`aerobyte_print_orders:${activeEmail}`)
+      }
+      keysToSave.forEach((k) => {
+        try {
+          const rawStored = localStorage.getItem(k)
+          const stored = rawStored ? JSON.parse(rawStored) : []
+          const filtered = stored.filter(o => o.order_number !== fallbackOrder.order_number && o.id !== fallbackOrder.id)
+          localStorage.setItem(k, JSON.stringify([fallbackOrder, ...filtered]))
+        } catch (_) {}
+      })
+      window.dispatchEvent(new CustomEvent('aerobyte-orders-updated', { detail: { orderId: fallbackOrder.order_number || fallbackOrder.id } }))
     } catch (_) {}
 
     openOrderModal.value = true

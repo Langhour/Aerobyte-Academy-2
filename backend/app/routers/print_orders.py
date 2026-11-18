@@ -216,30 +216,34 @@ async def get_my_print_orders(
 ):
     session_uid = request.session.get("user_id") if request.session.get("role") == "user" else None
     session_email = (request.session.get("email") or "").strip().lower() if request.session.get("role") == "user" else ""
+    session_name = request.session.get("user_name") or ""
     uid = session_uid or user_id
     uemail = session_email or (email.strip().lower() if email else "")
-    if uid and not uemail:
-        user = find_user_by_id(uid)
-        if user:
-            uemail = (user.get("email") or "").strip().lower()
 
-    if uid or uemail:
-        orders = get_user_print_orders(
-            user_id=uid,
-            email=uemail,
-            customer_name=None,
-            telegram=None,
-            order_ids=None,
-        )
-    else:
-        ids_list = [x.strip() for x in order_ids.split(",") if x.strip()] if order_ids else None
-        orders = get_user_print_orders(
-            user_id=None,
-            email=None,
-            customer_name=name,
-            telegram=telegram,
-            order_ids=ids_list,
-        )
+    user = None
+    if uid:
+        user = find_user_by_id(uid)
+    elif uemail:
+        user = find_user_by_email(uemail)
+
+    if user:
+        if not uemail:
+            uemail = (user.get("email") or "").strip().lower()
+        if not session_name:
+            session_name = user.get("full_name") or ""
+        if not telegram and user.get("telegram"):
+            telegram = user.get("telegram")
+
+    customer_name = name or session_name or None
+    ids_list = [x.strip() for x in order_ids.split(",") if x.strip()] if order_ids else None
+
+    orders = get_user_print_orders(
+        user_id=uid,
+        email=uemail,
+        customer_name=customer_name,
+        telegram=telegram,
+        order_ids=ids_list,
+    )
     return {"orders": orders}
 
 
