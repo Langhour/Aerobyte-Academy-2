@@ -478,7 +478,6 @@
                       <span class="font-semibold">{{ t('Quote Price') }}:</span>
                       <span v-if="order.price > 0 || order.estimated_price > 0" class="ml-1 text-base font-black text-navy-900 dark:text-white">
                         ${{ Number(order.price || order.estimated_price).toFixed(2) }}
-                        <span class="text-[11px] font-normal text-slate-400">({{ Math.round(Number(order.price || order.estimated_price) * 4100).toLocaleString() }} ៛)</span>
                       </span>
                       <span v-else class="ml-1 font-semibold text-amber-600 dark:text-amber-400 italic">
                         {{ t('Quote in progress') }}

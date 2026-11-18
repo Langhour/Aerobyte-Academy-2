@@ -3007,10 +3007,7 @@
                           :title="t('Set quote price in USD for user')"
                         />
                       </div>
-                      <p v-if="order.price > 0 || order.estimated_price > 0" class="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5 font-mono">
-                        {{ Math.round(Number(order.price || order.estimated_price) * 4100).toLocaleString() }} ៛
-                      </p>
-                      <p v-else class="text-[10px] text-amber-600 dark:text-amber-400 mt-0.5 italic">
+                      <p v-if="!(order.price > 0 || order.estimated_price > 0)" class="text-[10px] text-amber-600 dark:text-amber-400 mt-0.5 italic">
                         {{ t('Quote in progress') }}
                       </p>
                     </td>
@@ -3291,7 +3288,7 @@
               <span>{{ t('Pricing Quotation & Status') }}</span>
             </h4>
             <span v-if="selectedPrintOrder.price > 0 || selectedPrintOrder.estimated_price > 0" class="text-xs font-black text-emerald-600 dark:text-emerald-400">
-              ${{ Number(selectedPrintOrder.price || selectedPrintOrder.estimated_price).toFixed(2) }} ({{ Math.round(Number(selectedPrintOrder.price || selectedPrintOrder.estimated_price) * 4100).toLocaleString() }} ៛)
+              ${{ Number(selectedPrintOrder.price || selectedPrintOrder.estimated_price).toFixed(2) }}
             </span>
             <span v-else class="text-xs font-semibold text-amber-600 dark:text-amber-400 italic">
               {{ t('Quote in progress') }}
@@ -3327,9 +3324,6 @@
                   <span>{{ t('Set Price') }}</span>
                 </button>
               </div>
-              <p class="text-[10px] text-slate-400 dark:text-slate-500 mt-1 font-mono" v-if="modalPriceInput > 0">
-                ≈ {{ Math.round(Number(modalPriceInput) * 4100).toLocaleString() }} ៛ (Cambodian Riel)
-              </p>
             </div>
 
             <!-- Update Payment Status (Pay / Not Pay) -->
