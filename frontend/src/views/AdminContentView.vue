@@ -2992,29 +2992,20 @@
                     </td>
 
                     <!-- Quote Price (Admin Set / Live Update) -->
-                    <td class="py-3.5 px-4 min-w-[140px]">
-                      <div class="flex items-center gap-1.5">
-                        <div class="relative w-28">
-                          <span class="absolute inset-y-0 left-0 pl-2.5 flex items-center text-xs font-bold text-slate-400 dark:text-slate-500">$</span>
-                          <input
-                            type="number"
-                            step="0.5"
-                            min="0"
-                            :value="order.price || order.estimated_price || ''"
-                            :placeholder="t('0.00')"
-                            @change="updateOrderPrice(order, $event.target.value)"
-                            @keydown.enter.prevent="$event.target.blur()"
-                            class="w-full pl-6 pr-2 py-1.5 text-xs font-bold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-navy-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                            :title="t('Set quote price in USD for user')"
-                          />
-                        </div>
-                        <span
-                          v-if="(order.price > 0 || order.estimated_price > 0)"
-                          class="inline-flex items-center justify-center h-5 w-5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 font-bold text-xs"
-                          :title="'Quoted: $' + Number(order.price || order.estimated_price).toFixed(2)"
-                        >
-                          ✓
-                        </span>
+                    <td class="py-3.5 px-4 min-w-[130px]">
+                      <div class="relative w-28">
+                        <span class="absolute inset-y-0 left-0 pl-2.5 flex items-center text-xs font-bold text-slate-400 dark:text-slate-500">$</span>
+                        <input
+                          type="number"
+                          step="0.5"
+                          min="0"
+                          :value="order.price || order.estimated_price || ''"
+                          :placeholder="t('0.00')"
+                          @change="updateOrderPrice(order, $event.target.value)"
+                          @keydown.enter.prevent="$event.target.blur()"
+                          class="w-full pl-6 pr-2 py-1.5 text-xs font-bold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-navy-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                          :title="t('Set quote price in USD for user')"
+                        />
                       </div>
                       <p v-if="order.price > 0 || order.estimated_price > 0" class="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5 font-mono">
                         {{ Math.round(Number(order.price || order.estimated_price) * 4100).toLocaleString() }} ៛
