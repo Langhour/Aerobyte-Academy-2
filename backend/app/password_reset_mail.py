@@ -3,12 +3,21 @@ import html
 import logging
 import os
 from pathlib import Path
+from typing import Any
 
 import httpx
 
 logger = logging.getLogger(__name__)
 
 RESEND_API_URL = "https://api.resend.com/emails"
+
+# Resend Custom Templates designed in Resend Dashboard
+RESEND_VERIFICATION_TEMPLATE_ID = os.getenv(
+    "RESEND_VERIFICATION_TEMPLATE_ID", "2eee85bc-ad84-4577-8b45-8270da95384f"
+).strip()
+RESEND_PASSWORD_RESET_TEMPLATE_ID = os.getenv(
+    "RESEND_PASSWORD_RESET_TEMPLATE_ID", "f5592ed3-5eef-4951-a2d4-fd2d822a8002"
+).strip()
 
 
 def _reload_env() -> None:
@@ -61,6 +70,41 @@ def email_is_configured() -> bool:
     return bool(api_key)
 
 
+def _send_with_resend_template(to_email: str, template_id: str, variables: dict[str, Any]) -> bool:
+    api_key, sender = get_resend_credentials()
+    if not api_key or not template_id:
+        return False
+
+    try:
+        response = httpx.post(
+            RESEND_API_URL,
+            headers={
+                "Authorization": f"Bearer {api_key}",
+                "Content-Type": "application/json",
+            },
+            json={
+                "from": sender,
+                "to": [to_email],
+                "template": {
+                    "id": template_id,
+                    "variables": variables,
+                },
+            },
+            timeout=15,
+        )
+        if response.status_code < 400:
+            logger.info("Email delivered via Resend UX/UI template %s to %s", template_id, to_email)
+            return True
+        logger.warning(
+            "Resend template send returned %s: %s. Falling back to inline HTML.",
+            response.status_code,
+            response.text,
+        )
+    except Exception as exc:
+        logger.warning("Resend template send exception: %s. Falling back to inline HTML.", exc)
+    return False
+
+
 def _send_with_resend(to_email: str, subject: str, text_content: str, html_content: str) -> None:
     api_key, sender = get_resend_credentials()
     if not api_key:
@@ -87,6 +131,17 @@ def _send_with_resend(to_email: str, subject: str, text_content: str, html_conte
 
 
 def send_password_reset_email(email: str, name: str, reset_url: str) -> None:
+    # 1. Primary: Send using the custom UX/UI template designed in Resend
+    if RESEND_PASSWORD_RESET_TEMPLATE_ID:
+        sent = _send_with_resend_template(
+            email,
+            RESEND_PASSWORD_RESET_TEMPLATE_ID,
+            {"name": name, "reset_url": reset_url},
+        )
+        if sent:
+            return
+
+    # 2. Fallback to inline HTML
     safe_name = html.escape(name)
     safe_url = html.escape(reset_url, quote=True)
 
@@ -129,6 +184,21 @@ def send_password_reset_email(email: str, name: str, reset_url: str) -> None:
 
 
 def send_verification_email(email: str, name: str, code: str, verify_url: str) -> None:
+    # 1. Primary: Send using the custom UX/UI template designed in Resend
+    if RESEND_VERIFICATION_TEMPLATE_ID:
+        sent = _send_with_resend_template(
+            email,
+            RESEND_VERIFICATION_TEMPLATE_ID,
+            {
+                "name": name,
+                "code": code,
+                "verify_url": verify_url,
+            },
+        )
+        if sent:
+            return
+
+    # 2. Fallback to inline HTML
     safe_name = html.escape(name)
     safe_url = html.escape(verify_url, quote=True)
     safe_code = html.escape(code)
