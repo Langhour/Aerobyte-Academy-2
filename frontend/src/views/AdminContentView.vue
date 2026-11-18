@@ -502,15 +502,12 @@
                                 : 'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-800/60'
                               : notif.type === 'print'
                                 ? 'bg-sky-50 dark:bg-sky-950/60 text-sky-600 dark:text-sky-400 border-sky-200 dark:border-sky-800/60'
-                                : notif.type === 'store'
-                                  ? 'bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-800/60'
-                                  : 'bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 border-indigo-200 dark:border-indigo-800/60'
+                                : 'bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 border-indigo-200 dark:border-indigo-800/60'
                         ]"
                       >
                         <Users v-if="notif.type === 'enrollment'" class="w-4 h-4" />
                         <CreditCard v-else-if="notif.type === 'payment'" class="w-4 h-4" />
                         <Printer v-else-if="notif.type === 'print'" class="w-4 h-4" />
-                        <ShoppingBag v-else-if="notif.type === 'store'" class="w-4 h-4" />
                         <UserCog v-else class="w-4 h-4" />
                       </div>
 
@@ -3527,7 +3524,7 @@ const monthlyChartData = computed(() => {
 
     const currentYm = '2026-11'
     if (revenueByMonth[currentYm] !== undefined) {
-      months[5].revenue = Number(revenueByMonth[currentYm].toFixed(2)) + (storeRevenueTotal.value || 0)
+      months[5].revenue = Number(revenueByMonth[currentYm].toFixed(2))
     } else if (overview.value?.total_revenue) {
       months[5].revenue = Number(overview.value.total_revenue)
     }
@@ -4618,7 +4615,7 @@ async function loadAdminData() {
     if (!settingsForm.contact_phone) settingsForm.contact_phone = '+855 12 888 168'
     if (!settingsForm.footer_description) settingsForm.footer_description = 'Pioneering robotics, IoT, and embedded systems education in Cambodia.'
     if (!settingsForm.merchant_bank_info) settingsForm.merchant_bank_info = 'ABA Bank: VIDHCHETRA KHEMARAK (000 123 456)'
-    await Promise.allSettled([fetchPrintOrders(), fetchStoreOrders()])
+    await fetchPrintOrders()
   } catch (error) {
     errorMessage.value = errorDetail(error, t('Unable to load admin data.'))
     if (error.response?.status === 401) authenticated.value = false
@@ -5469,29 +5466,7 @@ const allNotifications = computed(() => {
     }
   }
 
-  // 4. Store Hardware Orders
-  if (Array.isArray(storeOrdersList.value)) {
-    for (const order of storeOrdersList.value) {
-      const id = `sto-${order.id}-${order.status}`
-      const isPending = (order.status || '').toLowerCase() === 'pending'
-      list.push({
-        id,
-        type: 'store',
-        title: isPending ? t('Pending Store Order') : t('Store Order Update'),
-        subtitle: `${order.customer_name || t('Customer')} · ${order.id}`,
-        detail: `$${Number(order.total || 0).toFixed(2)} · ${order.phone || order.user_email || ''}`,
-        timestamp: order.created_at || order.date || '',
-        badgeText: t(order.status || 'Pending'),
-        badgeType: isPending ? 'warning' : 'success',
-        actionSection: 'dashboard',
-        actionSearch: order.id,
-        read: readNotificationIds.value.has(id),
-        isUrgent: isPending
-      })
-    }
-  }
-
-  // 5. User Accounts
+  // 4. User Accounts
   if (Array.isArray(users.value)) {
     for (const user of users.value) {
       const id = `usr-${user.user_id || user.id || user.email}`
