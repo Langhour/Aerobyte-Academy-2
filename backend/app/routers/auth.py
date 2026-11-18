@@ -132,3 +132,45 @@ def verify_code(payload: VerifyCodeRequest, request: Request):
         response_data["user"] = _public_user(user)
 
     return response_data
+
+
+@router.api_route("/logout", methods=["GET", "POST"])
+def auth_logout(request: Request):
+    request.session.clear()
+    is_secure = (
+        os.getenv("RENDER") is not None
+        or os.getenv("ADMIN_COOKIE_SECURE", "false").casefold() == "true"
+        or os.getenv("ENVIRONMENT", "").casefold() == "production"
+    )
+    redirect_target = request.query_params.get("redirect")
+    if redirect_target and redirect_target.startswith("/"):
+        from fastapi.responses import RedirectResponse
+        response = RedirectResponse(url=redirect_target, status_code=303)
+    else:
+        from fastapi.responses import JSONResponse
+        response = JSONResponse(content={"authenticated": False, "message": "Logged out successfully."})
+
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate, private"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+
+    cookie_names = ("aerobyte_session", "session", "access_token", "refresh_token", "user_session", "auth_token")
+    for cookie_name in cookie_names:
+        response.delete_cookie(
+            cookie_name,
+            path="/",
+            secure=is_secure,
+            httponly=True,
+            samesite="lax",
+        )
+        response.delete_cookie(
+            cookie_name,
+            path="/",
+            secure=False,
+            httponly=True,
+        )
+        response.headers.append(
+            "Set-Cookie",
+            f"{cookie_name}=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Max-Age=0; HttpOnly; SameSite=Lax",
+        )
+    return response

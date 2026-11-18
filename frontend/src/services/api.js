@@ -127,8 +127,27 @@ export const accountService = {
     }
     return { data }
   },
-  logout() {
-    return apiClient.post('/accounts/logout')
+  async logout() {
+    const base = (apiClient.defaults.baseURL || '/api').replace(/\/+$/, '')
+    const endpoints = ['/auth/logout', '/accounts/logout', '/logout']
+    const promises = [
+      apiClient.post('/auth/logout').catch(() => {}),
+      apiClient.post('/accounts/logout').catch(() => {}),
+      apiClient.get('/auth/logout').catch(() => {}),
+      apiClient.get('/accounts/logout').catch(() => {}),
+    ]
+    if (typeof fetch !== 'undefined') {
+      endpoints.forEach((ep) => {
+        promises.push(
+          fetch(`/api${ep}`, { method: 'POST', credentials: 'include' }).catch(() => {}),
+          fetch(`/api${ep}`, { method: 'GET', credentials: 'include' }).catch(() => {}),
+          fetch(`${base}${ep}`, { method: 'POST', credentials: 'include' }).catch(() => {}),
+          fetch(`${base}${ep}`, { method: 'GET', credentials: 'include' }).catch(() => {})
+        )
+      })
+    }
+    await Promise.allSettled(promises)
+    return { data: { authenticated: false } }
   },
   createStoreOrder(payload) {
     return apiClient.post('/accounts/orders', payload)

@@ -106,6 +106,12 @@ app.include_router(accounts.router, prefix="/api/account")
 app.include_router(google_auth.router)
 app.include_router(print_orders.router)
 
+
+@app.api_route("/logout", methods=["GET", "POST"])
+def root_logout(request: Request):
+    from app.routers.accounts import logout as account_logout
+    return account_logout(request)
+
 upload_directory = Path(__file__).resolve().parents[1] / "data" / "uploads"
 upload_directory.mkdir(parents=True, exist_ok=True)
 

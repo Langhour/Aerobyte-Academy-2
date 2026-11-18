@@ -903,11 +903,23 @@ def logout(request: Request):
     response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate, private"
     response.headers["Pragma"] = "no-cache"
     response.headers["Expires"] = "0"
-    response.delete_cookie(
-        "aerobyte_session",
-        path="/",
-        secure=is_secure,
-        httponly=True,
-        samesite="lax",
-    )
+    cookie_names = ("aerobyte_session", "session", "access_token", "refresh_token", "user_session", "auth_token")
+    for cookie_name in cookie_names:
+        response.delete_cookie(
+            cookie_name,
+            path="/",
+            secure=is_secure,
+            httponly=True,
+            samesite="lax",
+        )
+        response.delete_cookie(
+            cookie_name,
+            path="/",
+            secure=False,
+            httponly=True,
+        )
+        response.headers.append(
+            "Set-Cookie",
+            f"{cookie_name}=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Max-Age=0; HttpOnly; SameSite=Lax",
+        )
     return response

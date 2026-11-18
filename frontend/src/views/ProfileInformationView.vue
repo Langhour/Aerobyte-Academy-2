@@ -2343,20 +2343,6 @@ function clearLocalProfile() {
 async function confirmLogout() {
   logoutDialogOpen.value = false
 
-  try {
-    localStorage.removeItem('aerobyte_user_session')
-    localStorage.removeItem('aerobyte-profile-current')
-    if (storageKey.value) localStorage.removeItem(storageKey.value)
-    if (storageEmailKey.value) localStorage.removeItem(storageEmailKey.value)
-    localStorage.removeItem('aerobyte-profile')
-    for (let i = localStorage.length - 1; i >= 0; i--) {
-      const k = localStorage.key(i)
-      if (k && (k.startsWith('aerobyte-profile') || k.startsWith('aerobyte_user') || k.startsWith('aerobyte-course-history') || k.startsWith('aerobyte_print_orders') || k.startsWith('aerobyte_store_orders'))) {
-        localStorage.removeItem(k)
-      }
-    }
-  } catch (_) {}
-
   copyProfile(profile, emptyProfile())
   copyProfile(draft, emptyProfile())
   courseHistory.value = []
@@ -2366,9 +2352,36 @@ async function confirmLogout() {
     await accountService.logout()
   } catch (error) {
     console.warn('Backend sign out error (continuing local logout):', error)
-  }
+  } finally {
+    try {
+      localStorage.removeItem('aerobyte_user_session')
+      localStorage.removeItem('aerobyte-profile-current')
+      if (storageKey.value) localStorage.removeItem(storageKey.value)
+      if (storageEmailKey.value) localStorage.removeItem(storageEmailKey.value)
+      localStorage.removeItem('aerobyte-profile')
+      for (let i = localStorage.length - 1; i >= 0; i--) {
+        const k = localStorage.key(i)
+        if (k && (
+          k.startsWith('aerobyte') ||
+          k.includes('profile') ||
+          k.includes('user') ||
+          k.includes('auth') ||
+          k.includes('order') ||
+          k.includes('enroll')
+        )) {
+          localStorage.removeItem(k)
+        }
+      }
+      sessionStorage.clear()
+    } catch (_) {}
 
-  window.location.href = '/courses'
+    try {
+      window.dispatchEvent(new CustomEvent('aerobyte-profile-updated', { detail: null }))
+      window.dispatchEvent(new CustomEvent('aerobyte-auth-updated', { detail: null }))
+    } catch (_) {}
+
+    window.location.href = '/courses'
+  }
 }
 
 function startEditing() {
