@@ -229,8 +229,11 @@ def send_password_reset_email(email: str, name: str, reset_url: str) -> None:
     # 1. Primary: Resend
     api_key, _ = get_resend_credentials()
     if api_key:
-        _send_with_resend(email, subject, text_content, html_content)
-        return
+        try:
+            _send_with_resend(email, subject, text_content, html_content)
+            return
+        except Exception as exc:
+            logger.warning("Resend failed to send password reset to %s (%s). Attempting fallbacks...", email, exc)
 
     # 2. Secondary fallback: EmailJS
     service_id, template_id, public_key, private_key = get_emailjs_credentials()
@@ -304,9 +307,8 @@ def send_verification_email(email: str, name: str, code: str, verify_url: str) -
         try:
             _send_with_resend(email, subject, text_content, html_content)
             return
-        except Exception:
-            logger.exception("Failed to send verification email via Resend")
-            raise
+        except Exception as exc:
+            logger.warning("Resend failed to send verification email to %s (%s). Attempting fallbacks...", email, exc)
 
     # 2. Secondary fallback: EmailJS
     service_id, template_id, public_key, private_key = get_emailjs_credentials()

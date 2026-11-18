@@ -744,7 +744,11 @@ async function resendVerificationCode() {
   isError.value = false
   try {
     const res = await accountService.resendVerification(verifyEmail.value)
-    message.value = res.data?.message || t('A new verification code has been sent.')
+    if (res.data?.dev_code) {
+      message.value = `${res.data.message} (Code: ${res.data.dev_code})`
+    } else {
+      message.value = res.data?.message || t('A new verification code has been sent.')
+    }
     startResendCooldown(30)
   } catch (error) {
     isError.value = true
@@ -804,7 +808,7 @@ async function submitAccountForm() {
       verifyEmail.value = userEmail
       startResendCooldown(30)
       if (regResponse.data?.dev_code) {
-        message.value = `${regResponse.data.message} (Test Code: ${regResponse.data.dev_code})`
+        message.value = `${regResponse.data.message} (Code: ${regResponse.data.dev_code})`
       } else {
         message.value = regResponse.data?.message || t('A 6-digit verification code has been sent to your email.')
       }
