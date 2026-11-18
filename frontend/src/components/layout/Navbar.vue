@@ -238,73 +238,130 @@
 
 
 
-        <!-- Account Profile Section -->
-        <div v-if="profileName" ref="accountMenu" class="relative">
+        <!-- Account Profile Dropdown (Clean, User-Only) -->
+
+        <div ref="accountMenu" class="relative">
+
           <button
+
             ref="accountTrigger"
+
             type="button"
+
             class="inline-flex h-8 sm:h-9 cursor-pointer items-center gap-1.5 sm:gap-2 rounded-lg px-2 text-slate-600 dark:text-slate-300 transition hover:bg-slate-50 dark:hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy-800/30"
-            :aria-label="`${profileName} - ${t('Account menu')}`"
+
+            :aria-label="`${profileName || t('Sign in')} - ${t('Account menu')}`"
+
             aria-haspopup="menu"
+
             :aria-expanded="accountMenuOpen"
+
             @click="accountMenuOpen = !accountMenuOpen"
+
             @keydown.down.prevent="openAccountMenu"
+
           >
+
             <img
+
               v-if="profileAvatar && !avatarLoadFailed"
+
               :src="resolveImageUrl(profileAvatar)"
+
               alt=""
+
               class="h-5 w-5 sm:h-6 sm:w-6 rounded-full object-cover shrink-0 border border-slate-200 dark:border-slate-700"
+
               @error="avatarLoadFailed = true"
+
             />
+
             <UserRound v-else class="h-4 w-4 sm:h-5 sm:w-5 shrink-0" aria-hidden="true" />
+
             <span
               class="u267-sw max-w-16 sm:max-w-24 truncate text-xs sm:text-sm font-medium text-navy-900 dark:text-white"
               :class="getSwClass(7)"
               :style="getSwStyle(7)"
             >
-              <span class="truncate">{{ profileName }}</span>
+              <span class="truncate">{{ profileName || t('Sign in') }}</span>
             </span>
+
           </button>
 
           <div
+
             v-if="accountMenuOpen"
+
             class="absolute right-0 top-full z-50 mt-2 w-72 max-w-[calc(100vw-24px)] overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-xl"
+
             role="menu"
+
             :aria-label="t('Account menu')"
+
             @keydown.esc.prevent="closeAccountMenu"
+
           >
+
             <div class="flex items-center gap-3 border-b border-slate-100 dark:border-slate-700 px-4 sm:px-5 py-3.5 sm:py-4">
+
               <span class="flex h-10 w-10 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-900/60 text-sm sm:text-base font-bold text-emerald-700 dark:text-emerald-300 overflow-hidden">
+
                 <img
+
                   v-if="profileAvatar && !avatarLoadFailed"
+
                   :src="resolveImageUrl(profileAvatar)"
+
                   alt=""
+
                   class="h-full w-full object-cover"
+
                   @error="avatarLoadFailed = true"
+
                 />
+
                 <span v-else>{{ profileInitials }}</span>
+
               </span>
+
               <div class="min-w-0">
-                <p class="truncate text-xs sm:text-sm font-bold text-slate-900 dark:text-white">{{ profileName }}</p>
+
+                <p class="truncate text-xs sm:text-sm font-bold text-slate-900 dark:text-white">{{ profileName || t('Welcome to AeroByte') }}</p>
+
                 <p class="truncate text-[11px] sm:text-xs text-slate-500 dark:text-slate-400">
-                  {{ profileEmail || t('Your account') }}
+
+                  {{ profileName ? profileEmail || t('Your account') : t('Sign in or create an account') }}
+
                 </p>
+
               </div>
+
             </div>
 
             <div class="space-y-1 p-2">
+
               <RouterLink
+
+                v-if="profileName"
+
                 to="/profile"
+
                 role="menuitem"
+
                 class="flex items-center gap-3 rounded-xl px-3 py-2.5 sm:py-3 text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-200 transition hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-navy-900 dark:hover:text-white"
+
                 @click="closeAccountMenu"
+
               >
+
                 <UserRound class="h-4 w-4 sm:h-5 sm:w-5 text-slate-400" aria-hidden="true" />
+
                 <span>{{ t('Profile information') }}</span>
+
               </RouterLink>
 
               <RouterLink
+                v-if="profileName"
                 to="/profile?section=orders"
                 role="menuitem"
                 class="flex items-center gap-3 rounded-xl px-3 py-2.5 sm:py-3 text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-200 transition hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-navy-900 dark:hover:text-white"
@@ -315,6 +372,7 @@
               </RouterLink>
 
               <button
+                v-if="profileName"
                 type="button"
                 role="menuitem"
                 class="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 sm:py-3 text-xs sm:text-sm font-medium text-red-600 dark:text-red-400 transition hover:bg-red-50 dark:hover:bg-red-950/40 cursor-pointer text-left select-none"
@@ -324,50 +382,104 @@
                 <span class="pointer-events-none">{{ t('Log out') }}</span>
               </button>
 
+
+
               <!-- Dark / Light Mode Switch inside Account Dropdown -->
+
               <div class="flex items-center justify-between rounded-xl px-3 py-2 sm:py-2.5 transition hover:bg-slate-50 dark:hover:bg-slate-700/60">
+
                 <div class="flex items-center gap-2.5 sm:gap-3 text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-200">
+
                   <Sun v-if="!isDark" class="h-4 w-4 sm:h-5 sm:w-5 text-amber-500" />
+
                   <Moon v-else class="h-4 w-4 sm:h-5 sm:w-5 text-indigo-400" />
+
                   <span>{{ isDark ? t('Dark mode') : t('Light mode') }}</span>
+
                 </div>
 
                 <button
+
                   type="button"
+
                   role="switch"
+
                   :aria-checked="isDark"
+
                   :aria-label="isDark ? t('Switch to light mode') : t('Switch to dark mode')"
+
                   @click="toggleTheme"
+
                   class="relative inline-flex h-5 w-10 sm:h-6 sm:w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none"
+
                   :class="isDark ? 'bg-indigo-600' : 'bg-slate-300'"
+
                 >
+
                   <span
+
                     aria-hidden="true"
+
                     class="pointer-events-none inline-block h-4 w-4 sm:h-5 sm:w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
+
                     :class="isDark ? 'translate-x-5' : 'translate-x-0'"
+
                   />
+
                 </button>
+
               </div>
+
+
+
+              <!-- Same Line: Sign in & Register Buttons -->
+
+              <div v-if="!profileName" class="grid grid-cols-2 gap-2 pt-1.5 px-0.5">
+
+                <RouterLink
+
+                  :to="{ path: '/account', query: { mode: 'signin' } }"
+
+                  role="menuitem"
+
+                  class="flex items-center justify-center gap-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-700/60 py-2 px-2 text-xs font-bold text-navy-900 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-700 transition"
+
+                  @click="closeAccountMenu"
+
+                >
+
+                  <LogIn class="h-3.5 w-3.5 shrink-0 text-slate-500 dark:text-slate-400" aria-hidden="true" />
+
+                  <span>{{ t('Sign in') }}</span>
+
+                </RouterLink>
+
+
+
+                <RouterLink
+
+                  :to="{ path: '/account', query: { mode: 'register' } }"
+
+                  role="menuitem"
+
+                  class="flex items-center justify-center gap-1.5 rounded-xl bg-navy-900 dark:bg-indigo-600 text-white py-2 px-2 text-xs font-bold hover:bg-navy-800 dark:hover:bg-indigo-500 shadow-xs transition"
+
+                  @click="closeAccountMenu"
+
+                >
+
+                  <UserPlus class="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+
+                  <span>{{ t('Register') }}</span>
+
+                </RouterLink>
+
+              </div>
+
             </div>
+
           </div>
-        </div>
 
-        <!-- Direct Logged-Out State in Navbar (Sign In & Register) -->
-        <div v-else class="flex items-center gap-1.5 sm:gap-2">
-          <RouterLink
-            :to="{ path: '/account', query: { mode: 'signin' } }"
-            class="inline-flex h-8 sm:h-9 items-center gap-1.5 rounded-lg px-2 sm:px-3 text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-200 transition hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-navy-900 dark:hover:text-white"
-          >
-            <UserRound class="h-3.5 w-3.5 sm:h-4 sm:w-4 text-slate-500 dark:text-slate-400" />
-            <span>{{ t('Sign in') }}</span>
-          </RouterLink>
-
-          <RouterLink
-            :to="{ path: '/account', query: { mode: 'register' } }"
-            class="hidden md:inline-flex h-8 sm:h-9 items-center rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-2.5 sm:px-3 text-xs sm:text-sm font-semibold text-navy-900 dark:text-white transition hover:bg-slate-50 dark:hover:bg-slate-700 shadow-2xs"
-          >
-            <span>{{ t('Register') }}</span>
-          </RouterLink>
         </div>
 
 
