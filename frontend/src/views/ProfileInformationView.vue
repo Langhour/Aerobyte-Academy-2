@@ -219,11 +219,15 @@
               class="overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs"
             >
               <div class="flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:p-5">
-                <img
-                  :src="resolveImageUrl(enrollment.course_image)"
-                  :alt="enrollment.course_title"
-                  class="h-28 w-full rounded-xl bg-slate-100 dark:bg-slate-800 object-cover sm:h-20 sm:w-28"
-                />
+                <div class="relative h-28 w-full sm:h-20 sm:w-28 shrink-0 overflow-hidden rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700/80 shadow-xs">
+                  <img
+                    :src="getCourseImage(enrollment)"
+                    :alt="enrollment.course_title"
+                    class="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
+                    loading="lazy"
+                    @error="handleCourseImageError($event, enrollment)"
+                  />
+                </div>
                 <div class="min-w-0 flex-1">
                   <div class="flex flex-wrap items-center gap-2">
                     <span
@@ -2202,6 +2206,46 @@ async function loadCourseHistory() {
     historyError.value = t('Could not load course history. Please try refreshing.')
   } finally {
     historyLoading.value = false
+  }
+}
+
+const fallbackCourseImages = {
+  'microbit-robotics-courses': '/auth-workshop.jpg',
+  'super-class-fpv-drone-training': 'https://images.unsplash.com/photo-1473968512647-3e447244af8f?auto=format&fit=crop&w=900&q=85',
+  'internet-of-things': 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=900&q=85',
+  'robotics': 'https://images.unsplash.com/photo-1535378620166-273708d44e4c?auto=format&fit=crop&w=900&q=85',
+  'blender-3d-animation': 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?auto=format&fit=crop&w=900&q=85',
+  'battle-robot-courses': 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=900&q=85',
+  'pcb-electronic-board-designs': 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=85',
+  'advance-arm-robotics': 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=900&q=85',
+  'iot-data-scientists-advanced-analytics': 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=900&q=85',
+  'technology-course-levels-1-to-8': 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=900&q=85',
+  'special-3d-designs-course': 'https://images.unsplash.com/photo-1581092334651-ddf26d9a09d0?auto=format&fit=crop&w=900&q=85',
+  'micropython-and-python': 'https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=900&q=85',
+}
+
+function getCourseImage(enrollment) {
+  const raw = enrollment?.course_image
+  if (raw && typeof raw === 'string' && !raw.startsWith('/course-') && raw.trim() !== '') {
+    return resolveImageUrl(raw)
+  }
+  const slug = enrollment?.course_slug || ''
+  if (slug && fallbackCourseImages[slug]) {
+    return resolveImageUrl(fallbackCourseImages[slug])
+  }
+  return '/auth-workshop.jpg'
+}
+
+function handleCourseImageError(event, enrollment) {
+  const target = event.target
+  if (target && !target.dataset.fallbackApplied) {
+    target.dataset.fallbackApplied = 'true'
+    const slug = enrollment?.course_slug || ''
+    if (slug && fallbackCourseImages[slug] && target.src !== fallbackCourseImages[slug]) {
+      target.src = fallbackCourseImages[slug]
+    } else {
+      target.src = '/auth-workshop.jpg'
+    }
   }
 }
 

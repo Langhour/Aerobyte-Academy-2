@@ -755,6 +755,24 @@ def get_account_enrollments(
                 if rec:
                     records_by_id[rec.enrollment_id] = rec
 
+    # Ensure all enrollment records have valid, high-resolution course images
+    course_img_map: dict[str, str] = {}
+    try:
+        from app.content_store import list_courses
+        for c in list_courses():
+            if c.image_url:
+                course_img_map[c.id] = c.image_url
+                course_img_map[c.slug] = c.image_url
+    except Exception:
+        pass
+
+    for rec in records_by_id.values():
+        img = (rec.course_image or "").strip()
+        if not img or img.startswith("/course-") or img == "":
+            fallback_img = course_img_map.get(rec.course_id) or course_img_map.get(rec.course_slug)
+            if fallback_img:
+                rec.course_image = fallback_img
+
     records = list(records_by_id.values())
     records.sort(key=lambda r: r.created_at or "", reverse=True)
     return records
