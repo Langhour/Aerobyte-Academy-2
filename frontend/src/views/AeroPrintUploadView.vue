@@ -162,7 +162,8 @@
               <!-- Telegram Username / Phone Number -->
               <div>
                 <label class="block text-xs font-bold text-[#111112] dark:text-white/90 mb-1.5">
-                  {{ t('Telegram Username or Phone Number *') }}
+                  <span>{{ t('Telegram Username or Phone Number') }}</span>
+                  <span class="text-rose-500 font-normal ml-1 text-[11px]">({{ t('Required if no QR code') }})</span>
                 </label>
                 <div class="relative">
                   <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
@@ -175,9 +176,16 @@
                     v-model="orderForm.telegram"
                     type="text"
                     placeholder="@username or 012 345 678"
-                    class="w-full rounded-xl border border-black/15 dark:border-white/15 bg-[#FAFAFA] dark:bg-white/5 pl-10 pr-3.5 py-2.5 text-xs text-[#111112] dark:text-white placeholder:text-[#696969] dark:placeholder:text-white/40 focus:outline-none focus:border-navy-900 dark:focus:border-blue-400 focus:bg-white dark:focus:bg-white/10 transition"
+                    @input="validationError = ''"
+                    class="w-full rounded-xl border bg-[#FAFAFA] dark:bg-white/5 pl-10 pr-3.5 py-2.5 text-xs text-[#111112] dark:text-white placeholder:text-[#696969] dark:placeholder:text-white/40 focus:outline-none focus:bg-white dark:focus:bg-white/10 transition"
+                    :class="(validationError && !orderForm.telegram.trim() && !qrFile)
+                      ? 'border-rose-500 focus:border-rose-500 ring-2 ring-rose-500/20'
+                      : 'border-black/15 dark:border-white/15 focus:border-navy-900 dark:focus:border-blue-400'"
                   />
                 </div>
+                <p v-if="validationError && !orderForm.telegram.trim() && !qrFile" class="text-[11px] text-rose-500 dark:text-rose-400 mt-1 font-medium">
+                  {{ t('Please provide your Telegram username or phone number (or upload QR code below).') }}
+                </p>
               </div>
 
               <!-- Customer Name -->
@@ -189,6 +197,7 @@
                   v-model="orderForm.name"
                   type="text"
                   placeholder="e.g. Sokha Chan"
+                  @input="validationError = ''"
                   class="w-full rounded-xl border border-black/15 dark:border-white/15 bg-[#FAFAFA] dark:bg-white/5 px-3.5 py-2.5 text-xs text-[#111112] dark:text-white placeholder:text-[#696969] dark:placeholder:text-white/40 focus:outline-none focus:border-navy-900 dark:focus:border-blue-400 focus:bg-white dark:focus:bg-white/10 transition"
                 />
               </div>
@@ -197,10 +206,11 @@
             <!-- Drop Telegram QR Code Section -->
             <div class="pt-1">
               <label class="block text-xs font-bold text-[#111112] dark:text-white/90 mb-1">
-                {{ t('Drop Telegram QR Code (Optional)') }}
+                <span>{{ t('Drop Telegram QR Code (Optional)') }}</span>
+                <span class="text-emerald-600 dark:text-emerald-400 font-normal ml-1 text-[11px]">({{ t('Optional — user can provide username instead') }})</span>
               </label>
               <p class="text-[11px] text-[#696969] dark:text-white/55 mb-2.5">
-                {{ t('Upload a screenshot or photo of your Telegram QR code so our lab engineers can scan and connect with you immediately.') }}
+                {{ t('Uploading a Telegram QR code is completely optional. If you entered your Telegram username or phone number above, you do NOT need to upload an image.') }}
               </p>
 
               <!-- QR Upload Dropzone (When not uploaded yet) -->
@@ -564,7 +574,7 @@ import {
   X,
 } from 'lucide-vue-next'
 import { useI18n } from '../i18n'
-import { printOrderService } from '../services/api'
+import { printOrderService, accountService } from '../services/api'
 import { formatCambodiaTime } from '../utils/date'
 
 const { t } = useI18n()
@@ -707,10 +717,24 @@ function getCachedUserProfile() {
     }
   } catch (_) {}
 
+  if (uemail) {
+    try {
+      const byEmail = localStorage.getItem(`aerobyte-profile:${uemail.toLowerCase()}`)
+      if (byEmail) {
+        const ep = JSON.parse(byEmail)
+        if (ep) {
+          if (!utg && ep.telegram) utg = ep.telegram
+          if (!uphone && ep.phone) uphone = ep.phone
+          if (!uname && ep.fullName) uname = ep.fullName
+        }
+      }
+    } catch (_) {}
+  }
+
   return { id: uid, email: uemail, fullName: uname, telegram: utg, phone: uphone }
 }
 
-onMounted(() => {
+onMounted(async () => {
   const profile = getCachedUserProfile()
   if (profile.fullName && !orderForm.value.name) {
     orderForm.value.name = profile.fullName
@@ -722,6 +746,24 @@ onMounted(() => {
       orderForm.value.telegram = profile.phone
     }
   }
+
+  // Backfill directly from active server session if telegram or name are not yet cached
+  try {
+    const res = await accountService.getSession()
+    if (res?.data?.authenticated && res?.data?.user) {
+      const u = res.data.user
+      if (!orderForm.value.name && (u.name || u.full_name)) {
+        orderForm.value.name = u.name || u.full_name
+      }
+      if (!orderForm.value.telegram) {
+        if (u.telegram) {
+          orderForm.value.telegram = u.telegram
+        } else if (u.phone) {
+          orderForm.value.telegram = u.phone
+        }
+      }
+    }
+  } catch (_) {}
 })
 
 async function submitPrintOrder() {

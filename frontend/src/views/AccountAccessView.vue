@@ -680,6 +680,8 @@ function persistLoggedInUser(user) {
       name: user.name || user.full_name || '',
       role: user.role || 'user',
       avatar_url: user.avatar_url || '',
+      telegram: user.telegram || '',
+      phone: user.phone || '',
     }
     const profileData = {
       id: user.id,
