@@ -2335,7 +2335,7 @@ async function confirmLogout() {
     localStorage.removeItem('aerobyte-profile')
     for (let i = localStorage.length - 1; i >= 0; i--) {
       const k = localStorage.key(i)
-      if (k && (k.startsWith('aerobyte-profile:') || k.startsWith('aerobyte_user_'))) {
+      if (k && (k.startsWith('aerobyte-profile:') || k.startsWith('aerobyte_user_') || k.startsWith('aerobyte-course-history'))) {
         localStorage.removeItem(k)
       }
     }
@@ -2347,14 +2347,7 @@ async function confirmLogout() {
   window.dispatchEvent(new Event('aerobyte-profile-updated'))
   window.dispatchEvent(new Event('aerobyte-auth-updated'))
   account.value = null
-
-  try {
-    await router.replace('/courses')
-  } catch (_) {}
-
-  if (window.location.pathname.includes('/profile')) {
-    window.location.href = '/courses'
-  }
+  window.location.href = '/courses'
 }
 
 function startEditing() {

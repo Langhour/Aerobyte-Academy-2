@@ -1366,7 +1366,7 @@ async function handleLogout() {
     localStorage.removeItem('aerobyte-profile')
     for (let i = localStorage.length - 1; i >= 0; i--) {
       const k = localStorage.key(i)
-      if (k && (k.startsWith('aerobyte-profile:') || k.startsWith('aerobyte_user_'))) {
+      if (k && (k.startsWith('aerobyte-profile:') || k.startsWith('aerobyte_user_') || k.startsWith('aerobyte-course-history'))) {
         localStorage.removeItem(k)
       }
     }
@@ -1376,11 +1376,12 @@ async function handleLogout() {
   profileAvatar.value = ''
   window.dispatchEvent(new Event('aerobyte-profile-updated'))
   window.dispatchEvent(new Event('aerobyte-auth-updated'))
-  try {
-    await router.replace('/courses')
-  } catch (_) {}
-  if (window.location.pathname.includes('/profile')) {
+  if (window.location.pathname.includes('/profile') || window.location.pathname.includes('/courses')) {
     window.location.href = '/courses'
+  } else {
+    try {
+      await router.replace('/courses')
+    } catch (_) {}
   }
 }
 

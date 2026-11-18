@@ -13,6 +13,7 @@ from uuid import uuid4
 
 import httpx
 from fastapi import APIRouter, File, Form, HTTPException, Request, Response, UploadFile, status
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field, field_validator
 
 from app.content_store import (
@@ -529,34 +530,19 @@ def complete_password_reset(payload: PasswordResetComplete):
 
 
 @router.get("/session")
-def get_session(request: Request, email: Optional[str] = None, user_id: Optional[str] = None):
+def get_session(request: Request):
     user = None
-
-    # 1. Check existing session cookie
-    sess_uid = request.session.get("user_id", "")
-    sess_email = request.session.get("email", "")
-    if sess_uid:
-        user = find_user_by_id(sess_uid)
-    if not user and sess_email:
-        user = find_user_by_email(sess_email)
-
-    # 2. Fallback to client query params if cookie was cleared or lost
-    if not user and email:
-        cleaned_email = email.strip().casefold()
-        if cleaned_email:
-            matched = find_user_by_email(cleaned_email)
-            if matched and matched.get("is_verified", 1) == 1:
-                user = matched
-    if not user and user_id:
-        matched = find_user_by_id(user_id.strip())
-        if matched and matched.get("is_verified", 1) == 1:
-            user = matched
+    if request.session.get("role") == "user":
+        sess_uid = request.session.get("user_id", "")
+        sess_email = request.session.get("email", "")
+        if sess_uid:
+            user = find_user_by_id(sess_uid)
+        if not user and sess_email:
+            user = find_user_by_email(sess_email)
 
     if user:
-        _start_user_session(request, user)
         return {"authenticated": True, "user": _public_user(user)}
 
-    # Never clear session on a simple GET check!
     return {"authenticated": False, "user": None}
 
 
@@ -875,10 +861,19 @@ def get_user_print_orders_endpoint(
     )
     return orders
 
-@router.post("/logout", status_code=status.HTTP_204_NO_CONTENT)
+@router.api_route("/logout", methods=["GET", "POST"])
 def logout(request: Request):
-    request.session.pop("role", None)
-    request.session.pop("user_id", None)
-    request.session.pop("email", None)
-    request.session.pop("user_name", None)
-    return Response(status_code=status.HTTP_204_NO_CONTENT)
+    request.session.clear()
+    is_secure = (
+        os.getenv("RENDER") is not None
+        or os.getenv("ADMIN_COOKIE_SECURE", "false").casefold() == "true"
+        or os.getenv("ENVIRONMENT", "").casefold() == "production"
+    )
+    response = JSONResponse(content={"authenticated": False, "message": "Logged out successfully."})
+    response.delete_cookie(
+        "aerobyte_session",
+        path="/",
+        secure=is_secure,
+        samesite="lax",
+    )
+    return response
