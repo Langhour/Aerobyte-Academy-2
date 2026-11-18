@@ -473,7 +473,7 @@ async def google_callback(request: Request):
             except Exception:
                 pass
             return RedirectResponse(
-                f"{target_origin}/account?handoff_token={handoff_token}&dest=/admin",
+                f"{target_origin}/admin",
                 status_code=303,
             )
 
@@ -530,7 +530,7 @@ async def google_callback(request: Request):
             pass
 
         return RedirectResponse(
-            f"{target_origin}/account?handoff_token={handoff_token}&dest={dest}",
+            f"{target_origin}{dest}",
             status_code=303,
         )
 
