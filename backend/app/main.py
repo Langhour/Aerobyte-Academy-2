@@ -13,7 +13,7 @@ from starlette.middleware.sessions import SessionMiddleware
 from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
 
 from app.content_store import find_user_by_id, get_uploaded_file, initialize_content_store, log_visit_event
-from app.routers import accounts, admin, courses, enrollment, google_auth, print_orders, public
+from app.routers import accounts, admin, auth, courses, enrollment, google_auth, print_orders, public
 
 
 def _load_local_environment() -> None:
@@ -100,6 +100,7 @@ app.include_router(courses.router)
 app.include_router(enrollment.router)
 app.include_router(admin.router)
 app.include_router(public.router)
+app.include_router(auth.router)
 app.include_router(accounts.router, prefix="/api/accounts")
 app.include_router(accounts.router, prefix="/api/account")
 app.include_router(google_auth.router)

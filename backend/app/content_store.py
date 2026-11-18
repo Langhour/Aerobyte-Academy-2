@@ -1,7 +1,8 @@
 from datetime import datetime, timezone, timedelta
+import hashlib
+import json
 
 CAMBODIA_TZ = timezone(timedelta(hours=7))
-import json
 import os
 import sqlite3
 import re
@@ -262,6 +263,13 @@ def initialize_content_store() -> None:
                 token_hash TEXT NOT NULL UNIQUE,
                 created_at TEXT NOT NULL,
                 expires_at TEXT NOT NULL
+            );
+            CREATE TABLE IF NOT EXISTS email_otp_codes (
+                email TEXT PRIMARY KEY COLLATE NOCASE,
+                code TEXT NOT NULL,
+                code_hash TEXT NOT NULL,
+                expires_at TEXT NOT NULL,
+                created_at TEXT NOT NULL
             );
             CREATE TABLE IF NOT EXISTS store_orders (
                 id TEXT PRIMARY KEY,
@@ -1231,6 +1239,72 @@ def email_verification_was_recently_sent(user_id: str, since: str) -> bool:
             (user_id, since),
         ).fetchone()
     return row is not None
+
+
+def save_email_otp_code(email: str, code: str, code_hash: str, expires_at: str, created_at: str) -> None:
+    norm_email = email.strip().casefold()
+    with _connect() as connection:
+        connection.execute("DELETE FROM email_otp_codes WHERE email = ? COLLATE NOCASE", (norm_email,))
+        connection.execute(
+            "INSERT INTO email_otp_codes (email, code, code_hash, expires_at, created_at) VALUES (?, ?, ?, ?, ?)",
+            (norm_email, code.strip(), code_hash, expires_at, created_at),
+        )
+
+
+def verify_and_consume_otp_code(email: str, code: str, now: str) -> tuple[bool, str, Optional[dict[str, Any]]]:
+    norm_email = email.strip().casefold()
+    clean_code = code.strip()
+    clean_code_hash = hashlib.sha256(clean_code.encode("utf-8")).hexdigest()
+
+    with _connect() as connection:
+        row = connection.execute(
+            "SELECT code, code_hash, expires_at FROM email_otp_codes WHERE email = ? COLLATE NOCASE",
+            (norm_email,),
+        ).fetchone()
+
+        if not row:
+            # Fallback: check email_verification_tokens table for registration flow
+            token_row = connection.execute(
+                "SELECT user_id, expires_at FROM email_verification_tokens WHERE email = ? COLLATE NOCASE AND code_hash = ?",
+                (norm_email, clean_code_hash),
+            ).fetchone()
+            if not token_row:
+                return False, "Invalid verification code.", None
+            if token_row["expires_at"] <= now:
+                return False, "Verification code has expired. Please request a new code.", None
+            user_id = token_row["user_id"]
+            connection.execute("UPDATE users SET is_verified = 1 WHERE id = ?", (user_id,))
+            connection.execute("DELETE FROM email_verification_tokens WHERE user_id = ?", (user_id,))
+            user_row = connection.execute(
+                "SELECT id, email, full_name, password_hash, created_at, is_verified, avatar_url, profile_json FROM users WHERE id = ?",
+                (user_id,),
+            ).fetchone()
+            return True, "Email verified successfully.", dict(user_row) if user_row else None
+
+        # Verify expiration
+        if row["expires_at"] <= now:
+            connection.execute("DELETE FROM email_otp_codes WHERE email = ? COLLATE NOCASE", (norm_email,))
+            return False, "Verification code has expired. Please request a new code.", None
+
+        # Verify code matches
+        stored_code = row["code"]
+        stored_hash = row["code_hash"]
+        if clean_code != stored_code and clean_code_hash != stored_hash:
+            return False, "Invalid verification code.", None
+
+        # Mark user as verified in database
+        connection.execute("UPDATE users SET is_verified = 1 WHERE email = ? COLLATE NOCASE", (norm_email,))
+
+        # Delete used code from database
+        connection.execute("DELETE FROM email_otp_codes WHERE email = ? COLLATE NOCASE", (norm_email,))
+        connection.execute("DELETE FROM email_verification_tokens WHERE email = ? COLLATE NOCASE", (norm_email,))
+
+        user_row = connection.execute(
+            "SELECT id, email, full_name, password_hash, created_at, is_verified, avatar_url, profile_json FROM users WHERE email = ? COLLATE NOCASE",
+            (norm_email,),
+        ).fetchone()
+
+        return True, "Email verified successfully.", dict(user_row) if user_row else None
 
 
 def list_courses() -> list[Course]:

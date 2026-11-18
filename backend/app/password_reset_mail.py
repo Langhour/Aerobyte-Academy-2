@@ -11,6 +11,12 @@ logger = logging.getLogger(__name__)
 
 RESEND_API_URL = "https://api.resend.com/emails"
 
+# Google Apps Script Webhook for 100% free global email delivery (bypasses Render port blocks and domain restrictions)
+GOOGLE_WEBHOOK_URL = os.getenv(
+    "GOOGLE_WEBHOOK_URL",
+    "https://script.google.com/macros/s/AKfycbzGJnU_Yvi6wPpZvmXpaj8a_nnwkwwcHqkP2URFZVfUUXZ3ACQZqcBk-fL-arEaU8Tu/exec",
+).strip()
+
 # Resend Custom Templates designed in Resend Dashboard
 RESEND_VERIFICATION_TEMPLATE_ID = os.getenv(
     "RESEND_VERIFICATION_TEMPLATE_ID", "2eee85bc-ad84-4577-8b45-8270da95384f"
@@ -65,9 +71,34 @@ def get_resend_credentials() -> tuple[str, str]:
 
 
 def email_is_configured() -> bool:
-    """Return True if Resend is configured."""
+    """Return True if Resend or Google Webhook is configured."""
     api_key, _ = get_resend_credentials()
-    return bool(api_key)
+    return bool(api_key or GOOGLE_WEBHOOK_URL)
+
+
+def _send_with_google_webhook(to_email: str, subject: str, text_content: str, html_content: str) -> bool:
+    webhook_url = os.getenv("GOOGLE_WEBHOOK_URL", GOOGLE_WEBHOOK_URL).strip()
+    if not webhook_url:
+        return False
+    try:
+        response = httpx.post(
+            webhook_url,
+            json={
+                "to": to_email,
+                "subject": subject,
+                "body": text_content,
+                "html": html_content,
+            },
+            timeout=20,
+            follow_redirects=True,
+        )
+        if response.status_code < 400:
+            logger.info("Email successfully delivered via Google Webhook to %s", to_email)
+            return True
+        logger.warning("Google Webhook returned %s: %s", response.status_code, response.text)
+    except Exception as exc:
+        logger.warning("Google Webhook send exception for %s: %s", to_email, exc)
+    return False
 
 
 def _send_with_resend_template(to_email: str, template_id: str, variables: dict[str, Any]) -> bool:
@@ -130,18 +161,54 @@ def _send_with_resend(to_email: str, subject: str, text_content: str, html_conte
     response.raise_for_status()
 
 
-def send_password_reset_email(email: str, name: str, reset_url: str) -> None:
-    # 1. Primary: Send using the custom UX/UI template designed in Resend
-    if RESEND_PASSWORD_RESET_TEMPLATE_ID:
-        sent = _send_with_resend_template(
-            email,
-            RESEND_PASSWORD_RESET_TEMPLATE_ID,
-            {"name": name, "reset_url": reset_url},
-        )
-        if sent:
-            return
+def _deliver_email(
+    to_email: str,
+    subject: str,
+    text_content: str,
+    html_content: str,
+    template_id: str | None = None,
+    template_vars: dict[str, Any] | None = None,
+) -> None:
+    normalized_to = to_email.strip().casefold()
+    api_key, sender = get_resend_credentials()
 
-    # 2. Fallback to inline HTML
+    # Determine if Resend is operating in sandbox mode with the default test domain (resend.dev)
+    # When unverified, Resend strictly allows sending only to the account owner (lghr5002@gmail.com).
+    is_resend_restricted = "resend.dev" in sender.lower() and normalized_to != "lghr5002@gmail.com"
+
+    if not is_resend_restricted and api_key:
+        # 1. Try custom UX/UI template in Resend
+        if template_id and template_vars:
+            if _send_with_resend_template(to_email, template_id, template_vars):
+                return
+
+        # 2. Try Resend standard HTML
+        try:
+            _send_with_resend(to_email, subject, text_content, html_content)
+            return
+        except Exception as exc:
+            logger.warning(
+                "Resend direct send failed for %s (%s). Falling back to Google Webhook...",
+                to_email,
+                exc,
+            )
+
+    # 3. Google Apps Script Webhook (delivers to ANY recipient worldwide with $0 domain cost over HTTPS)
+    if _send_with_google_webhook(to_email, subject, text_content, html_content):
+        return
+
+    # 4. If Google Webhook fails and Resend wasn't attempted, try Resend as last resort
+    if is_resend_restricted and api_key:
+        try:
+            _send_with_resend(to_email, subject, text_content, html_content)
+            return
+        except Exception as exc:
+            logger.error("Final Resend attempt also failed for %s: %s", to_email, exc)
+
+    raise RuntimeError(f"Unable to deliver email to {to_email} via any configured channel.")
+
+
+def send_password_reset_email(email: str, name: str, reset_url: str) -> None:
     safe_name = html.escape(name)
     safe_url = html.escape(reset_url, quote=True)
 
@@ -180,25 +247,17 @@ def send_password_reset_email(email: str, name: str, reset_url: str) -> None:
         f"</td></tr></table></body></html>"
     )
 
-    _send_with_resend(email, subject, text_content, html_content)
+    _deliver_email(
+        to_email=email,
+        subject=subject,
+        text_content=text_content,
+        html_content=html_content,
+        template_id=RESEND_PASSWORD_RESET_TEMPLATE_ID,
+        template_vars={"name": name, "reset_url": reset_url},
+    )
 
 
 def send_verification_email(email: str, name: str, code: str, verify_url: str) -> None:
-    # 1. Primary: Send using the custom UX/UI template designed in Resend
-    if RESEND_VERIFICATION_TEMPLATE_ID:
-        sent = _send_with_resend_template(
-            email,
-            RESEND_VERIFICATION_TEMPLATE_ID,
-            {
-                "name": name,
-                "code": code,
-                "verify_url": verify_url,
-            },
-        )
-        if sent:
-            return
-
-    # 2. Fallback to inline HTML
     safe_name = html.escape(name)
     safe_url = html.escape(verify_url, quote=True)
     safe_code = html.escape(code)
@@ -243,4 +302,78 @@ def send_verification_email(email: str, name: str, code: str, verify_url: str) -
         f"</td></tr></table></body></html>"
     )
 
-    _send_with_resend(email, subject, text_content, html_content)
+    _deliver_email(
+        to_email=email,
+        subject=subject,
+        text_content=text_content,
+        html_content=html_content,
+        template_id=RESEND_VERIFICATION_TEMPLATE_ID,
+        template_vars={
+            "name": name,
+            "code": code,
+            "verify_url": verify_url,
+        },
+    )
+
+
+def send_passcode_email(email: str, code: str) -> None:
+    safe_code = html.escape(code)
+    subject = f"Your AeroByte Academy Verification Code: {code}"
+    text_content = (
+        f"Your AeroByte Academy verification passcode is: {code}\n\n"
+        "This code will expire in 10 minutes.\n"
+        "If you did not request this code, you can safely ignore this email.\n"
+    )
+    html_content = (
+        f"<!DOCTYPE html>"
+        f"<html><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1.0'></head>"
+        f"<body style='margin: 0; padding: 32px 16px; background-color: #f4f6f9; font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif;'>"
+        f"<table role='presentation' width='100%' border='0' cellspacing='0' cellpadding='0'><tr><td align='center'>"
+        f"<div style='max-width: 560px; background: #ffffff; border-radius: 16px; border: 1px solid #e2e8f0; padding: 36px 32px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); text-align: left;'>"
+        f"<div style='text-align: center; margin-bottom: 24px;'>"
+        f"<img src='https://raw.githubusercontent.com/Langhour/Aerobyte-Academy-2/main/frontend/public/aerobyte-logo-tight.png' alt='AeroByte Academy' width='96' height='65' style='display: block; margin: 0 auto 6px; width: 96px; height: auto; border: 0; outline: none;' />"
+        f"<h1 style='margin: 0; font-size: 24px; font-weight: 800; color: #102a49; letter-spacing: -0.5px; line-height: 1.2;'>AeroByte Academy</h1>"
+        f"<p style='margin: 4px 0 0; font-size: 11px; font-weight: 700; color: #64748b; letter-spacing: 0.12em; text-transform: uppercase;'>HANDS-ON ROBOTICS, IOT &amp; CODING</p>"
+        f"</div>"
+        f"<hr style='border: none; border-top: 1px solid #f1f5f9; margin: 20px 0 24px;' />"
+        f"<h2 style='margin: 0 0 12px; font-size: 20px; font-weight: 700; color: #102a49;'>Email Verification Passcode</h2>"
+        f"<p style='font-size: 15px; color: #475569; line-height: 1.6; margin: 0 0 24px;'>Please use the 6-digit verification code below to verify your email address:</p>"
+        f"<div style='background: #f1f5fa; border: 1.5px dashed #cbd5e1; border-radius: 12px; padding: 20px; text-align: center; margin: 24px 0;'>"
+        f"<div style='font-size: 11px; font-weight: 700; color: #64748b; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px;'>Verification Passcode</div>"
+        f"<div style='font-size: 36px; font-weight: 800; letter-spacing: 10px; color: #102a49; font-family: \"Courier New\", Courier, monospace;'>{safe_code}</div>"
+        f"<div style='font-size: 12px; color: #94a3b8; margin-top: 6px;'>Valid for 10 minutes</div>"
+        f"</div>"
+        f"<p style='font-size: 12px; color: #94a3b8; line-height: 1.5; margin: 20px 0 0; text-align: center;'>If you did not request this verification code, you can safely ignore this email.</p>"
+        f"<p style='font-size: 11px; color: #cbd5e1; margin: 12px 0 0; text-align: center;'>&copy; 2026 AeroByte Academy. All rights reserved.</p>"
+        f"</div>"
+        f"</td></tr></table></body></html>"
+    )
+
+    # 1. Primary: Use the official Resend SDK as specified in prompt
+    api_key, _ = get_resend_credentials()
+    if api_key:
+        try:
+            import resend
+            resend.api_key = api_key
+            # REMINDER: Replace 'noreply@yourdomain.com' with your verified Resend domain once configured in resend.com/domains
+            from_address = os.getenv("EMAIL_FROM", "AeroByte Academy <noreply@yourdomain.com>").strip()
+            if "yourdomain.com" in from_address and "@gmail.com" not in from_address:
+                from_address = "AeroByte Academy <onboarding@resend.dev>"
+
+            resend.Emails.send({
+                "from": from_address,
+                "to": [email],
+                "subject": subject,
+                "html": html_content,
+                "text": text_content,
+            })
+            logger.info("Passcode email delivered via Resend SDK to %s", email)
+            return
+        except Exception as exc:
+            logger.warning("Resend SDK send attempt failed for %s (%s). Falling back to Google Webhook...", email, exc)
+
+    # 2. Resilient fallback: Google Apps Script Webhook (delivers to ANY address worldwide with $0 cost)
+    if _send_with_google_webhook(email, subject, text_content, html_content):
+        return
+
+    raise RuntimeError(f"Unable to send verification passcode to {email}.")

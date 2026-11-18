@@ -38,6 +38,8 @@ from app.content_store import (
     find_enrollments_by_email,
     password_reset_was_recently_requested,
     save_uploaded_file,
+    save_email_otp_code,
+    verify_and_consume_otp_code,
     update_user_avatar,
     update_user_profile,
 )
@@ -45,6 +47,7 @@ from app.models import EnrollmentRecord, StoreOrderCreate, StoreOrderRecord
 from app.password_reset_mail import (
     EmailNotConfiguredError,
     email_is_configured,
+    send_passcode_email,
     send_password_reset_email,
     send_verification_email,
 )
@@ -370,6 +373,18 @@ def register(payload: AccountRegistration, request: Request):
     }
 
 
+@router.post("/send-code")
+def accounts_send_code(payload: ResendVerificationRequest):
+    from app.routers.auth import send_code, SendCodeRequest
+    return send_code(SendCodeRequest(email=payload.email))
+
+
+@router.post("/verify-code")
+def accounts_verify_code(payload: VerifyEmailCodeRequest, request: Request):
+    from app.routers.auth import verify_code, VerifyCodeRequest
+    return verify_code(VerifyCodeRequest(email=payload.email, code=payload.code), request=request)
+
+
 @router.post("/verify-email")
 def verify_email(payload: VerifyEmailCodeRequest, request: Request):
     code_hash = hashlib.sha256(payload.code.strip().encode("utf-8")).hexdigest()
@@ -377,12 +392,17 @@ def verify_email(payload: VerifyEmailCodeRequest, request: Request):
     user = verify_user_email_by_code(payload.email, code_hash, now)
 
     if user is None:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Invalid or expired verification code.",
-        )
-    _start_user_session(request, user)
-    return {"authenticated": True, "user": _public_user(user)}
+        valid, _, otp_user = verify_and_consume_otp_code(payload.email, payload.code, now)
+        if not valid:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Invalid or expired verification code.",
+            )
+        user = otp_user
+
+    if user:
+        _start_user_session(request, user)
+    return {"authenticated": True, "user": _public_user(user) if user else None}
 
 
 @router.post("/verify-email-token")

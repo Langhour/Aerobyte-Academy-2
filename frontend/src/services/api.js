@@ -45,7 +45,22 @@ export const enrollmentService = {
   }
 }
 
+export const authService = {
+  sendCode(email) {
+    return apiClient.post('/auth/send-code', { email })
+  },
+  verifyCode(email, code) {
+    return apiClient.post('/auth/verify-code', { email, code })
+  }
+}
+
 export const accountService = {
+  sendCode(email) {
+    return apiClient.post('/auth/send-code', { email })
+  },
+  verifyCode(email, code) {
+    return apiClient.post('/auth/verify-code', { email, code })
+  },
   register(payload) {
     return apiClient.post('/accounts/register', payload)
   },

@@ -234,19 +234,42 @@
           </button>
         </form>
 
-        <form v-else-if="isVerify" class="mt-2.5 sm:mt-3 space-y-3.5" @submit.prevent="submitVerifyCode">
-          <div class="rounded-xl border border-sky-200 dark:border-sky-800 bg-sky-50 dark:bg-sky-950/40 p-3 text-xs text-sky-900 dark:text-sky-200">
-            <div class="flex items-center gap-2">
-              <Mail class="h-4 w-4 shrink-0 text-navy-800 dark:text-sky-300" />
-              <span class="font-medium">{{ t('We sent a verification code to:') }}</span>
+        <form v-else-if="isVerify" class="mt-2.5 sm:mt-3 space-y-3" @submit.prevent="submitVerifyCode">
+          <!-- Step 1: Email Input + Send Code Button -->
+          <div>
+            <label class="block mb-1 text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-200">
+              {{ t('Email address') }}
+            </label>
+            <div class="flex gap-2">
+              <input
+                v-model.trim="verifyEmail"
+                type="email"
+                required
+                maxlength="254"
+                placeholder="you@example.com"
+                class="account-input flex-1 dark:!bg-slate-800 dark:!border-slate-700 dark:!text-white dark:placeholder:!text-slate-400"
+              />
+              <button
+                type="button"
+                :disabled="resendCooldown > 0 || resending || !verifyEmail"
+                class="shrink-0 px-4 h-10 rounded-full bg-[#102a49] hover:bg-[#1a275c] text-white text-xs sm:text-sm font-semibold transition disabled:opacity-50 dark:bg-blue-600 dark:hover:bg-blue-500 cursor-pointer shadow-xs"
+                @click="sendPasscode"
+              >
+                {{ resending ? t('Sending...') : (resendCooldown > 0 ? `${resendCooldown}s` : (codeSent ? t('Resend') : t('Send Code'))) }}
+              </button>
             </div>
-            <p class="mt-1 font-bold text-navy-950 dark:text-white break-all text-sm">{{ verifyEmail }}</p>
           </div>
 
-          <div>
-            <label class="block text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-200 mb-2">
-              {{ t('Enter 6-digit verification code') }}
-            </label>
+          <!-- Step 2: 6-Digit Passcode Entry -->
+          <div class="pt-1">
+            <div class="flex items-center justify-between mb-1.5">
+              <label class="block text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-200">
+                {{ t('Enter 6-digit verification code') }}
+              </label>
+              <span v-if="codeSent" class="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold">
+                ✓ {{ t('Code sent') }}
+              </span>
+            </div>
             <div class="flex justify-between gap-1.5 sm:gap-2">
               <input
                 v-for="(digit, index) in otpDigits"
@@ -265,30 +288,33 @@
             </div>
           </div>
 
+          <!-- Submit Button -->
           <button
             type="submit"
             :disabled="submitting || otpDigits.join('').length !== 6"
-            class="inline-flex h-10 w-full items-center justify-center rounded-full bg-[#17313d] px-5 text-sm font-semibold text-white transition hover:bg-navy-900 disabled:opacity-50 dark:bg-blue-600 dark:hover:bg-blue-500 cursor-pointer"
+            class="inline-flex h-10 w-full items-center justify-center rounded-full bg-[#17313d] px-5 text-sm font-semibold text-white transition hover:bg-navy-900 disabled:opacity-50 dark:bg-blue-600 dark:hover:bg-blue-500 cursor-pointer shadow-xs"
           >
-            {{ submitting ? t('Verifying...') : t('Verify & Activate Account') }}
+            {{ submitting ? t('Verifying...') : t('Verify Code') }}
           </button>
 
-          <div class="flex flex-col items-center gap-2 pt-1 text-center text-xs text-slate-600 dark:text-slate-400">
+          <!-- Action links -->
+          <div class="flex flex-col items-center gap-1.5 pt-1 text-center text-xs text-slate-600 dark:text-slate-400">
             <button
+              v-if="codeSent && resendCooldown === 0"
               type="button"
-              :disabled="resendCooldown > 0 || resending"
-              class="font-semibold underline underline-offset-2 hover:text-navy-900 dark:hover:text-white disabled:opacity-50 disabled:no-underline cursor-pointer"
-              @click="resendVerificationCode"
+              :disabled="resending"
+              class="font-semibold underline underline-offset-2 hover:text-navy-900 dark:hover:text-white cursor-pointer"
+              @click="sendPasscode"
             >
-              {{ resendCooldown > 0 ? `${t('Resend code in')} ${resendCooldown}s` : (resending ? t('Sending...') : t('Resend code')) }}
+              {{ resending ? t('Sending...') : t('Did not receive code? Click to resend') }}
             </button>
 
             <button
               type="button"
-              class="text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 cursor-pointer"
-              @click="goToRegister"
+              class="text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 cursor-pointer underline underline-offset-2"
+              @click="goToSignIn"
             >
-              {{ t('Change email address') }}
+              {{ t('Back to sign in') }}
             </button>
           </div>
         </form>
@@ -470,7 +496,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { ArrowLeft, Check, Eye, EyeOff, Mail, Moon, Sun, X } from 'lucide-vue-next'
 import { useLanguage } from '../i18n'
 import { useTheme } from '../composables/useTheme'
-import { apiClient, accountService, adminService, getGoogleSignInUrl } from '../services/api'
+import { apiClient, accountService, authService, adminService, getGoogleSignInUrl } from '../services/api'
 
 const route = useRoute()
 const router = useRouter()
@@ -482,6 +508,7 @@ const isReset = computed(() => route.query.mode === 'reset')
 const isVerify = computed(() => route.query.mode === 'verify')
 const googleLoading = ref(false)
 const verifyEmail = ref(route.query.email || '')
+const codeSent = ref(Boolean(route.query.email))
 const otpDigits = ref(['', '', '', '', '', ''])
 const otpInputs = ref([])
 const resendCooldown = ref(0)
@@ -703,31 +730,64 @@ async function verifyViaToken(token) {
   }
 }
 
-function autoFillBypassCode() {
-  otpDigits.value = ['1', '2', '3', '4', '5', '6']
-  submitVerifyCode()
+async function sendPasscode() {
+  const email = (verifyEmail.value || '').trim()
+  if (!email || !email.includes('@')) {
+    isError.value = true
+    message.value = t('Please enter a valid email address.')
+    return
+  }
+  if (resendCooldown.value > 0 || resending.value) return
+  resending.value = true
+  message.value = ''
+  isError.value = false
+  try {
+    const res = await authService.sendCode(email)
+    codeSent.value = true
+    message.value = res.data?.message || t('A 6-digit verification code has been sent.')
+    startResendCooldown(60)
+    setTimeout(() => {
+      if (otpInputs.value && otpInputs.value[0]) {
+        otpInputs.value[0].focus()
+      }
+    }, 100)
+  } catch (error) {
+    isError.value = true
+    message.value = error.response?.data?.detail || t('Failed to send verification code. Please try again.')
+  } finally {
+    resending.value = false
+  }
 }
 
 async function submitVerifyCode() {
-  const code = otpDigits.value.join('')
+  const code = otpDigits.value.join('').trim()
   if (code.length !== 6) return
+  const email = (verifyEmail.value || '').trim()
+  if (!email) {
+    isError.value = true
+    message.value = t('Please enter your email address.')
+    return
+  }
   submitting.value = true
   message.value = ''
   isError.value = false
   try {
-    const res = await accountService.verifyEmail({
-      email: verifyEmail.value,
-      code,
-    })
+    const res = await authService.verifyCode(email, code)
     if (res?.data?.user) {
       persistLoggedInUser(res.data.user)
+      window.dispatchEvent(new Event('aerobyte-auth-updated'))
+      const redirectUrl = (typeof route.query.redirect === 'string' && route.query.redirect.startsWith('/'))
+        ? route.query.redirect
+        : '/profile'
+      sessionStorage.removeItem('aerobyte_enroll_redirect')
+      await router.push(redirectUrl)
+    } else {
+      isError.value = false
+      message.value = res.data?.message || t('Email verified successfully! You can now sign in.')
+      setTimeout(() => {
+        goToSignIn()
+      }, 1500)
     }
-    window.dispatchEvent(new Event('aerobyte-auth-updated'))
-    const redirectUrl = (typeof route.query.redirect === 'string' && route.query.redirect.startsWith('/'))
-      ? route.query.redirect
-      : '/profile'
-    sessionStorage.removeItem('aerobyte_enroll_redirect')
-    await router.push(redirectUrl)
   } catch (error) {
     isError.value = true
     message.value = error.response?.data?.detail || t('Invalid or expired verification code.')
@@ -737,20 +797,7 @@ async function submitVerifyCode() {
 }
 
 async function resendVerificationCode() {
-  if (resendCooldown.value > 0 || resending.value) return
-  resending.value = true
-  message.value = ''
-  isError.value = false
-  try {
-    const res = await accountService.resendVerification(verifyEmail.value)
-    message.value = res.data?.message || t('A new verification code has been sent.')
-    startResendCooldown(30)
-  } catch (error) {
-    isError.value = true
-    message.value = error.response?.data?.detail || t('Unable to resend code. Please try again.')
-  } finally {
-    resending.value = false
-  }
+  await sendPasscode()
 }
 
 function goToRegister() {
