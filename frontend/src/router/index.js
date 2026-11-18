@@ -122,6 +122,21 @@ router.beforeEach(async (to, from, next) => {
       }
     }
   }
+
+  if (to.name === 'profile' || to.path === '/profile') {
+    let hasLocalSession = false
+    try {
+      const sess = localStorage.getItem('aerobyte_user_session')
+      if (sess) {
+        const parsed = JSON.parse(sess)
+        if (parsed.email || parsed.id) hasLocalSession = true
+      }
+    } catch (_) {}
+
+    if (!hasLocalSession) {
+      return next({ path: '/courses' })
+    }
+  }
   next()
 })
 

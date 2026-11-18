@@ -2016,8 +2016,16 @@ onMounted(async () => {
   try {
     const { data } = await accountService.getSession()
     if (!data.authenticated) {
-      if (!hasLocalProfile) {
-        await router.replace({ path: '/account', query: { mode: 'signin' } })
+      const rawSess = localStorage.getItem('aerobyte_user_session')
+      let hasValidSess = false
+      if (rawSess) {
+        try {
+          const parsed = JSON.parse(rawSess)
+          if (parsed && (parsed.email || parsed.id)) hasValidSess = true
+        } catch (_) {}
+      }
+      if (!hasValidSess) {
+        await router.replace('/courses')
         return
       }
     } else {
@@ -2217,14 +2225,11 @@ function clearLocalProfile() {
 }
 
 async function confirmLogout() {
+  logoutDialogOpen.value = false
   try {
     await accountService.logout()
   } catch (error) {
-    console.error('Could not sign out of the account:', error)
-    notice.value = t('Unable to sign out right now. Please try again.')
-    noticeType.value = 'error'
-    logoutDialogOpen.value = false
-    return
+    console.warn('Backend sign out error (continuing local logout):', error)
   }
 
   try {
@@ -2233,6 +2238,12 @@ async function confirmLogout() {
     if (storageKey.value) localStorage.removeItem(storageKey.value)
     if (storageEmailKey.value) localStorage.removeItem(storageEmailKey.value)
     localStorage.removeItem('aerobyte-profile')
+    for (let i = localStorage.length - 1; i >= 0; i--) {
+      const k = localStorage.key(i)
+      if (k && (k.startsWith('aerobyte-profile:') || k.startsWith('aerobyte_user_'))) {
+        localStorage.removeItem(k)
+      }
+    }
   } catch (_) {}
 
   copyProfile(profile, emptyProfile())
@@ -2241,8 +2252,14 @@ async function confirmLogout() {
   window.dispatchEvent(new Event('aerobyte-profile-updated'))
   window.dispatchEvent(new Event('aerobyte-auth-updated'))
   account.value = null
-  logoutDialogOpen.value = false
-  router.push('/courses')
+
+  try {
+    await router.replace('/courses')
+  } catch (_) {}
+
+  if (window.location.pathname.includes('/profile')) {
+    window.location.href = '/courses'
+  }
 }
 
 function startEditing() {

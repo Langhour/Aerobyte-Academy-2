@@ -371,6 +371,17 @@
                 <span>{{ t('My orders') }}</span>
               </RouterLink>
 
+              <button
+                v-if="profileName"
+                type="button"
+                role="menuitem"
+                class="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 sm:py-3 text-xs sm:text-sm font-medium text-red-600 dark:text-red-400 transition hover:bg-red-50 dark:hover:bg-red-950/40 cursor-pointer text-left"
+                @click="handleLogout"
+              >
+                <LogOut class="h-4 w-4 sm:h-5 sm:w-5 text-red-500 shrink-0" aria-hidden="true" />
+                <span>{{ t('Log out') }}</span>
+              </button>
+
 
 
               <!-- Dark / Light Mode Switch inside Account Dropdown -->
@@ -848,6 +859,15 @@
                 <span>{{ t('My orders') }}</span>
               </RouterLink>
 
+              <button
+                type="button"
+                class="flex w-full items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-semibold text-red-600 dark:text-red-400 transition hover:bg-red-50 dark:hover:bg-red-950/40 cursor-pointer text-left"
+                @click="handleLogout"
+              >
+                <LogOut class="h-5 w-5 text-red-500 shrink-0" />
+                <span>{{ t('Log out') }}</span>
+              </button>
+
             </template>
 
           </div>
@@ -993,9 +1013,9 @@
 
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
-import { BookOpen, Check, Globe2, HelpCircle, Info, LogIn, Menu, Moon, PhoneCall, Plane, Printer, ShoppingBag, Sun, UserPlus, UserRound, X } from 'lucide-vue-next'
+import { BookOpen, Check, Globe2, HelpCircle, Info, LogIn, LogOut, Menu, Moon, PhoneCall, Plane, Printer, ShoppingBag, Sun, UserPlus, UserRound, X } from 'lucide-vue-next'
 
 import { useLanguage } from '../../i18n'
 
@@ -1010,6 +1030,7 @@ import { resolveImageUrl } from '../../utils/image'
 
 
 const route = useRoute()
+const router = useRouter()
 
 const { locale, t, setLocale } = useLanguage()
 
@@ -1320,7 +1341,35 @@ async function updateProfileName() {
   }
 }
 
-
+async function handleLogout() {
+  closeAccountMenu()
+  mobileDrawerOpen.value = false
+  try {
+    await accountService.logout()
+  } catch (_) {}
+  try {
+    localStorage.removeItem('aerobyte_user_session')
+    localStorage.removeItem('aerobyte-profile-current')
+    localStorage.removeItem('aerobyte-profile')
+    for (let i = localStorage.length - 1; i >= 0; i--) {
+      const k = localStorage.key(i)
+      if (k && (k.startsWith('aerobyte-profile:') || k.startsWith('aerobyte_user_'))) {
+        localStorage.removeItem(k)
+      }
+    }
+  } catch (_) {}
+  profileName.value = ''
+  profileEmail.value = ''
+  profileAvatar.value = ''
+  window.dispatchEvent(new Event('aerobyte-profile-updated'))
+  window.dispatchEvent(new Event('aerobyte-auth-updated'))
+  try {
+    await router.replace('/courses')
+  } catch (_) {}
+  if (window.location.pathname.includes('/profile')) {
+    window.location.href = '/courses'
+  }
+}
 
 onMounted(() => {
 
