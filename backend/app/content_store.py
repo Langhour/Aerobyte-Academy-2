@@ -887,7 +887,7 @@ def find_user_by_email(email: str) -> Optional[dict[str, Any]]:
     clean_email = email.strip().casefold()
     with _connect() as connection:
         row = connection.execute(
-            "SELECT * FROM users WHERE email = ? COLLATE NOCASE",
+            "SELECT * FROM users WHERE LOWER(TRIM(email)) = ?",
             (clean_email,),
         ).fetchone()
         if not row:
@@ -1150,21 +1150,27 @@ def password_reset_was_recently_requested(user_id: str, since: str) -> bool:
     return row is not None
 
 
-def consume_password_reset_token(token_hash: str, now: str, password_hash: str) -> bool:
+def consume_password_reset_token(token_hash: str, now: str, password_hash: str) -> Optional[dict[str, Any]]:
+    user = None
     with _connect() as connection:
         row = connection.execute(
             "SELECT user_id FROM password_reset_tokens WHERE token_hash = ? AND expires_at > ?",
             (token_hash, now),
         ).fetchone()
         if row is None:
-            return False
+            return None
+        user_id = row["user_id"]
         connection.execute(
             "UPDATE users SET password_hash = ?, is_verified = 1 WHERE id = ?",
-            (password_hash, row["user_id"]),
+            (password_hash, user_id),
         )
-        connection.execute("DELETE FROM password_reset_tokens WHERE user_id = ?", (row["user_id"],))
+        connection.execute("DELETE FROM password_reset_tokens WHERE user_id = ?", (user_id,))
+        user_row = connection.execute("SELECT * FROM users WHERE id = ?", (user_id,)).fetchone()
+        if user_row:
+            user = dict(user_row) if not isinstance(user_row, dict) else user_row
+            _hydrate_user_profile_fields(user, connection=connection)
     _backup_users_to_disk()
-    return True
+    return user
 
 
 def update_pending_user(user_id: str, full_name: str, password_hash: str) -> None:

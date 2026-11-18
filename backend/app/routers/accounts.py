@@ -449,7 +449,15 @@ def resend_verification(payload: ResendVerificationRequest, request: Request):
 @router.post("/login")
 def login(payload: AccountCredentials, request: Request):
     user = find_user_by_email(payload.email)
-    if user is None or not verify_user_password(payload.password, user["password_hash"]):
+    raw_pass = payload.password
+    clean_pass = payload.password.strip()
+    valid_password = False
+    if user and user.get("password_hash"):
+        valid_password = verify_user_password(raw_pass, user["password_hash"]) or (
+            clean_pass != raw_pass and verify_user_password(clean_pass, user["password_hash"])
+        )
+
+    if user is None or not valid_password:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid email or password.",
@@ -490,7 +498,7 @@ def request_password_reset(payload: PasswordResetRequest, request: Request):
     create_password_reset_token(token_hash, user["id"], created_at, expires_at)
 
     frontend_url = _frontend_origin(request)
-    reset_url = f"{frontend_url}/account?mode=reset&token={token}"
+    reset_url = f"{frontend_url}/account?mode=reset&token={token}&email={user['email']}"
 
     has_remote_provider = bool(os.getenv("RESEND_API_KEY", "").strip())
 
@@ -513,19 +521,26 @@ def request_password_reset(payload: PasswordResetRequest, request: Request):
 
 
 @router.post("/password-reset/complete")
-def complete_password_reset(payload: PasswordResetComplete):
-    token_hash = hashlib.sha256(payload.token.encode("utf-8")).hexdigest()
-    changed = consume_password_reset_token(
+def complete_password_reset(payload: PasswordResetComplete, request: Request):
+    token = payload.token.strip()
+    token_hash = hashlib.sha256(token.encode("utf-8")).hexdigest()
+    clean_password = payload.password.strip()
+    user = consume_password_reset_token(
         token_hash,
         datetime.now(timezone.utc).isoformat(),
-        hash_user_password(payload.password),
+        hash_user_password(clean_password),
     )
-    if not changed:
+    if not user:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="This reset link is invalid or has expired. Request a new one.",
         )
-    return {"message": "Your password has been reset. You can now sign in."}
+    _start_user_session(request, user)
+    return {
+        "authenticated": True,
+        "user": _public_user(user),
+        "message": "Your password has been reset successfully. You are now signed in.",
+    }
 
 
 @router.get("/session")

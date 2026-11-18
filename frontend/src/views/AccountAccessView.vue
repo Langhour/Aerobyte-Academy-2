@@ -597,6 +597,7 @@ watch([() => route.query.mode, () => route.query.email, () => route.query.adminL
   devResetUrl.value = ''
   isError.value = false
   if (route.query.email) {
+    form.email = String(route.query.email)
     verifyEmail.value = String(route.query.email)
   }
   if (route.query.adminLogout === 'failed') {
@@ -900,7 +901,9 @@ async function submitAccountForm() {
         },
       })
       return
-    } else if (error.response?.status === 409) {
+    }
+    isError.value = true
+    if (error.response?.status === 409) {
       message.value = t('An account with this email already exists. Sign in instead.')
     } else if (error.response?.status === 401) {
       message.value = isRegister.value
@@ -951,12 +954,34 @@ async function submitPasswordReset() {
   submitting.value = true
   message.value = ''
   try {
-    await accountService.completePasswordReset({ token: resetToken.value, password: form.password })
+    const res = await accountService.completePasswordReset({ token: resetToken.value, password: form.password })
+    isError.value = false
+    if (res?.data?.authenticated && res?.data?.user) {
+      persistLoggedInUser(res.data.user)
+      window.dispatchEvent(new Event('aerobyte-auth-updated'))
+      form.password = ''
+      form.confirmPassword = ''
+      const redirectUrl = (typeof route.query.redirect === 'string' && route.query.redirect.startsWith('/'))
+        ? route.query.redirect
+        : '/profile'
+      sessionStorage.removeItem('aerobyte_enroll_redirect')
+      await router.push(redirectUrl)
+      return
+    }
+    const currentEmail = form.email || (typeof route.query.email === 'string' ? route.query.email : '')
     form.password = ''
     form.confirmPassword = ''
     message.value = t('Your password has been reset. You can now sign in.')
-    await router.replace({ path: '/account', query: { mode: 'signin', reset_success: '1' } })
+    await router.replace({
+      path: '/account',
+      query: {
+        mode: 'signin',
+        ...(currentEmail ? { email: currentEmail } : {}),
+        reset_success: '1',
+      },
+    })
   } catch (error) {
+    isError.value = true
     message.value = error.response?.data?.detail || t('This reset link is invalid or has expired. Request a new one.')
   } finally {
     submitting.value = false
