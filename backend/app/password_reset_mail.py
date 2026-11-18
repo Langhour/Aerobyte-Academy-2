@@ -390,6 +390,6 @@ def send_verification_email(email: str, name: str, code: str, verify_url: str) -
             f"\n{'='*70}\n[DEV EMAIL VERIFICATION]\nUser: {name} <{email}>\nCode: {code}\nVerify URL: {verify_url}\n{'='*70}\n",
             flush=True,
         )
-        return
+        raise EmailNotConfiguredError(f"External email provider could not deliver to {email}. Verification code logged.")
 
     raise EmailNotConfiguredError("Verification email service is not configured (set RESEND_API_KEY in environment).")

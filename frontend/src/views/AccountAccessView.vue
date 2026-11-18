@@ -243,6 +243,16 @@
             <p class="mt-1 font-bold text-navy-950 dark:text-white break-all text-sm">{{ verifyEmail }}</p>
           </div>
 
+          <div v-if="devVerifyCode" class="rounded-xl border border-amber-300 bg-amber-50 dark:border-amber-700 dark:bg-amber-950/50 p-3 text-xs text-amber-950 dark:text-amber-200 space-y-1.5">
+            <div class="flex items-center justify-between font-bold text-sm">
+              <span>🔑 {{ t('Verification Code:') }} <span class="tracking-widest font-mono text-base px-2 py-0.5 rounded bg-amber-200 dark:bg-amber-900 text-amber-900 dark:text-amber-100">{{ devVerifyCode }}</span></span>
+              <button type="button" class="underline text-xs cursor-pointer text-amber-800 dark:text-amber-300 font-semibold" @click="autoFillDevCode">{{ t('Fill Code') }}</button>
+            </div>
+            <p class="text-[11px] text-amber-800 dark:text-amber-300 leading-snug">
+              {{ t('Note: Resend test sandbox only delivers emails to the account owner (lghr5002@gmail.com). Use the code above to activate this account.') }}
+            </p>
+          </div>
+
 
           <div>
             <label class="block text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-200 mb-2">
@@ -485,6 +495,16 @@ const googleLoading = ref(false)
 const verifyEmail = ref(route.query.email || '')
 const otpDigits = ref(['', '', '', '', '', ''])
 const otpInputs = ref([])
+const devVerifyCode = ref('')
+
+function autoFillDevCode() {
+  if (!devVerifyCode.value) return
+  const chars = String(devVerifyCode.value).slice(0, 6).split('')
+  for (let i = 0; i < 6; i++) {
+    otpDigits.value[i] = chars[i] || ''
+  }
+}
+
 const resendCooldown = ref(0)
 const resending = ref(false)
 let resendTimer = null
@@ -594,6 +614,7 @@ watch([() => route.query.mode, () => route.query.email, () => route.query.adminL
     isError.value = true
     message.value = t('Google sign-in could not be completed. Please try again or use your email and password.')
   } else if (route.query.mode !== 'verify') {
+    devVerifyCode.value = ''
     message.value = ''
   }
   passwordVisible.value = false
@@ -745,8 +766,10 @@ async function resendVerificationCode() {
   try {
     const res = await accountService.resendVerification(verifyEmail.value)
     if (res.data?.dev_code) {
+      devVerifyCode.value = res.data.dev_code
       message.value = `${res.data.message} (Code: ${res.data.dev_code})`
     } else {
+      devVerifyCode.value = ''
       message.value = res.data?.message || t('A new verification code has been sent.')
     }
     startResendCooldown(30)
@@ -808,8 +831,10 @@ async function submitAccountForm() {
       verifyEmail.value = userEmail
       startResendCooldown(30)
       if (regResponse.data?.dev_code) {
+        devVerifyCode.value = regResponse.data.dev_code
         message.value = `${regResponse.data.message} (Code: ${regResponse.data.dev_code})`
       } else {
+        devVerifyCode.value = ''
         message.value = regResponse.data?.message || t('A 6-digit verification code has been sent to your email.')
       }
       isError.value = false
