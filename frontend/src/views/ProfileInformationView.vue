@@ -1399,55 +1399,50 @@ function getActiveUserCredentials() {
     }
   } catch (_) {}
 
+  // Only check aerobyte-profile-current if its email matches or if uemail was empty
   try {
-    const rawProf = localStorage.getItem('aerobyte-profile-current') || localStorage.getItem('aerobyte-profile')
+    const rawProf = localStorage.getItem('aerobyte-profile-current')
     if (rawProf) {
       const p = JSON.parse(rawProf)
       if (p) {
-        if (!uid && p.id) uid = p.id
-        if (!uemail && p.email) uemail = p.email
-        if (!uname && p.fullName) uname = p.fullName
-        if (!utg && p.telegram) utg = p.telegram
+        if (!uemail || (p.email && p.email.toLowerCase() === uemail.toLowerCase())) {
+          if (!uid && p.id) uid = p.id
+          if (!uemail && p.email) uemail = p.email
+          if (!uname && p.fullName) uname = p.fullName
+          if (!utg && p.telegram) utg = p.telegram
+        }
       }
     }
   } catch (_) {}
 
-  if (!uemail) {
-    try {
-      for (let i = 0; i < localStorage.length; i++) {
-        const k = localStorage.key(i)
-        if (k && k.startsWith('aerobyte-profile:')) {
-          const val = JSON.parse(localStorage.getItem(k) || '{}')
-          if (val.email) {
-            uemail = val.email
-            if (!uname && val.fullName) uname = val.fullName
-            break
-          }
-        }
-      }
-    } catch (_) {}
-  }
-
   return { id: uid, email: uemail, name: uname, telegram: utg }
 }
 
-function readCachedPrintOrders() {
+function readCachedPrintOrders(userEmail) {
   try {
-    const raw = localStorage.getItem('aerobyte_print_orders')
+    const email = (userEmail || '').trim().toLowerCase()
+    if (!email) return []
+    const raw = localStorage.getItem(`aerobyte_print_orders:${email}`)
     if (raw) {
       const parsed = JSON.parse(raw)
-      if (Array.isArray(parsed) && parsed.length) return parsed
+      if (Array.isArray(parsed) && parsed.length) {
+        return parsed.filter(o => !o.user_email || o.user_email.toLowerCase() === email)
+      }
     }
   } catch (_) {}
   return []
 }
 
-function readCachedStoreOrders() {
+function readCachedStoreOrders(userEmail) {
   try {
-    const raw = localStorage.getItem('aerobyte_store_orders')
+    const email = (userEmail || '').trim().toLowerCase()
+    if (!email) return []
+    const raw = localStorage.getItem(`aerobyte_store_orders:${email}`)
     if (raw) {
       const parsed = JSON.parse(raw)
-      if (Array.isArray(parsed) && parsed.length) return parsed
+      if (Array.isArray(parsed) && parsed.length) {
+        return parsed.filter(o => !o.user_email || o.user_email.toLowerCase() === email)
+      }
     }
   } catch (_) {}
   return []
@@ -1474,9 +1469,9 @@ const activeSection = ref(
     ? router.currentRoute.value.query.section
     : 'profile'
 )
-const printOrders = ref(readCachedPrintOrders())
+const printOrders = ref(readCachedPrintOrders(initialCreds.email))
 const printOrdersLoading = ref(false)
-const storeOrders = ref(readCachedStoreOrders())
+const storeOrders = ref(readCachedStoreOrders(initialCreds.email))
 const ordersLoading = ref(false)
 
 function getPrintStatusBadge(status) {
@@ -1653,210 +1648,125 @@ async function submitReviewHandler() {
 }
 
 async function loadPrintOrders(forceRefresh = false) {
-  if (!printOrders.value.length || forceRefresh) {
-    printOrdersLoading.value = true
+  const creds = getActiveUserCredentials()
+  const userEmail = (account.value?.email || profile.email || creds.email || '').trim().toLowerCase()
+  const userId = account.value?.id || creds.id || ''
+
+  if (!userEmail && !userId) {
+    printOrders.value = []
+    printOrdersLoading.value = false
+    return
   }
 
-  // 1. Read cached orders from localStorage for 0ms hydration
+  const storageKey = `aerobyte_print_orders:${userEmail}`
+
+  // Immediately purge any unnamespaced legacy cache so old accounts don't leak
   try {
-    const raw = localStorage.getItem('aerobyte_print_orders')
+    localStorage.removeItem('aerobyte_print_orders')
+  } catch (_) {}
+
+  // 1. Hydrate from user-scoped storage for 0ms render
+  try {
+    const raw = localStorage.getItem(storageKey)
     if (raw) {
       const parsed = JSON.parse(raw)
-      if (Array.isArray(parsed) && parsed.length) {
-        printOrders.value = parsed
+      if (Array.isArray(parsed)) {
+        printOrders.value = parsed.filter((o) => !o.user_email || o.user_email.toLowerCase() === userEmail)
       }
+    } else {
+      printOrders.value = []
     }
-  } catch (_) {}
+  } catch (_) {
+    printOrders.value = []
+  }
 
-  // 2. Immediately synchronize with aerobyte_admin_print_orders if updated via admin on same browser
-  try {
-    const adminRaw = localStorage.getItem('aerobyte_admin_print_orders')
-    if (adminRaw) {
-      const adminParsed = JSON.parse(adminRaw)
-      if (Array.isArray(adminParsed) && adminParsed.length) {
-        const adminMap = new Map()
-        for (const ao of adminParsed) {
-          const k = String(ao.order_number || ao.id || '').replace(/^#/, '')
-          if (k) adminMap.set(k, ao)
-        }
-        let updated = false
-        for (const po of printOrders.value) {
-          const pk = String(po.order_number || po.id || '').replace(/^#/, '')
-          if (pk && adminMap.has(pk)) {
-            const ao = adminMap.get(pk)
-            if (ao.status && ao.status !== po.status) {
-              po.status = ao.status
-              updated = true
-            }
-            if (ao.review && !po.review) {
-              po.review = ao.review
-              updated = true
-            }
-            const adminP = Number(ao.price || ao.estimated_price || 0)
-            if (adminP > 0 && (po.price !== adminP || po.estimated_price !== adminP)) {
-              po.price = adminP
-              po.estimated_price = adminP
-              updated = true
-            }
-          }
-        }
-        if (updated) {
-          localStorage.setItem('aerobyte_print_orders', JSON.stringify(printOrders.value))
-        }
-      }
-    }
-  } catch (_) {}
+  printOrdersLoading.value = true
 
-  // 3. Fetch latest status from backend
+  // 2. Fetch fresh orders belonging strictly to this user
   try {
-    const creds = getActiveUserCredentials()
-    const userEmail = creds.email || account.value?.email || profile.email || ''
-    const userTg = creds.telegram || account.value?.telegram || profile.telegram || ''
-    const userName = creds.name || account.value?.name || profile.fullName || ''
-    const userId = creds.id || account.value?.id || ''
-    const knownIds = printOrders.value.map((o) => String(o.order_number || o.id || '').replace(/^#/, '')).filter(Boolean)
+    const queryParams = { email: userEmail }
+    if (userId) queryParams.user_id = userId
 
     let serverOrders = []
     try {
-      const queryParams = {}
-      if (userEmail) queryParams.email = userEmail
-      if (userTg) queryParams.telegram = userTg
-      if (userName) queryParams.name = userName
-      if (knownIds.length) queryParams.order_ids = knownIds.join(',')
       const res = await accountService.getUserPrintOrders(queryParams)
       if (Array.isArray(res.data)) {
         serverOrders = res.data
       }
-    } catch (e1) {
+    } catch (_) {
       try {
-        const queryParams2 = {}
-        if (userId) queryParams2.user_id = userId
-        if (userEmail) queryParams2.email = userEmail
-        if (userTg) queryParams2.telegram = userTg
-        if (userName) queryParams2.name = userName
-        if (knownIds.length) queryParams2.order_ids = knownIds.join(',')
-        const res2 = await printOrderService.getMyOrders(queryParams2)
+        const res2 = await printOrderService.getMyOrders(queryParams)
         if (Array.isArray(res2.data?.orders)) {
           serverOrders = res2.data.orders
         }
-      } catch (e2) {}
-    }
-
-    if (serverOrders.length) {
-      const serverMap = new Map()
-      for (const so of serverOrders) {
-        const sk = String(so.order_number || so.id || '').replace(/^#/, '')
-        if (sk) serverMap.set(sk, so)
-      }
-
-      // Update existing orders with fresh status and data from server
-      for (const loc of printOrders.value) {
-        const lk = String(loc.order_number || loc.id || '').replace(/^#/, '')
-        if (lk && serverMap.has(lk)) {
-          const fresh = serverMap.get(lk)
-          loc.status = fresh.status || loc.status
-          if (fresh.review) loc.review = fresh.review
-          if (fresh.estimated_price !== undefined || fresh.price !== undefined) {
-            loc.price = Number(fresh.price || fresh.estimated_price || 0)
-            loc.estimated_price = Number(fresh.estimated_price || fresh.price || 0)
-          }
-          serverMap.delete(lk)
-        }
-      }
-
-      // Prepend any server orders that were not already in local cache
-      for (const remaining of serverMap.values()) {
-        printOrders.value.unshift(remaining)
-      }
-
-      try {
-        localStorage.setItem('aerobyte_print_orders', JSON.stringify(printOrders.value))
-      } catch (_) {}
-    } else if (knownIds.length) {
-      // Fallback: poll individual known order status directly
-      for (const id of knownIds) {
-        try {
-          const res = await printOrderService.getOrder(id)
-          if (res?.data?.order) {
-            const fresh = res.data.order
-            const match = printOrders.value.find((o) => String(o.order_number || o.id || '').replace(/^#/, '') === id)
-            if (match) {
-              if (fresh.status && match.status !== fresh.status) {
-                match.status = fresh.status
-              }
-              if (fresh.review) match.review = fresh.review
-              if (fresh.estimated_price !== undefined || fresh.price !== undefined) {
-                match.price = Number(fresh.price || fresh.estimated_price || 0)
-                match.estimated_price = Number(fresh.estimated_price || fresh.price || 0)
-              }
-            }
-          }
-        } catch (_) {}
-      }
-      try {
-        localStorage.setItem('aerobyte_print_orders', JSON.stringify(printOrders.value))
       } catch (_) {}
     }
+
+    // Filter server orders strictly to this user's email
+    const myOrders = serverOrders.filter((o) => {
+      if (!o.user_email) return true
+      return o.user_email.toLowerCase() === userEmail
+    })
+
+    printOrders.value = myOrders
+    try {
+      localStorage.setItem(storageKey, JSON.stringify(myOrders))
+    } catch (_) {}
   } catch (err) {
-    console.warn('Could not load print orders from server, using local cache:', err)
+    console.warn('Could not load print orders from server:', err)
   } finally {
     printOrdersLoading.value = false
   }
 }
 
 async function loadStoreOrders() {
-  ordersLoading.value = true
-  try {
-    // 1. Fetch persistent orders from database
-    const { data } = await accountService.getUserOrders()
-    const serverOrders = Array.isArray(data) ? data : []
+  const creds = getActiveUserCredentials()
+  const userEmail = (account.value?.email || profile.email || creds.email || '').trim().toLowerCase()
+  const userId = account.value?.id || creds.id || ''
 
-    // 2. Check if there are local orders created before login that can be synced
-    try {
-      const raw = localStorage.getItem('aerobyte_store_orders')
-      const localOrders = raw ? JSON.parse(raw) : []
-      const serverOrderIds = new Set(serverOrders.map((o) => o.id))
-      for (const localOrder of localOrders) {
-        if (!serverOrderIds.has(localOrder.id)) {
-          try {
-            await accountService.createStoreOrder({
-              id: localOrder.id,
-              name: localOrder.customer?.name || localOrder.name || account.value?.name || 'Customer',
-              phone: localOrder.customer?.phone || localOrder.phone || account.value?.phone || '',
-              telegram: localOrder.customer?.telegram || localOrder.telegram || '',
-              address: localOrder.customer?.address || localOrder.address || '',
-              fulfillment: localOrder.fulfillment || 'pickup',
-              items: localOrder.items || [],
-              subtotal: localOrder.subtotal || 0,
-              delivery_fee: localOrder.delivery_fee || localOrder.deliveryFee || 0,
-              discount: localOrder.discount || 0,
-              total: localOrder.total || 0,
-            })
-            serverOrders.unshift(localOrder)
-          } catch (syncErr) {
-            console.warn('Could not sync local order to database:', syncErr)
-          }
-        }
-      }
-    } catch (_) {}
-
-    storeOrders.value = serverOrders
-    try {
-      localStorage.setItem('aerobyte_store_orders', JSON.stringify(serverOrders))
-    } catch {}
-    return
-  } catch (e) {
-    console.warn('Could not fetch store orders from server, using local cache:', e)
-  } finally {
+  if (!userEmail && !userId) {
+    storeOrders.value = []
     ordersLoading.value = false
+    return
   }
 
+  const storageKey = `aerobyte_store_orders:${userEmail}`
+
+  // Purge any unnamespaced legacy cache
   try {
-    const raw = localStorage.getItem('aerobyte_store_orders')
-    storeOrders.value = raw ? JSON.parse(raw) : []
-  } catch (e) {
-    console.error('Failed to parse store orders', e)
+    localStorage.removeItem('aerobyte_store_orders')
+  } catch (_) {}
+
+  try {
+    const raw = localStorage.getItem(storageKey)
+    if (raw) {
+      const parsed = JSON.parse(raw)
+      if (Array.isArray(parsed)) {
+        storeOrders.value = parsed.filter((o) => !o.user_email || o.user_email.toLowerCase() === userEmail)
+      }
+    } else {
+      storeOrders.value = []
+    }
+  } catch (_) {
     storeOrders.value = []
+  }
+
+  ordersLoading.value = true
+  try {
+    const { data } = await accountService.getUserOrders()
+    const serverOrders = Array.isArray(data) ? data : []
+    const myOrders = serverOrders.filter((o) => {
+      if (!o.user_email) return true
+      return o.user_email.toLowerCase() === userEmail
+    })
+    storeOrders.value = myOrders
+    try {
+      localStorage.setItem(storageKey, JSON.stringify(myOrders))
+    } catch (_) {}
+  } catch (e) {
+    console.warn('Could not fetch store orders from server:', e)
+  } finally {
+    ordersLoading.value = false
   }
 }
 
@@ -2022,21 +1932,33 @@ onMounted(async () => {
       hasLocalProfile = true
     }
     const findCached = () => {
-      const direct = localStorage.getItem('aerobyte-profile-current') || localStorage.getItem('aerobyte-profile')
-      if (direct) {
-        try {
-          const parsed = JSON.parse(direct)
-          if (parsed && (parsed.fullName || parsed.email || parsed.phone)) return parsed
-        } catch (_) {}
-      }
-      for (let i = 0; i < localStorage.length; i++) {
-        const k = localStorage.key(i)
-        if (k && k.startsWith('aerobyte-profile:')) {
+      const activeEmail = (creds.email || '').trim().toLowerCase()
+      if (activeEmail) {
+        const byEmail = localStorage.getItem(`aerobyte-profile:${activeEmail}`)
+        if (byEmail) {
           try {
-            const parsed = JSON.parse(localStorage.getItem(k) || '{}')
+            const parsed = JSON.parse(byEmail)
             if (parsed && (parsed.fullName || parsed.email || parsed.phone)) return parsed
           } catch (_) {}
         }
+      }
+      if (creds.id) {
+        const byId = localStorage.getItem(`aerobyte-profile:${creds.id}`)
+        if (byId) {
+          try {
+            const parsed = JSON.parse(byId)
+            if (parsed && (parsed.fullName || parsed.email || parsed.phone)) return parsed
+          } catch (_) {}
+        }
+      }
+      const direct = localStorage.getItem('aerobyte-profile-current')
+      if (direct) {
+        try {
+          const parsed = JSON.parse(direct)
+          if (parsed && (!parsed.email || (activeEmail && parsed.email.toLowerCase() === activeEmail))) {
+            return parsed
+          }
+        } catch (_) {}
       }
       return null
     }
@@ -2104,16 +2026,17 @@ onMounted(async () => {
     // Merge server data with local cache for any offline fields
     let cached = {}
     try {
-      const raw = (storageEmailKey.value && localStorage.getItem(storageEmailKey.value)) ||
-                  (storageKey.value && localStorage.getItem(storageKey.value)) ||
-                  localStorage.getItem('aerobyte-profile-current') ||
-                  localStorage.getItem('aerobyte-profile')
+      const activeEmail = (account.value?.email || profile.email || '').trim().toLowerCase()
+      const emailRaw = activeEmail ? localStorage.getItem(`aerobyte-profile:${activeEmail}`) : null
+      const userRaw = account.value?.id ? localStorage.getItem(`aerobyte-profile:${account.value.id}`) : null
+      const raw = emailRaw || userRaw
       if (raw) {
         cached = JSON.parse(raw)
-        // Only fill empty fields from local cache, server data is primary
-        for (const k of Object.keys(profile)) {
-          if (!profile[k] && cached[k]) {
-            profile[k] = cached[k]
+        if (cached && (!cached.email || cached.email.toLowerCase() === activeEmail)) {
+          for (const k of Object.keys(profile)) {
+            if (!profile[k] && cached[k] && k !== 'email') {
+              profile[k] = cached[k]
+            }
           }
         }
       }

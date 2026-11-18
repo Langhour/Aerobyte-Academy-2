@@ -874,14 +874,15 @@ def get_user_print_orders_endpoint(
     if not user_email and email:
         user_email = email.strip().lower()
 
-    ids_list = [x.strip() for x in order_ids.split(",") if x.strip()] if order_ids else None
+    if not user_id and not user_email:
+        return []
 
     orders = get_user_print_orders(
         user_id=user_id,
         email=user_email,
-        customer_name=name,
-        telegram=telegram,
-        order_ids=ids_list,
+        customer_name=None,
+        telegram=None,
+        order_ids=None,
     )
     return orders
 

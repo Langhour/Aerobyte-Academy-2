@@ -223,15 +223,23 @@ async def get_my_print_orders(
         if user:
             uemail = (user.get("email") or "").strip().lower()
 
-    ids_list = [x.strip() for x in order_ids.split(",") if x.strip()] if order_ids else None
-
-    orders = get_user_print_orders(
-        user_id=uid,
-        email=uemail,
-        customer_name=name,
-        telegram=telegram,
-        order_ids=ids_list,
-    )
+    if uid or uemail:
+        orders = get_user_print_orders(
+            user_id=uid,
+            email=uemail,
+            customer_name=None,
+            telegram=None,
+            order_ids=None,
+        )
+    else:
+        ids_list = [x.strip() for x in order_ids.split(",") if x.strip()] if order_ids else None
+        orders = get_user_print_orders(
+            user_id=None,
+            email=None,
+            customer_name=name,
+            telegram=telegram,
+            order_ids=ids_list,
+        )
     return {"orders": orders}
 
 
