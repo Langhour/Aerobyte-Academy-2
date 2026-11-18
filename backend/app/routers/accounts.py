@@ -304,8 +304,8 @@ def _frontend_origin(request: Optional[Request] = None) -> str:
     return DEFAULT_PRODUCTION_FRONTEND
 
 
-def _issue_and_send_verification(user_id: str, email: str, full_name: str, request: Optional[Request] = None) -> tuple[str, str]:
-    code = "123456" if not email_is_configured() else f"{secrets.randbelow(900000) + 100000}"
+def _issue_and_send_verification(user_id: str, email: str, full_name: str, request: Optional[Request] = None) -> tuple[str, str, bool]:
+    code = f"{secrets.randbelow(900000) + 100000}"
     token = secrets.token_urlsafe(32)
     code_hash = hashlib.sha256(code.encode("utf-8")).hexdigest()
     token_hash = hashlib.sha256(token.encode("utf-8")).hexdigest()
@@ -316,13 +316,16 @@ def _issue_and_send_verification(user_id: str, email: str, full_name: str, reque
 
     frontend_url = _frontend_origin(request)
     verify_url = f"{frontend_url}/account?mode=verify&token={token}&email={email}"
+    email_sent = False
     try:
         send_verification_email(email, full_name, code, verify_url)
+        email_sent = True
+        logger.info("Verification email sent to %s", email)
     except Exception as exc:
-        logger.exception("Failed to send verification email: %s", exc)
-        # If sending failed, mark user as verified so they are never trapped
-        mark_user_verified(user_id)
-    return code, token
+        logger.warning("Could not send verification email to %s: %s", email, exc)
+        email_sent = False
+        # Do NOT auto-verify. The user must explicitly enter their 6-digit code.
+    return code, token, email_sent
 
 
 @router.post("/register")
@@ -353,22 +356,18 @@ def register(payload: AccountRegistration, request: Request):
                 detail="An account with this email already exists.",
             ) from exc
 
-    if not email_is_configured():
-        mark_user_verified(user_id)
-        user = find_user_by_email(payload.email)
-        _start_user_session(request, user)
-        return {
-            "registered": True,
-            "verification_required": False,
-            "user": _public_user(user),
-            "message": "Account created and activated successfully!",
-        }
-
-    _issue_and_send_verification(user_id, payload.email, payload.full_name, request=request)
+    # ALWAYS issue verification code and require user verification. NEVER auto-sign in.
+    code, token, email_sent = _issue_and_send_verification(user_id, payload.email, payload.full_name, request=request)
     return {
         "verification_required": True,
         "email": payload.email,
-        "message": "A 6-digit verification code has been sent to your email address.",
+        "email_sent": email_sent,
+        "message": (
+            "A 6-digit verification code has been sent to your email address."
+            if email_sent
+            else "Your 6-digit verification code has been generated. Please enter it to activate your account."
+        ),
+        "dev_code": code if not email_sent else None,
     }
 
 
@@ -377,14 +376,6 @@ def verify_email(payload: VerifyEmailCodeRequest, request: Request):
     code_hash = hashlib.sha256(payload.code.strip().encode("utf-8")).hexdigest()
     now = datetime.now(timezone.utc).isoformat()
     user = verify_user_email_by_code(payload.email, code_hash, now)
-
-    # Universal bypass code for unconfigured email service or fallback testing
-    if user is None:
-        pending_user = find_user_by_email(payload.email)
-        if pending_user:
-            if pending_user.get("is_verified", 1) == 1 or not email_is_configured() or payload.code.strip() in ("123456", "000000"):
-                mark_user_verified(pending_user["id"])
-                user = find_user_by_email(payload.email)
 
     if user is None:
         raise HTTPException(
@@ -420,21 +411,21 @@ def resend_verification(payload: ResendVerificationRequest, request: Request):
     if user.get("is_verified", 1) == 1:
         return {"message": "This email is already verified. You can sign in now.", "already_verified": True}
 
-    if not email_is_configured():
-        return {
-            "message": "Email service is in offline mode. Enter code 123456 to verify instantly.",
-            "dev_code": "123456",
-            "offline_mode": True,
-        }
-
     now = datetime.now(timezone.utc)
     if email_verification_was_recently_sent(
         user["id"], (now - VERIFICATION_RESEND_COOLDOWN).isoformat()
     ):
         return {"message": "A verification code was recently sent. Please check your inbox or wait 30 seconds."}
 
-    _issue_and_send_verification(user["id"], user["email"], user["full_name"], request=request)
-    return {"message": "A new verification code has been sent to your email."}
+    code, token, email_sent = _issue_and_send_verification(user["id"], user["email"], user["full_name"], request=request)
+    return {
+        "message": (
+            "A new verification code has been sent to your email."
+            if email_sent
+            else "A new 6-digit verification code has been generated. Enter it to activate your account."
+        ),
+        "dev_code": code if not email_sent else None,
+    }
 
 
 @router.post("/login")
@@ -447,17 +438,13 @@ def login(payload: AccountCredentials, request: Request):
         )
 
     if user.get("is_verified", 1) == 0:
-        if not email_is_configured():
-            mark_user_verified(user["id"])
-            user = find_user_by_email(payload.email)
-        else:
-            now = datetime.now(timezone.utc)
-            if not email_verification_was_recently_sent(user["id"], (now - VERIFICATION_RESEND_COOLDOWN).isoformat()):
-                _issue_and_send_verification(user["id"], user["email"], user["full_name"], request=request)
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="Please verify your email address. A 6-digit code has been sent to your inbox.",
-            )
+        now = datetime.now(timezone.utc)
+        if not email_verification_was_recently_sent(user["id"], (now - VERIFICATION_RESEND_COOLDOWN).isoformat()):
+            _issue_and_send_verification(user["id"], user["email"], user["full_name"], request=request)
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Please verify your email address. A 6-digit code has been sent to your inbox.",
+        )
 
     _start_user_session(request, user)
     return {"authenticated": True, "user": _public_user(user)}

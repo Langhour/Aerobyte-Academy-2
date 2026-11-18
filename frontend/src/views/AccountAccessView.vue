@@ -264,15 +264,6 @@
                 @paste="onOtpPaste($event)"
               />
             </div>
-            <div class="mt-3 flex items-center justify-center">
-              <button
-                type="button"
-                class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-sky-50 dark:bg-sky-950/40 border border-sky-200 dark:border-sky-800 text-xs font-bold text-sky-800 dark:text-sky-300 hover:bg-sky-100 dark:hover:bg-sky-900/50 transition cursor-pointer"
-                @click="autoFillBypassCode"
-              >
-                ⚡ {{ t("Didn't receive code? Click to auto-verify") }}
-              </button>
-            </div>
           </div>
 
           <button
@@ -808,22 +799,24 @@ async function submitAccountForm() {
       const userEmail = form.email
       form.password = ''
       form.confirmPassword = ''
-      if (regResponse.data?.verification_required) {
-        verifyEmail.value = userEmail
-        startResendCooldown(30)
-        message.value = regResponse.data.message || t('A 6-digit verification code has been sent to your email.')
-        await router.push({
-          path: '/account',
-          query: {
-            mode: 'verify',
-            email: userEmail,
-            ...(route.query.redirect ? { redirect: route.query.redirect } : {}),
-          },
-        })
-        return
+
+      // ALWAYS require 6-digit email verification code. Never auto sign-in on registration.
+      verifyEmail.value = userEmail
+      startResendCooldown(30)
+      if (regResponse.data?.dev_code) {
+        message.value = `${regResponse.data.message} (Test Code: ${regResponse.data.dev_code})`
+      } else {
+        message.value = regResponse.data?.message || t('A 6-digit verification code has been sent to your email.')
       }
-      window.dispatchEvent(new Event('aerobyte-auth-updated'))
-      await router.push('/profile')
+      isError.value = false
+      await router.push({
+        path: '/account',
+        query: {
+          mode: 'verify',
+          email: userEmail,
+          ...(route.query.redirect ? { redirect: route.query.redirect } : {}),
+        },
+      })
       return
     }
 
