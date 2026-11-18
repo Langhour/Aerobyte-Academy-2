@@ -255,19 +255,26 @@ def _start_user_session(request: Request, user: dict[str, str], method: str = "E
         pass
 
 
+DEFAULT_PRODUCTION_FRONTEND = "https://aerobyte-academy.onrender.com"
+
+
 def _frontend_origin(request: Optional[Request] = None) -> str:
-    allowed = {
-        item.strip().rstrip("/")
-        for item in os.getenv("FRONTEND_ORIGINS", "").split(",")
-        if item.strip()
-    }
+    # 1. Explicit non-localhost configured env var takes absolute precedence
     configured = os.getenv("FRONTEND_URL", "").strip().rstrip("/")
-    if configured:
+    if configured and not configured.startswith("http://localhost") and not configured.startswith("http://127.0.0.1"):
         return configured
+
+    # 2. Dynamic inspection of live domain headers
     if request:
+        proto = request.headers.get("x-forwarded-proto", "").strip() or "https"
+        f_host = request.headers.get("x-forwarded-host", "").strip()
+        if f_host and not f_host.startswith("localhost") and not f_host.startswith("127.0.0.1"):
+            return f"{proto}://{f_host}".rstrip("/")
+
         origin = request.headers.get("origin", "").strip().rstrip("/")
         if origin and not origin.startswith("http://localhost") and not origin.startswith("http://127.0.0.1"):
             return origin
+
         referer = request.headers.get("referer", "").strip()
         if referer:
             try:
@@ -278,25 +285,22 @@ def _frontend_origin(request: Optional[Request] = None) -> str:
                         return ref_origin
             except Exception:
                 pass
-        proto = request.headers.get("x-forwarded-proto", "").strip()
-        host = request.headers.get("x-forwarded-host", "").strip() or request.headers.get("host", "").strip()
-        if proto and host:
+
+        host = request.headers.get("host", "").strip()
+        if host and not host.startswith("localhost") and not host.startswith("127.0.0.1") and not host.startswith("0.0.0.0"):
             return f"{proto}://{host}".rstrip("/")
-        if origin:
-            return origin
-        if referer:
-            try:
-                parsed = urlsplit(referer)
-                if parsed.scheme and parsed.netloc:
-                    return f"{parsed.scheme}://{parsed.netloc}".rstrip("/")
-            except Exception:
-                pass
-        if allowed:
-            return sorted(allowed)[0]
-        return str(request.base_url).rstrip("/")
+
+    # 3. Explicit allowed origins in env if non-localhost
+    allowed = [
+        item.strip().rstrip("/")
+        for item in os.getenv("FRONTEND_ORIGINS", "").split(",")
+        if item.strip() and not item.strip().startswith("http://localhost") and not item.strip().startswith("http://127.0.0.1")
+    ]
     if allowed:
-        return sorted(allowed)[0]
-    return "http://localhost:5173"
+        return allowed[0]
+
+    # 4. Fallback to production website url so reset emails never send dead localhost links to users
+    return DEFAULT_PRODUCTION_FRONTEND
 
 
 def _issue_and_send_verification(user_id: str, email: str, full_name: str, request: Optional[Request] = None) -> tuple[str, str]:

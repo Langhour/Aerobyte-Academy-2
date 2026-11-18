@@ -12,7 +12,8 @@ FROM python:3.12-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    PORT=8010
+    PORT=8010 \
+    FRONTEND_URL=https://aerobyte-academy.onrender.com
 
 WORKDIR /app
 COPY backend/requirements.txt ./requirements.txt
