@@ -2321,11 +2321,6 @@ function clearLocalProfile() {
 
 async function confirmLogout() {
   logoutDialogOpen.value = false
-  try {
-    await accountService.logout()
-  } catch (error) {
-    console.warn('Backend sign out error (continuing local logout):', error)
-  }
 
   try {
     localStorage.removeItem('aerobyte_user_session')
@@ -2335,7 +2330,7 @@ async function confirmLogout() {
     localStorage.removeItem('aerobyte-profile')
     for (let i = localStorage.length - 1; i >= 0; i--) {
       const k = localStorage.key(i)
-      if (k && (k.startsWith('aerobyte-profile:') || k.startsWith('aerobyte_user_') || k.startsWith('aerobyte-course-history'))) {
+      if (k && (k.startsWith('aerobyte-profile') || k.startsWith('aerobyte_user') || k.startsWith('aerobyte-course-history') || k.startsWith('aerobyte_print_orders') || k.startsWith('aerobyte_store_orders'))) {
         localStorage.removeItem(k)
       }
     }
@@ -2344,9 +2339,14 @@ async function confirmLogout() {
   copyProfile(profile, emptyProfile())
   copyProfile(draft, emptyProfile())
   courseHistory.value = []
-  window.dispatchEvent(new Event('aerobyte-profile-updated'))
-  window.dispatchEvent(new Event('aerobyte-auth-updated'))
   account.value = null
+
+  try {
+    await accountService.logout()
+  } catch (error) {
+    console.warn('Backend sign out error (continuing local logout):', error)
+  }
+
   window.location.href = '/courses'
 }
 

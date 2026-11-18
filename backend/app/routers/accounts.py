@@ -517,7 +517,10 @@ def complete_password_reset(payload: PasswordResetComplete):
 
 
 @router.get("/session")
-def get_session(request: Request):
+def get_session(request: Request, response: Response):
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate, private"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
     user = None
     if request.session.get("role") == "user":
         sess_uid = request.session.get("user_id", "")
@@ -856,11 +859,21 @@ def logout(request: Request):
         or os.getenv("ADMIN_COOKIE_SECURE", "false").casefold() == "true"
         or os.getenv("ENVIRONMENT", "").casefold() == "production"
     )
-    response = JSONResponse(content={"authenticated": False, "message": "Logged out successfully."})
+    redirect_target = request.query_params.get("redirect")
+    if redirect_target and redirect_target.startswith("/"):
+        from fastapi.responses import RedirectResponse
+        response = RedirectResponse(url=redirect_target, status_code=303)
+    else:
+        response = JSONResponse(content={"authenticated": False, "message": "Logged out successfully."})
+
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate, private"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
     response.delete_cookie(
         "aerobyte_session",
         path="/",
         secure=is_secure,
+        httponly=True,
         samesite="lax",
     )
     return response

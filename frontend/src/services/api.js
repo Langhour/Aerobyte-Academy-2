@@ -68,7 +68,10 @@ export const accountService = {
     return apiClient.post('/accounts/password-reset/complete', payload)
   },
   getSession() {
-    return apiClient.get('/accounts/session')
+    return apiClient.get('/accounts/session', {
+      params: { _t: Date.now() },
+      headers: { 'Cache-Control': 'no-cache', 'Pragma': 'no-cache' }
+    })
   },
   getUserEnrollments(params = {}) {
     return apiClient.get('/accounts/enrollments', { params })

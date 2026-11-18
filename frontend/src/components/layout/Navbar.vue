@@ -250,7 +250,7 @@
 
             class="inline-flex h-8 sm:h-9 cursor-pointer items-center gap-1.5 sm:gap-2 rounded-lg px-2 text-slate-600 dark:text-slate-300 transition hover:bg-slate-50 dark:hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy-800/30"
 
-            :aria-label="`${profileName || t('Name')} - ${t('Account menu')}`"
+            :aria-label="`${profileName || t('Sign in')} - ${t('Account menu')}`"
 
             aria-haspopup="menu"
 
@@ -283,7 +283,7 @@
               :class="getSwClass(7)"
               :style="getSwStyle(7)"
             >
-              <span class="truncate">{{ profileName || t('Name') }}</span>
+              <span class="truncate">{{ profileName || t('Sign in') }}</span>
             </span>
 
           </button>
@@ -1341,13 +1341,15 @@ async function updateProfileName() {
       profileAvatar.value = avatar
       avatarLoadFailed.value = false
     } else {
-      // Only clear if localStorage has no session (i.e. user explicitly clicked Log Out)
-      const hasLocal = localStorage.getItem('aerobyte_user_session') || localStorage.getItem('aerobyte-profile-current')
-      if (!hasLocal) {
-        profileName.value = ''
-        profileEmail.value = ''
-        profileAvatar.value = ''
-      }
+      profileName.value = ''
+      profileEmail.value = ''
+      profileAvatar.value = ''
+      avatarLoadFailed.value = false
+      try {
+        localStorage.removeItem('aerobyte_user_session')
+        localStorage.removeItem('aerobyte-profile-current')
+        localStorage.removeItem('aerobyte-profile')
+      } catch (_) {}
     }
   } catch (error) {
     console.warn('Could not load the signed-in account for navigation:', error)
@@ -1355,33 +1357,34 @@ async function updateProfileName() {
 }
 
 async function handleLogout() {
-  closeAccountMenu()
+  accountMenuOpen.value = false
   mobileDrawerOpen.value = false
-  try {
-    await accountService.logout()
-  } catch (_) {}
+
   try {
     localStorage.removeItem('aerobyte_user_session')
     localStorage.removeItem('aerobyte-profile-current')
     localStorage.removeItem('aerobyte-profile')
     for (let i = localStorage.length - 1; i >= 0; i--) {
       const k = localStorage.key(i)
-      if (k && (k.startsWith('aerobyte-profile:') || k.startsWith('aerobyte_user_') || k.startsWith('aerobyte-course-history'))) {
+      if (k && (k.startsWith('aerobyte-profile') || k.startsWith('aerobyte_user') || k.startsWith('aerobyte-course-history') || k.startsWith('aerobyte_print_orders') || k.startsWith('aerobyte_store_orders'))) {
         localStorage.removeItem(k)
       }
     }
   } catch (_) {}
+
   profileName.value = ''
   profileEmail.value = ''
   profileAvatar.value = ''
-  window.dispatchEvent(new Event('aerobyte-profile-updated'))
-  window.dispatchEvent(new Event('aerobyte-auth-updated'))
-  if (window.location.pathname.includes('/profile') || window.location.pathname.includes('/courses')) {
+  avatarLoadFailed.value = false
+
+  try {
+    await accountService.logout()
+  } catch (_) {}
+
+  if (window.location.pathname.startsWith('/profile')) {
     window.location.href = '/courses'
   } else {
-    try {
-      await router.replace('/courses')
-    } catch (_) {}
+    window.location.reload()
   }
 }
 
