@@ -360,6 +360,14 @@
                 </div>
                 <div class="flex items-center gap-2">
                   <span
+                    class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold border"
+                    :class="(order.payment_status === 'Paid')
+                      ? 'border-emerald-300 bg-emerald-50 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-700'
+                      : 'border-amber-300 bg-amber-50 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-700'"
+                  >
+                    <span>{{ order.payment_status === 'Paid' ? '✓ ' + t('Paid') : '⏳ ' + t('Not Paid') }}</span>
+                  </span>
+                  <span
                     class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold border"
                     :class="getPrintStatusBadge(order.status).bg"
                   >

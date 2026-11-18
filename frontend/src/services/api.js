@@ -272,6 +272,10 @@ export const adminService = {
     const cleanId = String(id || '').replace(/^#/, '')
     return apiClient.put(`/admin/print-orders/${encodeURIComponent(cleanId)}/price`, { price: Number(price) })
   },
+  updatePrintOrderPaymentStatus(id, payment_status) {
+    const cleanId = String(id || '').replace(/^#/, '')
+    return apiClient.put(`/admin/print-orders/${encodeURIComponent(cleanId)}/payment-status`, { payment_status })
+  },
   deletePrintOrder(id) {
     return apiClient.delete(`/admin/print-orders/${encodeURIComponent(id)}`)
   },

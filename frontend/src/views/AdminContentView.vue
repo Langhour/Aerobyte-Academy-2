@@ -2829,7 +2829,7 @@
         <!-- ======================================================== -->
         <section v-else-if="activeSection === 'aeroprint'" class="w-full pb-8 space-y-6">
           <!-- Top KPI / Overview Banner -->
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 sm:p-5 shadow-card flex items-center gap-3.5">
               <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 border border-purple-100 dark:border-purple-900/40">
                 <Printer class="w-5 h-5" />
@@ -2849,6 +2849,17 @@
                 <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">{{ t('Pending Review') }}</p>
                 <p class="text-xl font-extrabold text-navy-900 dark:text-white mt-0.5">{{ pendingPrintOrdersCount }}</p>
                 <p class="text-[11px] text-amber-600 dark:text-amber-400 font-semibold">{{ t('Awaiting Telegram quote') }}</p>
+              </div>
+            </div>
+
+            <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 sm:p-5 shadow-card flex items-center gap-3.5">
+              <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-900/40">
+                <CreditCard class="w-5 h-5" />
+              </div>
+              <div>
+                <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">{{ t('Paid Orders') }}</p>
+                <p class="text-xl font-extrabold text-navy-900 dark:text-white mt-0.5">{{ paidPrintOrdersCount }} / {{ printOrdersList.length }}</p>
+                <p class="text-[11px] text-blue-600 dark:text-blue-400 font-semibold">{{ printOrdersList.length > 0 ? Math.round((paidPrintOrdersCount / printOrdersList.length) * 100) : 0 }}% {{ t('Paid') }}</p>
               </div>
             </div>
 
@@ -2907,6 +2918,7 @@
                     <th class="py-3 px-4">{{ t('Customer & Contact') }}</th>
                     <th class="py-3 px-4">{{ t('CAD Files & Requirements') }}</th>
                     <th class="py-3 px-4">{{ t('Quote Price') }}</th>
+                    <th class="py-3 px-4 text-center">{{ t('Payment') }}</th>
                     <th class="py-3 px-4 text-center">{{ t('Status') }}</th>
                     <th class="py-3 px-4 text-right">{{ t('Actions') }}</th>
                   </tr>
@@ -3010,6 +3022,22 @@
                       <p v-else class="text-[10px] text-amber-600 dark:text-amber-400 mt-0.5 italic">
                         {{ t('Quote in progress') }}
                       </p>
+                    </td>
+
+                    <!-- Payment Status Select (Pay / Not Pay) -->
+                    <td class="py-3 px-4 min-w-[130px] text-center">
+                      <CustomSelect
+                        size="sm"
+                        :model-value="order.payment_status || 'Not Paid'"
+                        :options="printOrderPaymentOptions"
+                        :trigger-class="[
+                          'font-bold text-[11px] rounded-lg shadow-2xs',
+                          (order.payment_status === 'Paid')
+                            ? 'border-emerald-300 bg-emerald-50 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-700'
+                            : 'border-amber-300 bg-amber-50 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-700'
+                        ]"
+                        @change="updateOrderPaymentStatus(order, $event)"
+                      />
                     </td>
 
                     <!-- Status Dropdown -->
@@ -3279,7 +3307,7 @@
             </span>
           </div>
 
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 items-end">
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end">
             <!-- Price Input for Admin -->
             <div>
               <label class="block text-[11px] font-bold text-slate-600 dark:text-slate-300 mb-1">
@@ -3311,6 +3339,25 @@
               <p class="text-[10px] text-slate-400 dark:text-slate-500 mt-1 font-mono" v-if="modalPriceInput > 0">
                 ≈ {{ Math.round(Number(modalPriceInput) * 4100).toLocaleString() }} ៛ (Cambodian Riel)
               </p>
+            </div>
+
+            <!-- Update Payment Status (Pay / Not Pay) -->
+            <div>
+              <label class="block text-[11px] font-bold text-slate-600 dark:text-slate-300 mb-1">
+                {{ t('Payment Status') }}
+              </label>
+              <CustomSelect
+                size="sm"
+                :model-value="selectedPrintOrder.payment_status || 'Not Paid'"
+                :options="printOrderPaymentOptions"
+                :trigger-class="[
+                  'font-bold text-xs rounded-xl shadow-2xs py-1.5',
+                  (selectedPrintOrder.payment_status === 'Paid')
+                    ? 'border-emerald-300 bg-emerald-50 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-700'
+                    : 'border-amber-300 bg-amber-50 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-700'
+                ]"
+                @change="updateOrderPaymentStatus(selectedPrintOrder, $event)"
+              />
             </div>
 
             <!-- Update Production Status -->
@@ -3940,6 +3987,13 @@ const printOrdersList = ref(loadCachedPrintOrders())
 const pendingPrintOrdersCount = computed(() => {
   return (printOrdersList.value || []).filter((o) => o.status === 'Pending Review').length
 })
+const paidPrintOrdersCount = computed(() => {
+  return (printOrdersList.value || []).filter((o) => o.payment_status === 'Paid').length
+})
+const printOrderPaymentOptions = computed(() => [
+  { value: 'Not Paid', label: t('Not Paid') },
+  { value: 'Paid', label: t('Paid') },
+])
 const printOrderStatusOptions = computed(() => [
   { value: 'Pending Review', label: t('Pending Review') },
   { value: 'In Production', label: t('In Production') },
@@ -4071,6 +4125,47 @@ async function updateOrderStatus(order, newStatus) {
     await adminService.updatePrintOrderStatus(targetKey, newStatus)
   } catch (err) {
     console.error('Failed to sync print order status with backend:', err)
+  }
+}
+
+async function updateOrderPaymentStatus(order, newPaymentStatus) {
+  const targetKey = String(order.order_number || order.id || '').replace(/^#/, '')
+  order.payment_status = newPaymentStatus
+  if (selectedPrintOrder.value && (selectedPrintOrder.value.id === order.id || selectedPrintOrder.value.order_number === order.order_number)) {
+    selectedPrintOrder.value.payment_status = newPaymentStatus
+  }
+
+  // 1. Sync admin localStorage cache
+  try {
+    localStorage.setItem('aerobyte_admin_print_orders', JSON.stringify(printOrdersList.value))
+  } catch (_) {}
+
+  // 2. IMMEDIATELY sync user-facing print orders cache (aerobyte_print_orders)
+  try {
+    const userRaw = localStorage.getItem('aerobyte_print_orders')
+    const userOrders = userRaw ? JSON.parse(userRaw) : []
+    let found = false
+    for (const uo of userOrders) {
+      const uKey = String(uo.order_number || uo.id || '').replace(/^#/, '')
+      if (uKey === targetKey) {
+        uo.payment_status = newPaymentStatus
+        found = true
+      }
+    }
+    if (!found && order) {
+      userOrders.unshift({ ...order, payment_status: newPaymentStatus })
+    }
+    localStorage.setItem('aerobyte_print_orders', JSON.stringify(userOrders))
+    window.dispatchEvent(new CustomEvent('aerobyte-orders-updated', { detail: { orderId: targetKey, payment_status: newPaymentStatus } }))
+  } catch (_) {}
+
+  triggerSuccess(`${order.order_number || order.id} ${t('payment set to')} ${newPaymentStatus}`)
+
+  // 3. Send update to backend
+  try {
+    await adminService.updatePrintOrderPaymentStatus(targetKey, newPaymentStatus)
+  } catch (err) {
+    console.error('Failed to sync print order payment status with backend:', err)
   }
 }
 

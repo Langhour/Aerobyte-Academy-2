@@ -18,6 +18,7 @@ from app.content_store import (
     list_all_print_orders,
     update_print_order_status,
     update_print_order_price,
+    update_print_order_payment_status,
     delete_print_order,
     save_print_order_review,
     list_completed_print_reviews,
@@ -59,6 +60,10 @@ class StatusUpdatePayload(BaseModel):
 
 class PriceUpdatePayload(BaseModel):
     price: float
+
+
+class PaymentStatusUpdatePayload(BaseModel):
+    payment_status: str
 
 
 class ReviewPayload(BaseModel):
@@ -402,6 +407,23 @@ async def admin_update_print_order_price(
     if not success:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Order not found")
     return {"success": True, "order_id": clean_id, "price": payload.price}
+
+
+@router.put("/api/admin/print-orders/{order_id}/payment-status")
+async def admin_update_print_order_payment_status(
+    order_id: str,
+    payload: PaymentStatusUpdatePayload,
+    request: Request,
+):
+    """
+    Updates the payment status of a 3D print order ('Paid' or 'Not Paid').
+    """
+    _require_admin(request)
+    clean_id = str(order_id).strip().lstrip("#")
+    success = update_print_order_payment_status(clean_id, payload.payment_status)
+    if not success:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Order not found")
+    return {"success": True, "order_id": clean_id, "payment_status": payload.payment_status}
 
 
 @router.delete("/api/admin/print-orders/{order_id}")

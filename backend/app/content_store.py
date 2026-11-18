@@ -295,7 +295,8 @@ def initialize_content_store() -> None:
                 created_at TEXT NOT NULL,
                 user_id TEXT DEFAULT '',
                 user_email TEXT DEFAULT '',
-                review_json TEXT DEFAULT ''
+                review_json TEXT DEFAULT '',
+                payment_status TEXT DEFAULT 'Not Paid'
             );
             """
         )
@@ -353,6 +354,11 @@ def initialize_content_store() -> None:
         if "review_json" not in print_columns:
             try:
                 connection.execute("ALTER TABLE print_orders ADD COLUMN review_json TEXT DEFAULT ''")
+            except Exception:
+                pass
+        if "payment_status" not in print_columns:
+            try:
+                connection.execute("ALTER TABLE print_orders ADD COLUMN payment_status TEXT DEFAULT 'Not Paid'")
             except Exception:
                 pass
         try:
@@ -662,14 +668,15 @@ def _restore_print_orders_from_disk(connection) -> None:
             review_json = o.get("review_json") or ""
             if isinstance(review_json, dict):
                 review_json = json.dumps(review_json, ensure_ascii=False)
+            payment_status = o.get("payment_status") or "Not Paid"
 
             connection.execute(
                 """
                 INSERT OR REPLACE INTO print_orders
-                (id, order_number, customer_name, phone, telegram, notes, qr_file_url, total_parts, estimated_price, files_json, status, created_at, user_id, user_email, review_json)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                (id, order_number, customer_name, phone, telegram, notes, qr_file_url, total_parts, estimated_price, files_json, status, created_at, user_id, user_email, review_json, payment_status)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
-                (order_id, order_number, customer_name, phone, telegram, notes, qr_file_url, total_parts, estimated_price, files_json, status, created_at, user_id, user_email, review_json),
+                (order_id, order_number, customer_name, phone, telegram, notes, qr_file_url, total_parts, estimated_price, files_json, status, created_at, user_id, user_email, review_json, payment_status),
             )
     except Exception:
         pass
@@ -876,8 +883,6 @@ def find_user_by_email(email: str) -> Optional[dict[str, Any]]:
             (clean_email,),
         ).fetchone()
         if not row:
-            row = _restore_single_user_from_disk(connection, "email", clean_email)
-        if not row:
             return None
         u = dict(row) if not isinstance(row, dict) else row
         _hydrate_user_profile_fields(u, connection=connection)
@@ -890,8 +895,6 @@ def find_user_by_google_sub(google_sub: str) -> Optional[dict[str, Any]]:
             "SELECT * FROM users WHERE google_sub = ?",
             (google_sub,),
         ).fetchone()
-        if not row:
-            row = _restore_single_user_from_disk(connection, "google_sub", google_sub)
         if not row:
             return None
         u = dict(row) if not isinstance(row, dict) else row
@@ -945,8 +948,6 @@ def find_user_by_id(user_id: str) -> Optional[dict[str, Any]]:
             "SELECT * FROM users WHERE id = ?",
             (user_id,),
         ).fetchone()
-        if not row:
-            row = _restore_single_user_from_disk(connection, "id", user_id)
         if not row:
             return None
         u = dict(row) if not isinstance(row, dict) else row
@@ -1024,11 +1025,44 @@ def admin_set_user_password(user_id: str, password_hash: str) -> bool:
 
 
 def admin_delete_user(user_id: str) -> bool:
+    user_email = ""
     with _connect() as connection:
+        user_row = connection.execute("SELECT id, email FROM users WHERE id = ?", (user_id,)).fetchone()
+        if user_row and user_row["email"]:
+            user_email = str(user_row["email"]).strip().casefold()
+
         connection.execute("DELETE FROM password_reset_tokens WHERE user_id = ?", (user_id,))
         connection.execute("DELETE FROM email_verification_tokens WHERE user_id = ?", (user_id,))
         cursor = connection.execute("DELETE FROM users WHERE id = ?", (user_id,))
-        return bool(cursor.rowcount and cursor.rowcount > 0)
+        success = bool(cursor.rowcount and cursor.rowcount > 0)
+
+        if user_email:
+            connection.execute(
+                "DELETE FROM password_reset_tokens WHERE user_id IN (SELECT id FROM users WHERE email = ? COLLATE NOCASE)",
+                (user_email,),
+            )
+            connection.execute(
+                "DELETE FROM email_verification_tokens WHERE user_id IN (SELECT id FROM users WHERE email = ? COLLATE NOCASE)",
+                (user_email,),
+            )
+            connection.execute("DELETE FROM users WHERE email = ? COLLATE NOCASE", (user_email,))
+
+    try:
+        if USERS_BACKUP_PATH.exists():
+            with open(USERS_BACKUP_PATH, "r", encoding="utf-8") as f:
+                backup_users = json.load(f)
+            clean_backup = [
+                u for u in backup_users
+                if str(u.get("id")) != str(user_id)
+                and (not user_email or str(u.get("email") or "").strip().casefold() != user_email)
+            ]
+            with open(USERS_BACKUP_PATH, "w", encoding="utf-8") as f:
+                json.dump(clean_backup, f, indent=2, ensure_ascii=False)
+    except Exception:
+        pass
+
+    _backup_users_to_disk()
+    return success
 
 
 def update_user_profile(
@@ -1810,12 +1844,13 @@ def create_print_order(data: dict[str, Any]) -> dict[str, Any]:
         print_cols = {
             row["name"] for row in connection.execute("PRAGMA table_info(print_orders)").fetchall()
         }
+        payment_status = data.get("payment_status") or "Not Paid"
         if "user_id" in print_cols and "user_email" in print_cols:
             connection.execute(
                 """
                 INSERT INTO print_orders
-                (id, order_number, customer_name, phone, telegram, notes, qr_file_url, total_parts, estimated_price, files_json, status, created_at, user_id, user_email)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                (id, order_number, customer_name, phone, telegram, notes, qr_file_url, total_parts, estimated_price, files_json, status, created_at, user_id, user_email, payment_status)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 (
                     order_id,
@@ -1832,6 +1867,7 @@ def create_print_order(data: dict[str, Any]) -> dict[str, Any]:
                     created_at,
                     user_id,
                     user_email,
+                    payment_status,
                 ),
             )
         else:
@@ -1892,6 +1928,7 @@ def get_print_order(order_id: str) -> Optional[dict[str, Any]]:
             "price": float(row_dict.get("estimated_price") or 0.0),
             "estimated_price": float(row_dict.get("estimated_price") or 0.0),
             "status": row_dict.get("status") or "Pending Review",
+            "payment_status": row_dict.get("payment_status") or "Not Paid",
             "files": files,
             "review": review_data,
             "created_at": row_dict.get("created_at") or "",
@@ -1983,6 +2020,7 @@ def get_user_print_orders(
             "price": float(row_dict.get("estimated_price") or 0.0),
             "estimated_price": float(row_dict.get("estimated_price") or 0.0),
             "status": row_dict.get("status") or "Pending Review",
+            "payment_status": row_dict.get("payment_status") or "Not Paid",
             "files": files,
             "review": review_data,
             "created_at": row_dict.get("created_at") or "",
@@ -2033,6 +2071,7 @@ def list_all_print_orders(limit: int = 200) -> list[dict[str, Any]]:
             "price": float(row_dict.get("estimated_price") or 0.0),
             "estimated_price": float(row_dict.get("estimated_price") or 0.0),
             "status": row_dict.get("status") or "Pending Review",
+            "payment_status": row_dict.get("payment_status") or "Not Paid",
             "files": files,
             "review": review_data,
             "created_at": row_dict.get("created_at") or "",
@@ -2117,6 +2156,51 @@ def update_print_order_price(order_id: str, new_price: float) -> bool:
                         "[]",
                         "Pending Review",
                         datetime.now(CAMBODIA_TZ).isoformat(),
+                    ),
+                )
+                success = True
+    if success:
+        _backup_print_orders_to_disk()
+    return success
+
+
+def update_print_order_payment_status(order_id: str, new_payment_status: str) -> bool:
+    clean_id = str(order_id).strip().lstrip("#")
+    clean_status = str(new_payment_status).strip()
+    if clean_status.lower() in ("paid", "true", "yes", "1"):
+        clean_status = "Paid"
+    else:
+        clean_status = "Not Paid"
+
+    with _connect() as connection:
+        cursor = connection.execute(
+            "UPDATE print_orders SET payment_status = ? WHERE id = ? OR order_number = ? OR id = ? OR order_number = ?",
+            (clean_status, clean_id, clean_id, f"#{clean_id}", f"#{clean_id}"),
+        )
+        success = cursor.rowcount > 0
+        if not success:
+            rows = connection.execute("SELECT 1 FROM print_orders WHERE id = ? OR order_number = ?", (clean_id, clean_id)).fetchall()
+            if not rows:
+                connection.execute(
+                    """
+                    INSERT INTO print_orders
+                    (id, order_number, customer_name, phone, telegram, notes, qr_file_url, total_parts, estimated_price, files_json, status, created_at, payment_status)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    """,
+                    (
+                        clean_id,
+                        clean_id,
+                        "Customer",
+                        "",
+                        "",
+                        "",
+                        "",
+                        1,
+                        0.0,
+                        "[]",
+                        "Pending Review",
+                        datetime.now(CAMBODIA_TZ).isoformat(),
+                        clean_status,
                     ),
                 )
                 success = True
