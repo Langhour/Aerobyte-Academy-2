@@ -268,6 +268,10 @@ export const adminService = {
   updatePrintOrderStatus(id, status) {
     return apiClient.put(`/admin/print-orders/${encodeURIComponent(id)}/status`, { status })
   },
+  updatePrintOrderPrice(id, price) {
+    const cleanId = String(id || '').replace(/^#/, '')
+    return apiClient.put(`/admin/print-orders/${encodeURIComponent(cleanId)}/price`, { price: Number(price) })
+  },
   deletePrintOrder(id) {
     return apiClient.delete(`/admin/print-orders/${encodeURIComponent(id)}`)
   },
@@ -290,6 +294,10 @@ export const printOrderService = {
   },
   updateStatus(id, status) {
     return apiClient.put(`/admin/print-orders/${encodeURIComponent(id)}/status`, { status })
+  },
+  updatePrice(id, price) {
+    const cleanId = String(id || '').replace(/^#/, '')
+    return apiClient.put(`/admin/print-orders/${encodeURIComponent(cleanId)}/price`, { price: Number(price) })
   },
   deleteOrder(id) {
     return apiClient.delete(`/admin/print-orders/${encodeURIComponent(id)}`)

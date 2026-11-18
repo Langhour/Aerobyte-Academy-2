@@ -8,6 +8,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from sqlite3 import IntegrityError
 from typing import Any, Optional
+from urllib.parse import urlsplit
 from uuid import uuid4
 
 import httpx
@@ -49,7 +50,7 @@ from app.password_reset_mail import (
 from app.user_security import hash_user_password, verify_user_password
 
 
-router = APIRouter(prefix="/api/accounts", tags=["Accounts"])
+router = APIRouter(tags=["Accounts"])
 logger = logging.getLogger(__name__)
 RESET_TOKEN_TTL = timedelta(minutes=30)
 RESET_REQUEST_COOLDOWN = timedelta(seconds=5)
@@ -254,7 +255,51 @@ def _start_user_session(request: Request, user: dict[str, str], method: str = "E
         pass
 
 
-def _issue_and_send_verification(user_id: str, email: str, full_name: str) -> tuple[str, str]:
+def _frontend_origin(request: Optional[Request] = None) -> str:
+    allowed = {
+        item.strip().rstrip("/")
+        for item in os.getenv("FRONTEND_ORIGINS", "").split(",")
+        if item.strip()
+    }
+    configured = os.getenv("FRONTEND_URL", "").strip().rstrip("/")
+    if configured:
+        return configured
+    if request:
+        origin = request.headers.get("origin", "").strip().rstrip("/")
+        if origin and not origin.startswith("http://localhost") and not origin.startswith("http://127.0.0.1"):
+            return origin
+        referer = request.headers.get("referer", "").strip()
+        if referer:
+            try:
+                parsed = urlsplit(referer)
+                if parsed.scheme and parsed.netloc:
+                    ref_origin = f"{parsed.scheme}://{parsed.netloc}".rstrip("/")
+                    if not ref_origin.startswith("http://localhost") and not ref_origin.startswith("http://127.0.0.1"):
+                        return ref_origin
+            except Exception:
+                pass
+        proto = request.headers.get("x-forwarded-proto", "").strip()
+        host = request.headers.get("x-forwarded-host", "").strip() or request.headers.get("host", "").strip()
+        if proto and host:
+            return f"{proto}://{host}".rstrip("/")
+        if origin:
+            return origin
+        if referer:
+            try:
+                parsed = urlsplit(referer)
+                if parsed.scheme and parsed.netloc:
+                    return f"{parsed.scheme}://{parsed.netloc}".rstrip("/")
+            except Exception:
+                pass
+        if allowed:
+            return sorted(allowed)[0]
+        return str(request.base_url).rstrip("/")
+    if allowed:
+        return sorted(allowed)[0]
+    return "http://localhost:5173"
+
+
+def _issue_and_send_verification(user_id: str, email: str, full_name: str, request: Optional[Request] = None) -> tuple[str, str]:
     code = "123456" if not email_is_configured() else f"{secrets.randbelow(900000) + 100000}"
     token = secrets.token_urlsafe(32)
     code_hash = hashlib.sha256(code.encode("utf-8")).hexdigest()
@@ -264,7 +309,7 @@ def _issue_and_send_verification(user_id: str, email: str, full_name: str) -> tu
     expires_at = (now + VERIFICATION_TOKEN_TTL).isoformat()
     create_email_verification_token(user_id, email, code_hash, token_hash, created_at, expires_at)
 
-    frontend_url = os.getenv("FRONTEND_URL", "http://localhost:5173").rstrip("/")
+    frontend_url = _frontend_origin(request)
     verify_url = f"{frontend_url}/account?mode=verify&token={token}&email={email}"
     try:
         send_verification_email(email, full_name, code, verify_url)
@@ -314,7 +359,7 @@ def register(payload: AccountRegistration, request: Request):
             "message": "Account created and activated successfully!",
         }
 
-    _issue_and_send_verification(user_id, payload.email, payload.full_name)
+    _issue_and_send_verification(user_id, payload.email, payload.full_name, request=request)
     return {
         "verification_required": True,
         "email": payload.email,
@@ -360,7 +405,7 @@ def verify_email_token(payload: VerifyEmailTokenRequest, request: Request):
 
 
 @router.post("/resend-verification")
-def resend_verification(payload: ResendVerificationRequest):
+def resend_verification(payload: ResendVerificationRequest, request: Request):
     user = find_user_by_email(payload.email)
     if user is None:
         raise HTTPException(
@@ -383,7 +428,7 @@ def resend_verification(payload: ResendVerificationRequest):
     ):
         return {"message": "A verification code was recently sent. Please check your inbox or wait 30 seconds."}
 
-    _issue_and_send_verification(user["id"], user["email"], user["full_name"])
+    _issue_and_send_verification(user["id"], user["email"], user["full_name"], request=request)
     return {"message": "A new verification code has been sent to your email."}
 
 
@@ -403,7 +448,7 @@ def login(payload: AccountCredentials, request: Request):
         else:
             now = datetime.now(timezone.utc)
             if not email_verification_was_recently_sent(user["id"], (now - VERIFICATION_RESEND_COOLDOWN).isoformat()):
-                _issue_and_send_verification(user["id"], user["email"], user["full_name"])
+                _issue_and_send_verification(user["id"], user["email"], user["full_name"], request=request)
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="Please verify your email address. A 6-digit code has been sent to your inbox.",
@@ -434,7 +479,7 @@ def request_password_reset(payload: PasswordResetRequest, request: Request):
     expires_at = (now + RESET_TOKEN_TTL).isoformat()
     create_password_reset_token(token_hash, user["id"], created_at, expires_at)
 
-    frontend_url = os.getenv("FRONTEND_URL", "http://localhost:5173").rstrip("/")
+    frontend_url = _frontend_origin(request)
     reset_url = f"{frontend_url}/account?mode=reset&token={token}"
 
     resend_ready = bool(os.getenv("RESEND_API_KEY", "").strip())

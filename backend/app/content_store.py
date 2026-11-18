@@ -774,15 +774,60 @@ def create_user(
     _backup_users_to_disk()
 
 
+def _restore_single_user_from_disk(connection, key: str, value: str) -> Optional[dict[str, Any]]:
+    if not USERS_BACKUP_PATH.exists():
+        return None
+    try:
+        with open(USERS_BACKUP_PATH, "r", encoding="utf-8") as f:
+            users = json.load(f)
+        for u in users:
+            target_val = str(u.get(key) or "").strip().casefold() if key == "email" else str(u.get(key) or "")
+            compare_val = value.strip().casefold() if key == "email" else str(value)
+            if target_val and target_val == compare_val:
+                cols = list(u.keys())
+                placeholders = ", ".join(["?"] * len(cols))
+                col_names = ", ".join(cols)
+                vals = [u[c] for c in cols]
+                connection.execute(
+                    f"INSERT OR IGNORE INTO users ({col_names}) VALUES ({placeholders})",
+                    vals,
+                )
+                if key == "email":
+                    row = connection.execute(
+                        "SELECT * FROM users WHERE email = ? COLLATE NOCASE",
+                        (compare_val,),
+                    ).fetchone()
+                elif key == "id":
+                    row = connection.execute(
+                        "SELECT * FROM users WHERE id = ?",
+                        (compare_val,),
+                    ).fetchone()
+                elif key == "google_sub":
+                    row = connection.execute(
+                        "SELECT * FROM users WHERE google_sub = ?",
+                        (compare_val,),
+                    ).fetchone()
+                else:
+                    row = None
+                if row:
+                    return dict(row)
+    except Exception:
+        pass
+    return None
+
+
 def find_user_by_email(email: str) -> Optional[dict[str, Any]]:
+    clean_email = email.strip().casefold()
     with _connect() as connection:
         row = connection.execute(
             "SELECT * FROM users WHERE email = ? COLLATE NOCASE",
-            (email.strip().casefold(),),
+            (clean_email,),
         ).fetchone()
         if not row:
+            row = _restore_single_user_from_disk(connection, "email", clean_email)
+        if not row:
             return None
-        u = dict(row)
+        u = dict(row) if not isinstance(row, dict) else row
         _hydrate_user_profile_fields(u, connection=connection)
         return u
 
@@ -794,8 +839,10 @@ def find_user_by_google_sub(google_sub: str) -> Optional[dict[str, Any]]:
             (google_sub,),
         ).fetchone()
         if not row:
+            row = _restore_single_user_from_disk(connection, "google_sub", google_sub)
+        if not row:
             return None
-        u = dict(row)
+        u = dict(row) if not isinstance(row, dict) else row
         _hydrate_user_profile_fields(u, connection=connection)
         return u
 
@@ -810,8 +857,8 @@ def create_google_user(
 ) -> None:
     with _connect() as connection:
         connection.execute(
-            "INSERT INTO users (id, email, full_name, password_hash, created_at, google_sub) "
-            "VALUES (?, ?, ?, ?, ?, ?)",
+            "INSERT INTO users (id, email, full_name, password_hash, created_at, google_sub, is_verified) "
+            "VALUES (?, ?, ?, ?, ?, ?, 1)",
             (
                 user_id,
                 email.strip().casefold(),
@@ -837,6 +884,7 @@ def link_google_user(user_id: str, google_sub: str) -> None:
             "UPDATE users SET google_sub = ?, is_verified = 1 WHERE id = ?",
             (google_sub, user_id),
         )
+    _backup_users_to_disk()
 
 
 def find_user_by_id(user_id: str) -> Optional[dict[str, Any]]:
@@ -846,8 +894,10 @@ def find_user_by_id(user_id: str) -> Optional[dict[str, Any]]:
             (user_id,),
         ).fetchone()
         if not row:
+            row = _restore_single_user_from_disk(connection, "id", user_id)
+        if not row:
             return None
-        u = dict(row)
+        u = dict(row) if not isinstance(row, dict) else row
         _hydrate_user_profile_fields(u, connection=connection)
         return u
 
@@ -1015,11 +1065,12 @@ def consume_password_reset_token(token_hash: str, now: str, password_hash: str) 
         if row is None:
             return False
         connection.execute(
-            "UPDATE users SET password_hash = ? WHERE id = ?",
+            "UPDATE users SET password_hash = ?, is_verified = 1 WHERE id = ?",
             (password_hash, row["user_id"]),
         )
         connection.execute("DELETE FROM password_reset_tokens WHERE user_id = ?", (row["user_id"],))
-        return True
+    _backup_users_to_disk()
+    return True
 
 
 def update_pending_user(user_id: str, full_name: str, password_hash: str) -> None:
@@ -1971,6 +2022,48 @@ def update_print_order_status(order_id: str, new_status: str) -> bool:
                         0.0,
                         "[]",
                         clean_status,
+                        datetime.now(CAMBODIA_TZ).isoformat(),
+                    ),
+                )
+                success = True
+    if success:
+        _backup_print_orders_to_disk()
+    return success
+
+
+def update_print_order_price(order_id: str, new_price: float) -> bool:
+    clean_id = str(order_id).strip().lstrip("#")
+    val = max(0.0, float(new_price))
+    with _connect() as connection:
+        cursor = connection.execute(
+            "UPDATE print_orders SET estimated_price = ? WHERE id = ? OR order_number = ? OR id = ? OR order_number = ?",
+            (val, clean_id, clean_id, f"#{clean_id}", f"#{clean_id}"),
+        )
+        success = cursor.rowcount > 0
+        if not success:
+            rows = connection.execute(
+                "SELECT 1 FROM print_orders WHERE id = ? OR order_number = ?",
+                (clean_id, clean_id),
+            ).fetchall()
+            if not rows:
+                connection.execute(
+                    """
+                    INSERT INTO print_orders
+                    (id, order_number, customer_name, phone, telegram, notes, qr_file_url, total_parts, estimated_price, files_json, status, created_at)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    """,
+                    (
+                        clean_id,
+                        clean_id,
+                        "Customer",
+                        "",
+                        "",
+                        "",
+                        "",
+                        1,
+                        val,
+                        "[]",
+                        "Pending Review",
                         datetime.now(CAMBODIA_TZ).isoformat(),
                     ),
                 )

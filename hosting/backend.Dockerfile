@@ -18,6 +18,7 @@ WORKDIR /app
 COPY backend/requirements.txt ./requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 COPY backend/app ./app
+COPY backend/data ./data
 COPY --from=frontend-build /frontend/dist ./static
 RUN mkdir -p /app/data/uploads \
     && addgroup --system app \
