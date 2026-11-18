@@ -2032,48 +2032,53 @@ def get_user_print_orders(
         }
         has_user_cols = "user_id" in cols and "user_email" in cols
 
-        # Smart user-order matching:
-        # Matches by user_id, user_email, submitted order_ids, customer_name, or telegram
+        # Strict user-account isolation:
+        # If user_id or email is provided, we ONLY return orders explicitly belonging to this user account!
         clean_email = str(email).strip().lower() if email else ""
         clean_uid = str(user_id).strip() if user_id else ""
-        clean_name = str(customer_name).strip() if customer_name else ""
-        clean_tg = str(telegram).strip().lstrip("@") if telegram else ""
 
-        conditions = []
-        params = []
+        if (clean_uid or clean_email) and has_user_cols:
+            user_conditions = []
+            user_params = []
+            if clean_uid:
+                user_conditions.append("user_id = ?")
+                user_params.append(clean_uid)
+            if clean_email:
+                user_conditions.append("LOWER(user_email) = LOWER(?)")
+                user_params.append(clean_email)
 
-        if clean_uid and has_user_cols:
-            conditions.append("user_id = ?")
-            params.append(clean_uid)
+            where_clause = " OR ".join(user_conditions)
+            query = f"SELECT * FROM print_orders WHERE ({where_clause}) ORDER BY created_at DESC LIMIT ?"
+            user_params.append(limit)
+            rows = connection.execute(query, tuple(user_params)).fetchall()
+        else:
+            # Anonymous or guest lookup (only when no user account is specified)
+            conditions = []
+            params = []
+            if order_ids:
+                clean_ids = [str(x).strip().lstrip("#") for x in order_ids if str(x).strip()]
+                if clean_ids:
+                    placeholders = ",".join("?" for _ in clean_ids)
+                    conditions.append(f"(id IN ({placeholders}) OR order_number IN ({placeholders}))")
+                    params.extend(clean_ids)
+                    params.extend(clean_ids)
+            if customer_name:
+                conditions.append("LOWER(customer_name) = LOWER(?)")
+                params.append(str(customer_name).strip())
+            if telegram:
+                clean_tg = str(telegram).strip().lstrip("@")
+                if clean_tg:
+                    conditions.append("(LOWER(telegram) = LOWER(?) OR LOWER(telegram) = LOWER(?))")
+                    params.append(clean_tg)
+                    params.append(f"@{clean_tg}")
 
-        if clean_email and has_user_cols:
-            conditions.append("LOWER(user_email) = LOWER(?)")
-            params.append(clean_email)
+            if not conditions:
+                return []
 
-        if order_ids:
-            clean_ids = [str(x).strip().lstrip("#") for x in order_ids if str(x).strip()]
-            if clean_ids:
-                placeholders = ",".join("?" for _ in clean_ids)
-                conditions.append(f"(id IN ({placeholders}) OR order_number IN ({placeholders}))")
-                params.extend(clean_ids)
-                params.extend(clean_ids)
-
-        if clean_name:
-            conditions.append("LOWER(customer_name) = LOWER(?)")
-            params.append(clean_name)
-
-        if clean_tg:
-            conditions.append("(LOWER(telegram) = LOWER(?) OR LOWER(telegram) = LOWER(?))")
-            params.append(clean_tg)
-            params.append(f"@{clean_tg}")
-
-        if not conditions:
-            return []
-
-        where_clause = " OR ".join(conditions)
-        query = f"SELECT * FROM print_orders WHERE ({where_clause}) ORDER BY created_at DESC LIMIT ?"
-        params.append(limit)
-        rows = connection.execute(query, tuple(params)).fetchall()
+            where_clause = " OR ".join(conditions)
+            query = f"SELECT * FROM print_orders WHERE ({where_clause}) ORDER BY created_at DESC LIMIT ?"
+            params.append(limit)
+            rows = connection.execute(query, tuple(params)).fetchall()
 
     result = []
     for r in rows:

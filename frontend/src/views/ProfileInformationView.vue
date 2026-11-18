@@ -1421,17 +1421,18 @@ function getActiveUserCredentials() {
 function readCachedPrintOrders(userEmail) {
   try {
     const email = (userEmail || '').trim().toLowerCase()
+    if (!email) return []
     const cachedMap = new Map()
-    if (email) {
-      const raw = localStorage.getItem(`aerobyte_print_orders:${email}`)
-      if (raw) {
-        const parsed = JSON.parse(raw)
-        if (Array.isArray(parsed)) {
-          parsed.forEach(o => {
+    const raw = localStorage.getItem(`aerobyte_print_orders:${email}`)
+    if (raw) {
+      const parsed = JSON.parse(raw)
+      if (Array.isArray(parsed)) {
+        parsed.forEach(o => {
+          if (!o.user_email || o.user_email.toLowerCase() === email) {
             const key = String(o.order_number || o.id || '').replace(/^#/, '')
             if (key) cachedMap.set(key, o)
-          })
-        }
+          }
+        })
       }
     }
     const rawGlobal = localStorage.getItem('aerobyte_print_orders')
@@ -1439,6 +1440,8 @@ function readCachedPrintOrders(userEmail) {
       const parsedG = JSON.parse(rawGlobal)
       if (Array.isArray(parsedG)) {
         parsedG.forEach(o => {
+          // Strictly reject any order belonging to a different user
+          if (o.user_email && o.user_email.toLowerCase() !== email) return
           const key = String(o.order_number || o.id || '').replace(/^#/, '')
           if (key && !cachedMap.has(key)) {
             cachedMap.set(key, o)
@@ -1669,81 +1672,65 @@ async function loadPrintOrders(forceRefresh = false) {
   const creds = getActiveUserCredentials()
   const userEmail = (account.value?.email || profile.email || creds.email || '').trim().toLowerCase()
   const userId = account.value?.id || creds.id || ''
-  const userName = (account.value?.full_name || account.value?.name || profile.fullName || creds.name || '').trim()
-  const userTelegram = (account.value?.telegram || profile.telegram || creds.telegram || '').trim()
 
-  if (!userEmail && !userId && !userName) {
+  if (!userEmail && !userId) {
     printOrders.value = []
     printOrdersLoading.value = false
     return
   }
 
-  const storageKey = userEmail ? `aerobyte_print_orders:${userEmail}` : 'aerobyte_print_orders'
+  const storageKey = `aerobyte_print_orders:${userEmail}`
 
-  // 1. Hydrate from local caches immediately for 0ms render
+  // 1. Hydrate strictly from this user's scoped storage
   try {
     const cachedMap = new Map()
-    const rawScoped = userEmail ? localStorage.getItem(storageKey) : null
-    const rawGlobal = localStorage.getItem('aerobyte_print_orders')
-
+    const rawScoped = localStorage.getItem(storageKey)
     if (rawScoped) {
-      try {
-        const parsed = JSON.parse(rawScoped)
-        if (Array.isArray(parsed)) {
-          parsed.forEach(o => {
+      const parsed = JSON.parse(rawScoped)
+      if (Array.isArray(parsed)) {
+        parsed.forEach(o => {
+          if (!o.user_email || o.user_email.toLowerCase() === userEmail) {
             const key = String(o.order_number || o.id || '').replace(/^#/, '')
             if (key) cachedMap.set(key, o)
-          })
-        }
-      } catch (_) {}
+          }
+        })
+      }
     }
 
+    const rawGlobal = localStorage.getItem('aerobyte_print_orders')
     if (rawGlobal) {
-      try {
-        const parsedG = JSON.parse(rawGlobal)
-        if (Array.isArray(parsedG)) {
-          parsedG.forEach(o => {
-            const key = String(o.order_number || o.id || '').replace(/^#/, '')
-            if (key && !cachedMap.has(key)) {
-              cachedMap.set(key, o)
-            }
-          })
-        }
-      } catch (_) {}
+      const parsedG = JSON.parse(rawGlobal)
+      if (Array.isArray(parsedG)) {
+        parsedG.forEach(o => {
+          // STRICT: NEVER show orders from another user email!
+          if (o.user_email && o.user_email.toLowerCase() !== userEmail) return
+          const key = String(o.order_number || o.id || '').replace(/^#/, '')
+          if (key && !cachedMap.has(key)) {
+            cachedMap.set(key, o)
+          }
+        })
+      }
     }
 
-    if (cachedMap.size > 0) {
-      printOrders.value = Array.from(cachedMap.values())
-    }
-  } catch (_) {}
+    printOrders.value = Array.from(cachedMap.values())
+  } catch (_) {
+    printOrders.value = []
+  }
 
   printOrdersLoading.value = true
 
-  // 2. Fetch fresh orders belonging to this user
+  // 2. Fetch fresh orders belonging strictly to this user
   try {
-    const queryParams = {}
-    if (userEmail) queryParams.email = userEmail
+    const queryParams = { email: userEmail }
     if (userId) queryParams.user_id = userId
-    if (userName) queryParams.name = userName
-    if (userTelegram) queryParams.telegram = userTelegram
-
-    // Include local order IDs so freshly created orders are never missed
-    try {
-      const localIds = printOrders.value.map(o => String(o.order_number || o.id || '').replace(/^#/, '')).filter(Boolean)
-      if (localIds.length > 0) {
-        queryParams.order_ids = localIds.slice(0, 30).join(',')
-      }
-    } catch (_) {}
 
     let serverOrders = []
     try {
       const res = await accountService.getUserPrintOrders(queryParams)
-      if (Array.isArray(res.data) && res.data.length > 0) {
+      if (Array.isArray(res.data)) {
         serverOrders = res.data
       }
-    } catch (_) {}
-
-    if (!serverOrders.length) {
+    } catch (_) {
       try {
         const res2 = await printOrderService.getMyOrders(queryParams)
         if (Array.isArray(res2.data?.orders)) {
@@ -1752,17 +1739,21 @@ async function loadPrintOrders(forceRefresh = false) {
       } catch (_) {}
     }
 
-    if (serverOrders.length > 0) {
-      printOrders.value = serverOrders
-      try {
-        localStorage.setItem(storageKey, JSON.stringify(serverOrders))
-        localStorage.setItem('aerobyte_print_orders', JSON.stringify(serverOrders))
-      } catch (_) {}
-    } else if (printOrders.value.length > 0) {
-      try {
-        localStorage.setItem(storageKey, JSON.stringify(printOrders.value))
-      } catch (_) {}
-    }
+    // STRICT USER ISOLATION:
+    // Only accept orders where user_email strictly matches userEmail (or matching userId)
+    const myOrders = (serverOrders || []).filter((o) => {
+      if (!o) return false
+      if (o.user_email && o.user_email.toLowerCase() !== userEmail) return false
+      if (userId && o.user_id && String(o.user_id) !== String(userId) && (!o.user_email || o.user_email.toLowerCase() !== userEmail)) return false
+      return true
+    })
+
+    printOrders.value = myOrders
+    try {
+      localStorage.setItem(storageKey, JSON.stringify(myOrders))
+      // Clean up the global key to only hold this user's orders so old account data is purged
+      localStorage.setItem('aerobyte_print_orders', JSON.stringify(myOrders))
+    } catch (_) {}
   } catch (err) {
     console.warn('Could not load print orders from server:', err)
   } finally {

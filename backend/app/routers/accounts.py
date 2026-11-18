@@ -882,37 +882,25 @@ def get_user_print_orders_endpoint(
 ):
     user_id = request.session.get("user_id") if request.session.get("role") == "user" else None
     user_email = (request.session.get("email") or "").strip().lower() if request.session.get("role") == "user" else ""
-    session_name = request.session.get("user_name") or ""
 
-    user = None
-    if user_id:
+    if user_id and not user_email:
         user = find_user_by_id(user_id)
-    elif user_email:
-        user = find_user_by_email(user_email)
-
-    if user:
-        if not user_email:
+        if user:
             user_email = (user.get("email") or "").strip().lower()
-        if not session_name:
-            session_name = user.get("full_name") or ""
-        if not telegram and user.get("telegram"):
-            telegram = user.get("telegram")
 
     if not user_email and email:
         user_email = email.strip().lower()
 
-    customer_name = name or session_name or None
-    ids_list = [x.strip() for x in order_ids.split(",") if x.strip()] if order_ids else None
-
-    if not user_id and not user_email and not customer_name and not telegram and not ids_list:
+    if not user_id and not user_email:
         return []
 
+    # Strict isolation: only return orders explicitly belonging to this user
     orders = get_user_print_orders(
         user_id=user_id,
         email=user_email,
-        customer_name=customer_name,
-        telegram=telegram,
-        order_ids=ids_list,
+        customer_name=None,
+        telegram=None,
+        order_ids=None,
     )
     return orders
 
