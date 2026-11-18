@@ -231,6 +231,8 @@ async def google_direct_login(payload: GoogleDirectLoginRequest, request: Reques
     mark_user_verified(user["id"])
     request.session["role"] = "user"
     request.session["user_id"] = user["id"]
+    request.session["email"] = user["email"]
+    request.session["user_name"] = user.get("full_name", "")
     try:
         forwarded = request.headers.get("x-forwarded-for")
         ip = forwarded.split(",")[0].strip() if forwarded else (request.client.host if request.client else "Unknown")
@@ -322,6 +324,8 @@ async def google_handoff_login(payload: GoogleHandoffRequest, request: Request):
     mark_user_verified(user["id"])
     request.session["role"] = "user"
     request.session["user_id"] = user["id"]
+    request.session["email"] = user["email"]
+    request.session["user_name"] = user.get("full_name", "")
     try:
         forwarded = request.headers.get("x-forwarded-for")
         ip = forwarded.split(",")[0].strip() if forwarded else (request.client.host if request.client else "Unknown")
@@ -484,4 +488,6 @@ async def google_callback(request: Request):
 
     request.session["role"] = "user"
     request.session["user_id"] = user["id"]
+    request.session["email"] = user["email"]
+    request.session["user_name"] = user.get("full_name", "")
     return RedirectResponse(f"{_frontend_origin(request)}/profile", status_code=303)

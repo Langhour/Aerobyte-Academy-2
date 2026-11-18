@@ -154,10 +154,12 @@ def _hydrate_user_profile_fields(u: dict[str, Any], *args: Any, **kwargs: Any) -
         "qualification_other",
         "occupation",
         "experience",
-        "avatar",
     ):
         val = u.get(col) or profile_data.get(col, "")
         u[col] = str(val or "").strip()
+
+    avatar_val = u.get("avatar_url") or profile_data.get("avatar_url") or profile_data.get("avatar") or ""
+    u["avatar_url"] = str(avatar_val or "").strip()
 
 
 def initialize_content_store() -> None:
@@ -418,24 +420,8 @@ def initialize_content_store() -> None:
         except Exception:
             pass
 
-        # Clean up any phantom/broken avatar URLs where the file does not exist in uploaded_files or disk
-        try:
-            broken_avatar_users = connection.execute(
-                "SELECT id, avatar_url FROM users WHERE avatar_url IS NOT NULL AND avatar_url != ''"
-            ).fetchall()
-            for b_row in broken_avatar_users:
-                a_url = b_row["avatar_url"]
-                if a_url and "/uploads/" in a_url:
-                    f_name = a_url.split("/uploads/")[-1].split("?")[0].strip()
-                    disk_exists = (upload_dir / f_name).is_file() and (upload_dir / f_name).stat().st_size > 0
-                    if not disk_exists:
-                        db_exists = connection.execute(
-                            "SELECT 1 FROM uploaded_files WHERE filename = ?", (f_name,)
-                        ).fetchone()
-                        if not db_exists:
-                            connection.execute("UPDATE users SET avatar_url = '' WHERE id = ?", (b_row["id"],))
-        except Exception:
-            pass
+        # Ensure users keep their configured avatars across restarts
+        pass
 
         # Auto-backfill user profile fields from enrollments if users have empty contact details
         try:
@@ -582,14 +568,51 @@ def _restore_users_from_disk(connection) -> None:
         with open(USERS_BACKUP_PATH, "r", encoding="utf-8") as f:
             users = json.load(f)
         for u in users:
-            cols = list(u.keys())
-            placeholders = ", ".join(["?"] * len(cols))
-            col_names = ", ".join(cols)
-            vals = [u[c] for c in cols]
-            connection.execute(
-                f"INSERT OR IGNORE INTO users ({col_names}) VALUES ({placeholders})",
-                vals,
-            )
+            uid = u.get("id")
+            email = str(u.get("email") or "").strip().casefold()
+            existing = None
+            if uid:
+                existing = connection.execute("SELECT * FROM users WHERE id = ?", (uid,)).fetchone()
+            if not existing and email:
+                existing = connection.execute("SELECT * FROM users WHERE email = ? COLLATE NOCASE", (email,)).fetchone()
+
+            if not existing:
+                cols = list(u.keys())
+                placeholders = ", ".join(["?"] * len(cols))
+                col_names = ", ".join(cols)
+                vals = [u[c] for c in cols]
+                connection.execute(
+                    f"INSERT OR IGNORE INTO users ({col_names}) VALUES ({placeholders})",
+                    vals,
+                )
+            else:
+                existing_dict = dict(existing)
+                update_cols = []
+                update_vals = []
+                for field in [
+                    "phone",
+                    "telegram",
+                    "date_of_birth",
+                    "gender",
+                    "location",
+                    "qualification",
+                    "qualification_other",
+                    "occupation",
+                    "experience",
+                    "avatar_url",
+                    "profile_json",
+                ]:
+                    backup_val = str(u.get(field) or "").strip()
+                    existing_val = str(existing_dict.get(field) or "").strip()
+                    if backup_val and not existing_val:
+                        update_cols.append(f"{field} = ?")
+                        update_vals.append(backup_val)
+                    elif field == "location" and backup_val == "lak hok" and existing_val != "lak hok":
+                        update_cols.append(f"{field} = ?")
+                        update_vals.append(backup_val)
+                if update_cols:
+                    update_vals.append(existing_dict["id"])
+                    connection.execute(f"UPDATE users SET {', '.join(update_cols)} WHERE id = ?", tuple(update_vals))
     except Exception:
         pass
 
@@ -810,7 +833,36 @@ def _restore_single_user_from_disk(connection, key: str, value: str) -> Optional
                 else:
                     row = None
                 if row:
-                    return dict(row)
+                    row_dict = dict(row)
+                    update_cols = []
+                    update_vals = []
+                    for field in [
+                        "phone",
+                        "telegram",
+                        "date_of_birth",
+                        "gender",
+                        "location",
+                        "qualification",
+                        "qualification_other",
+                        "occupation",
+                        "experience",
+                        "avatar_url",
+                        "profile_json",
+                    ]:
+                        backup_val = str(u.get(field) or "").strip()
+                        existing_val = str(row_dict.get(field) or "").strip()
+                        if backup_val and not existing_val:
+                            update_cols.append(f"{field} = ?")
+                            update_vals.append(backup_val)
+                            row_dict[field] = backup_val
+                        elif field == "location" and backup_val == "lak hok" and existing_val != "lak hok":
+                            update_cols.append(f"{field} = ?")
+                            update_vals.append(backup_val)
+                            row_dict[field] = backup_val
+                    if update_cols:
+                        update_vals.append(row_dict["id"])
+                        connection.execute(f"UPDATE users SET {', '.join(update_cols)} WHERE id = ?", tuple(update_vals))
+                    return row_dict
     except Exception:
         pass
     return None

@@ -599,16 +599,35 @@ def update_profile(payload: AccountProfileUpdate, request: Request):
         avatar_to_save = current_user.get("avatar_url") or None
 
     full_name = (payload.full_name or payload.name or current_user.get("full_name") or "").strip()[:120]
+
+    raw_p = current_user.get("profile_json") or "{}"
+    if isinstance(raw_p, str):
+        try:
+            curr_prof = json.loads(raw_p)
+        except Exception:
+            curr_prof = {}
+    elif isinstance(raw_p, dict):
+        curr_prof = raw_p
+    else:
+        curr_prof = {}
+
+    def pick_field(new_val, col_name, alt_val=None):
+        if new_val is not None:
+            return str(new_val).strip()
+        if alt_val is not None:
+            return str(alt_val).strip()
+        return str(current_user.get(col_name) or curr_prof.get(col_name) or "").strip()
+
     profile_data = {
-        "phone": (payload.phone or "").strip()[:50],
-        "telegram": (payload.telegram or "").strip()[:80],
-        "date_of_birth": (payload.date_of_birth or payload.dateOfBirth or "").strip()[:30],
-        "gender": (payload.gender or "").strip()[:20],
-        "location": (payload.location or "").strip()[:100],
-        "qualification": (payload.qualification or "").strip()[:100],
-        "qualification_other": (payload.qualification_other or payload.qualificationOther or "").strip()[:100],
-        "occupation": (payload.occupation or "").strip()[:100],
-        "experience": (payload.experience or "").strip()[:100],
+        "phone": pick_field(payload.phone, "phone")[:50],
+        "telegram": pick_field(payload.telegram, "telegram")[:80],
+        "date_of_birth": pick_field(payload.date_of_birth, "date_of_birth", payload.dateOfBirth)[:30],
+        "gender": pick_field(payload.gender, "gender")[:20],
+        "location": pick_field(payload.location, "location")[:100],
+        "qualification": pick_field(payload.qualification, "qualification")[:100],
+        "qualification_other": pick_field(payload.qualification_other, "qualification_other", payload.qualificationOther)[:100],
+        "occupation": pick_field(payload.occupation, "occupation")[:100],
+        "experience": pick_field(payload.experience, "experience")[:100],
     }
     try:
         update_user_profile(

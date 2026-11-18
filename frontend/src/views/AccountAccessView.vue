@@ -670,6 +670,13 @@ function persistLoggedInUser(user) {
       avatarUrl: user.avatar_url || '',
       phone: user.phone || '',
       telegram: user.telegram || '',
+      dateOfBirth: user.date_of_birth || user.dateOfBirth || '',
+      gender: user.gender || '',
+      location: user.location || '',
+      qualification: user.qualification || '',
+      qualificationOther: user.qualification_other || user.qualificationOther || '',
+      occupation: user.occupation || '',
+      experience: user.experience || '',
     }
     localStorage.setItem('aerobyte_user_session', JSON.stringify(sessionData))
     localStorage.setItem('aerobyte-profile-current', JSON.stringify(profileData))

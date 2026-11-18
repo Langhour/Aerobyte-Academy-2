@@ -1691,24 +1691,24 @@ async function loadPrintOrders(forceRefresh = false) {
 
     let serverOrders = []
     try {
-      const res = await accountService.getUserPrintOrders({
-        email: userEmail,
-        telegram: userTg,
-        name: userName,
-        order_ids: knownIds.join(','),
-      })
+      const queryParams = {}
+      if (userEmail) queryParams.email = userEmail
+      if (userTg) queryParams.telegram = userTg
+      if (userName) queryParams.name = userName
+      if (knownIds.length) queryParams.order_ids = knownIds.join(',')
+      const res = await accountService.getUserPrintOrders(queryParams)
       if (Array.isArray(res.data)) {
         serverOrders = res.data
       }
     } catch (e1) {
       try {
-        const res2 = await printOrderService.getMyOrders({
-          user_id: userId,
-          email: userEmail,
-          telegram: userTg,
-          name: userName,
-          order_ids: knownIds.join(','),
-        })
+        const queryParams2 = {}
+        if (userId) queryParams2.user_id = userId
+        if (userEmail) queryParams2.email = userEmail
+        if (userTg) queryParams2.telegram = userTg
+        if (userName) queryParams2.name = userName
+        if (knownIds.length) queryParams2.order_ids = knownIds.join(',')
+        const res2 = await printOrderService.getMyOrders(queryParams2)
         if (Array.isArray(res2.data?.orders)) {
           serverOrders = res2.data.orders
         }
@@ -2034,9 +2034,22 @@ onMounted(async () => {
       }
     } else {
       account.value = data.user
-      // Re-sync with confirmed session user
-      loadPrintOrders()
-      loadStoreOrders()
+      // Server data is single source of truth across all devices/browsers!
+      if (account.value?.name) profile.fullName = account.value.name
+      if (account.value?.email) profile.email = account.value.email
+      if (account.value?.avatar_url) {
+        profile.avatarUrl = account.value.avatar_url
+        avatarLoadFailed.value = false
+      }
+      if (account.value?.phone) profile.phone = account.value.phone
+      if (account.value?.telegram) profile.telegram = account.value.telegram
+      if (account.value?.date_of_birth) profile.dateOfBirth = account.value.date_of_birth
+      if (account.value?.gender) profile.gender = account.value.gender
+      if (account.value?.location) profile.location = account.value.location
+      if (account.value?.qualification) profile.qualification = account.value.qualification
+      if (account.value?.qualification_other) profile.qualificationOther = account.value.qualification_other
+      if (account.value?.occupation) profile.occupation = account.value.occupation
+      if (account.value?.experience) profile.experience = account.value.experience
     }
 
     const pendingEnrollRedirect = sessionStorage.getItem('aerobyte_enroll_redirect')
@@ -2046,7 +2059,7 @@ onMounted(async () => {
       return
     }
 
-    // Merge server data with local cache
+    // Merge server data with local cache for any offline fields
     let cached = {}
     try {
       const raw = (storageEmailKey.value && localStorage.getItem(storageEmailKey.value)) ||
@@ -2055,14 +2068,22 @@ onMounted(async () => {
                   localStorage.getItem('aerobyte-profile')
       if (raw) {
         cached = JSON.parse(raw)
-        copyProfile(profile, cached)
+        // Only fill empty fields from local cache, server data is primary
+        for (const k of Object.keys(profile)) {
+          if (!profile[k] && cached[k]) {
+            profile[k] = cached[k]
+          }
+        }
       }
     } catch (_) {}
 
-    // Server data takes precedence if present
+    // Server data strictly takes precedence if present
     if (account.value?.name) profile.fullName = account.value.name
     if (account.value?.email) profile.email = account.value.email
-    if (account.value?.avatar_url) profile.avatarUrl = account.value.avatar_url
+    if (account.value?.avatar_url) {
+      profile.avatarUrl = account.value.avatar_url
+      avatarLoadFailed.value = false
+    }
     if (account.value?.phone) profile.phone = account.value.phone
     if (account.value?.telegram) profile.telegram = account.value.telegram
     if (account.value?.date_of_birth) profile.dateOfBirth = account.value.date_of_birth
@@ -2101,7 +2122,7 @@ onMounted(async () => {
       }).catch((err) => console.warn('Background profile auto-sync failed:', err))
     }
 
-    // Save back to local storage under all keys
+    // Save full authoritative profile back to local storage under all keys
     try {
       localStorage.setItem('aerobyte-profile-current', JSON.stringify(profile))
       if (storageEmailKey.value) localStorage.setItem(storageEmailKey.value, JSON.stringify(profile))
@@ -2110,6 +2131,13 @@ onMounted(async () => {
     } catch (_) {}
 
     copyProfile(draft, profile)
+
+    // Re-sync user's orders and history with confirmed session user
+    if (account.value?.email) {
+      loadPrintOrders(true)
+      loadStoreOrders()
+      loadCourseHistory()
+    }
   } catch (error) {
     console.warn('Could not load session from server, maintaining cached state:', error)
     if (!profile.fullName && !profile.email) {
@@ -2331,31 +2359,7 @@ function triggerAvatarUpload() {
 
 function onAvatarError() {
   avatarLoadFailed.value = true
-  if (profile.avatarUrl) {
-    console.warn('Avatar image failed to load, clearing broken avatar reference:', profile.avatarUrl)
-    profile.avatarUrl = ''
-    draft.avatarUrl = ''
-    if (account.value) account.value.avatar_url = ''
-    try {
-      const clearCache = (k) => {
-        if (!k) return
-        const s = JSON.parse(localStorage.getItem(k) || '{}')
-        s.avatarUrl = ''
-        localStorage.setItem(k, JSON.stringify(s))
-      }
-      clearCache('aerobyte-profile-current')
-      clearCache(storageEmailKey.value)
-      clearCache(storageKey.value)
-      clearCache('aerobyte-profile')
-      window.dispatchEvent(new Event('aerobyte-profile-updated'))
-      window.dispatchEvent(new Event('aerobyte-auth-updated'))
-    } catch (_) {}
-    accountService.updateProfile({
-      full_name: profile.fullName,
-      email: profile.email,
-      avatar_url: '',
-    }).catch(() => {})
-  }
+  // Safe UI fallback: Never delete or clear avatar from user record on temporary load failure!
 }
 
 async function handleAvatarChange(event) {
@@ -2435,6 +2439,15 @@ async function removeAvatar() {
     await accountService.updateProfile({
       full_name: profile.fullName,
       email: profile.email,
+      phone: profile.phone,
+      telegram: profile.telegram,
+      date_of_birth: profile.dateOfBirth,
+      gender: profile.gender,
+      location: profile.location,
+      qualification: profile.qualification,
+      qualification_other: profile.qualificationOther,
+      occupation: profile.occupation,
+      experience: profile.experience,
       avatar_url: '',
     })
   } catch (e) {
