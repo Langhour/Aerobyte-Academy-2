@@ -246,6 +246,15 @@ async def get_my_print_orders(
     return {"orders": orders}
 
 
+@router.get("/api/print-orders/reviews")
+async def get_print_order_reviews(limit: int = Query(20, ge=1, le=100)):
+    """
+    Returns public verified customer reviews for 3D print orders.
+    """
+    reviews = list_completed_print_reviews(limit=limit)
+    return {"reviews": reviews}
+
+
 @router.get("/api/print-orders/{order_id}")
 async def get_public_print_order(order_id: str):
     """
@@ -296,15 +305,6 @@ async def submit_print_order_review(
         "order": updated_order,
         "message": "Review submitted successfully"
     }
-
-
-@router.get("/api/print-orders/reviews")
-async def get_print_order_reviews(limit: int = Query(20, ge=1, le=100)):
-    """
-    Returns public verified customer reviews for 3D print orders.
-    """
-    reviews = list_completed_print_reviews(limit=limit)
-    return {"reviews": reviews}
 
 
 @router.get("/api/print-orders/files/{filename}")
