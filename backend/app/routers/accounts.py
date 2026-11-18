@@ -365,9 +365,8 @@ def register(payload: AccountRegistration, request: Request):
         "message": (
             "A 6-digit verification code has been sent to your email address."
             if email_sent
-            else "Your 6-digit verification code has been generated. Please enter it to activate your account."
+            else "A verification code has been generated. Please check your email to activate your account."
         ),
-        "dev_code": code if not email_sent else None,
     }
 
 
@@ -422,9 +421,8 @@ def resend_verification(payload: ResendVerificationRequest, request: Request):
         "message": (
             "A new verification code has been sent to your email."
             if email_sent
-            else "A new 6-digit verification code has been generated. Enter it to activate your account."
+            else "A verification code has been generated. Please check your email to activate your account."
         ),
-        "dev_code": code if not email_sent else None,
     }
 
 
