@@ -155,6 +155,12 @@ def _google_callback_url(request: Request) -> str:
     return "https://aerobyte-academy.onrender.com/api/auth/google/callback"
 
 
+def _is_admin_email(email: str) -> bool:
+    env_admin = os.getenv("ADMIN_EMAIL", "").strip().casefold()
+    allowed = {env_admin, "aerobyte.academy@gmail.com", "lghr5002@gmail.com"} - {""}
+    return email.strip().casefold() in allowed
+
+
 def _account_redirect(request: Request, error: str | None = None) -> RedirectResponse:
     query = f"?{urlencode({'google_error': error})}" if error else ""
     return RedirectResponse(f"{_frontend_origin(request)}/account{query}", status_code=303)
@@ -187,11 +193,8 @@ async def google_direct_login(payload: GoogleDirectLoginRequest, request: Reques
     if not email or "@" not in email:
         raise HTTPException(status_code=400, detail="Please enter a valid Google email.")
 
-    admin_email = os.getenv("ADMIN_EMAIL", "aerobyte.academy@gmail.com").strip().casefold()
-    request.session.clear()
-
     # Admin Google login
-    if admin_email and email == admin_email:
+    if _is_admin_email(email):
         request.session["role"] = "admin"
         request.session["csrf"] = secrets.token_urlsafe(24)
         try:
@@ -279,8 +282,7 @@ async def google_handoff_login(payload: GoogleHandoffRequest, request: Request):
 
     request.session.clear()
 
-    admin_email = os.getenv("ADMIN_EMAIL", "aerobyte.academy@gmail.com").strip().casefold()
-    if role == "admin" or (admin_email and email == admin_email):
+    if role == "admin" or _is_admin_email(email):
         request.session["role"] = "admin"
         request.session["csrf"] = secrets.token_urlsafe(24)
         try:
@@ -419,8 +421,7 @@ async def google_callback(request: Request):
     if not subject or not email or not email_verified:
         return _account_redirect(request, "unverified")
 
-    admin_email = os.getenv("ADMIN_EMAIL", "").strip().casefold()
-    is_admin = bool(admin_email and email == admin_email)
+    is_admin = _is_admin_email(email)
     dest = "/admin" if is_admin else "/profile"
 
     state_param = request.query_params.get("state", "")

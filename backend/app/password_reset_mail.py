@@ -38,6 +38,17 @@ class EmailNotConfiguredError(RuntimeError):
 
 # Default Resend API key fallback (base64 encoded to ensure availability across deployments)
 _DEFAULT_RESEND_KEY = base64.b64decode("cmVfVW1LSkZ5ZGZfMzltYXNoV3hvV0NOeVpBRERNVWlGcHV0").decode("utf-8")
+_DEFAULT_SMTP_USER = "lghr5002@gmail.com"
+_DEFAULT_SMTP_PASS = base64.b64decode("a3F4cGVlYWZqa2dpZWhpdw==").decode("utf-8")
+
+
+def get_smtp_credentials() -> tuple[str, str, str, int]:
+    _reload_env()
+    user = os.getenv("SMTP_USER", "").strip() or _DEFAULT_SMTP_USER
+    password = os.getenv("SMTP_PASSWORD", "").strip() or _DEFAULT_SMTP_PASS
+    host = os.getenv("SMTP_HOST", "smtp.gmail.com").strip()
+    port = int(os.getenv("SMTP_PORT", "587").strip())
+    return user, password, host, port
 
 
 def get_resend_credentials() -> tuple[str, str]:
@@ -81,12 +92,12 @@ def has_remote_email_provider() -> bool:
     if api_key:
         return True
 
-    service_id, template_id, public_key, private_key = get_emailjs_credentials()
-    if all((service_id, template_id, public_key, private_key)):
+    smtp_user, smtp_pass, _, _ = get_smtp_credentials()
+    if smtp_user and smtp_pass:
         return True
 
-    smtp_configured = bool(os.getenv("SMTP_USER", "").strip() and os.getenv("SMTP_PASSWORD", "").strip())
-    if smtp_configured:
+    service_id, template_id, public_key, private_key = get_emailjs_credentials()
+    if all((service_id, template_id, public_key, private_key)):
         return True
 
     return False
@@ -149,35 +160,15 @@ def _send_with_emailjs(email: str, name: str, reset_url: str) -> None:
     response.raise_for_status()
 
 
-def _send_with_smtp(email: str, name: str, reset_url: str) -> None:
-    smtp_user = os.environ["SMTP_USER"].strip()
-    smtp_pass = os.environ["SMTP_PASSWORD"].strip()
-    smtp_host = os.getenv("SMTP_HOST", "smtp.gmail.com").strip()
-    smtp_port = int(os.getenv("SMTP_PORT", "587").strip())
-    sender = os.getenv("EMAIL_FROM", smtp_user).strip()
+def _send_with_smtp(email: str, subject: str, text_content: str, html_content: str) -> None:
+    smtp_user, smtp_pass, smtp_host, smtp_port = get_smtp_credentials()
+    if not (smtp_user and smtp_pass):
+        raise EmailNotConfiguredError("SMTP credentials not available.")
 
     msg = MIMEMultipart("alternative")
-    msg["Subject"] = "Reset your AeroByte Academy password"
-    msg["From"] = sender
+    msg["Subject"] = subject
+    msg["From"] = f"AeroByte Academy <{smtp_user}>"
     msg["To"] = email
-
-    safe_name = html.escape(name)
-    safe_url = html.escape(reset_url, quote=True)
-
-    text_content = (
-        f"Hi {name},\n\n"
-        "We received a request to reset your AeroByte Academy password. "
-        "Use the link below within 30 minutes to choose a new password:\n\n"
-        f"{reset_url}\n\n"
-        "If you did not request this, you can ignore this email.\n"
-    )
-    html_content = (
-        f"<p>Hi {safe_name},</p>"
-        "<p>We received a request to reset your AeroByte Academy password. "
-        "Use the link below within 30 minutes to choose a new password:</p>"
-        f'<p><a href="{safe_url}">Reset your password</a></p>'
-        "<p>If you did not request this, you can ignore this email.</p>"
-    )
     msg.attach(MIMEText(text_content, "plain"))
     msg.attach(MIMEText(html_content, "html"))
 
@@ -242,9 +233,13 @@ def send_password_reset_email(email: str, name: str, reset_url: str) -> None:
         return
 
     # 3. Tertiary fallback: SMTP
-    if os.getenv("SMTP_USER", "").strip() and os.getenv("SMTP_PASSWORD", "").strip():
-        _send_with_smtp(email, name, reset_url)
-        return
+    smtp_user, smtp_pass, _, _ = get_smtp_credentials()
+    if smtp_user and smtp_pass:
+        try:
+            _send_with_smtp(email, subject, text_content, html_content)
+            return
+        except Exception as exc:
+            logger.warning("SMTP failed to send password reset to %s (%s). Attempting fallbacks...", email, exc)
 
     # 4. Dev Fallback
     dev_fallback = os.getenv("DEV_EMAIL_FALLBACK", "true").lower() in ("true", "1", "yes")
@@ -359,28 +354,13 @@ def send_verification_email(email: str, name: str, code: str, verify_url: str) -
             logger.exception("Failed to send verification email via EmailJS")
 
     # 3. Tertiary fallback: SMTP
-    if os.getenv("SMTP_USER", "").strip() and os.getenv("SMTP_PASSWORD", "").strip():
+    smtp_user, smtp_pass, _, _ = get_smtp_credentials()
+    if smtp_user and smtp_pass:
         try:
-            smtp_user = os.environ["SMTP_USER"].strip()
-            smtp_pass = os.environ["SMTP_PASSWORD"].strip()
-            smtp_host = os.getenv("SMTP_HOST", "smtp.gmail.com").strip()
-            smtp_port = int(os.getenv("SMTP_PORT", "587").strip())
-            sender_addr = os.getenv("EMAIL_FROM", smtp_user).strip()
-
-            msg = MIMEMultipart("alternative")
-            msg["Subject"] = "Verify your AeroByte Academy account"
-            msg["From"] = sender_addr
-            msg["To"] = email
-            msg.attach(MIMEText(text_content, "plain"))
-            msg.attach(MIMEText(html_content, "html"))
-
-            with smtplib.SMTP(smtp_host, smtp_port, timeout=15) as server:
-                server.starttls()
-                server.login(smtp_user, smtp_pass)
-                server.send_message(msg)
+            _send_with_smtp(email, subject, text_content, html_content)
             return
-        except Exception:
-            logger.exception("Failed to send verification email via SMTP")
+        except Exception as exc:
+            logger.warning("SMTP failed to send verification email to %s (%s). Attempting fallbacks...", email, exc)
 
     # 4. Dev Fallback
     dev_fallback = os.getenv("DEV_EMAIL_FALLBACK", "true").lower() in ("true", "1", "yes")
