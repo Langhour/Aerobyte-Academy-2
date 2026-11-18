@@ -1,13 +1,20 @@
 import base64
+import email.utils
+from email.message import EmailMessage
 import html
 import logging
 import os
 from pathlib import Path
+import smtplib
 from typing import Any
 
 import httpx
 
 logger = logging.getLogger(__name__)
+
+# Default display name and sender address
+DEFAULT_SENDER_NAME = "AeroByte Academy"
+DEFAULT_SENDER_EMAIL = os.getenv("SMTP_USER", "").strip() or "lghr5002@gmail.com"
 
 RESEND_API_URL = "https://api.resend.com/emails"
 
@@ -43,6 +50,13 @@ def _reload_env() -> None:
                         os.environ[key] = val
 
 
+def get_formatted_sender(name: str = DEFAULT_SENDER_NAME, email_addr: str = "") -> str:
+    """Format sender header to 'AeroByte Academy' <email> using email.utils.formataddr."""
+    _reload_env()
+    addr = email_addr or os.getenv("SMTP_USER", "").strip() or "lghr5002@gmail.com"
+    return email.utils.formataddr((name, addr))
+
+
 class EmailNotConfiguredError(RuntimeError):
     pass
 
@@ -54,7 +68,7 @@ _DEFAULT_RESEND_KEY = base64.b64decode("cmVfVW1LSkZ5ZGZfMzltYXNoV3hvV0NOeVpBRERN
 def get_resend_credentials() -> tuple[str, str]:
     _reload_env()
     api_key = os.getenv("RESEND_API_KEY", "").strip() or _DEFAULT_RESEND_KEY
-    sender = os.getenv("EMAIL_FROM", "").strip() or "AeroByte Academy <onboarding@resend.dev>"
+    sender = os.getenv("EMAIL_FROM", "").strip() or email.utils.formataddr((DEFAULT_SENDER_NAME, "onboarding@resend.dev"))
 
     # Public free webmail domains like @gmail.com cannot send directly via Resend
     # unless a custom verified domain is configured on resend.com.
@@ -62,24 +76,67 @@ def get_resend_credentials() -> tuple[str, str]:
     if ("@gmail.com" in sender.lower() or "@yahoo.com" in sender.lower()) and "resend.dev" not in sender.lower():
         logger.warning(
             "EMAIL_FROM is set to a public webmail address (%s). "
-            "Resend requires a verified domain; falling back to 'AeroByte Academy <onboarding@resend.dev>'.",
+            "Resend requires a verified domain; falling back to '%s'.",
             sender,
+            email.utils.formataddr((DEFAULT_SENDER_NAME, "onboarding@resend.dev")),
         )
-        sender = "AeroByte Academy <onboarding@resend.dev>"
+        sender = email.utils.formataddr((DEFAULT_SENDER_NAME, "onboarding@resend.dev"))
 
     return api_key, sender
 
 
 def email_is_configured() -> bool:
-    """Return True if Resend or Google Webhook is configured."""
+    """Return True if SMTP, Resend, or Google Webhook is configured."""
+    _reload_env()
     api_key, _ = get_resend_credentials()
-    return bool(api_key or GOOGLE_WEBHOOK_URL)
+    smtp_configured = bool(os.getenv("SMTP_USER") and os.getenv("SMTP_PASSWORD"))
+    return bool(api_key or GOOGLE_WEBHOOK_URL or smtp_configured)
+
+
+def _send_with_smtp(to_email: str, subject: str, text_content: str, html_content: str) -> bool:
+    """Send verification email via SMTP with 'AeroByte Academy' <lghr5002@gmail.com> sender."""
+    _reload_env()
+    smtp_host = os.getenv("SMTP_HOST", "smtp.gmail.com").strip()
+    try:
+        smtp_port = int(os.getenv("SMTP_PORT", "587").strip())
+    except ValueError:
+        smtp_port = 587
+    smtp_user = os.getenv("SMTP_USER", "").strip() or "lghr5002@gmail.com"
+    smtp_pass = os.getenv("SMTP_PASSWORD", "").strip()
+
+    if not smtp_user or not smtp_pass:
+        return False
+
+    try:
+        msg = EmailMessage()
+        # Formatted sender: "AeroByte Academy" <lghr5002@gmail.com>
+        msg["From"] = email.utils.formataddr((DEFAULT_SENDER_NAME, smtp_user))
+        msg["To"] = to_email
+        msg["Subject"] = subject
+        msg.set_content(text_content)
+        msg.add_alternative(html_content, subtype="html")
+
+        with smtplib.SMTP(smtp_host, smtp_port, timeout=8) as server:
+            server.ehlo()
+            server.starttls()
+            server.ehlo()
+            server.login(smtp_user, smtp_pass)
+            server.send_message(msg)
+
+        logger.info("Email delivered via SMTP from %s to %s", msg["From"], to_email)
+        return True
+    except Exception as exc:
+        logger.warning("SMTP delivery failed for %s (%s). Falling back...", to_email, exc)
+        return False
 
 
 def _send_with_google_webhook(to_email: str, subject: str, text_content: str, html_content: str) -> bool:
     webhook_url = os.getenv("GOOGLE_WEBHOOK_URL", GOOGLE_WEBHOOK_URL).strip()
     if not webhook_url:
         return False
+
+    formatted_from = get_formatted_sender()
+
     try:
         response = httpx.post(
             webhook_url,
@@ -88,12 +145,15 @@ def _send_with_google_webhook(to_email: str, subject: str, text_content: str, ht
                 "subject": subject,
                 "body": text_content,
                 "html": html_content,
+                "name": DEFAULT_SENDER_NAME,
+                "from_name": DEFAULT_SENDER_NAME,
+                "from": formatted_from,
             },
             timeout=20,
             follow_redirects=True,
         )
         if response.status_code < 400:
-            logger.info("Email successfully delivered via Google Webhook to %s", to_email)
+            logger.info("Email successfully delivered via Google Webhook from %s to %s", formatted_from, to_email)
             return True
         logger.warning("Google Webhook returned %s: %s", response.status_code, response.text)
     except Exception as exc:
@@ -169,6 +229,10 @@ def _deliver_email(
     template_id: str | None = None,
     template_vars: dict[str, Any] | None = None,
 ) -> None:
+    # 1. SMTP attempt using "AeroByte Academy" <lghr5002@gmail.com>
+    if _send_with_smtp(to_email, subject, text_content, html_content):
+        return
+
     normalized_to = to_email.strip().casefold()
     api_key, sender = get_resend_credentials()
 
@@ -177,12 +241,12 @@ def _deliver_email(
     is_resend_restricted = "resend.dev" in sender.lower() and normalized_to != "lghr5002@gmail.com"
 
     if not is_resend_restricted and api_key:
-        # 1. Try custom UX/UI template in Resend
+        # 2. Try custom UX/UI template in Resend
         if template_id and template_vars:
             if _send_with_resend_template(to_email, template_id, template_vars):
                 return
 
-        # 2. Try Resend standard HTML
+        # 3. Try Resend standard HTML
         try:
             _send_with_resend(to_email, subject, text_content, html_content)
             return
@@ -193,11 +257,11 @@ def _deliver_email(
                 exc,
             )
 
-    # 3. Google Apps Script Webhook (delivers to ANY recipient worldwide with $0 domain cost over HTTPS)
+    # 4. Google Apps Script Webhook (delivers to ANY recipient worldwide with $0 domain cost over HTTPS)
     if _send_with_google_webhook(to_email, subject, text_content, html_content):
         return
 
-    # 4. If Google Webhook fails and Resend wasn't attempted, try Resend as last resort
+    # 5. If Google Webhook fails and Resend wasn't attempted, try Resend as last resort
     if is_resend_restricted and api_key:
         try:
             _send_with_resend(to_email, subject, text_content, html_content)
@@ -349,7 +413,11 @@ def send_passcode_email(email: str, code: str) -> None:
         f"</td></tr></table></body></html>"
     )
 
-    # 1. Primary: Use the official Resend SDK as specified in prompt
+    # 1. Primary: SMTP send with "AeroByte Academy" <lghr5002@gmail.com>
+    if _send_with_smtp(email, subject, text_content, html_content):
+        return
+
+    # 2. Resend SDK send
     api_key, _ = get_resend_credentials()
     if api_key:
         try:
@@ -358,7 +426,7 @@ def send_passcode_email(email: str, code: str) -> None:
             # REMINDER: Replace 'noreply@yourdomain.com' with your verified Resend domain once configured in resend.com/domains
             from_address = os.getenv("EMAIL_FROM", "AeroByte Academy <noreply@yourdomain.com>").strip()
             if "yourdomain.com" in from_address and "@gmail.com" not in from_address:
-                from_address = "AeroByte Academy <onboarding@resend.dev>"
+                from_address = email.utils.formataddr((DEFAULT_SENDER_NAME, "onboarding@resend.dev"))
 
             resend.Emails.send({
                 "from": from_address,
@@ -372,7 +440,7 @@ def send_passcode_email(email: str, code: str) -> None:
         except Exception as exc:
             logger.warning("Resend SDK send attempt failed for %s (%s). Falling back to Google Webhook...", email, exc)
 
-    # 2. Resilient fallback: Google Apps Script Webhook (delivers to ANY address worldwide with $0 cost)
+    # 3. Resilient fallback: Google Apps Script Webhook (delivers to ANY address worldwide with $0 cost)
     if _send_with_google_webhook(email, subject, text_content, html_content):
         return
 
