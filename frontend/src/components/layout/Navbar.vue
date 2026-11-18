@@ -1317,6 +1317,19 @@ async function updateProfileName() {
     if (data.authenticated && data.user) {
       profileName.value = data.user.name || data.user.full_name || ''
       profileEmail.value = data.user.email || ''
+      try {
+        localStorage.setItem('aerobyte_user_session', JSON.stringify(data.user))
+        const existing = localStorage.getItem('aerobyte-profile-current')
+        if (!existing) {
+          localStorage.setItem('aerobyte-profile-current', JSON.stringify({
+            fullName: data.user.name || data.user.full_name || '',
+            email: data.user.email || '',
+            avatarUrl: data.user.avatar_url || '',
+            phone: data.user.phone || '',
+            telegram: data.user.telegram || '',
+          }))
+        }
+      } catch (_) {}
       let avatar = data.user.avatar_url || ''
       if (!avatar) {
         try {

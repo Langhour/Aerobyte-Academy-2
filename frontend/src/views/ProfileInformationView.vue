@@ -2034,6 +2034,9 @@ onMounted(async () => {
       }
     } else {
       account.value = data.user
+      try {
+        localStorage.setItem('aerobyte_user_session', JSON.stringify(data.user))
+      } catch (_) {}
       // Server data is single source of truth across all devices/browsers!
       if (account.value?.name) profile.fullName = account.value.name
       if (account.value?.email) profile.email = account.value.email

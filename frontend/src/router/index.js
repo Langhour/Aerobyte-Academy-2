@@ -126,12 +126,31 @@ router.beforeEach(async (to, from, next) => {
   if (to.name === 'profile' || to.path === '/profile') {
     let hasLocalSession = false
     try {
-      const sess = localStorage.getItem('aerobyte_user_session')
+      const sess = localStorage.getItem('aerobyte_user_session') || localStorage.getItem('aerobyte-profile-current')
       if (sess) {
         const parsed = JSON.parse(sess)
         if (parsed.email || parsed.id) hasLocalSession = true
       }
     } catch (_) {}
+
+    if (!hasLocalSession) {
+      try {
+        const { data } = await accountService.getSession()
+        if (data?.authenticated && data?.user) {
+          hasLocalSession = true
+          try {
+            localStorage.setItem('aerobyte_user_session', JSON.stringify(data.user))
+            localStorage.setItem('aerobyte-profile-current', JSON.stringify({
+              fullName: data.user.name || data.user.full_name || '',
+              email: data.user.email || '',
+              avatarUrl: data.user.avatar_url || '',
+              phone: data.user.phone || '',
+              telegram: data.user.telegram || '',
+            }))
+          } catch (_) {}
+        }
+      } catch (_) {}
+    }
 
     if (!hasLocalSession) {
       return next({ path: '/courses' })
