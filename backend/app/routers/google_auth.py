@@ -13,6 +13,7 @@ from pydantic import BaseModel, Field
 
 from app.content_store import (
     log_login_event,
+    record_user_login,
     create_google_user,
     find_user_by_email,
     find_user_by_google_sub,
@@ -72,11 +73,11 @@ def _verify_handoff_token(token: str) -> Optional[dict]:
 
 
 _DEFAULT_CLIENT_PREFIX = "779391054555"
-_DEFAULT_CLIENT_SUFFIX = "ohjh6thr5houqnipfg45300dc7q7cebf.apps.googleusercontent.com"
+_DEFAULT_CLIENT_SUFFIX = "h0mcolkr0872b0pplvsa5kicui7deuoo.apps.googleusercontent.com"
 DEFAULT_GOOGLE_CLIENT_ID = f"{_DEFAULT_CLIENT_PREFIX}-{_DEFAULT_CLIENT_SUFFIX}"
 
 _DEFAULT_SECRET_PREFIX = "GOCSPX"
-_DEFAULT_SECRET_SUFFIX = "gQfIQcOPrhUBfs1qZYyR9tqToY67"
+_DEFAULT_SECRET_SUFFIX = "g076lQeCtN8zOoy60DxH6Zsb_YFn"
 DEFAULT_GOOGLE_CLIENT_SECRET = f"{_DEFAULT_SECRET_PREFIX}-{_DEFAULT_SECRET_SUFFIX}"
 
 DEFAULT_GOOGLE_CALLBACK_URL = "http://localhost:5173/api/auth/google/callback"
@@ -124,7 +125,11 @@ def _frontend_origin(request: Request) -> str:
         return referer_origin.rstrip("/")
     if allowed:
         return sorted(allowed)[0]
-    return str(request.base_url).rstrip("/")
+
+    base = str(request.base_url).rstrip("/")
+    if ("onrender.com" in base or request.headers.get("x-forwarded-proto") == "https") and base.startswith("http://"):
+        base = base.replace("http://", "https://")
+    return base
 
 
 def _google_callback_url(request: Request) -> str:
@@ -133,7 +138,7 @@ def _google_callback_url(request: Request) -> str:
         return custom
 
     # Detect if we are on localhost
-    host = request.headers.get("host", "").casefold()
+    host = (request.headers.get("x-forwarded-host") or request.headers.get("host") or "").casefold()
     referer = request.headers.get("referer", "").casefold()
     origin = request.headers.get("origin", "").casefold()
 
@@ -148,11 +153,16 @@ def _google_callback_url(request: Request) -> str:
             return "http://localhost:5173/api/auth/google/callback"
         return "http://localhost:8000/api/auth/google/callback"
 
+    proto = request.headers.get("x-forwarded-proto", "https")
+    if host:
+        scheme = "https" if "onrender.com" in host or proto == "https" else proto
+        return f"{scheme}://{host}/api/auth/google/callback"
+
     configured = os.getenv("FRONTEND_URL", "").strip().rstrip("/")
     if configured:
         return f"{configured}/api/auth/google/callback"
 
-    return "https://aerobyte-academy.onrender.com/api/auth/google/callback"
+    return "https://aerobyte-academy-h5hb.onrender.com/api/auth/google/callback"
 
 
 def _is_admin_email(email: str) -> bool:
@@ -161,9 +171,12 @@ def _is_admin_email(email: str) -> bool:
     return email.strip().casefold() in allowed
 
 
-def _account_redirect(request: Request, error: str | None = None) -> RedirectResponse:
+def _account_redirect(request: Request, error: str | None = None, return_origin: str | None = None) -> RedirectResponse:
     query = f"?{urlencode({'google_error': error})}" if error else ""
-    return RedirectResponse(f"{_frontend_origin(request)}/account{query}", status_code=303)
+    origin = return_origin if (return_origin and return_origin.startswith("http")) else _frontend_origin(request)
+    if ("onrender.com" in origin or request.headers.get("x-forwarded-proto") == "https") and origin.startswith("http://"):
+        origin = origin.replace("http://", "https://")
+    return RedirectResponse(f"{origin}/account{query}", status_code=303)
 
 
 @router.get("/google/start", name="google_login")
@@ -392,44 +405,45 @@ async def google_credential_login(payload: GoogleCredentialRequest, request: Req
 
 @router.get("/google/callback", name="google_callback")
 async def google_callback(request: Request):
-    client = _google_client()
-    nonce = request.session.pop("google_nonce", None)
-    if client is None:
-        return _account_redirect(request, "failed")
+    state_param = request.query_params.get("state", "")
+    return_origin = ""
+    if state_param.startswith("orig_"):
+        return_origin = state_param[5:].strip()
 
-    client_secret = os.getenv("GOOGLE_CLIENT_SECRET", "").strip() or DEFAULT_GOOGLE_CLIENT_SECRET
-    if not client_secret:
-        return _account_redirect(request, "missing_secret")
+    target_origin = return_origin if (return_origin and return_origin.startswith("http")) else _frontend_origin(request)
+    if ("onrender.com" in target_origin or request.headers.get("x-forwarded-proto") == "https") and target_origin.startswith("http://"):
+        target_origin = target_origin.replace("http://", "https://")
 
     try:
+        client = _google_client()
+        nonce = request.session.pop("google_nonce", None)
+        if client is None:
+            return _account_redirect(request, "failed", return_origin=target_origin)
+
+        client_secret = os.getenv("GOOGLE_CLIENT_SECRET", "").strip() or DEFAULT_GOOGLE_CLIENT_SECRET
+        if not client_secret:
+            return _account_redirect(request, "missing_secret", return_origin=target_origin)
+
         token = await client.authorize_access_token(request)
         claims = token.get("userinfo")
         if not claims and nonce:
             claims = await client.parse_id_token(request, token, nonce=nonce)
         elif not claims:
             claims = await client.parse_id_token(request, token)
-    except Exception as exc:
-        import logging
-        logging.error(f"[Google OAuth Error] Failed to authorize access token: {exc}", exc_info=True)
-        return _account_redirect(request, "failed")
 
-    if not isinstance(claims, dict):
-        return _account_redirect(request, "failed")
-    subject = str(claims.get("sub", "")).strip()
-    email = str(claims.get("email", "")).strip().casefold()
-    email_verified = claims.get("email_verified") is True or str(claims.get("email_verified", "")).casefold() == "true"
-    if not subject or not email or not email_verified:
-        return _account_redirect(request, "unverified")
+        if not isinstance(claims, dict):
+            return _account_redirect(request, "failed", return_origin=target_origin)
 
-    is_admin = _is_admin_email(email)
-    dest = "/admin" if is_admin else "/profile"
+        subject = str(claims.get("sub", "")).strip()
+        email = str(claims.get("email", "")).strip().casefold()
+        email_verified = claims.get("email_verified") is True or str(claims.get("email_verified", "")).casefold() == "true"
+        if not subject or not email or not email_verified:
+            return _account_redirect(request, "unverified", return_origin=target_origin)
 
-    state_param = request.query_params.get("state", "")
-    return_origin = ""
-    if state_param.startswith("orig_"):
-        return_origin = state_param[5:].strip()
+        is_admin = _is_admin_email(email)
+        dest = "/admin" if is_admin else "/profile"
 
-    if return_origin and any(local_host in return_origin for local_host in ("localhost", "127.0.0.1")):
+        # Generate handoff token to ensure frontend state is always seamlessly hydrated
         handoff_token = _create_handoff_token({
             "email": email,
             "role": "admin" if is_admin else "user",
@@ -437,41 +451,39 @@ async def google_callback(request: Request):
             "sub": subject,
             "picture": str(claims.get("picture", "")).strip(),
         })
-        return RedirectResponse(
-            f"{return_origin}/account?handoff_token={handoff_token}&dest={dest}",
-            status_code=303,
-        )
 
-    request.session.clear()
-    if admin_email and email == admin_email:
-        request.session["role"] = "admin"
-        request.session["csrf"] = secrets.token_urlsafe(24)
-        try:
-            forwarded = request.headers.get("x-forwarded-for")
-            ip = forwarded.split(",")[0].strip() if forwarded else (request.client.host if request.client else "Unknown")
-            ua = request.headers.get("user-agent", "Unknown")
-            log_login_event(
-                user_id="admin",
-                user_email=email,
-                user_name="Administrator",
-                role="Admin",
-                login_method="Google OAuth",
-                ip_address=ip,
-                user_agent=ua,
-                status="success",
+        request.session.clear()
+        if is_admin:
+            request.session["role"] = "admin"
+            request.session["csrf"] = secrets.token_urlsafe(24)
+            try:
+                forwarded = request.headers.get("x-forwarded-for")
+                ip = forwarded.split(",")[0].strip() if forwarded else (request.client.host if request.client else "Unknown")
+                ua = request.headers.get("user-agent", "Unknown")
+                log_login_event(
+                    user_id="admin",
+                    user_email=email,
+                    user_name="Administrator",
+                    role="Admin",
+                    login_method="Google OAuth",
+                    ip_address=ip,
+                    user_agent=ua,
+                    status="success",
+                )
+            except Exception:
+                pass
+            return RedirectResponse(
+                f"{target_origin}/account?handoff_token={handoff_token}&dest=/admin",
+                status_code=303,
             )
-        except Exception:
-            pass
-        return RedirectResponse(f"{_frontend_origin(request)}/admin", status_code=303)
 
-    try:
         user = find_user_by_google_sub(subject)
         if user is None:
             user = find_user_by_email(email)
             if user is not None:
                 link_google_user(user["id"], subject)
             else:
-                name = str(claims.get("name", "")).strip() or email.partition("@")[0]
+                name = str(claims.get("name", "")).strip() or email.partition("@")[0].title()
                 user_id = str(uuid4())
                 create_google_user(
                     user_id=user_id,
@@ -483,12 +495,46 @@ async def google_callback(request: Request):
                 )
                 user = find_user_by_id(user_id)
         if user is None:
-            return _account_redirect(request, "failed")
-    except (IntegrityError, ValueError):
-        return _account_redirect(request, "failed")
+            return _account_redirect(request, "failed", return_origin=target_origin)
 
-    request.session["role"] = "user"
-    request.session["user_id"] = user["id"]
-    request.session["email"] = user["email"]
-    request.session["user_name"] = user.get("full_name", "")
-    return RedirectResponse(f"{_frontend_origin(request)}/profile", status_code=303)
+        mark_user_verified(user["id"])
+        record_user_login(user["id"])
+
+        request.session["role"] = "user"
+        request.session["user_id"] = user["id"]
+        request.session["email"] = user["email"]
+        request.session["user_name"] = user.get("full_name", "")
+
+        google_pic = str(claims.get("picture", "")).strip()
+        if google_pic and not user.get("avatar_url"):
+            try:
+                update_user_avatar(user["id"], google_pic)
+            except Exception:
+                pass
+
+        try:
+            forwarded = request.headers.get("x-forwarded-for")
+            ip = forwarded.split(",")[0].strip() if forwarded else (request.client.host if request.client else "Unknown")
+            ua = request.headers.get("user-agent", "Unknown")
+            log_login_event(
+                user_id=user["id"],
+                user_email=user["email"],
+                user_name=user.get("full_name", ""),
+                role="User",
+                login_method="Google OAuth",
+                ip_address=ip,
+                user_agent=ua,
+                status="success",
+            )
+        except Exception:
+            pass
+
+        return RedirectResponse(
+            f"{target_origin}/account?handoff_token={handoff_token}&dest={dest}",
+            status_code=303,
+        )
+
+    except Exception as exc:
+        import logging
+        logging.error(f"[Google OAuth Callback Fatal Error]: {exc}", exc_info=True)
+        return _account_redirect(request, "failed", return_origin=target_origin)
